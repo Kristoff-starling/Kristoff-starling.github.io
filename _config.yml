@@ -97,12 +97,12 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
   repo:
-    github: https:github.com/Kristoff-starling/Kristoff-starling.github.io.git
+    github: git@github.com:Kristoff-starling/Kristoff-starling.github.io.git
   branch: master
