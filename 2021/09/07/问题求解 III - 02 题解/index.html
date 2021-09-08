@@ -20,15 +20,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="A. 最长路题面描述 给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。 $1\leq n\leq 2\times 10^{5},1\leq m\leq min{\frac{n(n-1)}{2},5\times 10^5}$。  题解令 $dp[u]$ 表示从节点 $u$ 出发的最长路长度，则 $dp[u]&#x3D;max_{(u,v)\in E} dp[v]+w(u,v)$。 总时间">
+<meta name="description" content="A. 最长路题面描述 给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。 $1\leq n\leq 2\times 10^{5},1\leq m\leq min\{\frac{n(n-1)}{2},5\times 10^5\}$。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="问题求解 III - 02 题解">
 <meta property="og:url" content="http://example.com/2021/09/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2002%20%E9%A2%98%E8%A7%A3/index.html">
 <meta property="og:site_name" content="starling的算法小屋">
-<meta property="og:description" content="A. 最长路题面描述 给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。 $1\leq n\leq 2\times 10^{5},1\leq m\leq min{\frac{n(n-1)}{2},5\times 10^5}$。  题解令 $dp[u]$ 表示从节点 $u$ 出发的最长路长度，则 $dp[u]&#x3D;max_{(u,v)\in E} dp[v]+w(u,v)$。 总时间">
+<meta property="og:description" content="A. 最长路题面描述 给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。 $1\leq n\leq 2\times 10^{5},1\leq m\leq min\{\frac{n(n-1)}{2},5\times 10^5\}$。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-09-06T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-09-08T12:36:19.897Z">
+<meta property="article:modified_time" content="2021-09-08T13:04:17.860Z">
 <meta property="article:author" content="starling">
 <meta property="article:tag" content="动态规划">
 <meta property="article:tag" content="最短路">
@@ -210,7 +210,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-09-08 20:36:19" itemprop="dateModified" datetime="2021-09-08T20:36:19+08:00">2021-09-08</time>
+        <time title="修改时间：2021-09-08 21:04:17" itemprop="dateModified" datetime="2021-09-08T21:04:17+08:00">2021-09-08</time>
       </span>
 
   
@@ -225,8 +225,10 @@
     <div class="post-body" itemprop="articleBody">
         <h2 id="A-最长路"><a href="#A-最长路" class="headerlink" title="A. 最长路"></a>A. 最长路</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
 <li>给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。</li>
-<li>$1\leq n\leq 2\times 10^{5},1\leq m\leq min{\frac{n(n-1)}{2},5\times 10^5}$。</li>
+<li>$1\leq n\leq 2\times 10^{5},1\leq m\leq min\{\frac{n(n-1)}{2},5\times 10^5\}$。</li>
 </ul>
+<span id="more"></span>
+
 <h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>令 $dp[u]$ 表示从节点 $u$ 出发的最长路长度，则 $dp[u]=max_{(u,v)\in E} dp[v]+w(u,v)$。</p>
 <p>总时间复杂度 $O(n+m)$。</p>
 <h2 id="B-旅行问题"><a href="#B-旅行问题" class="headerlink" title="B. 旅行问题"></a>B. 旅行问题</h2><h3 id="题面描述-1"><a href="#题面描述-1" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
@@ -258,14 +260,14 @@
 <p>给当前数 $+n$ 并 $\times 2$ ，或者给当前数 $+0$ 并 $\times 2$。</p>
 </blockquote>
 <p>这样生成的数必定可以被表示为 $\sum n\times 2^k$ 的形式，因此可以表示所有的 $n$ 的倍数。</p>
-<p>考虑如下动态规划：令 $dp[i]$ 表示生成一个前缀为 $i$ 的数，在 $i$ 之后的部分最少有多少个 $1$ 。考虑向后转移：进行一次上述的操作可以确定二进制下的一位，所以<br>$$<br>\begin{align}<br>dp[i&gt;&gt;1] &amp;\leftarrow dp[i]+(i&amp;1) \<br>dp[(i+n)&gt;&gt;1]\ &amp;\leftarrow dp[i]+((i+n)&amp;1)<br>\end{align}<br>$$<br>由于我们不能确定转移的顺序，所以可以建图之后跑最短路。注意到边权只有 $0$ 和 $1$ 两种，所以用 01bfs 即可。</p>
+<p>考虑如下动态规划：令 $dp[i]$ 表示生成一个前缀为 $i$ 的数，在 $i$ 之后的部分最少有多少个 $1$ 。考虑向后转移：进行一次上述的操作可以确定二进制下的一位，所以<br>$$<br>\begin{align}<br>dp[i\&gt;\&gt;1] &amp;\leftarrow dp[i]+(i\&amp;1) \\<br>dp[(i+n)\&gt;\&gt;1]\ &amp;\leftarrow dp[i]+((i+n)\&amp;1)<br>\end{align}<br>$$<br>由于我们不能确定转移的顺序，所以可以建图之后跑最短路。注意到边权只有 $0$ 和 $1$ 两种，所以用 01bfs 即可。</p>
 <p>总时间复杂度 $O(n)$。</p>
 <h2 id="补充题1-POJ1734-Sightseeing-Trip"><a href="#补充题1-POJ1734-Sightseeing-Trip" class="headerlink" title="补充题1. [POJ1734] Sightseeing Trip"></a>补充题1. [POJ1734] Sightseeing Trip</h2><h3 id="题面描述-4"><a href="#题面描述-4" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
 <li><a target="_blank" rel="noopener" href="http://poj.org/problem?id=1734">传送门</a></li>
 <li>给定一个 $n$ 个点 $m$ 条边的无向图，要求在其中找到一个点数大于 $2$ 的环，使其边权之和最小，输出这个圈或者输出 <code>No solution.</code> 。</li>
 <li>$n\leq 100,m\leq 10000$。</li>
 </ul>
-<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><p>对 Floyd-Warshall 算法的应用。考虑 Floyd 原式的动态规划思想，在第 $k$ 轮循环开始时，$dist[i][j]$ 保存的是从 $i$ 到 $j$ 且中间只经过了 $1$~$k-1$ 的最短距离。因此在第 $k$ 轮循环开始时，我们考虑所有编号最大的点是 $k$ 的环，我们枚举与 $k$ 相邻的两个点 $i$ 和 $j$ $(i,j&lt;k)$，用 $ga[k][i]+dist[i][j]+ga[j][k]$​​ 来更新答案。</p>
+<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><p>对 Floyd-Warshall 算法的应用。考虑 Floyd 原式的动态规划思想，在第 $k$ 轮循环开始时，$dist[i][j]$ 保存的是从 $i$ 到 $j$ 且中间只经过了 $1$~$k-1$ 的最短距离。因此在第 $k$ 轮循环开始时，我们考虑所有编号最大的点是 $k$ 的环，我们枚举与 $k$ 相邻的两个点 $i$ 和 $j$ $(i,j&lt;k)$，用 $dist[i][j]$ 和 $k$ 与 $i$ ，$k$ 与 $j$ 的边权之和来更新答案。</p>
 <p>欲打印这个圈，我们对每个 $dist[i][j]$ 额外记录一个 $mid[i][j]$ 表示最短路中权值最大的点是哪个。这样可以将路径分成 $i\rightsquigarrow mid[i][j]$ 和 $mid[i][j]\rightsquigarrow j$ 两部分，递归求解。须要注意的是，路径必须在找到更短路径的同时就出来，否则在后续循环中 $mid[i][j]$ 会被更新。</p>
 <p>总时间复杂度 $O(n^3)$。</p>
 <h2 id="补充题2-Luogu1119-灾后重建"><a href="#补充题2-Luogu1119-灾后重建" class="headerlink" title="补充题2. [Luogu1119] 灾后重建"></a>补充题2. [Luogu1119] 灾后重建</h2><h3 id="题面描述-5"><a href="#题面描述-5" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
