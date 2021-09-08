@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta property="og:type" content="website">
+<meta property="og:title" content="starling的算法小屋">
+<meta property="og:url" content="http://example.com/index.html">
+<meta property="og:site_name" content="starling的算法小屋">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>starling的算法小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的算法小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2001%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的算法小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/09/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2001%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">问题求解 III - 01 题解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-09-07 00:00:00 / 修改时间：19:59:52" itemprop="dateCreated datePublished" datetime="2021-09-07T00:00:00+08:00">2021-09-07</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="A-最短路1"><a href="#A-最短路1" class="headerlink" title="A. 最短路1"></a>A. 最短路1</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li>给一张 $n$ 个点 $m$ 条边的有向带权图，求 $1$ 号点到所有点的最短路长度。</li>
+<li>$n\leq 10^5,m\leq 2\times 10^5,1\leq w_i\leq 10^9$​。</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2001%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2002%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的算法小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/09/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2002%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">问题求解 III - 02 题解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-09-07 00:00:00" itemprop="dateCreated datePublished" datetime="2021-09-07T00:00:00+08:00">2021-09-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-09-08 20:36:19" itemprop="dateModified" datetime="2021-09-08T20:36:19+08:00">2021-09-08</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="A-最长路"><a href="#A-最长路" class="headerlink" title="A. 最长路"></a>A. 最长路</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li>给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。</li>
+<li>$1\leq n\leq 2\times 10^{5},1\leq m\leq min{\frac{n(n-1)}{2},5\times 10^5}$。</li>
+</ul>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>令 $dp[u]$ 表示从节点 $u$ 出发的最长路长度，则 $dp[u]=max_{(u,v)\in E} dp[v]+w(u,v)$。</p>
+<p>总时间复杂度 $O(n+m)$。</p>
+<h2 id="B-旅行问题"><a href="#B-旅行问题" class="headerlink" title="B. 旅行问题"></a>B. 旅行问题</h2><h3 id="题面描述-1"><a href="#题面描述-1" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li>给定一个 $n$ 个点的完全图，$A_{ij}$ 表示从 $i$ 到 $j$ 的边权。现要求从任意一点出发，至少经过每个点一次，到任意一点结束，求最小路径长度。</li>
+<li>$n\leq 20$。</li>
+</ul>
+<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>先用 Floyd 预处理两两之间的最短路 $dist[i][j]$。然后考虑状压 dp: 令 $dp[Mask][i]$ 表示当前在节点 $i$ ，已经经过的点的状态为 $Mask$ 的情况下的最小距离，转移考虑枚举上一个节点 $j$ 即可。即<br>$$<br>dp[Mask][i]=\min_{j\in Mask,j\neq i}dp[Mask-j][j]+dist[i][j]<br>$$<br>注意我们无需担心在从 $i$ 到 $j$ 的最短路上经过的其他点没有被标注进 $Mask$，因为如果没有被标注进是对答案的损失，而事实上一定有一种转移方式是正确的。</p>
+<p>总时间复杂度 $O(2^nn^2)$。</p>
+<h2 id="C-修建公路"><a href="#C-修建公路" class="headerlink" title="C. 修建公路"></a>C. 修建公路</h2><h3 id="题面描述-2"><a href="#题面描述-2" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li>给定一个 $n$ 个点，没有边的图。再给定 $m$ 条有向边，将其一一加入图中。问对于每一个 $1\leq i\leq m$，在第 $i$ 条边被加入后，有多少个有序对 $(u,v),u\neq v$ 满足有从 $u$ 到 $v$ 的路径。</li>
+<li>$n\leq 400$。</li>
+</ul>
+<h3 id="题解1"><a href="#题解1" class="headerlink" title="题解1"></a>题解1</h3><p>考虑给每条边一个权值：它被加入图的时间。定义一条路径的长度为经过的所有边的权值的最大值。则我们用 Floyd-Warshall 算法可以求出多源最短路（考虑 Floyd 的动态规划过程易证其正确性），这个最短路长度 $d(u,v)$ 的意义是从时刻 $d(u,v)$ 开始，以后一直存在从 $u$ 到 $v$ 的路径。因此我们枚举每个点对，根据 $d$ 值看它对答案的贡献即可。</p>
+<p>总时间复杂度 $O(n^3)$。</p>
+<h3 id="题解2"><a href="#题解2" class="headerlink" title="题解2"></a>题解2</h3><p>对于每条新加的边 $(u,v)$ ，如果在此之前 $u$ 已经可以到 $v$ ，则这条边加的没有意义。否则我们考虑这条边的加入会给传递闭包带来什么影响。</p>
+<p>考虑对每个节点维护两个 bitset，$b_1(u)$ 表示 $u$ 目前可达的点，$b_2(u)$ 表示目前可达 $u$ 的点。那么对于 $(u,v)$，我们考虑 $b_2(u)$ 中的所有点，给它们的 $b_1$ bitset 或上 $b_1(v)$ 即可，同理对于$b_1(v)$ 中的所有点给它们的 $b_2$ bitset 或上 $b_2(u)$。这样的复杂度为 $O(\frac{mn^2}{w})$，不能通过。</p>
+<p>考虑做一个简单的优化：对于 $b_2(u)$ 中的点，如果它们可以在加入 $(u,v)$ 之前就可以到达 $v$ ，那么显然这次或操作是无效的，因此我们只对那些 <strong>可以到 $u$ 但不能到 $v$ 的节点</strong> 进行或操作（这些节点可以通过位运算快速得出）。我们可以证明这样进行或操作的次数最多 $O(n^2)$ 次：</p>
+<blockquote>
+<p>$n$ 个点的 bitset 中一共有 $O(n^2)$ 个位置，每次或操作至少可以使 bitset 中到 $v$ 的那个位置从 0 变成 1，因此每次或操作都会使 1 的个数增加，所以最多有 $O(n^2)$ 次或操作。</p>
+</blockquote>
+<p>对于 <strong>$v$ 可到但 $u$ 不能到</strong> 的节点也是同理。通过复杂度分析，我们可以看到该算法的复杂度降到 $O(\frac{n^3}{w})$。</p>
+<h2 id="D-倍数"><a href="#D-倍数" class="headerlink" title="D. 倍数"></a>D. 倍数</h2><h3 id="题面描述-3"><a href="#题面描述-3" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li>给定整数 $n$ ，问所有的 $n\times k (k&gt;0)$ 在二进制表示下 $1$​ 的个数最少是多少。</li>
+<li>$n\leq 10^6$。</li>
+</ul>
+<h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><p>任何一个 $n$ 的倍数都可以通过这个方式生成：</p>
+<blockquote>
+<p>进行以下操作有限次：</p>
+<p>给当前数 $+n$ 并 $\times 2$ ，或者给当前数 $+0$ 并 $\times 2$。</p>
+</blockquote>
+<p>这样生成的数必定可以被表示为 $\sum n\times 2^k$ 的形式，因此可以表示所有的 $n$ 的倍数。</p>
+<p>考虑如下动态规划：令 $dp[i]$ 表示生成一个前缀为 $i$ 的数，在 $i$ 之后的部分最少有多少个 $1$ 。考虑向后转移：进行一次上述的操作可以确定二进制下的一位，所以<br>$$<br>\begin{align}<br>dp[i&gt;&gt;1] &amp;\leftarrow dp[i]+(i&amp;1) \<br>dp[(i+n)&gt;&gt;1]\ &amp;\leftarrow dp[i]+((i+n)&amp;1)<br>\end{align}<br>$$<br>由于我们不能确定转移的顺序，所以可以建图之后跑最短路。注意到边权只有 $0$ 和 $1$ 两种，所以用 01bfs 即可。</p>
+<p>总时间复杂度 $O(n)$。</p>
+<h2 id="补充题1-POJ1734-Sightseeing-Trip"><a href="#补充题1-POJ1734-Sightseeing-Trip" class="headerlink" title="补充题1. [POJ1734] Sightseeing Trip"></a>补充题1. [POJ1734] Sightseeing Trip</h2><h3 id="题面描述-4"><a href="#题面描述-4" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="http://poj.org/problem?id=1734">传送门</a></li>
+<li>给定一个 $n$ 个点 $m$ 条边的无向图，要求在其中找到一个点数大于 $2$ 的环，使其边权之和最小，输出这个圈或者输出 <code>No solution.</code> 。</li>
+<li>$n\leq 100,m\leq 10000$。</li>
+</ul>
+<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><p>对 Floyd-Warshall 算法的应用。考虑 Floyd 原式的动态规划思想，在第 $k$ 轮循环开始时，$dist[i][j]$ 保存的是从 $i$ 到 $j$ 且中间只经过了 $1$~$k-1$ 的最短距离。因此在第 $k$ 轮循环开始时，我们考虑所有编号最大的点是 $k$ 的环，我们枚举与 $k$ 相邻的两个点 $i$ 和 $j$ $(i,j&lt;k)$，用 $ga[k][i]+dist[i][j]+ga[j][k]$​​ 来更新答案。</p>
+<p>欲打印这个圈，我们对每个 $dist[i][j]$ 额外记录一个 $mid[i][j]$ 表示最短路中权值最大的点是哪个。这样可以将路径分成 $i\rightsquigarrow mid[i][j]$ 和 $mid[i][j]\rightsquigarrow j$ 两部分，递归求解。须要注意的是，路径必须在找到更短路径的同时就出来，否则在后续循环中 $mid[i][j]$ 会被更新。</p>
+<p>总时间复杂度 $O(n^3)$。</p>
+<h2 id="补充题2-Luogu1119-灾后重建"><a href="#补充题2-Luogu1119-灾后重建" class="headerlink" title="补充题2. [Luogu1119] 灾后重建"></a>补充题2. [Luogu1119] 灾后重建</h2><h3 id="题面描述-5"><a href="#题面描述-5" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1119">传送门</a></li>
+<li>给定一个 $n$ 个点 $m$ 条边的图，第 $i$ 个点会在 $t_i$ 时刻以及之后开放。有 $q$ 个询问，每个询问给定 $x,y,t$ ，问在 $t$ 时刻从 $x$ 到 $y$ 的最短距离。</li>
+<li>$n\leq 200,q\leq 50000$。</li>
+</ul>
+<h3 id="题解-4"><a href="#题解-4" class="headerlink" title="题解"></a>题解</h3><p>仍然是对 Floyd-Warshall 算法的应用。我们按照节点开放的时间顺序作为中转点进行 floyd 并实时计算当前应该计算的询问即可。总时间复杂度 $O(n^3)$。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/18/%E7%89%9B%E5%AE%A22021%E5%A4%9A%E6%A0%A1%20Round3%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的算法小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/08/18/%E7%89%9B%E5%AE%A22021%E5%A4%9A%E6%A0%A1%20Round3%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">牛客2021多校 Round3 题解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-08-18 00:00:00 / 修改时间：19:26:05" itemprop="dateCreated datePublished" datetime="2021-08-18T00:00:00+08:00">2021-08-18</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="A-Guess-and-Lies"><a href="#A-Guess-and-Lies" class="headerlink" title="A. Guess and Lies"></a>A. Guess and Lies</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/18900/A">传送门</a></li>
+<li>Alice 和 Bob 玩游戏，Alice 想好一个 $1$ 到 $n$ 之间的整数，Bob 每次可以给出一个 $x$ ，并问 Alice 她想的数是否大于等于 $x$ ，Alice 可以回答 <code>Yes</code>或 <code>No</code>。Alice 在游戏全程有一次撒谎的机会，她可以选择在任意时刻使用这次机会。现问：在 Bob 第一次问的 $x$ 是 $1,2,3,…,n$​ 且 Alice 回答了 <code>Yes</code>（可能撒谎）的情况下，Bob 各最少需要多少次才能确定 Alice 想的数。</li>
+<li>$n\leq 2000$​。</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/18/%E7%89%9B%E5%AE%A22021%E5%A4%9A%E6%A0%A1%20Round3%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/17/AtCoder%20Beginner%20Contest%20214%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的算法小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/08/17/AtCoder%20Beginner%20Contest%20214%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">AtCoder Beginner Contest 214 题解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-08-17 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-17T00:00:00+08:00">2021-08-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-08-18 19:21:27" itemprop="dateModified" datetime="2021-08-18T19:21:27+08:00">2021-08-18</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="A-New-Generation-ABC"><a href="#A-New-Generation-ABC" class="headerlink" title="A. New Generation ABC"></a>A. New Generation ABC</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc214/tasks/abc214_a">传送门</a></li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/17/AtCoder%20Beginner%20Contest%20214%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/10/AtCoder%20Beginner%20Contest%20213%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的算法小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/08/10/AtCoder%20Beginner%20Contest%20213%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">AtCoder Beginner Contest 213 题解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-08-10 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-10T00:00:00+08:00">2021-08-10</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-08-18 00:25:45" itemprop="dateModified" datetime="2021-08-18T00:25:45+08:00">2021-08-18</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="A-Bitwise-Exclusive-Or"><a href="#A-Bitwise-Exclusive-Or" class="headerlink" title="A. Bitwise Exclusive Or"></a>A. Bitwise Exclusive Or</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc213/tasks/abc213_a">传送门</a></li>
+<li>给定整数 $A$ 和 $B$，求满足 $A\space xor\space C=B$ 的整数 $C$。</li>
+<li>$1\leq A,B\leq 255$​。</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/08/10/AtCoder%20Beginner%20Contest%20213%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/07/03/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20II%20-%20Final%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的算法小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/07/03/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20II%20-%20Final%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">问题求解II - Final 题解</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-07-03 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-03T00:00:00+08:00">2021-07-03</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-08-10 21:53:40" itemprop="dateModified" datetime="2021-08-10T21:53:40+08:00">2021-08-10</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="A-为世界所有美好而战"><a href="#A-为世界所有美好而战" class="headerlink" title="A. 为世界所有美好而战"></a>A. 为世界所有美好而战</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><code>yjher</code> 是一名带学生，他有一个梦想，为世界所有美好而战。作为带学生，他首先要解决一个问题，就是选课问题。俗话说，选课一时爽，期末火葬场，为了避免这种情况，他决定根据期末最后的总复习时间 $m$ 来确定选课方案。(每门课只能选一次）</li>
+<li>已知现在一共有 $n$ 门课，每门课有两个属性 $v_i$ 和 $t_i$，分别表示这门课修完能获得的学分和复习需要花的时间。</li>
+<li>现在问你复习所花时间的和不超过 $m$ 的情况下，能获得的最高分数。</li>
+<li>$n\leq 1000,m\leq 10^9,v_i\leq 300,t\leq 3e6$​​​。</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/07/03/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20II%20-%20Final%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="A. Guess and Lies题面描述 传送门 Alice 和 Bob 玩游戏，Alice 想好一个 $1$ 到 $n$ 之间的整数，Bob 每次可以给出一个 $x$ ，并问 Alice 她想的数是否大于等于 $x$ ，Alice 可以回答 Yes或 No。Alice 在游戏全程有一次撒谎的机会，她可以选择在任意时刻使用这次机会。现问：在 Bob 第一次问的 $x$ 是 $1,2,3,…,n$">
+<meta property="og:type" content="article">
+<meta property="og:title" content="牛客2021多校 Round3 题解">
+<meta property="og:url" content="http://example.com/2021/08/18/%E7%89%9B%E5%AE%A22021%E5%A4%9A%E6%A0%A1%20Round3%20%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="starling的算法小屋">
+<meta property="og:description" content="A. Guess and Lies题面描述 传送门 Alice 和 Bob 玩游戏，Alice 想好一个 $1$ 到 $n$ 之间的整数，Bob 每次可以给出一个 $x$ ，并问 Alice 她想的数是否大于等于 $x$ ，Alice 可以回答 Yes或 No。Alice 在游戏全程有一次撒谎的机会，她可以选择在任意时刻使用这次机会。现问：在 Bob 第一次问的 $x$ 是 $1,2,3,…,n$">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-08-18T11:26:05.031Z">
+<meta property="article:author" content="starling">
+<meta property="article:tag" content="动态规划">
+<meta property="article:tag" content="容斥原理">
+<meta property="article:tag" content="最小生成树">
+<meta property="article:tag" content="二分图匹配">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/08/18/%E7%89%9B%E5%AE%A22021%E5%A4%9A%E6%A0%A1%20Round3%20%E9%A2%98%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2021/08/18/%E7%89%9B%E5%AE%A22021%E5%A4%9A%E6%A0%A1%20Round3%20%E9%A2%98%E8%A7%A3/","path":"2021/08/18/牛客2021多校 Round3 题解/","title":"牛客2021多校 Round3 题解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>牛客2021多校 Round3 题解 | starling的算法小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的算法小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Guess-and-Lies"><span class="nav-number">1.</span> <span class="nav-text">A. Guess and Lies</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">1.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Black-and-White"><span class="nav-number">2.</span> <span class="nav-text">B. Black and White</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">2.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-Minimum-Grid"><span class="nav-number">3.</span> <span class="nav-text">C. Minimum Grid</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-2"><span class="nav-number">3.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#D-Count"><span class="nav-number">4.</span> <span class="nav-text">D. Count</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-3"><span class="nav-number">4.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-number">4.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-Math"><span class="nav-number">5.</span> <span class="nav-text">E. Math</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-4"><span class="nav-number">5.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-4"><span class="nav-number">5.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#F-24dian"><span class="nav-number">6.</span> <span class="nav-text">F. 24dian</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-5"><span class="nav-number">6.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-5"><span class="nav-number">6.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#G-Yu-Ling-Ling-YueZheng-and-Colorful-Tree"><span class="nav-number">7.</span> <span class="nav-text">G. Yu Ling(Ling YueZheng) and Colorful Tree</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#H-Ling-Qiu-Luna-and-Triple-Backpack"><span class="nav-number">8.</span> <span class="nav-text">H. Ling Qiu, Luna and Triple Backpack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#I-Kuriyama-Mirai-and-Exclusive-Or"><span class="nav-number">9.</span> <span class="nav-text">I. Kuriyama Mirai and Exclusive Or</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-6"><span class="nav-number">9.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-6"><span class="nav-number">9.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#J-Counting-Triangles"><span class="nav-number">10.</span> <span class="nav-text">J. Counting Triangles</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-7"><span class="nav-number">10.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-7"><span class="nav-number">10.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/18/%E7%89%9B%E5%AE%A22021%E5%A4%9A%E6%A0%A1%20Round3%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的算法小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          牛客2021多校 Round3 题解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-08-18 00:00:00 / 修改时间：19:26:05" itemprop="dateCreated datePublished" datetime="2021-08-18T00:00:00+08:00">2021-08-18</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="A-Guess-and-Lies"><a href="#A-Guess-and-Lies" class="headerlink" title="A. Guess and Lies"></a>A. Guess and Lies</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/18900/A">传送门</a></li>
+<li>Alice 和 Bob 玩游戏，Alice 想好一个 $1$ 到 $n$ 之间的整数，Bob 每次可以给出一个 $x$ ，并问 Alice 她想的数是否大于等于 $x$ ，Alice 可以回答 <code>Yes</code>或 <code>No</code>。Alice 在游戏全程有一次撒谎的机会，她可以选择在任意时刻使用这次机会。现问：在 Bob 第一次问的 $x$ 是 $1,2,3,…,n$​ 且 Alice 回答了 <code>Yes</code>（可能撒谎）的情况下，Bob 各最少需要多少次才能确定 Alice 想的数。</li>
+<li>$n\leq 2000$​。</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>转换思路考虑这个问题：如果某一次对于 Bob 提出的 $x$ Alice 回答了 Yes，那么如果 Alice 想的数小于 $x$ ，则她的撒谎次数+1。进而我们发现：对于一系列的 Bob 提问 Alice 回答的操作之后的局面，我们可以对每一个数 $i$ 记一个 $a_i$ 表示如果 Alice 想的数是 $i$ ，她目前撒谎了多少次，根据之前的提问回答每一个 $a_i$ 都是确定的。当且仅当只有一个 $a_i\leq 1$ 时，Bob 就可以确定 Alice 想的数。因此游戏转化为：每次 Bob 选一个分界点，Alice可以选择将分界点的前一半+1或后一半+1，Bob 希望尽快让数列中只有一个数 $\leq 1$，Alice则相反，问 Bob 需要问多少次。</p>
+<p>直接维护 $a$ 数组的状态是困难的，但我们发现一个性质：在若干次操作后，$a$ 序列中那些 $\leq 1$ 的数一定是一段1，然后一段0，然后一段1（段与段不一定相邻，用数学归纳法此结论易证）。因此我们用 $dp[i][j][k]$ 表示第一段 $i$ 个 $1$，第二段 $j$ 个 $0$，第三段 $k$ 个 $1$ 的情况下需要多少次结束游戏，转移暴力枚举 Bob 选择的分界点，这样总时间复杂度为 $O(n^4)$，不足以通过。</p>
+<p>我们进而可以发现该dp具有决策单调性：即在固定 $i$ 和 $j$ 的情况下，随着 $k$ 的增长，对 Bob 最优的分界点一定也是递增的（因为后面的 $1$ 变多了）。利用决策单调性优化可以优化到 $O(n^3)$，仍然不足以通过。</p>
+<p>考虑继续对dp进行优化。我们考虑一种Bob的策略：Bob每轮连续两次问同一个数，如果 Alice 两次回答结果相同则没有撒谎，如果回答结果不同则撒谎了，这样每问两次 Bob 就可以将区间长度缩小一般，因此 Bob 一定能在 $2logn$​ 次以内确定答案，也就是说，dp数组内存储的值都是log级别的，非常小。进而我们发现dp值与dp下标之间也存在单调性，即固定 $i$, $j$ 不动时，随着 $k$ 的增大，dp值不会减少（因为后面的 $1$ 变多了）。因此我们考虑交换dp的第三维与答案，重新设计状态。</p>
+<p>令 $dp[t][i][j]$ 表示中间的 $0$ 有 $i$ 个，左边或右边（具有对称性）的某一段 $1$ 有 $j$ 个，Bob使用不超过 $k$ 次猜测能结束游戏的前提下，另一段 $1$ 至多能有多少个。转移相对复杂，仍然是考虑分界点的位置，但充分利用单调性，每次将答案标记在最大的位置上并在每轮最后取一个后缀max，核心代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rep</span>(t,<span class="number">0</span>,<span class="number">20</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">rep</span>(i,<span class="number">0</span>,n) <span class="built_in">rep</span>(j,<span class="number">0</span>,i)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> k=dp[t][j][i-j],w=dp[t][i-j][j];</span><br><span class="line">        <span class="keyword">if</span> (k&gt;=<span class="number">0</span>) <span class="built_in">check_max</span>(dp[t+<span class="number">1</span>][i][<span class="built_in">min</span>(k,n-i)],w);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">rep</span>(i,<span class="number">0</span>,n) <span class="keyword">if</span> (dp[t][<span class="number">0</span>][i]!=<span class="number">-1</span>)</span><br><span class="line">        <span class="built_in">rep</span>(j,<span class="number">0</span>,n-i) <span class="keyword">if</span> (dp[t][i][j]!=<span class="number">-1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> k=dp[t][i][j];</span><br><span class="line">        <span class="built_in">check_max</span>(dp[t+<span class="number">1</span>][i][<span class="built_in">min</span>(k,n-i)],dp[t][<span class="number">0</span>][i]+j);</span><br><span class="line">        <span class="built_in">check_max</span>(dp[t+<span class="number">1</span>][i][<span class="built_in">min</span>(dp[t][<span class="number">0</span>][i]+j,n-i)],k);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">rep</span>(i,<span class="number">0</span>,n) <span class="built_in">REP</span>(j,n-i<span class="number">-1</span>,<span class="number">0</span>) <span class="built_in">check_max</span>(dp[t+<span class="number">1</span>][i][j],dp[t+<span class="number">1</span>][i][j+<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 总时间复杂度为 $O(n^2logn)$，可以通过。</p>
+<h2 id="B-Black-and-White"><a href="#B-Black-and-White" class="headerlink" title="B. Black and White"></a>B. Black and White</h2><h3 id="题面描述-1"><a href="#题面描述-1" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/18900/B">传送门</a></li>
+<li>给定一个 $n$ 行 $m$ 列的矩阵，每个格子上都有一个权值 $w$，给这个格子涂色需要付出对应权值的代价。对于任意一个子矩阵，如果有三个角已经被涂上了颜色，则第四个角可以免费被涂上颜色。问最少用多少代价可以将整个矩阵涂上颜色。</li>
+<li>$n,m\leq 5000,w\leq 10^5$​​。</li>
+</ul>
+<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>考虑对每一个行建一个点 $A_i$，每一列建一个点 $B_j$ ，花代价选中第 $i$ 行第 $j$​ 列格子，就将 $A_i$ 与 $B_j$ 连起来。可以发现，免费涂色的过程是不改变连通性的。又可以发现整张图需要连通才能实现将颜色涂满，因此对建出的点求最小生成树即可。</p>
+<p>由于权值范围有限，所以可以省去排序的 log。总时间复杂度 $O(n^2)$。</p>
+<h2 id="C-Minimum-Grid"><a href="#C-Minimum-Grid" class="headerlink" title="C. Minimum Grid"></a>C. Minimum Grid</h2><h3 id="题面描述-2"><a href="#题面描述-2" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/18900/C">传送门</a></li>
+<li>给定一个 $n\times n$ 的方阵，其中有 $m$ 个格子可以填非负整数。先给定每行每列的数字的最大值，求填写的数的和的最小值。</li>
+<li>$n\leq 2000, m\leq 8\times 10^5$，行列最大值序列中相同的数不会出现超过 $500%$​ 次。</li>
+</ul>
+<h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><p>我们先将每行的最大值，每列的最大值求和作为一个初始答案，然后考虑如何“节省”。</p>
+<p>对于一个可以填数的格子，如果其所在行列的最大值不同，那么这个数必然只能给较小的行/列做贡献。换言之，只有某一个格子所在的行和列的最大值一样，才能通过在这个格子填数的方式实现“一石二鸟”。</p>
+<p>因此我们每轮将最大值相同的那些行与列拿出来考虑，看他们的交叉点上的那些可以填数的格子。如果第 $i$ 行第 $j$ 列可以填数，那么在这个格子填数可以同时解决一行一列的问题，从而省下一个数。所以我们对所有的行建点，所有的列建点，可以填数的格子等价于连边，这样求一个最大匹配即可算出最多可以省下的代价。</p>
+<p>因为题目保证了相同的数不会超过 $500$ 次，所以使用dinic最大流的方法求解最大匹配，可以预估时间复杂度大致为 $O(m\sqrt m)$。</p>
+<h2 id="D-Count"><a href="#D-Count" class="headerlink" title="D. Count"></a>D. Count</h2><h3 id="题面描述-3"><a href="#题面描述-3" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/18900/D">传送门</a></p>
+</li>
+<li><p>给定一个 $n\times n$ 的矩阵，现要将其中的 $C$ 个格子染成黑色，染法要求满足以下条件：</p>
+<ul>
+<li><p>每行，每列，两条对角线都至少有一个格子被染黑；</p>
+</li>
+<li><p>额外给出 $K$ 个位置，这 $K$​ 个位置不能被染黑。</p>
+</li>
+</ul>
+<p>  求方案数，答案对 $10007$ 取模。</p>
+</li>
+<li><p>$n\leq 32,K\leq 7$。</p>
+</li>
+</ul>
+<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><p>首先对 $K$ 个不能放的位置进行容斥，我们用 $2^K$ 的代价消除了染法的第二条限制，现在专注于第一条。</p>
+<p>继续容斥，枚举有多少个行，列可以染色以及枚举对角线是否可以染色，我们发现假设有 $A$ 行， $B$ 列可以染色，则总共可以染色的格子数为 $AB-M$，其中 $M$ 为行列均允许染色但由于对角线被ban而无法染色的格子数。考虑用动态规划来计数，令 $dp_{p,i,j,k}$ 表示当前考虑到第 $p$ 行，当前可以染色的行数为 $i$ ，可以染色的列数为 $j$ ，行列均可以染色但由于对角线限制被ban的格子数为 $k$ 的方案数。转移的时候，我们发现若要充分考虑对角线上的点，则必须同时考虑第 $p$ 行，第 $p$ 列，第 $n+1-p$ 行，第 $n+1-p$​ 列。</p>
+<p>总时间复杂度为 $O(2^Kn^4)$​。</p>
+<h2 id="E-Math"><a href="#E-Math" class="headerlink" title="E. Math"></a>E. Math</h2><h3 id="题面描述-4"><a href="#题面描述-4" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/18900/E">传送门</a></li>
+<li>对于给定的 $n$，求有多少个有序数对 $1\leq x\leq y\leq n$ 满足 $xy+1\mid x^2+y^2$。</li>
+<li>多组数据， $T\leq 10^5,n\leq 10^{18}$。</li>
+</ul>
+<h3 id="题解-4"><a href="#题解-4" class="headerlink" title="题解"></a>题解</h3><p>打表观察可以发现解的分布满足以下规律：</p>
+<p>将解分成若干组，每一组的解由一个序列生成：第 $i$ 组的序列前两个数是 $i$ 和 $i^3$ ，以后 $f_i(n)=i^2f_i(n-1)-f_i(n-2)$​​，每相邻的两个数构成一对合法的解。注意第一组只有 $(1,1)$ 一对。</p>
+<p>由此可以看出答案不是很多，因此可以预处理出所有的答案，再根据 $n$​ 二分。</p>
+<h2 id="F-24dian"><a href="#F-24dian" class="headerlink" title="F. 24dian"></a>F. 24dian</h2><h3 id="题面描述-5"><a href="#题面描述-5" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/18900/F">传送门</a></li>
+<li>输入 $n$ 和 $m$ ，问有多少种 $n$ 张扑克牌的组合（不考虑花色，仅有1~13）满足可以运用24点规则内的计算方法得到 $m$ ，且每一种得到 $m$ 的方法中途都出现了分数。</li>
+<li>$n\leq 4,m\leq 10^9$</li>
+</ul>
+<h3 id="题解-5"><a href="#题解-5" class="headerlink" title="题解"></a>题解</h3><p>模拟题。枚举初始状态搜索即可。</p>
+<h2 id="G-Yu-Ling-Ling-YueZheng-and-Colorful-Tree"><a href="#G-Yu-Ling-Ling-YueZheng-and-Colorful-Tree" class="headerlink" title="G. Yu Ling(Ling YueZheng) and Colorful Tree"></a>G. Yu Ling(Ling YueZheng) and Colorful Tree</h2><p>留坑</p>
+<h2 id="H-Ling-Qiu-Luna-and-Triple-Backpack"><a href="#H-Ling-Qiu-Luna-and-Triple-Backpack" class="headerlink" title="H. Ling Qiu, Luna and Triple Backpack"></a>H. Ling Qiu, Luna and Triple Backpack</h2><p>留坑</p>
+<h2 id="I-Kuriyama-Mirai-and-Exclusive-Or"><a href="#I-Kuriyama-Mirai-and-Exclusive-Or" class="headerlink" title="I. Kuriyama Mirai and Exclusive Or"></a>I. Kuriyama Mirai and Exclusive Or</h2><h3 id="题面描述-6"><a href="#题面描述-6" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/18900/I">传送门</a></p>
+</li>
+<li><p>给定一个长度为 $n$ 的序列，现有 $q$ 次操作，每次操作属于以下两种类型之一：</p>
+<ul>
+<li><code>0 l r x</code> 给区间 $[l,r]$ 中的所有数异或 $x$；</li>
+<li><code>1 l r x</code> 给区间 $[l,r]$ 中下标为 $i$ 的数异或 $x+(i-l)$。</li>
+</ul>
+<p>  求操作结束后的序列。</p>
+</li>
+<li><p>$n\leq 6\times 10^5,q\leq 4\times 10^5$，所有异或的数均在 $[0,2^{30})$ 中。</p>
+</li>
+</ul>
+<h3 id="题解-6"><a href="#题解-6" class="headerlink" title="题解"></a>题解</h3><p>第一种操作相对简单，只需要记录一个差分数组，对于每次操作在位置 $l$ 和位置 $r+1$ 异或 $x$ ，最后求前缀异或和即可得每个数需要异或的值。</p>
+<p>对于第二种操作，按位考虑。对于第 $i$​​ 位，可以发现需要异或1的位置都是以 $2^i$ 为周期循环出现的。如果我们将序列排成一个宽为 $2^i$ 的矩阵，则每次需要异或1的位置构成了一个或两个子矩阵区域，同样可以通过打差分标记的方式来维护，最后求二维前缀异或和即可。</p>
+<p>假设 $n$​ 与 $q$​ 同阶，总时间复杂度 $O(nlog2^{30})$​。</p>
+<h2 id="J-Counting-Triangles"><a href="#J-Counting-Triangles" class="headerlink" title="J. Counting Triangles"></a>J. Counting Triangles</h2><h3 id="题面描述-7"><a href="#题面描述-7" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/18900/J">传送门</a></li>
+<li>给定一张 $n$ 个顶点的无向完全图，每条边是黑色或白色，求三边同色的三角形的个数。</li>
+<li>$n\leq 8000$​。</li>
+</ul>
+<h3 id="题解-7"><a href="#题解-7" class="headerlink" title="题解"></a>题解</h3><p>换一个角度考虑，用总三角形个数减去那些不是同色的三角形的个数。</p>
+<p>我们可以发现一个性质：不同色的三角形三条边要么是两黑一白要么是两白一黑，这两种都满足三角形有恰好两个顶点旁边的两条边颜色不同。换言之，对于图中的每个顶点，考虑其所有邻边，任选一条黑色的边与一条白色的边组合，第三条边无论是什么颜色都是一个异色三角形。因此只要对每个顶点计算 $cnt_{black}*cnt_{white}$​ 最后除以二就是异色三角形的个数。 </p>
+<p>总时间复杂度 $O(n^2)$。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag"># 动态规划</a>
+              <a href="/tags/%E5%AE%B9%E6%96%A5%E5%8E%9F%E7%90%86/" rel="tag"># 容斥原理</a>
+              <a href="/tags/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/" rel="tag"># 最小生成树</a>
+              <a href="/tags/%E4%BA%8C%E5%88%86%E5%9B%BE%E5%8C%B9%E9%85%8D/" rel="tag"># 二分图匹配</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/17/AtCoder%20Beginner%20Contest%20214%20%E9%A2%98%E8%A7%A3/" rel="prev" title="AtCoder Beginner Contest 214 题解">
+                  <i class="fa fa-chevron-left"></i> AtCoder Beginner Contest 214 题解
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/09/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2002%20%E9%A2%98%E8%A7%A3/" rel="next" title="问题求解 III - 02 题解">
+                  问题求解 III - 02 题解 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="A. New Generation ABC题面描述 传送门">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AtCoder Beginner Contest 214 题解">
+<meta property="og:url" content="http://example.com/2021/08/17/AtCoder%20Beginner%20Contest%20214%20%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="starling的算法小屋">
+<meta property="og:description" content="A. New Generation ABC题面描述 传送门">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-08-18T11:21:27.401Z">
+<meta property="article:author" content="starling">
+<meta property="article:tag" content="动态规划">
+<meta property="article:tag" content="并查集">
+<meta property="article:tag" content="容斥原理">
+<meta property="article:tag" content="强连通分量">
+<meta property="article:tag" content="网络流">
+<meta property="article:tag" content="贪心">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/08/17/AtCoder%20Beginner%20Contest%20214%20%E9%A2%98%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2021/08/17/AtCoder%20Beginner%20Contest%20214%20%E9%A2%98%E8%A7%A3/","path":"2021/08/17/AtCoder Beginner Contest 214 题解/","title":"AtCoder Beginner Contest 214 题解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AtCoder Beginner Contest 214 题解 | starling的算法小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的算法小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-New-Generation-ABC"><span class="nav-number">1.</span> <span class="nav-text">A. New Generation ABC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">1.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-How-Many"><span class="nav-number">2.</span> <span class="nav-text">B. How Many?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">2.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-Distribution"><span class="nav-number">3.</span> <span class="nav-text">C. Distribution</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-2"><span class="nav-number">3.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#D-Sum-of-Maximum-Weights"><span class="nav-number">4.</span> <span class="nav-text">D. Sum of Maximum Weights</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-3"><span class="nav-number">4.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-number">4.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-Packing-Under-Range-Regulations"><span class="nav-number">5.</span> <span class="nav-text">E. Packing Under Range Regulations</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-4"><span class="nav-number">5.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-4"><span class="nav-number">5.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#F-Substrings"><span class="nav-number">6.</span> <span class="nav-text">F. Substrings</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-5"><span class="nav-number">6.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-5"><span class="nav-number">6.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#G-Three-Permutations"><span class="nav-number">7.</span> <span class="nav-text">G. Three Permutations</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-6"><span class="nav-number">7.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-6"><span class="nav-number">7.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#H-Collecting"><span class="nav-number">8.</span> <span class="nav-text">H. Collecting</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-7"><span class="nav-number">8.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-7"><span class="nav-number">8.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/08/17/AtCoder%20Beginner%20Contest%20214%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的算法小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AtCoder Beginner Contest 214 题解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-08-17 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-17T00:00:00+08:00">2021-08-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-08-18 19:21:27" itemprop="dateModified" datetime="2021-08-18T19:21:27+08:00">2021-08-18</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="A-New-Generation-ABC"><a href="#A-New-Generation-ABC" class="headerlink" title="A. New Generation ABC"></a>A. New Generation ABC</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc214/tasks/abc214_a">传送门</a></li>
+</ul>
+<span id="more"></span>
+
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>按照题目要求判断即可。</p>
+<h2 id="B-How-Many"><a href="#B-How-Many" class="headerlink" title="B. How Many?"></a>B. How Many?</h2><h3 id="题面描述-1"><a href="#题面描述-1" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc214/tasks/abc214_b">传送门</a></li>
+<li>给定 $S$ 和 $T$ ，求有多少个由非负整数构成的三元组 $(a,b,c)$ 满足 $a+b+c\leq S$ 且 $a\times b\times c\leq T$。</li>
+<li>$S\leq 100, T\leq 10000$。</li>
+</ul>
+<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>由于 $S$ 不大，所以直接三重循环枚举所有可能的三元组即可。复杂度 $O(S^3)$。</p>
+<h2 id="C-Distribution"><a href="#C-Distribution" class="headerlink" title="C. Distribution"></a>C. Distribution</h2><h3 id="题面描述-2"><a href="#题面描述-2" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc214/tasks/abc214_c">传送门</a></li>
+<li>有 $n$ 个人围成一圈，每个人会在 $t_i$ 时刻获得一枚钻石（无来源）。如果第 $i$ 个人在 $t$ 时刻拿到了一个钻石（无来源或来自前一个人），他会在 $t+S_i$​ 时刻把钻石给下一个人。设每个人拿到第一个钻石的时间为 $T_i$ ，求 $\max_{i=1}^nT_i$​。</li>
+<li>$n\leq 2\times 10^5$。</li>
+</ul>
+<h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><p>首先考虑这 $n$ 个人中 $t_i$ 最小的那个，他第一个拿到的钻石一定是无来源钻石而不是从前一个人手里传过来的钻石。我们以这个人为起点剖环为链。于是显然有 $T_i=min{T_{i-1}+S_{i-1},t_i}$，递推一遍即可。</p>
+<p>总时间复杂度 $O(n)$​。</p>
+<h2 id="D-Sum-of-Maximum-Weights"><a href="#D-Sum-of-Maximum-Weights" class="headerlink" title="D. Sum of Maximum Weights"></a>D. Sum of Maximum Weights</h2><h3 id="题面描述-3"><a href="#题面描述-3" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc214/tasks/abc214_c">传送门</a></p>
+</li>
+<li><p>给定一棵 $n$ 个点的树和每条边的边权。令 $f(i,j)$ 表示从节点 $i$ 到节点 $j$​ 的最短路径上的最长边的权值，求<br>  $$<br>  \sum_{i=1}^{n-1}\sum_{j=i+1}^nf(i,j)<br>  $$</p>
+</li>
+<li><p>$n\leq 10^5$。</p>
+</li>
+</ul>
+<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><p>考虑每条边对答案的贡献，容易发现如果我们将所有边按边权大小从小到大排序后按顺序插入，则一条边的贡献相当于它连接的两个连通块的大小之积。因此用并查集维护连通块大小即可。</p>
+<p>总时间复杂度 $O(n\alpha(n))$。</p>
+<h2 id="E-Packing-Under-Range-Regulations"><a href="#E-Packing-Under-Range-Regulations" class="headerlink" title="E. Packing Under Range Regulations"></a>E. Packing Under Range Regulations</h2><h3 id="题面描述-4"><a href="#题面描述-4" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc214/tasks/abc214_e">传送门</a></li>
+<li>有 $10^9$ 个箱子和 $n$ 个球，球编号 $1,2,…,n$。现给出 $n$ 个区间，第 $i$ 个区间为 $[L_i,R_i]$，问是否存在一种将球放进箱子的方案，使得每个箱子至多放一个球，且第 $i$ 个球在第 $L_i$ 到第 $R_i$ 的箱子中的某一个里。</li>
+<li>$n\leq 2\times 10^5$。</li>
+</ul>
+<h3 id="题解-4"><a href="#题解-4" class="headerlink" title="题解"></a>题解</h3><p>考虑一种贪心策略：如果我们一个箱子一个箱子地决策里面该放哪个球，假设现在考虑到第 $i$ 个箱子，有若干个区间可以用这个箱子来满足条件且还没有满足条件，那么我一定会选择 $R$ 最小的那个率先满足。</p>
+<p>基于这种贪心策略，我们将所有的 $L$ 和 $R$ 离散化之后按顺序枚举每个端点并用一个堆动态维护当前有哪些区间还没满足条件，如果遇到一个区间的左端点就入堆，每个时刻挑堆中最小的元素出堆，如果在某一时刻出堆区间的右端点小于当前时刻则无解。</p>
+<p>总时间复杂度 $O(nlogn)$。</p>
+<h2 id="F-Substrings"><a href="#F-Substrings" class="headerlink" title="F. Substrings"></a>F. Substrings</h2><h3 id="题面描述-5"><a href="#题面描述-5" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc214/tasks/abc214_f">传送门</a></p>
+</li>
+<li><p>给定一个仅有小写字母构成的字符串 $S$，现要从 $S$ 中生成出子串 $T$，生成规则是挑选 $S$ 中不相邻的若干位按顺序连接组成 $T$，问可以组成多少种不同的 $T$。</p>
+</li>
+<li><p>$\mid S\mid \leq 2\times 10^5$。</p>
+</li>
+</ul>
+<h3 id="题解-5"><a href="#题解-5" class="headerlink" title="题解"></a>题解</h3><p>令 $dp[i]$ 表示以 $i$ 结尾有多少种不同的子串，考虑如何用 $dp[i]$​ 去更新后面的答案。比如下一个接字母 <code>a</code>，那么只向最近的一个 <code>a</code> 转移。这样转移相当于所有可能的子串都只计算了字典序（字典序指所有字母出现的位置连起来构成的序列的字典序）最小的那一个，从而避免了重复计数。</p>
+<p>由于字符集只有小写字母，所以每个状态最多转移 $26$ 次，总时间复杂度 $O(\mid S\mid)$。</p>
+<h2 id="G-Three-Permutations"><a href="#G-Three-Permutations" class="headerlink" title="G. Three Permutations"></a>G. Three Permutations</h2><h3 id="题面描述-6"><a href="#题面描述-6" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc214/tasks/abc214_g">传送门</a></li>
+<li>给定两个长度为 $n$ 的排列 $p_1,p_2,…,p_n$ 和 $q_1,q_2,…,q_n$，对于一个排列 $r_1,r_2,…,r_n$，如果对于任意 $1\leq i\leq n$​ 都有  $r_i\neq p_i$ 且 $r_i\neq q_i$ ，则称这个排列是好的。问有多少个好的排列。</li>
+<li>$n\leq 3000$。</li>
+</ul>
+<h3 id="题解-6"><a href="#题解-6" class="headerlink" title="题解"></a>题解</h3><p>考虑容斥，转而对于所有的 $1\leq k\leq n$​ 计算有指定的 $k$ 个位置不满足条件的方案数。</p>
+<p>我们容易发现两个排列构成了若干个置换，置换之间两两不影响。如果我们已经能够设法维护 $cnt[i][j]$​ 表示第 $i$​ 个置换中有 $j$​​ 个位置不合法的方案数，那么我们就可以用一个简单的背包dp来计算整个局面下有 $1,2,…,n$​ 个位置不合法的方案数。这里的背包dp只需要使用暴力转移就好，这样看上去虽然是 $O(n^3)$ 的，但由于所有置换的大小的和是 $n$ ，所以实际上是 $O(n^2)$。现在重点考虑如何计算 $cnt[i][j]$。</p>
+<p>一个 $n$ 个元素的置换可以看作一个 $n$ 个点构成的圈。在置换中选出若干个位置等价于在圈中选出若干条边。我们容易发现，如果 $n$ 条边全部被选中，则有 $2$ 种放置的方案；否则选中的部分一定是若干条链，对于有 $i$ 条边的链有 $i+1$ 种放置的方案。我们容易想到动态规划，用 $f[i][j]$ 表示当前已经考虑到第 $i$ 条边，已经选了 $j$ 条边的方案数，但由于需要枚举当前这条链的长度来转移，因此复杂度为 $O(n^3)$，需要优化。</p>
+<p>一个常用的技巧是：<strong>如果对于每个连通块要计算某种和其大小有关的函数，可以考虑其组合意义。</strong>在本题中对于长度为 $i$​ 的链贡献是 $i+1$​ ，我们可以考虑如下问题：在圈中选出若干条链，对于每条链，第一条边上有两个小球，其他边上有一个小球，这样长度为 $i$​ 的边上有 $i+1$​ 个小球，在其中挑选一个染色，问选边+染色的方案数。这个问题和原问题的答案是一致的。于是我们修改状态，令 $f[i][j][0/1/2]$​ 表示当前考虑到第 $i$​ 条边，已经选了 $j$​​ 条边，最后一维的三个状态分别表示 “当前边没有选” “当前边选了且当前边所在的链中还没有小球被染色” “当前边选了且当前边所在的链中已经有小球被染色”，转移是容易的。本题中由于做的是环上的问题，因此还要考虑末尾和开头的拼接问题，在实际 dp 的过程中还要多一维状态记录开头的情况，做完 dp 后将首尾状态合并再计算答案。</p>
+<p>综上，我们需要做两个 $O(n^2)$ 的动态规划，再用容斥原理计算答案，总时间复杂度 $O(n^2)$。</p>
+<h2 id="H-Collecting"><a href="#H-Collecting" class="headerlink" title="H. Collecting"></a>H. Collecting</h2><h3 id="题面描述-7"><a href="#题面描述-7" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc214/tasks/abc214_h">传送门</a></li>
+<li>给定一张 $n$ 个点 $m$ 条边的有向图，第 $i$ 个点上有 $X_i$ 个宝石。现有 $k$ 个人，他们依次从 $1$ 号点出发，沿着有向图的边走任意步，沿途如果某个节点有宝石就将其取走。问他们最多能拿走多少宝石。</li>
+<li>$n,m\leq 2\times 10^5$，$k\leq 10$。</li>
+</ul>
+<h3 id="题解-7"><a href="#题解-7" class="headerlink" title="题解"></a>题解</h3><p>显然同一个强连通分量里的宝石是可以一次性拿完的。如果我们将强连通分量缩点后重新建图，得到的就是一个DAG（有向无环图）。</p>
+<p><strong>本题的 $k$​ 较小，这是在 $n$​​ 较大的情况下仍可以尝试考虑网络流的依据。</strong>我们先考虑如下费用流模型：对于每个点建立入点和出点 $in_u$​ 和 $out_u$​。此外建立超级源点和超级汇点，建边方法如下：</p>
+<ul>
+<li>在 $in_u$​​ 和 $out_u$ 之间建一条流量为 $1$ ，费用为 $-X_u$ 的边和一条流量为 $\infty$，费用为 $0$ 的边，来模拟每个点的宝石只会被取走一次。</li>
+<li>对于DAG中的每条边 $(u,v)$，在 $out_u$ 和 $in_v$ 之间连一条流量为 $\infty$，费用为 $0$ 的边。</li>
+<li>超级源点向 $in_1$ 连一条流量为 $k$ ，费用为 $0$ 的边。</li>
+<li>所有的 $out_u$ 向超级汇点连一条流量为 $\infty$，费用为 $0$ 的边。</li>
+</ul>
+<p>在这张图上跑费用流，取最小费用的相反数即可得到答案。但带有负权的费用流不好做，我们可以用先强制满流再退流的方法使费用变为正数，事实上，换一个角度建图也可以规避负费用的问题。我们令每单位 “水流” 的代价为它没有吃到的宝石的代价之和，那么最小化这个代价就是最大化吃到的宝石。建边如下：</p>
+<ul>
+<li>在 $in_u$ 和 $out_u$ 之间建一条流量为 $1$ ，费用为 $0$ 的边和一条流量为 $\infty$ ，费用为 $X_u$ 的边。</li>
+<li>对于 DAG 中的每条边 $(u,v)$，由于是 DAG 所以可以保证 $u&lt;v$，在 $out_u$ 和 $in_v$ 之间连一条流量为 $\infty$​ ，费用为 $X_{u+1}+X_{u+2}+…+X_{v-1}$ 的边，表示如果沿着这条边走就放弃了中间这些点的宝石。</li>
+<li>超级源点向 $in_1$ 连一条流量为 $k$，费用为 $0$ 的边。</li>
+<li>所有的 $out_u$ 向超级汇点连一条流量为 $\infty$，费用为 $X_{u+1}+X_{u+2}+…+X_n$ 的边。</li>
+</ul>
+<p>设该图中得到的最小费用为 $mincost$ ，则最终答案为 $k(\sum_{i=1}^nX_i)-mincost$。注意在 DAG 中 $1$ 号点之前的点理应先从 DAG 中剔除。</p>
+<p>虽然本题中 $n$ 较大，但我们可以这样估算 Edmonds-Karp-Dijkstra 算法的时间复杂度：每做一次 Dijkstra 的时间复杂度为 $O(mlogm)$，每做一次最短路至少可以流一单位流量，因此复杂度的上界为 $O(kmlogm)$，可以通过。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag"># 动态规划</a>
+              <a href="/tags/%E5%B9%B6%E6%9F%A5%E9%9B%86/" rel="tag"># 并查集</a>
+              <a href="/tags/%E5%AE%B9%E6%96%A5%E5%8E%9F%E7%90%86/" rel="tag"># 容斥原理</a>
+              <a href="/tags/%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F/" rel="tag"># 强连通分量</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E6%B5%81/" rel="tag"># 网络流</a>
+              <a href="/tags/%E8%B4%AA%E5%BF%83/" rel="tag"># 贪心</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/08/10/AtCoder%20Beginner%20Contest%20213%20%E9%A2%98%E8%A7%A3/" rel="prev" title="AtCoder Beginner Contest 213 题解">
+                  <i class="fa fa-chevron-left"></i> AtCoder Beginner Contest 213 题解
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/08/18/%E7%89%9B%E5%AE%A22021%E5%A4%9A%E6%A0%A1%20Round3%20%E9%A2%98%E8%A7%A3/" rel="next" title="牛客2021多校 Round3 题解">
+                  牛客2021多校 Round3 题解 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
