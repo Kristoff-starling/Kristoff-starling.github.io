@@ -28,7 +28,7 @@
 <meta property="og:description" content="A. Bitwise Exclusive Or题面描述 传送门 给定整数 $A$ 和 $B$，求满足 $A\space xor\space C&#x3D;B$ 的整数 $C$。 $1\leq A,B\leq 255$​。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-08-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-08-17T16:25:45.360Z">
+<meta property="article:modified_time" content="2021-09-08T13:08:49.449Z">
 <meta property="article:author" content="starling">
 <meta property="article:tag" content="动态规划">
 <meta property="article:tag" content="后缀数组">
@@ -212,7 +212,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-08-18 00:25:45" itemprop="dateModified" datetime="2021-08-18T00:25:45+08:00">2021-08-18</time>
+        <time title="修改时间：2021-09-08 21:08:49" itemprop="dateModified" datetime="2021-09-08T21:08:49+08:00">2021-09-08</time>
       </span>
 
   
@@ -272,13 +272,13 @@
 <li>$n\leq 17$。</li>
 </ul>
 <h3 id="题解-6"><a href="#题解-6" class="headerlink" title="题解"></a>题解</h3><p>我们枚举和 $1$ 号点所在的连通块 $Mask$，并计算包含 $Mask$ 的连通块的个数。令 $cnt[Mask]$ 表示两个顶点均在 $Mask$ 中的边的数量。那么对于剩下的 $m-Mask$ 条边，如果其两个顶点均不在 $Mask$ 中，则可选可不选，如果一个顶点在 $Mask$ 中另一个不在 $Mask$ 中，则不能选，否则连通块就不是 $Mask$ 了。对于 $Mask$ 的导出子图，我们设法计算其连通生成子图的个数。</p>
-<p>令 $dp[Mask]$​ 表示 $Mask$​ 的导出子图的连通生成子图的个数，考虑问题的反面，用所有生成子图的个数减去不连通的生成子图的个数。欲计算不连通的生成子图的个数，我们枚举 $1$​ 号点所在的连通块 $Mask’$​ ，$Mask’\subset Mask$​。考虑 $Mask’$​ 的导出子图以外的边，和 $Mask’$​ 有关的边不能选，和 $Mask’$​ 无关的边可选可不选，因此可以得出状态转移方程：<br>$$<br>dp[Mask]=\sum_{Mask’\subset Mask}dp[Mask’]*2^{cnt[Mask-Mask’]}<br>$$<br>总时间复杂度 $O(3^n+2^nm)$。</p>
+<p>令 $dp[Mask]$​ 表示 $Mask$​ 的导出子图的连通生成子图的个数，考虑问题的反面，用所有生成子图的个数减去不连通的生成子图的个数。欲计算不连通的生成子图的个数，我们枚举 $1$​ 号点所在的连通块 $Mask’$​ ，$Mask’\subset Mask$​。考虑 $Mask’$​ 的导出子图以外的边，和 $Mask’$​ 有关的边不能选，和 $Mask’$​ 无关的边可选可不选，因此可以得出状态转移方程：<br>$$<br>dp[Mask]=\sum_{Mask’\subset Mask}dp[Mask’]*2^{cnt[Mask-Mask’]}<br>$$ 总时间复杂度 $O(3^n+2^nm)$。</p>
 <h2 id="H-Stroll"><a href="#H-Stroll" class="headerlink" title="H. Stroll"></a>H. Stroll</h2><h3 id="题面描述-7"><a href="#题面描述-7" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
 <li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc213/tasks/abc213_h">传送门</a></li>
 <li>给定一个 $n$ 个点的图，有 $m$ 种边，第 $i$ 种边连接 $a_i$ 和 $b_i$ ，且长度为 $j$ 的边有 $p_{i,j}$ 条。求从 $1$ 号点回到 $1$ 号点且总长度为 $T$ 的路径个数。（路径中途可以任意重复经过点和边）</li>
 <li>$n\leq 10,m\leq min(10,\frac{n(n-1)}{2})，T\leq 4\times 10^4$。</li>
 </ul>
-<h3 id="题解-7"><a href="#题解-7" class="headerlink" title="题解"></a>题解</h3><p>令 $dp[u][i]$​​​​ 表示从 $1$​​​​ 号点出发，当前在 $u$​​​​ 号点，总长度为 $i$​​​​ 的路径的条数。显然有转移方程：<br>$$<br>dp[u][i]=\sum_{(a_j,b_j)\in E,a_j/b_j=u}\sum_{t=1}^idp[v][t]*p_{j,i-t}<br>$$<br>注意到该dp是卷积形式，可以用分治 NTT 优化，总时间复杂度 $O(mTlog^2T)$。</p>
+<h3 id="题解-7"><a href="#题解-7" class="headerlink" title="题解"></a>题解</h3><p>令 $dp[u][i]$​​​​ 表示从 $1$​​​​ 号点出发，当前在 $u$​​​​ 号点，总长度为 $i$​​​​ 的路径的条数。显然有转移方程：<br>$$<br>dp[u][i]=\sum_{(a_j,b_j)\in E,a_j/b_j=u}\sum_{t=1}^idp[v][t]*p_{j,i-t}<br>$$注意到该dp是卷积形式，可以用分治 NTT 优化，总时间复杂度 $O(mTlog^2T)$。</p>
 
     </div>
 
