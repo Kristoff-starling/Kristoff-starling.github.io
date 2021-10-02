@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="A. Find Multiple题面描述 传送门 给定 $A,B,C$，在 $[A,B]$ 中寻找 $C$ 的倍数。 $1\leq A,B,C\leq 1000$。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AtCoder Beginner Contest 220 题解">
+<meta property="og:url" content="http://example.com/2021/10/02/AtCoder%20Beginner%20Contest%20220%20%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="starling的算法小屋">
+<meta property="og:description" content="A. Find Multiple题面描述 传送门 给定 $A,B,C$，在 $[A,B]$ 中寻找 $C$ 的倍数。 $1\leq A,B,C\leq 1000$。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-02T04:22:00.499Z">
+<meta property="article:author" content="starling">
+<meta property="article:tag" content="动态规划">
+<meta property="article:tag" content="计算几何">
+<meta property="article:tag" content="FWT">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/10/02/AtCoder%20Beginner%20Contest%20220%20%E9%A2%98%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2021/10/02/AtCoder%20Beginner%20Contest%20220%20%E9%A2%98%E8%A7%A3/","path":"2021/10/02/AtCoder Beginner Contest 220 题解/","title":"AtCoder Beginner Contest 220 题解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AtCoder Beginner Contest 220 题解 | starling的算法小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的算法小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Find-Multiple"><span class="nav-number">1.</span> <span class="nav-text">A. Find Multiple</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">1.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Base-K"><span class="nav-number">2.</span> <span class="nav-text">B. Base K</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">2.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-Long-Sequence"><span class="nav-number">3.</span> <span class="nav-text">C. Long Sequence</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-2"><span class="nav-number">3.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#D-FG-Operation"><span class="nav-number">4.</span> <span class="nav-text">D. FG Operation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-3"><span class="nav-number">4.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-number">4.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-Distance-on-Large-Perfect-Binary-Tree"><span class="nav-number">5.</span> <span class="nav-text">E. Distance on Large Perfect Binary Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-4"><span class="nav-number">5.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-4"><span class="nav-number">5.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#F-Distance-Sums-2"><span class="nav-number">6.</span> <span class="nav-text">F. Distance Sums 2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-5"><span class="nav-number">6.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-5"><span class="nav-number">6.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#G-Isosceles-Trapezium"><span class="nav-number">7.</span> <span class="nav-text">G. Isosceles Trapezium</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-6"><span class="nav-number">7.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-6"><span class="nav-number">7.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#H-Security-Camera"><span class="nav-number">8.</span> <span class="nav-text">H. Security Camera</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-7"><span class="nav-number">8.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-7"><span class="nav-number">8.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/02/AtCoder%20Beginner%20Contest%20220%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的算法小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AtCoder Beginner Contest 220 题解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-10-02 00:00:00 / 修改时间：12:22:00" itemprop="dateCreated datePublished" datetime="2021-10-02T00:00:00+08:00">2021-10-02</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="A-Find-Multiple"><a href="#A-Find-Multiple" class="headerlink" title="A. Find Multiple"></a>A. Find Multiple</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc220/tasks/abc220_a">传送门</a></li>
+<li>给定 $A,B,C$，在 $[A,B]$ 中寻找 $C$ 的倍数。</li>
+<li>$1\leq A,B,C\leq 1000$。</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>从书写代码简便的角度而言，直接枚举 $[A,B]$ 之间的所有数即可。当然也可以数学计算。</p>
+<h2 id="B-Base-K"><a href="#B-Base-K" class="headerlink" title="B. Base K"></a>B. Base K</h2><h3 id="题面描述-1"><a href="#题面描述-1" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc220/tasks/abc220_b">传送门</a></li>
+<li>给定 $K$ 进制下的整数 $A,B$，求 $A\times B$ 在 10 进制下的结果。</li>
+<li>$1\leq A,B\leq 10^5,2\leq K\leq 10$。</li>
+</ul>
+<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>将 $A,B$ 转换成十进制后相乘即可。转换进制可以使用逐位按权展开。</p>
+<h2 id="C-Long-Sequence"><a href="#C-Long-Sequence" class="headerlink" title="C. Long Sequence"></a>C. Long Sequence</h2><h3 id="题面描述-2"><a href="#题面描述-2" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc220/tasks/abc220_c">传送门</a></li>
+<li>给定长度为 $N$ 的序列 $A$，$B$ 是 $A$ 的无限复制版本，即将无数个 $A$ 接在一起。问从 $B$ 的第多少个数开始有前缀和大于给定的 $X$。</li>
+<li>$1\leq N\leq 10^5,1\leq X\leq 10^{18},1\leq A_i\leq 10^9$。</li>
+</ul>
+<h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><p>计算出一整个 $A$ 的和，然后用 $X$ 除以该和可以定位到溢出点在第几段中，再枚举溢出点即可。总时间复杂度 $O(N)$。</p>
+<h2 id="D-FG-Operation"><a href="#D-FG-Operation" class="headerlink" title="D. FG Operation"></a>D. FG Operation</h2><h3 id="题面描述-3"><a href="#题面描述-3" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc220/tasks/abc220_d">传送门</a></li>
+<li>给定长度为 $N$ 的序列 $A$，有两种操作：删去最左边的两个数，并在左边插入它们的和 mod 10；删去最左边的两个数，并在左边插入它们的积 mod 10。求对于每个 $0\leq k\leq 9$ ，最后剩下的数是 $k$ 的方案数。</li>
+<li>$N\leq 10^5,0\leq A_i\leq 9$。</li>
+</ul>
+<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><p>考虑动态规划。令 $dp[i][j]$ 表示当前考虑到第 $i$ 位，最左边的数字是 $j$ 的方案数。转移考虑下一次操作是乘还是加即可。总时间复杂度 $O(N)$。</p>
+<h2 id="E-Distance-on-Large-Perfect-Binary-Tree"><a href="#E-Distance-on-Large-Perfect-Binary-Tree" class="headerlink" title="E. Distance on Large Perfect Binary Tree"></a>E. Distance on Large Perfect Binary Tree</h2><h3 id="题面描述-4"><a href="#题面描述-4" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc220/tasks/abc220_e">传送门</a></li>
+<li>给定一个有 $2^n-1$ 个节点的满二叉树，再给定整数 $D$ ，问二叉树上有多少对节点之间的距离为 $D$。</li>
+<li>$n\leq 10^6,D\leq 2\times 10^6$。</li>
+</ul>
+<h3 id="题解-4"><a href="#题解-4" class="headerlink" title="题解"></a>题解</h3><p>考虑动态规划。令 $dp[i]$ 表示有 $2^i-1$ 个节点的满二叉树中，lca 为根节点且距离为 $D$ 的节点的对数。计算 $dp[i]$ 只需在 $dp[i-1]$ 的基础上考虑那些至少有一个节点是叶子的点对即可。计算完 dp 后枚举二叉树上的每个节点，计算经过它的点对个数。总时间复杂度 $O(n)$。</p>
+<h2 id="F-Distance-Sums-2"><a href="#F-Distance-Sums-2" class="headerlink" title="F. Distance Sums 2"></a>F. Distance Sums 2</h2><h3 id="题面描述-5"><a href="#题面描述-5" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc220/tasks/abc220_f">传送门</a></li>
+<li>给定一棵 $n$ 个节点的树，标号 $1,2,…,n$ 。对于每个节点 $i$，求 $\sum_{j=1}^nd(i,j)$。</li>
+<li>$n\leq 2\times 10^5$。</li>
+</ul>
+<h3 id="题解-5"><a href="#题解-5" class="headerlink" title="题解"></a>题解</h3><p>对于每个节点 $u$，考虑树上的每条边会被所有的最短路径经过多少次。容易发现所有在从 $u$ 到根的路径上的边会被经过 $n-size$ 次，其中 $size$ 指该边下面的子树的大小，而其他边会被经过 $size$ 次。因此我们只要先随便挑选一个节点作为根进行一次搜索，预处理每个子树的 size，再从根做一次搜索，搜索的同时修改从当前节点到根的边上的贡献并统计答案即可。</p>
+<p>总时间复杂度 $O(n)$。</p>
+<h2 id="G-Isosceles-Trapezium"><a href="#G-Isosceles-Trapezium" class="headerlink" title="G. Isosceles Trapezium"></a>G. Isosceles Trapezium</h2><h3 id="题面描述-6"><a href="#题面描述-6" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc220/tasks/abc220_g">传送门</a></li>
+<li>给定平面上的 $n$ 个点，每个点有一个权值 $w$ 。现要求挑出其中的 4 个点，使其可以围成一个等腰梯形且四个顶点的权值之和最大。</li>
+<li>$n\leq 1000$。</li>
+</ul>
+<h3 id="题解-6"><a href="#题解-6" class="headerlink" title="题解"></a>题解</h3><p>一个等腰梯形会具有以下关键性质：</p>
+<ul>
+<li>上下两条边的垂直平分线重合</li>
+<li>上下两条边的中点不重合</li>
+</ul>
+<p>因此我们枚举图上的所有线段，维护线段的垂直平分线、中点和权值（两个顶点的权值和）。将垂直平分线相同的线段划成一组，在一组中寻找中点不同且权值最大的两条线段更新答案即可。</p>
+<p>此题有一些计算几何上的处理细节。笔者采用了分数类维护线段的斜率，但事实上使用 $Ax+By+C=0$ 的形式更加好。</p>
+<h2 id="H-Security-Camera"><a href="#H-Security-Camera" class="headerlink" title="H. Security Camera"></a>H. Security Camera</h2><h3 id="题面描述-7"><a href="#题面描述-7" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc220/tasks/abc220_h">传送门</a></li>
+<li>给定一个 $n$ 个点 $m$ 条边的图，每个点可以选或不选。问在所有的 $2^n$ 中选择点的方案中，有多少种方案可以监控到偶数条边，其中一条边被监控到当且仅当它的至少一个端点被选中。</li>
+<li>$n\leq 40$。</li>
+</ul>
+<h3 id="题解-7"><a href="#题解-7" class="headerlink" title="题解"></a>题解</h3><p>对于一个点集能监控多少条边，一个自然的想法是累加所有点的度数，但还要扣除那些被重复计算的边，即两个端点都在点集中的边。</p>
+<p>该数据范围容易让人想到折半搜索，我们将前 $\frac{n}{2}$ 个点分为第一组，剩下的分为第二组。令 $dp_1[Mask]$ 表示在第一组中选择了点集 $Mask$ 的情况下，所有点的度数之和（包括连向另外一组的度数）减去被重复计算的边，是奇数还是偶数。利用一些位运算技巧，该 dp 可以在 $O(2^n\cdot n)$ 的时间复杂度内完成。对于 $dp_2[Mask]$ 原理类似。但稍稍修改定义：令 $dp_2[0/1][Mask]$ 表示在第二组中选择 $Mask$，结果是奇数/偶数，有没有可能。</p>
+<p>接下来考虑两个组的合并。令 $c[0/1][Mask]$ 表示第一组的点集在第二组中的映射为 $Mask$，且第一组中 dp 结果是奇数/偶数的方案数。其中第一组在第二组中的映射指的是第一组点集中所有点在第二组中的相邻点 Mask 全部异或的结果。这样如果在第二组中选中了 $Mask$ 中的节点，则说明第一组中有奇数个点连向了该点，在扣除两个组之间重复计算的边的时候在此处需要减去一个奇数，即会改变奇偶性。</p>
+<p>令<br>$$<br>A[t][0]=\sum_{Mask\&amp; Mask’=t}\left(c[0][Mask]\cdot dp_2[0][Mask’]+c[1][Mask]\cdot dp_2[1][Mask’]\right)<br>$$</p>
+<p>$$<br>A[t][1]=\sum_{Mask\&amp; Mask’=t}\left(c[0][Mask]\cdot dp_2[1][Mask’]+c[1][Mask]\cdot dp_2[0][Mask’]\right)<br>$$则最后只需要根据 $t$ 中 1 的个数与第二维的 0/1 来计算偶数的答案。$A$ 数组可以利用 FWT 优化。</p>
+<p>总时间复杂度 $O(2^n\cdot n)$。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag"># 动态规划</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E5%87%A0%E4%BD%95/" rel="tag"># 计算几何</a>
+              <a href="/tags/FWT/" rel="tag"># FWT</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/09/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2001%20%E9%A2%98%E8%A7%A3/" rel="prev" title="问题求解 III - 01 题解">
+                  <i class="fa fa-chevron-left"></i> 问题求解 III - 01 题解
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
