@@ -28,7 +28,7 @@
 <meta property="og:description" content="A. 最大内切球题面描述 给定 $n$ 个半平面，求半平面围出的三维凸包的最大内切球的半径。 $\sum n\leq 2500$。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-18T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-19T11:49:23.890Z">
+<meta property="article:modified_time" content="2021-10-19T12:47:39.966Z">
 <meta property="article:author" content="starling">
 <meta property="article:tag" content="动态规划">
 <meta property="article:tag" content="问题求解">
@@ -206,7 +206,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-10-19 00:00:00 / 修改时间：19:49:23" itemprop="dateCreated datePublished" datetime="2021-10-19T00:00:00+08:00">2021-10-19</time>
+      <time title="创建时间：2021-10-19 00:00:00 / 修改时间：20:47:39" itemprop="dateCreated datePublished" datetime="2021-10-19T00:00:00+08:00">2021-10-19</time>
     </span>
 
   
@@ -225,8 +225,7 @@
 </ul>
 <span id="more"></span>
 
-<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>难以将内切球的半径写成一个线性表达式，因此考虑二分答案，从而转变为检查是否存在符合条件的球心。</p>
-<p>假设当前二分的答案为 $r$，则我们的约束是球心到每个平面的距离不小于 $r$。此处根据空间解析几何的知识，如果一个半平面形如 $ax+by+cz+d\leq 0$，那么将其单位化之后（即令 $cos\alpha=\frac{a}{\sqrt{a^2+b^2+c^2}},cos\beta=\frac{b}{\sqrt{a^2+b^2+c^2}},$$cos\gamma=\frac{c}{\sqrt{a^2+b^2+c^2}}$，将方程改写为 $cos\alpha\cdot x+cos\beta\cdot y+cos\gamma\cdot z+\rho=0$的形式），直接将点的坐标代入即可得到点到平面的距离，因此每个约束都是一个线性不等式，用单纯形判断是否有解即可。</p>
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>设球的半径为 $r$，则我们的约束是球心到每个平面的距离不小于 $r$。此处根据空间解析几何的知识，如果一个半平面形如 $ax+by+cz+d\leq 0$，那么将其单位化之后（即令 $cos\alpha=\frac{a}{\sqrt{a^2+b^2+c^2}},cos\beta=\frac{b}{\sqrt{a^2+b^2+c^2}},$$cos\gamma=\frac{c}{\sqrt{a^2+b^2+c^2}}$，将方程改写为 $cos\alpha\cdot x+cos\beta\cdot y+cos\gamma\cdot z+\rho=0$的形式），直接将点的坐标代入即可得到点到平面的距离，因此每个约束都是一个线性不等式，共有 4 个变量，我们要最大化的式子就是 $r$，用单纯形求解即可。</p>
 <h2 id="B-文理分科"><a href="#B-文理分科" class="headerlink" title="B. 文理分科"></a>B. 文理分科</h2><h3 id="题面描述-1"><a href="#题面描述-1" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
 <li>给定排成矩阵的 $n\times m$ 个学生，每个学生学文有 $a_{ij}$ 的收益，学理有 $b_{ij}$ 的收益。如果一个学生和他相邻的所有学生都学文/理，可以额外获得 $sa_{ij}/sb_{ij}$ 的收益。求最大收益。</li>
 <li>$n,m\leq 100$。</li>
