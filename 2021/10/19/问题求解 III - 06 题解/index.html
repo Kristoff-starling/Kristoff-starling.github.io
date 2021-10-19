@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="A. 最大内切球题面描述 给定 $n$ 个半平面，求半平面围出的三维凸包的最大内切球的半径。 $\sum n\leq 2500$。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="问题求解 III - 06 题解">
+<meta property="og:url" content="http://example.com/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2006%20%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="starling的算法小屋">
+<meta property="og:description" content="A. 最大内切球题面描述 给定 $n$ 个半平面，求半平面围出的三维凸包的最大内切球的半径。 $\sum n\leq 2500$。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-19T11:49:23.890Z">
+<meta property="article:author" content="starling">
+<meta property="article:tag" content="动态规划">
+<meta property="article:tag" content="问题求解">
+<meta property="article:tag" content="矩阵乘法">
+<meta property="article:tag" content="最大流">
+<meta property="article:tag" content="线性规划">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2006%20%E9%A2%98%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2006%20%E9%A2%98%E8%A7%A3/","path":"2021/10/19/问题求解 III - 06 题解/","title":"问题求解 III - 06 题解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>问题求解 III - 06 题解 | starling的算法小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的算法小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-%E6%9C%80%E5%A4%A7%E5%86%85%E5%88%87%E7%90%83"><span class="nav-number">1.</span> <span class="nav-text">A. 最大内切球</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">1.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-%E6%96%87%E7%90%86%E5%88%86%E7%A7%91"><span class="nav-number">2.</span> <span class="nav-text">B. 文理分科</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">2.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-Did-You-Just-Say-%E2%80%A6%E2%80%A6-Acesrc"><span class="nav-number">3.</span> <span class="nav-text">C. Did You Just Say …… Acesrc?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-2"><span class="nav-number">3.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">3.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2006%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的算法小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          问题求解 III - 06 题解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-10-19 00:00:00 / 修改时间：19:49:23" itemprop="dateCreated datePublished" datetime="2021-10-19T00:00:00+08:00">2021-10-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="A-最大内切球"><a href="#A-最大内切球" class="headerlink" title="A. 最大内切球"></a>A. 最大内切球</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li>给定 $n$ 个半平面，求半平面围出的三维凸包的最大内切球的半径。</li>
+<li>$\sum n\leq 2500$。</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>难以将内切球的半径写成一个线性表达式，因此考虑二分答案，从而转变为检查是否存在符合条件的球心。</p>
+<p>假设当前二分的答案为 $r$，则我们的约束是球心到每个平面的距离不小于 $r$。此处根据空间解析几何的知识，如果一个半平面形如 $ax+by+cz+d\leq 0$，那么将其单位化之后（即令 $cos\alpha=\frac{a}{\sqrt{a^2+b^2+c^2}},cos\beta=\frac{b}{\sqrt{a^2+b^2+c^2}},$$cos\gamma=\frac{c}{\sqrt{a^2+b^2+c^2}}$，将方程改写为 $cos\alpha\cdot x+cos\beta\cdot y+cos\gamma\cdot z+\rho=0$的形式），直接将点的坐标代入即可得到点到平面的距离，因此每个约束都是一个线性不等式，用单纯形判断是否有解即可。</p>
+<h2 id="B-文理分科"><a href="#B-文理分科" class="headerlink" title="B. 文理分科"></a>B. 文理分科</h2><h3 id="题面描述-1"><a href="#题面描述-1" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li>给定排成矩阵的 $n\times m$ 个学生，每个学生学文有 $a_{ij}$ 的收益，学理有 $b_{ij}$ 的收益。如果一个学生和他相邻的所有学生都学文/理，可以额外获得 $sa_{ij}/sb_{ij}$ 的收益。求最大收益。</li>
+<li>$n,m\leq 100$。</li>
+</ul>
+<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>考虑最小割，我们先假设所有人拿满了学文学理的收益和区域相同的收益，考虑最少需要扣除多少收益。</p>
+<ul>
+<li><p>建立超级源点 $S$ 和超级汇点 $T$。</p>
+</li>
+<li><p>对于每个学生，从 $S$ 向他连容量为 $a_{ij}$ 的边，表示如果割去，他去学理，则会损失该部分收益。相似地，从他向 $T$ 连容量为 $b_{ij}$ 的边。</p>
+</li>
+<li><p>对于每个学生和其相邻人同时学文的情况，我们需要扣除该部分收益当且仅当这些人中至少有一个学理。因此我们从 $S$ 向该学生的一个“副本点”连容量为 $sa_{ij}$ 的边，再从该副本点向该学生及其相邻人连容量为 $\infty$ 的边。这样这些人中一旦有一个人学理，就不得不割去容量为 $sa_{ij}$ 的边。$sb$ 的处理方法类似。</p>
+</li>
+</ul>
+<h2 id="C-Did-You-Just-Say-……-Acesrc"><a href="#C-Did-You-Just-Say-……-Acesrc" class="headerlink" title="C. Did You Just Say …… Acesrc?"></a>C. Did You Just Say …… Acesrc?</h2><h3 id="题面描述-2"><a href="#题面描述-2" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li>给定一个 $2\times n$ 的“梯子”图，求该图有多少个连通的子图。</li>
+<li>$n\leq 10^{18}$。</li>
+</ul>
+<h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><p>考虑动态规划。如果从左向右考虑，我们发现一个性质：到第 $i$ 列时，之前的点要么是连通的，要么分属两个连通块，且第 $i$ 列的两个点不连通。令 $f(i)$ 表示当前考虑到第 $i$ 列，只有一个连通块的方案数，$g(i)$ 表示当前考虑到第 $i$ 列，有两个连通块的方案数。稍微考虑以下第 $i$ 个“梯子格子”中的三条边，转移是容易的：<br>$$<br>\begin{align}<br>f(i)=4f(i-1)+g(i-1)\\<br>g(i)=2f(i-1)+g(i-1)<br>\end{align}<br>$$注意到该动态规划是线性递推，因此可以将 $f$ 和 $g$ 写成一个列向量，用矩阵表示转移，从而用矩阵快速幂优化转移。总时间复杂度 $O(logn)$。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92/" rel="tag"># 动态规划</a>
+              <a href="/tags/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3/" rel="tag"># 问题求解</a>
+              <a href="/tags/%E7%9F%A9%E9%98%B5%E4%B9%98%E6%B3%95/" rel="tag"># 矩阵乘法</a>
+              <a href="/tags/%E6%9C%80%E5%A4%A7%E6%B5%81/" rel="tag"># 最大流</a>
+              <a href="/tags/%E7%BA%BF%E6%80%A7%E8%A7%84%E5%88%92/" rel="tag"># 线性规划</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/10/08/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2004%20%E9%A2%98%E8%A7%A3/" rel="prev" title="问题求解 III - 04 题解">
+                  <i class="fa fa-chevron-left"></i> 问题求解 III - 04 题解
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2005%20%E9%A2%98%E8%A7%A3/" rel="next" title="问题求解 III - 05 题解">
+                  问题求解 III - 05 题解 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
