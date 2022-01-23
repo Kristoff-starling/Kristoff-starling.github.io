@@ -22,23 +22,31 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-<meta property="og:type" content="website">
-<meta property="og:title" content="starling的小屋">
-<meta property="og:url" content="https://kristoff-starling.github.io/index.html">
+<meta name="description" content="Database: collection of data that relates to gather and tries to model some aspect of the world. Flat FilesStrawmanwe store our database as comma-separated value (CSV) files that we manage in our own">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CMU 15-445 Lecture 01: Relational Model and Relational Algebra">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/01/23/CMU-15445%20Lecture%2001%20-%20Relational%20Model%20and%20Relational%20Algebra/index.html">
 <meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Database: collection of data that relates to gather and tries to model some aspect of the world. Flat FilesStrawmanwe store our database as comma-separated value (CSV) files that we manage in our own">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kristoff-starling.github.io/files/CMU-15445-01-01.png">
+<meta property="og:image" content="https://kristoff-starling.github.io/files/CMU-15445-01-02.png">
+<meta property="og:image" content="https://kristoff-starling.github.io/files/CMU-15445-01-03.png">
+<meta property="article:published_time" content="2022-01-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-01-23T07:03:37.580Z">
 <meta property="article:author" content="starling">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kristoff-starling.github.io/files/CMU-15445-01-01.png">
 
 
-<link rel="canonical" href="https://kristoff-starling.github.io/">
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/01/23/CMU-15445%20Lecture%2001%20-%20Relational%20Model%20and%20Relational%20Algebra/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/01/23/CMU-15445%20Lecture%2001%20-%20Relational%20Model%20and%20Relational%20Algebra/","path":"2022/01/23/CMU-15445 Lecture 01 - Relational Model and Relational Algebra/","title":"CMU 15-445 Lecture 01: Relational Model and Relational Algebra"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>starling的小屋</title>
+<title>CMU 15-445 Lecture 01: Relational Model and Relational Algebra | starling的小屋</title>
   
 
 
@@ -102,7 +110,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -115,6 +123,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Flat-Files"><span class="nav-number">1.</span> <span class="nav-text">Flat Files</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Strawman"><span class="nav-number">1.1.</span> <span class="nav-text">Strawman</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Drawback-Data-Integrity"><span class="nav-number">1.2.</span> <span class="nav-text">Drawback: Data Integrity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Drawback-Implementation"><span class="nav-number">1.3.</span> <span class="nav-text">Drawback: Implementation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Drawback-Durability"><span class="nav-number">1.4.</span> <span class="nav-text">Drawback: Durability</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Database-Management-System"><span class="nav-number">2.</span> <span class="nav-text">Database Management System</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Relational-Model"><span class="nav-number">3.</span> <span class="nav-text">Relational Model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Concepts"><span class="nav-number">3.1.</span> <span class="nav-text">Concepts</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-Manipulation-Languages-DML"><span class="nav-number">3.2.</span> <span class="nav-text">Data Manipulation Languages (DML)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Relational-Algebra"><span class="nav-number">4.</span> <span class="nav-text">Relational Algebra</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic-Operators"><span class="nav-number">4.1.</span> <span class="nav-text">Basic Operators</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Select"><span class="nav-number">4.1.1.</span> <span class="nav-text">Select</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Projection"><span class="nav-number">4.1.2.</span> <span class="nav-text">Projection</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Union"><span class="nav-number">4.1.3.</span> <span class="nav-text">Union</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Intersection"><span class="nav-number">4.1.4.</span> <span class="nav-text">Intersection</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Difference"><span class="nav-number">4.1.5.</span> <span class="nav-text">Difference</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Product"><span class="nav-number">4.1.6.</span> <span class="nav-text">Product</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Join"><span class="nav-number">4.1.7.</span> <span class="nav-text">Join</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Observation"><span class="nav-number">4.2.</span> <span class="nav-text">Observation</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -163,16 +172,17 @@
 </noscript>
 
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/01/23/CMU-15445%20Lecture%2001%20-%20Relational%20Model%20and%20Relational%20Algebra/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -185,9 +195,9 @@
       <meta itemprop="name" content="starling的小屋">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/01/23/CMU-15445%20Lecture%2001%20-%20Relational%20Model%20and%20Relational%20Algebra/" class="post-title-link" itemprop="url">CMU 15-445 Lecture 01: Relational Model and Relational Algebra</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          CMU 15-445 Lecture 01: Relational Model and Relational Algebra
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -211,7 +221,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>Database: collection of data that relates to gather and tries to model some aspect of the world.</p>
+        <p>Database: collection of data that relates to gather and tries to model some aspect of the world.</p>
 <h2 id="Flat-Files"><a href="#Flat-Files" class="headerlink" title="Flat Files"></a>Flat Files</h2><h3 id="Strawman"><a href="#Strawman" class="headerlink" title="Strawman"></a>Strawman</h3><p>we store our database as comma-separated value (CSV) files that we manage in our own code. </p>
 <ul>
 <li>Use separated files for each entity.</li>
@@ -360,7 +370,6 @@
 
 <p>SQL’s robustness is much stronger. It doesn’t depend on the implementation of database, so if the low-level organization of the database is changed (e.g. using a tree instead of a list to store data), the application layer doesn’t need to change (while the python code becomes completely useless.)</p>
 
-      
     </div>
 
     
@@ -368,296 +377,18 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
 
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/01/17/test/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/01/17/test/" class="post-title-link" itemprop="url">test-pdf</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2022-01-17 00:00:00 / 修改时间：18:39:41" itemprop="dateCreated datePublished" datetime="2022-01-17T00:00:00+08:00">2022-01-17</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <embed src = "https://kristoff-starling.github.io/files/PA-Manual.pdf" width="100%" height=700>
-
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2021/12/11/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2010%20%E9%A2%98%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/12/11/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2010%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">问题求解 III - 10 题解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-12-11 00:00:00 / 修改时间：21:45:43" itemprop="dateCreated datePublished" datetime="2021-12-11T00:00:00+08:00">2021-12-11</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="A-加密"><a href="#A-加密" class="headerlink" title="A. 加密"></a>A. 加密</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
-<li>使用题目中给定的一套类 RSA 算法加密，公钥 $E=2^{30}+3$。已知密文 $w^E\equiv C(mod\space n)$，给定 $n,C$，求原文 $w$。</li>
-<li>$T\leq 10^5,n\leq 10^{18}$。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/12/11/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2010%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2021/11/12/Burnside%E5%BC%95%E7%90%86%E5%92%8CPolya%E5%AE%9A%E7%90%86/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/12/Burnside%E5%BC%95%E7%90%86%E5%92%8CPolya%E5%AE%9A%E7%90%86/" class="post-title-link" itemprop="url">Burnside引理和Polya定理</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-11-12 00:00:00 / 修改时间：23:10:59" itemprop="dateCreated datePublished" datetime="2021-11-12T00:00:00+08:00">2021-11-12</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="Burnside引理"><a href="#Burnside引理" class="headerlink" title="Burnside引理"></a>Burnside引理</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>设 $A$ 和 $B$ 为有限集，$X$ 是一些从 $A$ 到 $B$ 的映射的集合。$G$ 是 $A$ 上的置换群，且 $X$ 中的映射在 $G$ 的作用下封闭，那么<br>$$<br>|X/G|=\frac{1}{|G|}\sum_{g\in G}|X^g|<br>$$<br>其中 $X/G$ 表示 $X$ 在 $G$ 的作用下所有等价类的集合（对于 $x,y\in X$，若存在 $g\in G$, $g(x)=y$，则 $x,y$ 在同一个等价类中）。$X^g=\{x\in X:g(x)=x\}$。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/11/12/Burnside%E5%BC%95%E7%90%86%E5%92%8CPolya%E5%AE%9A%E7%90%86/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/17/test/" rel="prev" title="test-pdf">
+                  <i class="fa fa-chevron-left"></i> test-pdf
+                </a>
             </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2021/11/02/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2007%20%E9%A2%98%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/11/02/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2007%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">问题求解 III - 07 题解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-11-02 00:00:00 / 修改时间：20:14:43" itemprop="dateCreated datePublished" datetime="2021-11-02T00:00:00+08:00">2021-11-02</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="A-多项式乘法模板"><a href="#A-多项式乘法模板" class="headerlink" title="A. 多项式乘法模板"></a>A. 多项式乘法模板</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
-<li>给定一个 $n$ 次多项式 $A$ 和一个 $m$ 次多项式 $B$，求乘积。</li>
-<li>$1\leq n,m\leq 10^5$。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/11/02/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2007%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
+            <div class="post-nav-item">
             </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          </div>
     </footer>
   </article>
 </div>
@@ -665,401 +396,7 @@
 
 
 
-    
 
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2005%20%E9%A2%98%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2005%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">问题求解 III - 05 题解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-10-19 00:00:00 / 修改时间：09:11:21" itemprop="dateCreated datePublished" datetime="2021-10-19T00:00:00+08:00">2021-10-19</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="A-常系数线性递推"><a href="#A-常系数线性递推" class="headerlink" title="A. 常系数线性递推"></a>A. 常系数线性递推</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
-<li>给定递推式 $a_n=x_0+\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。</li>
-<li>$k\leq 60,p\leq 2\times 10^9$。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2005%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2006%20%E9%A2%98%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2006%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">问题求解 III - 06 题解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2021-10-19 00:00:00" itemprop="dateCreated datePublished" datetime="2021-10-19T00:00:00+08:00">2021-10-19</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2021-11-02 20:13:13" itemprop="dateModified" datetime="2021-11-02T20:13:13+08:00">2021-11-02</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="A-最大内切球"><a href="#A-最大内切球" class="headerlink" title="A. 最大内切球"></a>A. 最大内切球</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
-<li>给定 $n$ 个半平面，求半平面围出的三维凸包的最大内切球的半径。</li>
-<li>$\sum n\leq 2500$。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/10/19/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2006%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2021/10/08/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2004%20%E9%A2%98%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/10/08/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2004%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">问题求解 III - 04 题解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-10-08 00:00:00 / 修改时间：09:39:39" itemprop="dateCreated datePublished" datetime="2021-10-08T00:00:00+08:00">2021-10-08</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="A-Acesrc’s-Bizarre-Adventure"><a href="#A-Acesrc’s-Bizarre-Adventure" class="headerlink" title="A. Acesrc’s Bizarre Adventure"></a>A. Acesrc’s Bizarre Adventure</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
-<li>给定 $n$ 个红色的点和 $n$ 个蓝色的点，每个点有坐标 $(x,y)$。如果一个蓝色的点满足两个坐标都是某个红色点坐标的两倍以上，则该蓝点和红点可以配对。问最多能配成多少对。</li>
-<li>$n\leq 100$。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/10/08/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2004%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2021/10/07/%E5%87%A0%E7%A7%8D%E6%9C%80%E5%A4%A7%E6%B5%81%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%9A%E4%BF%97%E8%A7%A3%E9%87%8A/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/10/07/%E5%87%A0%E7%A7%8D%E6%9C%80%E5%A4%A7%E6%B5%81%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%9A%E4%BF%97%E8%A7%A3%E9%87%8A/" class="post-title-link" itemprop="url">几种求解最大流算法的通俗解释</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-10-07 00:00:00 / 修改时间：19:04:00" itemprop="dateCreated datePublished" datetime="2021-10-07T00:00:00+08:00">2021-10-07</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>流：一个函数 $f: V\times V\rightarrow \mathbb{R}$，满足</p>
-<ul>
-<li>$0\leq f(u,v)\leq c(u,v)$</li>
-<li>对于任意 $u\in V-{s,t}$，有流量守恒：$\sum_{v\in V} f(u,v)=\sum_{v\in V}f(v,u)$</li>
-</ul>
-<p>一个流 $f$ 的流量： $\mid f\mid=\sum_{v\in V} f(s,v)-\sum_{v\in V} f(v,s)$</p>
-<p>预流：一个函数 $f:V\times V \rightarrow \mathbb{R}$，满足</p>
-<ul>
-<li>$0\leq f(u,v)\leq c(u,v)$</li>
-<li>对于任意 $u\in V-{s,t}$，有 $\sum_{v\in V}f(v,u)\geq \sum_{v\in V}f(u,v)$（即进来的比出去的多）</li>
-</ul>
-<p>残余网络：残余网络中引入了反向边的概念，从而使退流成为可能，具体的，$c_f:V\times V\rightarrow \mathbb{R}$ 满足</p>
-<p>$$<br>c_f(u,v)=<br>\begin{cases}<br>c(u,v)-f(u,v), &amp;(u,v)\in E\\<br>f(v,u), &amp;(v,u)\in E\\<br>0，&amp; otherwise<br>\end{cases}<br>$$割：割是图中点集的一个划分：$V=S\cup T$ ，满足 $S\cap T=\emptyset$ 且 $s\in S,t\in T$。</p>
-<p>那么割的容量 $c(S,T)=\sum_{u\in S,v\in T}c(u,v)$。</p>
-<p>一个流 $f$ 在割 $(S,T)$ 上的流量为 $f(S,T)=\sum_{u\in S,v\in T}f(u,v)-\sum_{v\in T,u,in S}f(v,u)$。可以理解对于任意割，$\mid f\mid=f(S,T)$。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/10/07/%E5%87%A0%E7%A7%8D%E6%9C%80%E5%A4%A7%E6%B5%81%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%9A%E4%BF%97%E8%A7%A3%E9%87%8A/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2021/10/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2003%20%E9%A2%98%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/10/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2003%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">问题求解 III - 03 题解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-10-07 00:00:00 / 修改时间：19:10:15" itemprop="dateCreated datePublished" datetime="2021-10-07T00:00:00+08:00">2021-10-07</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="A-拓扑排序"><a href="#A-拓扑排序" class="headerlink" title="A. 拓扑排序"></a>A. 拓扑排序</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
-<li>给定 $n$ 个点 $m$ 条边的有向无环图，求字典序最小的拓扑序。</li>
-<li>$n,m\leq 10^5$。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/10/07/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2003%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
 
 </div>
   </main>
