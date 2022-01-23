@@ -198,7 +198,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-01-23 00:00:00 / 修改时间：15:03:37" itemprop="dateCreated datePublished" datetime="2022-01-23T00:00:00+08:00">2022-01-23</time>
+      <time title="创建时间：2022-01-23 00:00:00 / 修改时间：15:05:15" itemprop="dateCreated datePublished" datetime="2022-01-23T00:00:00+08:00">2022-01-23</time>
     </span>
 
   
@@ -217,149 +217,14 @@
 <li>Use separated files for each entity.</li>
 <li>Application has to parse the files each time they want to read/update records.</li>
 </ul>
-<p>For example: a music database</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Artist.CSV (name, year, country)</span><br><span class="line">&quot;Wu Tang Clan&quot;, 1992, &quot;USA&quot;</span><br><span class="line">&quot;Ice Cube&quot;, 1989, &quot;USA&quot;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">Album.CSV (namme, artist, year)</span><br><span class="line">&quot;Enter the Wu Tang&quot;, &quot;Wu Tang Clan&quot;, 1993</span><br><span class="line">&quot;AmeriKKKa&#x27;s Most Wanted&quot;, &quot;Ice Cube&quot;, 1990</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p>If we want to get the year that “Ice Cube” went solo, we can write the python code:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> Artist.CSV:</span><br><span class="line">	record = parse(line)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;Ice Cube&quot;</span> == record[<span class="number">0</span>]</span><br><span class="line">    	<span class="built_in">print</span> <span class="built_in">int</span>(record[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
-
-<h3 id="Drawback-Data-Integrity"><a href="#Drawback-Data-Integrity" class="headerlink" title="Drawback: Data Integrity"></a>Drawback: Data Integrity</h3><ul>
-<li><p>How do we ensure that the artist is the same for each album entry? e.g. Ice Cube modifies its name, how do we ensure that we modify all the “Ice Cube” in the database?</p>
-</li>
-<li><p>What if somebody the album year with an invalid string?</p>
-<p>  There’s no protection mechanism in our database now, all the files are regular files that anyone has access to.</p>
-</li>
-<li><p>How do we store if there are multiple artists on an album?</p>
-</li>
-<li><p>…</p>
-</li>
-</ul>
-<h3 id="Drawback-Implementation"><a href="#Drawback-Implementation" class="headerlink" title="Drawback: Implementation"></a>Drawback: Implementation</h3><ul>
-<li><p>How do you find a particular record? </p>
-<p>  Linear searching will be too slow if there are huge amounts of entries in the database.</p>
-</li>
-<li><p>What if we now want to create a new application that uses the same database?</p>
-</li>
-<li><p>What if two threads try to write to the same file at the same time?</p>
-</li>
-<li><p>…</p>
-</li>
-</ul>
-<h3 id="Drawback-Durability"><a href="#Drawback-Durability" class="headerlink" title="Drawback: Durability"></a>Drawback: Durability</h3><ul>
-<li>What if the machine crashes while our program is updating a record?</li>
-<li>What if we want to replicate the database on multiple machines for high avalability?</li>
-<li>…</li>
-</ul>
-<h2 id="Database-Management-System"><a href="#Database-Management-System" class="headerlink" title="Database Management System"></a>Database Management System</h2><p>A <strong>DBMS</strong> is a specialized software that allows applications to store and analyze information in a database. A general purpose DBMS is designed to allow the definition, creation, querying, update, and administration of database.</p>
-<h2 id="Relational-Model"><a href="#Relational-Model" class="headerlink" title="Relational Model"></a>Relational Model</h2><p>Background: in 1960s, people rewrote DBMS every time the physical layer was changed.</p>
-<p>3 key points about relational model:</p>
-<ul>
-<li>store database in simple data structures (relation)</li>
-<li>access data through high-level language (e.g. SQL)</li>
-<li>physical storage left up to implementation i.e. the specific implementation of storage(disk, memory etc.) is transparent to the applications, which is good for portability.</li>
-</ul>
-<p>The relational data model defines three concepts:</p>
-<ul>
-<li>Structure: the definition of relations and their contents</li>
-<li>Integrity: ensure that database’s contents satisfy constraints</li>
-<li>Manipulation: how to access and modify a database’s contents</li>
-</ul>
-<h3 id="Concepts"><a href="#Concepts" class="headerlink" title="Concepts"></a>Concepts</h3><p>A <strong>Relation</strong> is an unordered set that contains the relationship of attributes that represent entities. (In the picture, a table is a relation)</p>
-<p>A <strong>tuple</strong> is a set of attribute values (domains) in the relation. (In the picture, a “row” in the table is a tuple with several attribute values (name, year, country etc.) ) Conventionally, attribute values have to be atomic/scalar i.e. arrays, lists… cannot be stored as an attribute value.</p>
-<img src="https://kristoff-starling.github.io/files/CMU-15445-01-01.png" style="zoom:33%;" />
-
-<p>A <strong>primary key</strong> is an attribute that can uniquely identify a single tuple. For example, “year” is not a primary key since it’s not unique in the table; “Wu Tang Clan” is also not a primary key because it’s allowed that in the future an artist with the same name will be created. The id is the primary key. Some DBMSs automatically create an internal primary key if you don’t define one.</p>
-<p>A <strong>foreign key</strong> specifies that an attribute from one relation maps to a tuple in another relation. For example, the <code>album_id</code> attribute 11 in <code>ArtistAlbum</code> table is a foreign key since it maps to “Enter the Wu Tang”.</p>
-<p>(Usually) attribute values should be scalar so we cannot store multiple artists into one album. But by adding an additional relation <code>ArtistAlbum</code> shown above, we can achieve that. In addition, the DBMS can check whether the given <code>artist_id</code> and <code>album_id</code> are valid.</p>
-<h3 id="Data-Manipulation-Languages-DML"><a href="#Data-Manipulation-Languages-DML" class="headerlink" title="Data Manipulation Languages (DML)"></a>Data Manipulation Languages (DML)</h3><p>DML describes how to store and retrieve data from a database. There are mainly two types:</p>
-<ul>
-<li><p>Procedural: the query specifies the (high-level) strategy the DBMS should use to find results.</p>
-<p>  Relational Algebra</p>
-</li>
-<li><p>Non-Procedural: the query specifies only what data is wanted and not how to find it.</p>
-<p>  Relational Calculus</p>
-</li>
-</ul>
-<h2 id="Relational-Algebra"><a href="#Relational-Algebra" class="headerlink" title="Relational Algebra"></a>Relational Algebra</h2><h3 id="Basic-Operators"><a href="#Basic-Operators" class="headerlink" title="Basic Operators"></a>Basic Operators</h3><h4 id="Select"><a href="#Select" class="headerlink" title="Select"></a>Select</h4><ul>
-<li><p>Syntax: $\sigma_{predicate}(R)$</p>
-</li>
-<li><p>Description: choose a subset of the tuples from a relation that satisfies a selection predicate. Here the predicate serves as a filter to retain only tuples that fulfill its qualifying requirement.</p>
-</li>
-<li><p>Example:</p>
-  <img src="https://kristoff-starling.github.io/files/CMU-15445-01-02.png" style="zoom:33%;" />
-
-<p>  In SQL, it’s written as</p>
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> R</span><br><span class="line">	<span class="keyword">WHERE</span> a_id <span class="operator">=</span> <span class="string">&#x27;a2&#x27;</span> <span class="keyword">AND</span> b_id <span class="operator">&gt;</span> <span class="number">102</span>;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="Projection"><a href="#Projection" class="headerlink" title="Projection"></a>Projection</h4><ul>
-<li><p>Syntax: $\Pi_{A_1,A_2,\cdots,A_n}(R)$</p>
-</li>
-<li><p>Description: generate a relation with tuples that contains only the specified attributes. We can rearrange attributes’ ordering and manipulate the values.</p>
-</li>
-<li><p>Example (We can combine operators to achieve abundant functionality):</p>
-  <img src="https://kristoff-starling.github.io/files/CMU-15445-01-03.png" style="zoom:33%;" />
-
-<p>  In SQL, it’s written as</p>
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> b_id <span class="operator">-</span> <span class="number">100</span>, a_id</span><br><span class="line">	<span class="keyword">FROM</span> R <span class="keyword">WHERE</span> a_id <span class="operator">=</span> <span class="string">&#x27;a2&#x27;</span>;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="Union"><a href="#Union" class="headerlink" title="Union"></a>Union</h4><ul>
-<li><p>Syntax: $(R \cup S)$</p>
-</li>
-<li><p>Description: the same as set algebra. Notice that $R$ and $S$ should have the exact same attributes.</p>
-</li>
-<li><p>SQL example:</p>
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> R)</span><br><span class="line">	<span class="keyword">UNION</span> <span class="keyword">ALL</span></span><br><span class="line">(<span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> S);</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="Intersection"><a href="#Intersection" class="headerlink" title="Intersection"></a>Intersection</h4><ul>
-<li><p>Syntax: $(R\cap S)$</p>
-</li>
-<li><p>Description: the same as set algebra. Notice that $R$ and $S$ should have the exact same attributes.</p>
-</li>
-<li><p>SQL example:</p>
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> R)</span><br><span class="line">	<span class="keyword">INTERSECT</span></span><br><span class="line">(<span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> S);</span><br></pre></td></tr></table></figure>
-<h4 id="Difference"><a href="#Difference" class="headerlink" title="Difference"></a>Difference</h4></li>
-<li><p>Syntax: $(R - S)$</p>
-</li>
-<li><p>Description: the same as set algebra. Notice that $R$ and $S$ should have the exact same attributes.</p>
-</li>
-<li><p>SQL example:</p>
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> R)</span><br><span class="line">	<span class="keyword">EXCEPT</span></span><br><span class="line">(<span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> S);</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="Product"><a href="#Product" class="headerlink" title="Product"></a>Product</h4><ul>
-<li><p>Syntax: $(R\times S)$</p>
-</li>
-<li><p>Description: the same as set algebra (Cartesian product)</p>
-</li>
-<li><p>SQL example:</p>
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> R <span class="keyword">CROSS</span> <span class="keyword">JOIN</span> S;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h4 id="Join"><a href="#Join" class="headerlink" title="Join"></a>Join</h4><ul>
-<li><p>Syntax: $(R\Join S)$</p>
-</li>
-<li><p>Description: Join takes in two relations and outputs a relation that contains all the tuples that are a combination of two tuples where for each attribute that the two relations share, the values for that attribute of both tuples is the same.</p>
-<p>  The difference between “Join” and “Intersection” is that, Join doesn’t require that the two relations have the exact same attributes, it only requires that their common attributes should be the same.</p>
-</li>
-<li><p>SQL example:</p>
-  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> R <span class="keyword">NATURAL</span> <span class="keyword">CROSS</span> S;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<h3 id="Observation"><a href="#Observation" class="headerlink" title="Observation"></a>Observation</h3><p>Relational algebra is a kind of procedural language because it defines the high-level steps of how to compute a query. For example:</p>
-<blockquote>
-<p>We want to get all the tuples in relation R and S whose <code>a_id</code> equals 102.</p>
-</blockquote>
-<p>$\sigma_{a_id=102}(R\Join S)$ and $R\Join(\sigma_{a_id=102}(S))$ can both achieve the goal, but their efficiency may vary much. Suppose $R$ and $S$ both have $a$ tuples, but there’s only one tuple in $S$ satisfying $a_id=102$. </p>
-<ul>
-<li>In the first expression, $\Join$ may take $a^2$ complexity, and $\sigma$ finds only one tuple. - $O(a^2)$</li>
-<li>In the second expression, $\sigma$ takes $a$ complexity and finds only one valid tuple, and then $\Join$ also only takes $a$ complexity. - $O(a)$</li>
-</ul>
-<p>If $a$ is huge enough, the second operations is much faster than the first one.</p>
-<p>A better approach is to say the result you want, and let the DBMS decide the steps it wants to compute a query according to the data size. SQL will do exactly this, and it is the de facto standard for writing queries.</p>
-<p>Compare the SQL query with our strawman’s python query:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> Artist.CSV:</span><br><span class="line">	record = parse(line)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">&quot;Ice Cube&quot;</span> == record[<span class="number">0</span>]</span><br><span class="line">    	<span class="built_in">print</span> <span class="built_in">int</span>(record[<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">year</span> <span class="keyword">FROM</span> artists</span><br><span class="line">	<span class="keyword">WHERE</span> name <span class="operator">=</span> &quot;Ice Cube&quot;</span><br></pre></td></tr></table></figure>
-
-<p>SQL’s robustness is much stronger. It doesn’t depend on the implementation of database, so if the low-level organization of the database is changed (e.g. using a tree instead of a list to store data), the application layer doesn’t need to change (while the python code becomes completely useless.)</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/01/23/CMU-15445%20Lecture%2001%20-%20Relational%20Model%20and%20Relational%20Algebra/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
