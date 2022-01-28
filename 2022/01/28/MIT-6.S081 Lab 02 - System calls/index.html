@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Progress  System call tracing (moderate)  Sysinfo (moderate)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT-6.S081 Lab 02: System calls">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2002%20-%20System%20calls/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Progress  System call tracing (moderate)  Sysinfo (moderate)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-01-28T03:09:25.576Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2002%20-%20System%20calls/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2002%20-%20System%20calls/","path":"2022/01/28/MIT-6.S081 Lab 02 - System calls/","title":"MIT-6.S081 Lab 02: System calls"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MIT-6.S081 Lab 02: System calls | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Progress"><span class="nav-number">1.</span> <span class="nav-text">Progress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#System-call-tracing-moderate"><span class="nav-number">2.</span> <span class="nav-text">System call tracing (moderate)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sysinfo-moderate"><span class="nav-number">3.</span> <span class="nav-text">Sysinfo (moderate)</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2002%20-%20System%20calls/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT-6.S081 Lab 02: System calls
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-01-28 00:00:00 / 修改时间：11:09:25" itemprop="dateCreated datePublished" datetime="2022-01-28T00:00:00+08:00">2022-01-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> System call tracing (moderate)</li>
+<li><input checked="" disabled="" type="checkbox"> Sysinfo (moderate)</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="System-call-tracing-moderate"><a href="#System-call-tracing-moderate" class="headerlink" title="System call tracing (moderate)"></a>System call tracing (moderate)</h2><p>该实验可以对 xv6 中系统调用的过程有一个大致的了解。</p>
+<p>在 <code>/user/trace.c</code> 中，程序解析了 <code>trace()</code> 后的所有，将 trace 之后的那一个数字作为 trace 的参数，剩下的作为另外的一条命令调用 <code>exec()</code>。</p>
+<p><code>trace()</code> 函数是用 assembly 写的，由 <code>/user/usys.pl</code> 生成。<code>/user/usys.pl</code> 是一个脚本，内容如下：</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/perl -w</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Generate usys.S, the stubs for syscalls.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">&quot;# generated by usys.pl - do not edit\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">&quot;#include \&quot;kernel/syscall.h\&quot;\n&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">sub</span> <span class="title">entry</span> </span>&#123;</span><br><span class="line">    <span class="keyword">my</span> $name = <span class="keyword">shift</span>;</span><br><span class="line">    <span class="keyword">print</span> <span class="string">&quot;.global $name\n&quot;</span>;</span><br><span class="line">    <span class="keyword">print</span> <span class="string">&quot;<span class="subst">$&#123;name&#125;</span>:\n&quot;</span>;</span><br><span class="line">    <span class="keyword">print</span> <span class="string">&quot; li a7, SYS_<span class="subst">$&#123;name&#125;</span>\n&quot;</span>;</span><br><span class="line">    <span class="keyword">print</span> <span class="string">&quot; ecall\n&quot;</span>;</span><br><span class="line">    <span class="keyword">print</span> <span class="string">&quot; ret\n&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line">	</span><br><span class="line">entry(<span class="string">&quot;fork&quot;</span>);</span><br><span class="line">entry(<span class="string">&quot;exit&quot;</span>);</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>对于每一个系统调用，它会生成一个函数，将系统调用号 SYS_name 放到 <code>a7</code> 寄存器中，然后使用 <code>ecall</code> 陷入内核。根据 calling convention，剩下的系统调用参数放在 <code>a0</code> <code>a1</code> …… 寄存器中，因为和 <code>trace.c</code> 中准备参数的过程相同，所以不需要额外再做一次参数准备。</p>
+<p>硬件提升完特权级后，根据 <code>stvec</code> 寄存器的值进行地址跳转，<code>stvec</code> 内保存的地址是 <code>/kernel/trampoline.S</code> 中的 <code>uservec</code>。<code>uservec</code> 是用 assembly 写的，保存了上下文，并跳转到 <code>/kernel/trap.c</code> 中的函数 <code>usertrap</code>。<code>usertrap</code> 根据 <code>scause</code> 寄存器的值，认定这是一个系统调用，于是转到 <code>/kernel/syscall.c</code> 中的函数 <code>syscall</code>。</p>
+<p><code>syscall</code> 根据 <code>a7</code> 寄存器的值获取系统调用号，并执行相应的系统调用服务程序（所有的服务程序都存在 syscalls[] 数组中）。</p>
+<p>对于 <code>trace()</code> 系统调用来说，我们需要注册一个函数 <code>sys_trace()</code> 。xv6 提供了一系列函数来获取系统调用的参数（本质上是根据 calling convention 提取寄存器的值），<code>argint()</code> 用于获取值，<code>argaddr()</code> 用于获取地址，<code>argstr()</code> 用于获取字符串（本质上是对寄存器的值进行了不同的类型解释）。我们需要在 proc 结构体中新定义一个变量来存储 trace mask，将参数取出放进这个变量即可。</p>
+<p>此外，在 <code>syscall</code> 中，每执行完一个系统调用准备返回时，我们要根据 trace mask 决定是否将其相关的信息打印。我们需要额外准备一个数组存储所有系统调用的名字，进程号可以通过 p-&gt;pid 获得。</p>
+<p>根据讲义的定义，父进程 fork 出的子进程要继承 trace mask，因此需要修改一下 fork 函数的代码，将 p-&gt;tMask 复制给 np-&gt;tMask 即可。</p>
+<h2 id="Sysinfo-moderate"><a href="#Sysinfo-moderate" class="headerlink" title="Sysinfo (moderate)"></a>Sysinfo (moderate)</h2><p>该实验与上一个实验的主要不同在于：</p>
+<ul>
+<li><p><code>sysinfo(struct sysinfo *)</code> 系统调用需要将信息写回到 user space 的结构体中，因此需要从 kernel space 向 user space 复制信息，可以参考 <code>fstat()</code> 系统调用的实现来运用 <code>copyout()</code> 函数，由于目前还未实现虚拟存储相关细节，故不深究 <code>copyout()</code> 的具体原理。</p>
+</li>
+<li><p>当前进程的个数很好统计，进程信息保存在 <code>/kernel/proc.c</code> 的 proc[] 数组里，proc[] 数组的每个元素是一个 proc 结构体，只要结构体的 state 变量不是 UNUSED 就是一个当前的进程。</p>
+</li>
+<li><p>当前剩余的内存统计稍为复杂。xv6 实现了分页机制，<code>/kernel/kalloc.c</code> 负责物理内存的分配和释放。具体的组织形式和各个函数的意义见 Xv6 源码解读手册。</p>
+<p>  要实现剩余内存的统计，我们只要数一数 freelist 链表中有多少个页面即可。可以每次现场数一遍，也可以维护一个变量，在 <code>kalloc()</code> 和 <code>kfree()</code> 的时候动态统计空闲页面的个数。</p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/28/MIT-6.S081%20Lecture%2003%20-%20OS%20Organization%20and%20System%20Calls/" rel="prev" title="MIT-6.S081 Lecture 03: OS Organization and System Calls">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 03: OS Organization and System Calls
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/01/28/MIT-6.S081%20Lab%2001%20-%20Xv6%20and%20Unix%20utilities/" rel="next" title="MIT-6.S081 Lab 01: Xv6 and Unix utilities">
+                  MIT-6.S081 Lab 01: Xv6 and Unix utilities <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Progress  Print a page table (easy)  A kernel page table per process (hard)  Simplify copyin&#x2F;copyinstr (hard)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT-6.S081 Lab 03: Page tables">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2003%20-%20Page%20tables/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Progress  Print a page table (easy)  A kernel page table per process (hard)  Simplify copyin&#x2F;copyinstr (hard)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-01-28T03:13:19.566Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2003%20-%20Page%20tables/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2003%20-%20Page%20tables/","path":"2022/01/28/MIT-6.S081 Lab 03 - Page tables/","title":"MIT-6.S081 Lab 03: Page tables"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MIT-6.S081 Lab 03: Page tables | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Progress"><span class="nav-number">1.</span> <span class="nav-text">Progress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Print-a-page-table-easy"><span class="nav-number">2.</span> <span class="nav-text">Print a page table (easy)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-kernel-page-table-per-process-hard"><span class="nav-number">3.</span> <span class="nav-text">A kernel page table per process (hard)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Simplify-copyin-copyinstr-hard"><span class="nav-number">4.</span> <span class="nav-text">Simplify copyin&#x2F;copyinstr (hard)</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2003%20-%20Page%20tables/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT-6.S081 Lab 03: Page tables
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-01-28 00:00:00 / 修改时间：11:13:19" itemprop="dateCreated datePublished" datetime="2022-01-28T00:00:00+08:00">2022-01-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> Print a page table (easy)</li>
+<li><input checked="" disabled="" type="checkbox"> A kernel page table per process (hard)</li>
+<li><input checked="" disabled="" type="checkbox"> Simplify <code>copyin/copyinstr</code> (hard)</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Print-a-page-table-easy"><a href="#Print-a-page-table-easy" class="headerlink" title="Print a page table (easy)"></a>Print a page table (easy)</h2><p>在 <code>/kernel/vm.c</code> 中新建一个函数 vmprint() 用于打印页表信息。为了方便编码，笔者在 <code>/kernel/vm.c</code> 中又定义了一个函数 vmprint_recursive()，该函数不仅接收页表地址，还接收一个 layer 参数，用于确定打印信息时在前面加多少组 <code>..</code>。vmprint_recursive() 遍历传入页表的 512 个页表项，如果页表项的 PTE_V 位为 1 (页表存在) ，则打印页表项的值和其对应的物理地址。如果当前页表项不是底层页表项 (叶子节点)，就递归地继续打印。我们可以根据页表项的标志信息来判断它是不是叶子节点：叶子节点的页表项除了 PTE_V 还会有其他的 RWXU 等权限位，而各级页目录页表项只有 PTE_V 为 1。</p>
+<blockquote>
+<p>Explain the output of <code>vmprint</code> in terms of Fig 3-4 from the text.  What does page 0 contain? What is in page 2? When running in user mode, could the process read/write the memory mapped by page 1?</p>
+</blockquote>
+<p>第 0 个页面存储了用户的代码段和数据段，第 2 个页面是用户栈。在用户态下，进程不能读写第 1 个页面，因为根据第一个页面的页表项，其 PTE_U 位为 0，用户态无访问权限 (第 1 个页面是用户栈下方的保护页面，在创建后通过 uvmclear() 函数清除了 PTE_U 位)。</p>
+<h2 id="A-kernel-page-table-per-process-hard"><a href="#A-kernel-page-table-per-process-hard" class="headerlink" title="A kernel page table per process (hard)"></a>A kernel page table per process (hard)</h2><blockquote>
+<p>根据 RISC-V 架构的约定，page table walk 的工作理应交给硬件完成，那么为什么 xv6 中要有 walkaddr() 这样的函数来在软件层面进行 page table walk呢？</p>
+</blockquote>
+<p>xv6 中当用户陷入内核态时，satp 寄存器会切换到内核页表。内核页表中只有内核部分的映射，因此在内核态中如果想要访问用户内存中的数据，就必须在软件层面进行虚拟地址的翻译：抓着用户页表和用户虚拟地址调用 walkaddr() 函数获得物理地址，再拿着物理地址进行操作 (内核页表是恒等映射，因此这个物理地址也可以当做 “虚拟地址” 使用)。</p>
+<p>该实验部分和下一个实验部分的目的是：为每一个进程创建一个“用户内核页表”。该页表的内核部分映射与内核页表相同，用户部分映射与用户页表相同。这样用户进程从用户态陷入内核态时，不再切换到内核页表，而是切换到本进程的“用户内核页表”，这样在内核中执行操作时，页表中包含用户部分的映射，用户部分虚拟地址的翻译就可以交给硬件做了。</p>
+<p>该实验部分主要负责完成用户内核页表的内核部分的映射。根据提示内容，</p>
+<blockquote>
+<p>Add a field to <code>struct proc</code> for the process’s kernel page table.   </p>
+</blockquote>
+<p>在 <code>struct proc</code> 中添加一个 pagetable_t 类型的变量 k_pagetable 来存储用户内核页表。</p>
+<blockquote>
+<p>A reasonable way to produce a kernel page table for a new process  is to implement a modified version of <code>kvminit</code> that makes  a new page table instead of modifying <code>kernel_pagetable</code>.  You’ll want to call this function from <code>allocproc</code>.   </p>
+</blockquote>
+<p>笔者起初认为：为什么不让每个进程的 k_pagetable 直接指向 kernel_pagetable 呢？这样就省去了为每个进程做映射的工作？如果理解了整个实验的目的，我们就会明白这是不合理的。我们的目的不仅是完成内核映射，还要让这份页表同时拥有该进程的用户映射，内核中的原始份内核页表无法将各个进程的用户映射都存下来 (彼此冲突)。这样做也许可以通过这个实验部分，但将在下一个实验部分走入死胡同。</p>
+<p>正确的做法是仿照 kvminit() 函数写一份初始化映射，将页表基地址保存在 p-&gt;k_pagetable 中。allocproc() 函数在 userinit() 和 fork() 中被调用，负责创建一个新进程。我们在 allocproc() 中调用用户内核页表的初始化映射函数即可。</p>
+<blockquote>
+<p>Make sure that each process’s kernel page table has a mapping  for that process’s kernel stack. In unmodified xv6, all the  kernel stacks are set up in <code>procinit</code>. You will need to  move some or all of this functionality to <code>allocproc</code>.   </p>
+</blockquote>
+<p>笔者没有动 procinit() 的代码，即内核页表中有所有进程内核栈的映射，并准备在每个进程的用户内核页表中映射自己进程的内核栈地址。这里笔者犯的错误是：在 allocproc() 中又 kalloc() 了一个新的页面作为用户栈。这样用户内核页表中的用户栈和内核页表中的用户栈实际上指向了不同的物理页面实体。我们要时刻记住<strong>用户内核页表只应该复制映射，映射应该指向相同的实体</strong>，这样陷入内核态之后才能看到页面中的改变。</p>
+<blockquote>
+<p>Modify <code>scheduler()</code> to load the process’s kernel page table into  the core’s <code>satp</code> register (see <code>kvminithart</code> for  inspiration). Don’t forget to call <code>sfence_vma()</code>  after calling <code>w_satp()</code>.   </p>
+<p><code>scheduler()</code> should use <code>kernel_pagetable</code> when  no process is running.   </p>
+</blockquote>
+<p>这是笔者感到迷茫的部分，因为根据课程 schedule 的进度，做该实验时理应还没有看中断部分的内容，所以笔者对 scheduler() 函数的意义很不了解。经过大致的摸索，核心循环</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(p = proc; p &lt; &amp;proc[NPROC]; p++) &#123;</span><br><span class="line">  acquire(&amp;p-&gt;lock);</span><br><span class="line">  <span class="keyword">if</span>(p-&gt;state == RUNNABLE) &#123;</span><br><span class="line">    <span class="comment">// Switch to chosen process.  It is the process&#x27;s job</span></span><br><span class="line">    <span class="comment">// to release its lock and then reacquire it</span></span><br><span class="line">    <span class="comment">// before jumping back to us.</span></span><br><span class="line">    p-&gt;state = RUNNING;</span><br><span class="line">    c-&gt;proc = p;</span><br><span class="line">    swtch(&amp;c-&gt;context, &amp;p-&gt;context);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Process is done running for now.</span></span><br><span class="line">    <span class="comment">// It should have changed its p-&gt;state before coming back.</span></span><br><span class="line">    c-&gt;proc = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    found = <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  release(&amp;p-&gt;lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>负责找到第一个处于 RUNNABLE 状态的进程，然后将其状态设置为 RUNNING，并通过 swtch() 函数切换过去。也就是说，执行完 swtch 之后，xv6 就会转去执行进程 p (此时仍然在内核态中)，因此应该在 swtch() 之前将 satp 寄存器改写为 p 进程的用户内核页表。</p>
+<p>一个进程运行完毕后，会返回到 swtch 的下一条语句执行，这时候 CPU 核处于没有进程运行的状态。因此应该在 swtch() 之后调用 kvminithart() 函数将 satp 寄存器改写为内核页表。</p>
+<blockquote>
+<p>Free a process’s kernel page table in <code>freeproc</code>.  </p>
+<p>You’ll need a way to free a page table without also freeing the leaf physical memory pages.   </p>
+</blockquote>
+<p>freeproc() 函数负责进程的释放。其中 proc_freepagetable() 函数负责将该进程的用户页表释放。我们需要再写一个函数将用户内核页表也释放。注意用户内核页表的实体是那些内核物理页面和该进程的用户物理页面。该进程的用户物理页面已经随着用户页表的释放而释放了，而内核物理页面不能被释放，否则内核代码就消失了。因此我们不能直接调用 proc_freepagetable()，而要再写一个 proc_freekpagetable()。</p>
+<p>此外，proc_freepagetable() 中调用的 freewalk() 函数负责递归地释放所有的页表页面，该函数默认底层的物理页面已经被释放，如果不符合要求会触发 kernel panic。但在用户内核页表页面的释放过程中底层的 (内核) 物理页面是没有被释放的，因此不能直接调用 freewalk() 函数，而要仿照它再写一个不会对底层物理页面存在报错的 kfreewalk()。</p>
+<h2 id="Simplify-copyin-copyinstr-hard"><a href="#Simplify-copyin-copyinstr-hard" class="headerlink" title="Simplify copyin/copyinstr (hard)"></a>Simplify <code>copyin/copyinstr</code> (hard)</h2><p>该实验部分承接上一个实验部分，要补全用户内核页表的用户部分的映射。我们只要做到 xv6 中任何对用户页表有修改的地方，我们在用户内核页表中将这些修改的映射抄一份即可。这里务必要注意的一点是：<strong>用户页表中会申请新的物理页面，但我们不应该在用户内核页表中也申请新的页面，而是应该映射到用户页表申请的物理页面</strong>。只有这样我们才能在陷入内核态时访问到用户态时保存的数据。</p>
+<p>xv6 涉及用户页表修改的有三处：fork()，exec()，和 growproc()。</p>
+<ul>
+<li><p>fork() 函数会申请一个新的进程，调用 uvmcopy() 函数将父进程的用户页表复制给子进程的用户页表。注意：我们不能调用 uvmcopy() 来将父进程的用户页表内容复制到子进程的用户内核页表。因为父进程和子进程互相独立，所以 uvmcopy() 在复制的时候不仅复制页表内容，所有底层的物理页面也申请了新的并复制了一遍 (在 copy-on-write fork 中这一点会得到改善)。我们的用户内核页表是不应该将底层物理页面复制的。<strong>子进程的用户内核页表一定要抄子进程的用户页表，映射到子进程的用户页表的物理页面上</strong>。</p>
+</li>
+<li><p>exec() 函数根据 ELF 文件创建了一个新的内存镜像，并用新的页表替换旧的页表。在用户进程页表中我们也应该进行相对应的更新：首先将旧页表相关的映射删除 (这里需要格外小心的一点是：exec() 调用 proc_freepagetable() 释放旧页表时，已经将旧页表的底层物理页面一并释放了，我们在删除用户内核页表中的旧页表内容时，不需要再释放一遍底层物理页面，只需要清除相关的页表项即可。)，然后将新页表的映射抄进用户内核页表。</p>
+</li>
+<li><p>growproc() 函数根据 n 的正负分别调用 uvmalloc() 和 uvmdealloc() 来调整用户内存的大小。我们在用户内核页表中也应该进行相对应的更新。对于 uvmalloc() 来说，要注意用户内核页表要映射到用户页表创建的那些物理页面中，为此笔者写了一个类似于 uvmcopy() 的函数来进行复制。对于 uvmdealloc() 来说，要注意用户页表负责释放底层物理页面，用户内核页表不能做重复的事。</p>
+<p>  (注：内核部分映射和用户部分映射可以合二为一的重要前置条件是两者没有重复的映射。根据 xv6 手册，低于 0x80000000 的很多部分的内存是作为外设地址的。因此用户实际可用的内存空间其实远小于 MAXVA。式样讲义规定用户只能使用 PLIC 以下的地址。但事实上 CLINT 映射的地址比 PLIC 还要低，实验证明如果不取消 CLINT 的映射，用户内存会覆盖到这部分，触发 ‘remap’ kernel panic。因此笔者只能在用户内核页表的映射中将 CLINT 移除。)</p>
+</li>
+</ul>
+<blockquote>
+<p>What permissions do the PTEs for user addresses need in a process’s kernel page table?  (A page    with <code>PTE_U</code> set cannot be accessed in kernel mode.)     </p>
+</blockquote>
+<p>用户内核页表的页表项不能照抄用户页表，因为 QEMU 模拟的 RISC-V 硬件在内核态下是不能访问带有 PTE_U 位的页面的。因此用户内核页表的底层页表项都要将 PTE_U 挖去。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/23/CMU-15445%20Lecture%2001%20-%20Relational%20Model%20and%20Relational%20Algebra/" rel="prev" title="CMU 15-445 Lecture 01: Relational Model and Relational Algebra">
+                  <i class="fa fa-chevron-left"></i> CMU 15-445 Lecture 01: Relational Model and Relational Algebra
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/01/28/MIT-6.S081%20Lecture%2004%20-%20Page%20Tables/" rel="next" title="MIT-6.S081 Lecture 04: Page Tables">
+                  MIT-6.S081 Lecture 04: Page Tables <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
