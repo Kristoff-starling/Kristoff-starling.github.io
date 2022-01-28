@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2001%20-%20Xv6%20and%20Unix%20utilities/</loc>
+    
+    <lastmod>2022-01-28</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://kristoff-starling.github.io/categories/index.html</loc>
     
     <lastmod>2022-01-28</lastmod>

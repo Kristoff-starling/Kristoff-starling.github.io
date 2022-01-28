@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Progress  boot xv6 (easy)  sleep (easy)  pingpong (easy)  primes (medium)&#x2F;(hard)  find (medium)  xargs (medium)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT-6.S081 Lab 01: Xv6 and Unix utilities">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2001%20-%20Xv6%20and%20Unix%20utilities/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Progress  boot xv6 (easy)  sleep (easy)  pingpong (easy)  primes (medium)&#x2F;(hard)  find (medium)  xargs (medium)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-01-28T02:57:52.549Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2001%20-%20Xv6%20and%20Unix%20utilities/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2001%20-%20Xv6%20and%20Unix%20utilities/","path":"2022/01/28/MIT-6.S081 Lab 01 - Xv6 and Unix utilities/","title":"MIT-6.S081 Lab 01: Xv6 and Unix utilities"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MIT-6.S081 Lab 01: Xv6 and Unix utilities | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Progress"><span class="nav-number">1.</span> <span class="nav-text">Progress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Boot-xv6-easy"><span class="nav-number">2.</span> <span class="nav-text">Boot xv6 (easy)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sleep-easy"><span class="nav-number">3.</span> <span class="nav-text">sleep (easy)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pingpong-easy"><span class="nav-number">4.</span> <span class="nav-text">pingpong (easy)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#primes-moderate-hard"><span class="nav-number">5.</span> <span class="nav-text">primes (moderate)&#x2F;(hard)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#find-moderate"><span class="nav-number">6.</span> <span class="nav-text">find (moderate)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xargs-moderate"><span class="nav-number">7.</span> <span class="nav-text">xargs (moderate)</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2001%20-%20Xv6%20and%20Unix%20utilities/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT-6.S081 Lab 01: Xv6 and Unix utilities
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-01-28 00:00:00 / 修改时间：10:57:52" itemprop="dateCreated datePublished" datetime="2022-01-28T00:00:00+08:00">2022-01-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> boot xv6 (easy)</li>
+<li><input checked="" disabled="" type="checkbox"> sleep (easy)</li>
+<li><input checked="" disabled="" type="checkbox"> pingpong (easy)</li>
+<li><input checked="" disabled="" type="checkbox"> primes (medium)/(hard)</li>
+<li><input checked="" disabled="" type="checkbox"> find (medium)</li>
+<li><input checked="" disabled="" type="checkbox"> xargs (medium)</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Boot-xv6-easy"><a href="#Boot-xv6-easy" class="headerlink" title="Boot xv6 (easy)"></a>Boot xv6 (easy)</h2><p>刚刚克隆完项目后文件夹里没有东西，这是正常的。切换到 util 分支之后即可看到内容。</p>
+<p>使用 <code>make grade</code> 命令进行尝试时发现报错：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/env: python: No such file or directory</span><br></pre></td></tr></table></figure>
+
+<p>笔者根据 stakoverflow 上的<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/3655306/ubuntu-usr-bin-env-python-no-such-file-or-directory">这个回答</a>进行了修复：首先检查了一下 python3 是否安装，发现已经安装。出现上述报错的原因是系统内只有 python3 这个程序。因此只要创建一个名为 python 的指向 python3 的软链接即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ln -s /usr/bin/python3 /usr/bin/python</span><br></pre></td></tr></table></figure>
+
+<p>想要使用 gdb 调试 xv6 的话，可以先在一个窗口工作目录下执行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make CPUS=1 qemu-gdb</span><br></pre></td></tr></table></figure>
+
+<p>然后新开一个窗口，在工作目录下执行 <code>riscv64-linux-gnu-gdb</code> 或 <code>gdb-multiarch</code>，后者会自行判断架构。初次运行可能会遇到 .gdbinit 相关的问题。此时需要创建文件 <code>~/.gdbinit</code>，并在其中写</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add-auto-load-safe-path ~/xv6-labs-2020/.gdbinit</span><br></pre></td></tr></table></figure>
+
+<h2 id="sleep-easy"><a href="#sleep-easy" class="headerlink" title="sleep (easy)"></a>sleep (easy)</h2><p>C 语言编程练习，只需要使用 <code>sleep()</code> 系统调用即可。不过需要注意 sleep 的参数规则：</p>
+<ul>
+<li>如果 sleep 没有参数，应当给出错误提示。</li>
+<li>sleep 可以有多个参数，应该将多个参数相加的值传给 <code>sleep()</code> 系统调用。</li>
+<li>sleep 的任何一个参数中有非数字字符时，应当给出错误提示。</li>
+</ul>
+<h2 id="pingpong-easy"><a href="#pingpong-easy" class="headerlink" title="pingpong (easy)"></a>pingpong (easy)</h2><p>笔者最初只是用了一个管道，在父进程中 <code>write(p[1], &quot;a&quot;, 1)</code> 后又 <code>read(p[0], buf, sizeof(buf))</code>，但这样相当于父进程从管道里读到了自己的输出，没有完成和子进程的互动。</p>
+<p>因此需要使用两个管道，第一个管道用于父进程输出，子进程读入，第二个管道用于子进程输出，父进程读入。</p>
+<h2 id="primes-moderate-hard"><a href="#primes-moderate-hard" class="headerlink" title="primes (moderate)/(hard)"></a>primes (moderate)/(hard)</h2><p>笔者的初代实现如下：</p>
+<blockquote>
+<p> 以第一层为例，父进程创建一个管道之后 fork 出一个子进程，然后将 $2,3,\cdots,35$ 喂给管道的输出端。子进程从管道的输入端接收这些数。子进程收到的第一个数一定是质数，它可以用这个数将剩下的数中这个质数的倍数筛除。之后子进程自己变成一个“父进程”，将收到的数中除了最小质数和被筛除的数的其他数传给自己的子进程。该过程一直持续，直到没有数为止。</p>
+<p> 核心代码：</p>
+ <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (tot &gt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line"> pipe(p);</span><br><span class="line"></span><br><span class="line"> <span class="keyword">int</span> pid = fork();</span><br><span class="line"> <span class="keyword">if</span> (pid &lt; <span class="number">0</span>) exit_error();</span><br><span class="line"> <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line"> &#123;</span><br><span class="line">     close(p[<span class="number">1</span>]);</span><br><span class="line">     <span class="keyword">int</span> cur, curp; tot = <span class="number">-1</span>;</span><br><span class="line">     <span class="keyword">while</span> (read(p[<span class="number">0</span>], &amp;cur, <span class="keyword">sizeof</span>(cur)) &gt; <span class="number">0</span>)</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="keyword">if</span> (tot == <span class="number">-1</span>)</span><br><span class="line">         &#123;</span><br><span class="line">             <span class="built_in">printf</span>(<span class="string">&quot;prime %d\n&quot;</span>, cur);</span><br><span class="line">             tot ++; curp = cur;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">else</span></span><br><span class="line">         &#123;</span><br><span class="line">             <span class="keyword">if</span> (cur % curp != <span class="number">0</span>) a[tot ++] = cur;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line">     close(p[<span class="number">0</span>]);</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">else</span></span><br><span class="line"> &#123;</span><br><span class="line">     close(p[<span class="number">0</span>]);</span><br><span class="line">     <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; tot; i ++)</span><br><span class="line">         write(p[<span class="number">1</span>], a + i, <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">     close(p[<span class="number">1</span>]);</span><br><span class="line">     <span class="keyword">int</span> status; wait(&amp;status);</span><br><span class="line">     <span class="keyword">if</span> (status != <span class="number">0</span>) exit_error();</span><br><span class="line">     <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>这样做有一个关键的问题：每一层进程都是完全接收了上一层的数，做完筛法i，再把所有的数传给下一层进程，没有使筛法充分并行起来。</p>
+<p>真正并发/并行的做法是：每个进程有一个管道和父亲通信，另开一个管道和自己的子进程通信。每从自己的父进程接收到一个数就立刻传给自己的子进程。这样的话，比如在第一层进程中 5 通过了 2 的筛查，被传入了第二层，然后第一层进程在筛查 6，7，8，9… 的时候，第二层进程已经在用 3 筛查 5 了，这样真正做到了并行。将递归与这个过程结合起来写代码会非常舒服，否则需要维护一大堆管道的编号，使编码变复杂。</p>
+<p>需要注意的一点是管道的使用。父进程在给子进程传递完数据后，一定要先关闭管道的输出端再调用 <code>wait()</code> ，否则子进程的 <code>read()</code> 在管道输出没有被全部关闭的情况下是不会退出的。</p>
+<h2 id="find-moderate"><a href="#find-moderate" class="headerlink" title="find (moderate)"></a>find (moderate)</h2><p>参考 <code>ls</code> 程序的实现可以对 <code>find</code> 的实现起到很大的帮助。</p>
+<p><code>find</code> 的实现需要对 xv6 的文件系统有一个粗浅的了解。以下知识是对该任务的实现有帮助的：</p>
+<ul>
+<li><p>当我们拿到一个文件时，可以用 <code>fstat()</code> 系统调用来获取它的信息。<code>fstat()</code> 系统调用将文件信息写到作为参数的 stat 结构体中，stat 结构体的 type 参数刻画了这是一个文件，文件夹还是设备。</p>
+</li>
+<li><p>在通俗的观念中，文件夹是一个“容器”，里面放了很多的文件。但事实上文件夹本身也是一个文件。按照 xv6 的 <code>/kernel/fs.h</code> 中所说，”Directory is a file containing a sequence of dirent structures.” dirent 结构体的定义如下：</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DIRSIZ 14</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">dirent</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> inum;</span><br><span class="line">    <span class="keyword">char</span> name[DIRSIZ];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  inum 是该文件占据的 inode 的个数，我们不必访问那些 inum 为 0 的文件。name 是文件名，在 xv6 中，我们默认文件名不超过 14 个字节。因此在 open 了一个文件夹文件后，我们只要不断用 <code>read(fd, &amp;de, sizeof(dirent))</code> 命令来读取信息，就可以获得文件夹内所有文件的文件名。将文件名和之前的路径拼接起来，就可以访问文件夹内部的文件。</p>
+</li>
+<li><p>可以用递归来实现文件夹内部文件的访问，但不要对 <code>.</code> 和 <code>..</code> 递归，否则会造成死递归。</p>
+</li>
+</ul>
+<p>笔者最初实现完发现文件系统后面的若干的文件都显示 <code>find: cannot open ...</code>，经过筛查发现这是因为没有多余的文件描述符可以使用了。在 xv6 中，资源比较有限，<strong>我们应该养成打开一个文件，读取完相关信息就关闭它的好习惯</strong>。</p>
+<h2 id="xargs-moderate"><a href="#xargs-moderate" class="headerlink" title="xargs (moderate)"></a>xargs (moderate)</h2><p>有一些命令不支持从管道读取输入，而 <code>xargs</code> 命令可以帮助这些命令从管道读取信息。注意：管道的创建和输出输入的重定向是由 shell 来完成的，我们的 xargs 程序无需关心输入的来源，只需要从标准输入 (文件描述符 1) 读取信息即可。</p>
+<p>为新命令准备参数的环节是较好的 C 语言指针练习。笔者新建了一个 <code>char *child_args[MAXARG]</code> 数组来为子进程传递参数。xargs 后紧跟的那几个参数是确定的，再后面的参数需要读入，目前还不能确定长度，所以应该在读取完之后用 <code>malloc()</code> 来申请内存空间，并在子进程执行完成后用 <code>free()</code> 释放空间防止内存泄漏。为了能够准确识别到 <code>\n</code> 以执行多条指令，笔者采取了一个字符一个字符地从标准输入读取信息的方式。读取到的字符暂存在局部数组 buf 中，一旦遇到 ‘ ‘ 或 ‘\n’ 就根据 buf 的长度申请内存，将 buf 复制到参数数组里。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/23/CMU-15445%20Lecture%2001%20-%20Relational%20Model%20and%20Relational%20Algebra/" rel="prev" title="CMU 15-445 Lecture 01: Relational Model and Relational Algebra">
+                  <i class="fa fa-chevron-left"></i> CMU 15-445 Lecture 01: Relational Model and Relational Algebra
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/01/28/MIT-6.S081%20Lecture%2001%20-%20Introduction%20and%20Examples/" rel="next" title="MIT-6.S081 Lecture 01: Introduction and Examples">
+                  MIT-6.S081 Lecture 01: Introduction and Examples <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
