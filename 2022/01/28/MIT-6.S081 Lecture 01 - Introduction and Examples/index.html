@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Purposes of O&#x2F;S Abstraction of hardware. Higher level interfaces and abstractions that applications can use can enhance convenience and portability (e.g. processes and file systems) Multiplexing. Diff">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT-6.S081 Lecture 01: Introduction and Examples">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lecture%2001%20-%20Introduction%20and%20Examples/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Purposes of O&#x2F;S Abstraction of hardware. Higher level interfaces and abstractions that applications can use can enhance convenience and portability (e.g. processes and file systems) Multiplexing. Diff">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-01-28T02:48:08.074Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lecture%2001%20-%20Introduction%20and%20Examples/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lecture%2001%20-%20Introduction%20and%20Examples/","path":"2022/01/28/MIT-6.S081 Lecture 01 - Introduction and Examples/","title":"MIT-6.S081 Lecture 01: Introduction and Examples"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MIT-6.S081 Lecture 01: Introduction and Examples | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Purposes-of-O-S"><span class="nav-number">1.</span> <span class="nav-text">Purposes of O&#x2F;S</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#O-S-Organization"><span class="nav-number">2.</span> <span class="nav-text">O&#x2F;S Organization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API-Kernel"><span class="nav-number">3.</span> <span class="nav-text">API-Kernel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-hard-interesting"><span class="nav-number">4.</span> <span class="nav-text">Why hard&#x2F;interesting?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Applications-using-system-calls-Examples"><span class="nav-number">5.</span> <span class="nav-text">Applications using system calls: Examples</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#read-write"><span class="nav-number">5.1.</span> <span class="nav-text">read() write()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#open"><span class="nav-number">5.2.</span> <span class="nav-text">open()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fork"><span class="nav-number">5.3.</span> <span class="nav-text">fork()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#exec"><span class="nav-number">5.4.</span> <span class="nav-text">exec()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IO-Redirection"><span class="nav-number">5.5.</span> <span class="nav-text">IO Redirection</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lecture%2001%20-%20Introduction%20and%20Examples/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT-6.S081 Lecture 01: Introduction and Examples
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-01-28 00:00:00 / 修改时间：10:48:08" itemprop="dateCreated datePublished" datetime="2022-01-28T00:00:00+08:00">2022-01-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Purposes-of-O-S"><a href="#Purposes-of-O-S" class="headerlink" title="Purposes of O/S"></a>Purposes of O/S</h2><ul>
+<li>Abstraction of hardware. Higher level interfaces and abstractions that applications can use can enhance convenience and portability (e.g. processes and file systems)</li>
+<li>Multiplexing. Different applications can execute at the same time.</li>
+<li>Isolation and sharing.</li>
+<li>Security. Restrictions on resources applications have access to.</li>
+<li>(Help applications to get) performance.</li>
+<li>Range of different uses.</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="O-S-Organization"><a href="#O-S-Organization" class="headerlink" title="O/S Organization"></a>O/S Organization</h2><table>
+<thead>
+<tr>
+<th>User:  VIM, CC, SHELL etc.</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Kernel: File system etc.<br>Processes, Memory allocations, Access control …</td>
+</tr>
+<tr>
+<td>Hardware: CPU, RAM, DISK, NET etc.</td>
+</tr>
+</tbody></table>
+<h2 id="API-Kernel"><a href="#API-Kernel" class="headerlink" title="API-Kernel"></a>API-Kernel</h2><p>Applications use API-kernel provided by Kernel to jump into Kernel. For example:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fd = open(<span class="string">&quot;out&quot;</span>, <span class="number">1</span>);	<span class="comment">// fd is the file descriptor</span></span><br><span class="line">write(fd, <span class="string">&quot;hello\n&quot;</span>, <span class="number">6</span>);</span><br><span class="line">pid = fork();			<span class="comment">// fork() API returns the descriptor of the newly created process</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Do high-level programming language like Python directly use system calls?</strong></p>
+<p>Some high-level programming languages focus on portability - its code should be executable on different operating systems so usually they call library functions instead of directly using system calls to ensure its portability. Of course, theses languages provide methods for programmers to directly use system calls.</p>
+</blockquote>
+<blockquote>
+<p><strong>How is jumping to kernel different from ordinary function calls?</strong></p>
+<p>Kernel codes have direct access to sensitive information such as disks, so the privilege level should be carefully maintained during kernel jumping to ensure the safety of data.</p>
+</blockquote>
+<h2 id="Why-hard-interesting"><a href="#Why-hard-interesting" class="headerlink" title="Why hard/interesting?"></a>Why hard/interesting?</h2><ul>
+<li><p>unforgiving environment: different from applications whose environment is provided by O/S, O/S is built directly on the hardware, which is harder.</p>
+<p>  (In this course, QEMU is used to simulate CPU and corresponding hardwares.)</p>
+</li>
+<li><p>Tensions: there are some trade-offs. For example</p>
+<ul>
+<li>we want high efficiency so O/S should be close to the H/W, but to support applications we need a correct high-level abstraction.</li>
+<li>We want powerful O/S services, but applications want simple interfaces.</li>
+<li>We want flexible API, but for security reasons we need to have restraints.</li>
+</ul>
+</li>
+<li><p>Interactions. For example,</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fd = open();</span><br><span class="line">pid = fork();</span><br></pre></td></tr></table></figure>
+
+<p>  The semantic of <code>fork()</code> is to create a copy of the current process. The file descriptor <code>fd</code> we acquire at the first line should be accessible by the child process, so interactions between processes are needed.</p>
+</li>
+</ul>
+<h2 id="Applications-using-system-calls-Examples"><a href="#Applications-using-system-calls-Examples" class="headerlink" title="Applications using system calls: Examples"></a>Applications using system calls: Examples</h2><h3 id="read-write"><a href="#read-write" class="headerlink" title="read() write()"></a><code>read()</code> <code>write()</code></h3><p>This is <code>copy.c</code>, we execute it on xv6:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// copy.c: copy input to output.</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;kernel/types.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;user/user.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">64</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">int</span> n = read(<span class="number">0</span>, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">        <span class="keyword">if</span> (n &lt;= <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">        write(<span class="number">1</span>, buf, n);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>copy.c</code> ‘s function is that it prints on the screen whatever you input on the screen. Here 0/1 are the file descriptors of stdin/stdout (pervasive UNIX convention), which, in default, connect to the console input/output. Shell ensures that stdin/stdout have been opened when <code>copy.c</code> is being executed.</p>
+<p>Here <code>copy.c</code> doesn’t check the return values of system calls for error (e.g. line 16). We should be more careful when coding.</p>
+<blockquote>
+<p><strong>What if we replace <code>sizeof(buf)</code> by 65?</strong></p>
+<p>O/S will happily read at most 65 bytes from console input, but it may cause unexpected memory error. It’s a bug.</p>
+</blockquote>
+<h3 id="open"><a href="#open" class="headerlink" title="open()"></a><code>open()</code></h3><p>stdin and stdout are automatically opened, but we need a method to open files by ourselves, here’s another example program <code>open.c</code>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// open.c: create a file, write to it.</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;kernel/types.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;user/user.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;kernel/fcntl.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> fd = open(<span class="string">&quot;output.txt&quot;</span>, O_WRONLY | O_CREATE);</span><br><span class="line">    write(fd, <span class="string">&quot;ooo\n&quot;</span>, <span class="number">4</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>After running <code>open</code>, we use <code>cat output.txt</code> to see the contents and we’ll get <code>ooo\n</code>. Here <code>fd</code> is the file descriptor indexing into a table inside the kernel. The kernel maintains a table for every running process and the table tells the kernel which file each file descriptor refers to. (NOTE: same file descriptor may refer to different files in different processes because the “table” is different.)</p>
+<h3 id="fork"><a href="#fork" class="headerlink" title="fork()"></a><code>fork()</code></h3><p>This is <code>fork.c</code>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fork.c: create a new process</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;kernel/types.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;user/user.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pid;</span><br><span class="line">    pid = fork();</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;fork() returned %d\n&quot;</span>, pid);</span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">    	<span class="built_in">printf</span>(<span class="string">&quot;child\n&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;parent\n&quot;</span>);</span><br><span class="line">  	</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>fork()</code> returns in both processes. In the original process, <code>fork()</code> returns a value greater than zero representing the pid of the child process. In the new process, <code>fork()</code> returns zero. Even if the two processes have the same memory, we can discriminate the parent from the child according to the return value of <code>fork()</code>.</p>
+<p>The printed message is </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ffoorrkk(()) rreettuurrnende d <span class="number">0</span></span><br><span class="line"><span class="number">1</span>c9h</span><br><span class="line">ilpda</span><br><span class="line">rent</span><br></pre></td></tr></table></figure>
+
+<p>It seems like messy code, but actually the two processes run at the same time and QEMU simulates a multi-core processor for us, so the two processes alternatively print information on the console.</p>
+<h3 id="exec"><a href="#exec" class="headerlink" title="exec()"></a><code>exec()</code></h3><p>When a command is typed into the shell, the shell forks a child process and use <code>exec()</code> system call to run the application in the child process. <code>exec()</code> loads the instructions in the file you specify over the current process, discards its current memory and starts executing those instructions.</p>
+<p><code>fork()</code> and <code>exec()</code> are always used together to run an application, here is <code>forkexec.c</code>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// forkexec.c: fork then exec</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pid, status;</span><br><span class="line">    pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">char</span> *argv[] = &#123; <span class="string">&quot;echo&quot;</span>, <span class="string">&quot;THIS&quot;</span>, <span class="string">&quot;IS&quot;</span>, <span class="string">&quot;ECHO&quot;</span>, <span class="number">0</span> &#125;;</span><br><span class="line">        	<span class="comment">// Note: there should be a null pointer NULL/0 at the end of the array</span></span><br><span class="line">        exec(<span class="string">&quot;echo&quot;</span>, argv);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;exec failed!\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;parent waiting\n&quot;</span>);</span><br><span class="line">        wait(&amp;status);</span><br><span class="line">        	<span class="comment">// the exit status of the child process will be recorded in variable status</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;the child exited with status %d\n&quot;</span>, status);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>If <code>echo</code> is executed successfully, it will print the arguments and use <code>exit(0)</code> to exit. If <code>echo</code> returns, which means something goes wrong, the child process will exit by <code>exit(1)</code> to tell the parent process about the error.</p>
+<p>In lots of cases, <code>fork()</code> and <code>exec()</code> are used together. It seems that a lot of memory space is wasted because after <code>fork()</code> copies the memory of the parent process, <code>exec()</code> immediately discards it. But with the aid of virtual memory, we can use the tricky “copy on write” technique to solve the issue.</p>
+<blockquote>
+<p><strong>Is there any way for the child process to wait for the parent process?</strong></p>
+<p>No.</p>
+</blockquote>
+<blockquote>
+<p><strong>Will “parent waiting\n” always be printed first?</strong></p>
+<p>Not necessary. The parent process and the child process execute concurrently so there outputs may interweave. However, because it takes a lot of machine instructions to discard the memory, load the memory and start <code>echo</code>, “parent waiting\n”, in most cases, will be printed first.</p>
+</blockquote>
+<blockquote>
+<p><strong>How should we use <code>wait()</code> if there are more than one child processes?</strong></p>
+<p>If there are 2 child processes, the parent process should use 2 <code>wait()</code> to wait for both of them to exit.</p>
+</blockquote>
+<h3 id="IO-Redirection"><a href="#IO-Redirection" class="headerlink" title="IO Redirection"></a>IO Redirection</h3><p>IO redirection can be achieved if we do something sophisticated between <code>fork()</code> and <code>exec()</code>. Here is <code>redirect.c</code>: </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// redirect.c: run a command with output redirected</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> 	<span class="keyword">int</span> pid;</span><br><span class="line"></span><br><span class="line">	pid = fork();</span><br><span class="line">	<span class="keyword">if</span>(pid == <span class="number">0</span>)&#123;</span><br><span class="line">		close(<span class="number">1</span>);</span><br><span class="line">		open(<span class="string">&quot;output.txt&quot;</span>, O_WRONLY|O_CREATE);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span> *argv[] = &#123; <span class="string">&quot;echo&quot;</span>, <span class="string">&quot;this&quot;</span>, <span class="string">&quot;is&quot;</span>, <span class="string">&quot;redirected&quot;</span>, <span class="string">&quot;echo&quot;</span>, <span class="number">0</span> &#125;;</span><br><span class="line">        exec(<span class="string">&quot;echo&quot;</span>, argv);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;exec failed!\n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    	wait((<span class="keyword">int</span> *) <span class="number">0</span>);</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">  	<span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>In the child process, we firstly close file descriptor 1 and then open “output.txt”, the semantic of <code>open()</code> is to allocate the least file descriptor that is not being used to the file. Since 0 is still allocated to the console input, file descriptor 1 is allocated to output.txt and <code>echo</code> will output things into file 1, i.e. output.txt. It should be noticed that only the child process’s IO is redirected, the parent process, i.e. the shell process, stays the same.</p>
+<p>The magical thing is that the application <code>echo</code> doesn’t need to know about the redirection - the only thing it knows is that it should output to file descriptor 1. This is abstraction.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/23/CMU-15445%20Lecture%2001%20-%20Relational%20Model%20and%20Relational%20Algebra/" rel="prev" title="CMU 15-445 Lecture 01: Relational Model and Relational Algebra">
+                  <i class="fa fa-chevron-left"></i> CMU 15-445 Lecture 01: Relational Model and Relational Algebra
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
