@@ -1,3 +1,4 @@
+https://kristoff-starling.github.io/2022/01/30/MIT-6.S081%20Lecture%2006%20-%20Traps/
 https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lecture%2001%20-%20Introduction%20and%20Examples/
 https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2001%20-%20Xv6%20and%20Unix%20utilities/
 https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lab%2002%20-%20System%20calls/
