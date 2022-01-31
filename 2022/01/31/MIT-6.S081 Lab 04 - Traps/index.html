@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Progress  RISC-V assembly (easy)  Backtrace (moderate)  Alarm (hard)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT-6.S081 Lab 04: Traps">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/01/31/MIT-6.S081%20Lab%2004%20-%20Traps/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Progress  RISC-V assembly (easy)  Backtrace (moderate)  Alarm (hard)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-01-31T07:51:34.737Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/01/31/MIT-6.S081%20Lab%2004%20-%20Traps/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/01/31/MIT-6.S081%20Lab%2004%20-%20Traps/","path":"2022/01/31/MIT-6.S081 Lab 04 - Traps/","title":"MIT-6.S081 Lab 04: Traps"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MIT-6.S081 Lab 04: Traps | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Progress"><span class="nav-number">1.</span> <span class="nav-text">Progress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RISC-V-assembly-easy"><span class="nav-number">2.</span> <span class="nav-text">RISC-V assembly (easy)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Backtrace-moderate"><span class="nav-number">3.</span> <span class="nav-text">Backtrace (moderate)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Alarm-hard"><span class="nav-number">4.</span> <span class="nav-text">Alarm (hard)</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/01/31/MIT-6.S081%20Lab%2004%20-%20Traps/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT-6.S081 Lab 04: Traps
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-01-31 00:00:00 / 修改时间：15:51:34" itemprop="dateCreated datePublished" datetime="2022-01-31T00:00:00+08:00">2022-01-31</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> RISC-V assembly (easy)</li>
+<li><input checked="" disabled="" type="checkbox"> Backtrace (moderate)</li>
+<li><input checked="" disabled="" type="checkbox"> Alarm (hard)</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="RISC-V-assembly-easy"><a href="#RISC-V-assembly-easy" class="headerlink" title="RISC-V assembly (easy)"></a>RISC-V assembly (easy)</h2><blockquote>
+<p><strong>Q: Which registers contain arguments to functions?  For example, which register holds 13 in main’s call to <code>printf</code>?</strong>  </p>
+</blockquote>
+<p>RISC-V 中，函数调用的参数按顺序存放在 <code>a0</code> <code>a1</code> <code>a2</code> <code>a3</code> …… 中。以 printf() 为例，13 是它的第三个参数，所以存放在 <code>a2</code> 寄存器中。</p>
+<blockquote>
+<p><strong>Q: Where is the call to function <code>f</code> in the assembly code for main? Where is the call to <code>g</code>?  (Hint: the compiler may inline functions.)</strong>  </p>
+</blockquote>
+<p>汇编代码中没有直接调用函数 f() 和 g()，因为 f() 和 g() 是非常简单的函数，编译器对其做了优化，直接将 <code>f(8)+1</code> 的结果 12 写入了寄存器 <code>a1</code>。</p>
+<blockquote>
+<p><strong>Q: At what address is the function <code>printf</code> located?</strong>  </p>
+</blockquote>
+<p>printf() 函数的地址为 0x628。可以在 <code>call.asm</code> 中直接搜索到，也可以通过 main() 函数的汇编代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">30:	00000097          	auipc	ra,0x0</span><br><span class="line">34:	5f8080e7          	jalr	1528(ra) # 628 &lt;printf&gt;</span><br></pre></td></tr></table></figure>
+
+<p>看出 printf() 函数的地址。</p>
+<blockquote>
+<p><strong>Q: What value is in the register <code>ra</code> just after the <code>jalr</code> to <code>printf</code> in <code>main</code>?</strong>  </p>
+</blockquote>
+<p><code>ra</code> 寄存器中存储的应该是 printf() 函数的返回地址。根据 RISC-V 手册中 <code>jalr</code> 指令的定义，pc+4 的值会被写入 <code>ra</code> 寄存器。因此当前 <code>ra</code> 的值为 0x38。</p>
+<blockquote>
+<p><strong>Q: Run the following code.</strong>      </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> i = <span class="number">0x00646c72</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;H%x Wo%s&quot;</span>, <span class="number">57616</span>, &amp;i);</span><br></pre></td></tr></table></figure>
+
+<p><strong>What is the output? <a target="_blank" rel="noopener" href="http://web.cs.mun.ca/~michael/c/ascii-table.html">Here’s an ASCII table</a> that maps bytes to characters.</strong>     </p>
+<p><strong>The output depends on that fact that the RISC-V is little-endian. If the RISC-V were instead big-endian what would you set <code>i</code> to in order to yield the same output? Would you need to change <code>57616</code> to a different value?</strong></p>
+<p><strong><a target="_blank" rel="noopener" href="http://www.webopedia.com/TERM/b/big_endian.html">Here’s a description of little- and big-endian</a> and <a target="_blank" rel="noopener" href="http://www.networksorcery.com/enp/ien/ien137.txt">a more whimsical description</a>.</strong>    </p>
+</blockquote>
+<p>输出的结果是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">He110 World</span><br></pre></td></tr></table></figure>
+
+<p>第一，十进制数 57616 转换成十六进制是 E110H。使用 “%x” 打印时，十六进制中的字母都是小写字母，所以第一处打印结果为 e110。</p>
+<p>第二，变量 i 的地址被传给了 printf()，printf() 会将该地址处的数据按照字符串类型进行解读，即每个字节按照 ASCII 码翻译成字符进行输出。RISC-V 是小端机器，因此地址 &amp;i 处往后若干个字节的内容为</p>
+<table>
+<thead>
+<tr>
+<th>&amp;i</th>
+<th>&amp;i + 1</th>
+<th>&amp;i + 2</th>
+<th>&amp;i + 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>72 $\rightarrow$ ‘r’</td>
+<td>6c $\rightarrow$ ‘l’</td>
+<td>64 $\rightarrow$ ‘d’</td>
+<td>00 $\rightarrow$ ‘\0’</td>
+</tr>
+</tbody></table>
+<p>遇到结束符即停止输出，因此第二处打印结果为 rld。</p>
+<p>如果 RISC-V 是大端机器，为了使第二处输出结果不变，i 的值应该修改为 0x726c6400。第一处的 57616 不需要修改，因为只要存和取都遵循大端方式，数据的值就不会改变。</p>
+<blockquote>
+<p><strong>Q: In the following code, what is going to be printed after <code>&#39;y=&#39;</code>?  (note: the answer is not a specific value.)  Why does this happen?</strong>       </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;x=%d y=%d&quot;</span>, <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><code>y=</code> 后的内容是进入 printf() 函数后 <code>a2</code> 寄存器中的值。由于这里的 printf() 函数少了一个参数，<code>a2</code> 寄存器中的值是 UB，输出结果会是一个无法预料的随机数。</p>
+<h2 id="Backtrace-moderate"><a href="#Backtrace-moderate" class="headerlink" title="Backtrace (moderate)"></a>Backtrace (moderate)</h2><p>要实现的 Backtrace 功能和 GDB 中的 backtrace 基本相同：根据栈帧内容回溯函数调用的过程。</p>
+<p>首先需要获取当前函数的栈帧。sp 寄存器指向栈顶，但栈帧的大小是不确定的，我们需要的是栈底指针 fp (即 s0 寄存器)。可以通过内联汇编的方式来读取 fp 寄存器的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> uint64</span></span><br><span class="line"><span class="function"><span class="title">r_fp</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  uint64 x;</span><br><span class="line">  <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(<span class="string">&quot;mv %0, s0&quot;</span> : (=r) (x))</span></span>;</span><br><span class="line">  <span class="keyword">return</span> x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于现在处在内核态，当前的栈帧存储在上一个用户进程的内核栈上。内核栈大小为一个页面，可以通过 <code>PGROUNDDOWN(fp)</code> 和 <code>PGROUNDUP(fp)</code> 来分别获得内核栈的栈顶地址和栈底地址。我们的函数回溯追踪只在内核栈范围内，因为更远的回溯会到用户栈上。</p>
+<p>根据 RISC-V 的栈帧格式，fp 指针实际上指向的是上一个栈帧的底部 (课程中 TA 的说法有误)。在 RV64 中，fp-8 的位置存储了当前函数的返回地址，这个地址理应在当前函数的 caller 函数范围内，打印这个地址就相当于追踪到了上一个函数。fp-16 的位置存储了上一个栈帧的 fp 的内容。将这个值赋给 fp 即可实现顺着栈帧向上爬的功能。</p>
+<blockquote>
+<p><strong>关于 printf() 的输出不能得到正确的结果</strong></p>
+<p>笔者起初使用 printf() 的 <code>%x</code> 来输出返回地址，但得到的结果出入很大。xv6 中的 printf() 不是调用的 C 库函数，而是自己实现的。阅读 printf() 的源码可以看到，<code>%x</code> 输出十六进制数只能输出 int 范围内的。要打印一个地址应该使用 <code>%p</code> 模式来输出。</p>
+</blockquote>
+<h2 id="Alarm-hard"><a href="#Alarm-hard" class="headerlink" title="Alarm (hard)"></a>Alarm (hard)</h2><p>我们需要实现两个系统调用</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigalarm</span><span class="params">(<span class="keyword">int</span> ticks, <span class="keyword">void</span> (*handler)())</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sigreturn</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>sigalarm()</code> 负责在当前进程中打开一个定时器，每过 ticks 个周期就执行一次 handler 函数。为了实现这个功能，我们需要在 proc 结构体中添加一些字段：nticks 负责存储当前的周期，handler 负责存储回调函数的地址 (用户虚拟地址)，curticks 负责记录自上一次调用 handler 之后，已经过了多少个周期。在 sys_sigalarm() 函数中，我们应当更新这些字段。</p>
+<p>此处的周期指的不是 CPU 的时钟周期，而是指时钟中断的周期。因此在 usertrap() 函数中，每次判断到 <code>which_dev == 2 </code>，即时钟中断到来，则 <code>curticks++</code>，若 curticks 达到了 nticks，则下一次返回用户态应转移到回调函数。sepc 寄存器决定了返回用户态时的地址，因此只要将 handler 赋给 p-&gt;trapframe-&gt;epc 即可。</p>
+<p>回调函数的最后一定会使用 <code>sigreturn()</code> 系统调用，该系统调用负责回到原本用户程序的中断处继续执行。触发了回调函数的这次中断走过的路程应该是这样的：</p>
+<p>​        用户程序 $\overset{时钟中断}{\rightarrow}$ 内核 $\rightarrow$ 回调函数 $\overset{系统调用}{\rightarrow}$ 内核 $\rightarrow$ 用户程序</p>
+<p>在触发时钟中断时，用户程序的上下文会被保存在 p-&gt;trapframe 中，但从回调函数再进入内核的时候，trapframe 里的上下文会被覆盖。要想对用户程序完全透明地执行这个过程，我们要在执行回调函数之前将原始上下文保存起来。因此我们需要在 proc 结构体中再定义一些变量用来保存原始上下文。笔者使用的一种简单的方法是定义一个 trapframe 结构体 u_trapframe，在进入回调函数之前将 p-&gt;trapframe 里的内容写到 u_trapframe 里。</p>
+<p>此外 test2 中还测试了一种问题：我们在进入回调函数的时候，应该关闭 sigalarm() 设置的定时器。否则如果回调函数执行时间过长，在执行回调函数的过程中某一次时钟中断又触发定时器调用回调函数，就会陷入死递归。因此我们在 proc 结构体中还需要一个变量来记录当前是否是从回调函数中陷入内核态的。这个状态应该在前一次准备进入回调函数时置 1，在 sigreturn() 中清零。当该变量置 1 时，时钟中断不对计时器进行检查。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/01/30/MIT-6.S081%20Lecture%2006%20-%20Traps/" rel="prev" title="MIT-6.S081 Lecture 06: Traps">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 06: Traps
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
