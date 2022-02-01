@@ -1,3 +1,4 @@
+https://kristoff-starling.github.io/2022/02/01/MIT-6.S081%20Lecture%2007%20-%20Q&A%20for%20Labs%20#1/
 https://kristoff-starling.github.io/2022/01/31/MIT-6.S081%20Lab%2004%20-%20Traps/
 https://kristoff-starling.github.io/2022/01/30/MIT-6.S081%20Lecture%2006%20-%20Traps/
 https://kristoff-starling.github.io/2022/01/28/MIT-6.S081%20Lecture%2001%20-%20Introduction%20and%20Examples/
