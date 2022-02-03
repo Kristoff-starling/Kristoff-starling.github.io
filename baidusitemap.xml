@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lab%2005%20-%20Lazy%20allocation/</loc>
+    <lastmod>2022-02-03</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lecture%2008%20-%20Page%20Faults/</loc>
     <lastmod>2022-02-03</lastmod>
   </url>

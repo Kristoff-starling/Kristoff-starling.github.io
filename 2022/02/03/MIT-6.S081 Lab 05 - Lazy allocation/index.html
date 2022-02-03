@@ -22,29 +22,27 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="Burnside引理描述设 $A$ 和 $B$ 为有限集，$X$ 是一些从 $A$ 到 $B$ 的映射的集合。$G$ 是 $A$ 上的置换群，且 $X$ 中的映射在 $G$ 的作用下封闭，那么$$|X&#x2F;G|&#x3D;\frac{1}{|G|}\sum_{g\in G}|X^g|$$其中 $X&#x2F;G$ 表示 $X$ 在 $G$ 的作用下所有等价类的集合（对于 $x,y\in X$，若存在 $g\in G$,">
+<meta name="description" content="Progress  Eliminate allocation from sbrk() (easy)  Lazy allocation (moderate)  Lazytests and Usertests (moderate)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Burnside引理和Polya定理">
-<meta property="og:url" content="https://kristoff-starling.github.io/2021/11/12/Burnside%E5%BC%95%E7%90%86%E5%92%8CPolya%E5%AE%9A%E7%90%86/index.html">
+<meta property="og:title" content="MIT-6.S081 Lab 05: Lazy allocation">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lab%2005%20-%20Lazy%20allocation/index.html">
 <meta property="og:site_name" content="starling的小屋">
-<meta property="og:description" content="Burnside引理描述设 $A$ 和 $B$ 为有限集，$X$ 是一些从 $A$ 到 $B$ 的映射的集合。$G$ 是 $A$ 上的置换群，且 $X$ 中的映射在 $G$ 的作用下封闭，那么$$|X&#x2F;G|&#x3D;\frac{1}{|G|}\sum_{g\in G}|X^g|$$其中 $X&#x2F;G$ 表示 $X$ 在 $G$ 的作用下所有等价类的集合（对于 $x,y\in X$，若存在 $g\in G$,">
+<meta property="og:description" content="Progress  Eliminate allocation from sbrk() (easy)  Lazy allocation (moderate)  Lazytests and Usertests (moderate)">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-11-11T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-12T15:10:59.368Z">
+<meta property="article:published_time" content="2022-02-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-02-03T14:34:20.121Z">
 <meta property="article:author" content="starling">
-<meta property="article:tag" content="数学笔记">
-<meta property="article:tag" content="群论">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://kristoff-starling.github.io/2021/11/12/Burnside%E5%BC%95%E7%90%86%E5%92%8CPolya%E5%AE%9A%E7%90%86/">
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lab%2005%20-%20Lazy%20allocation/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2021/11/12/Burnside%E5%BC%95%E7%90%86%E5%92%8CPolya%E5%AE%9A%E7%90%86/","path":"2021/11/12/Burnside引理和Polya定理/","title":"Burnside引理和Polya定理"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lab%2005%20-%20Lazy%20allocation/","path":"2022/02/03/MIT-6.S081 Lab 05 - Lazy allocation/","title":"MIT-6.S081 Lab 05: Lazy allocation"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Burnside引理和Polya定理 | starling的小屋</title>
+<title>MIT-6.S081 Lab 05: Lazy allocation | starling的小屋</title>
   
 
 
@@ -122,7 +120,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Burnside%E5%BC%95%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">Burnside引理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%81%E6%98%8E"><span class="nav-number">1.2.</span> <span class="nav-text">证明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Polya%E5%AE%9A%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">Polya定理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">2.1.</span> <span class="nav-text">描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%81%E6%98%8E-1"><span class="nav-number">2.2.</span> <span class="nav-text">证明</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Progress"><span class="nav-number">1.</span> <span class="nav-text">Progress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Eliminate-allocation-from-sbrk-easy"><span class="nav-number">2.</span> <span class="nav-text">Eliminate allocation from sbrk() (easy)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lazy-allocation-moderate"><span class="nav-number">3.</span> <span class="nav-text">Lazy allocation (moderate)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lazytests-and-Usertests-moderate"><span class="nav-number">4.</span> <span class="nav-text">Lazytests and Usertests (moderate)</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -187,7 +185,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2021/11/12/Burnside%E5%BC%95%E7%90%86%E5%92%8CPolya%E5%AE%9A%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lab%2005%20-%20Lazy%20allocation/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -200,7 +198,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Burnside引理和Polya定理
+          MIT-6.S081 Lab 05: Lazy allocation
         </h1>
 
         <div class="post-meta-container">
@@ -212,7 +210,16 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-11-12 00:00:00 / 修改时间：23:10:59" itemprop="dateCreated datePublished" datetime="2021-11-12T00:00:00+08:00">2021-11-12</time>
+      <time title="创建时间：2022-02-03 00:00:00 / 修改时间：22:34:20" itemprop="dateCreated datePublished" datetime="2022-02-03T00:00:00+08:00">2022-02-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+        </span>
     </span>
 
   
@@ -225,24 +232,30 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="Burnside引理"><a href="#Burnside引理" class="headerlink" title="Burnside引理"></a>Burnside引理</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>设 $A$ 和 $B$ 为有限集，$X$ 是一些从 $A$ 到 $B$ 的映射的集合。$G$ 是 $A$ 上的置换群，且 $X$ 中的映射在 $G$ 的作用下封闭，那么<br>$$<br>|X/G|=\frac{1}{|G|}\sum_{g\in G}|X^g|<br>$$<br>其中 $X/G$ 表示 $X$ 在 $G$ 的作用下所有等价类的集合（对于 $x,y\in X$，若存在 $g\in G$, $g(x)=y$，则 $x,y$ 在同一个等价类中）。$X^g=\{x\in X:g(x)=x\}$。</p>
+        <h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> Eliminate allocation from sbrk() (easy)</li>
+<li><input checked="" disabled="" type="checkbox"> Lazy allocation (moderate)</li>
+<li><input checked="" disabled="" type="checkbox"> Lazytests and Usertests (moderate)</li>
+</ul>
 <span id="more"></span>
 
-<h3 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h3><p>首先给出<strong>轨道稳定子定理</strong>：$X$ 和 $G$ 的定义同上，对于任意 $x\in X$，称 $G^x=\{g\in G:g(x)=x\}$ 为 $x$ 的<strong>稳定子</strong>，$G(x)=\{g(x):g\in G\}$ 为 $x$ 的<strong>轨道</strong>，则<br>$$<br>|G|=|G^x||G(x)|<br>$$</p>
-<blockquote>
-<p>证明：首先证明 $G^x$ 是 $G$ 的一个子群：恒等置换 $I$ 满足 $I(x)=x$，所以 $I\in G^x,G^x\neq \emptyset$ 。对于任意 $g\in G^x,h\in G^x$，考虑 $h$ 在 $G$ 中的逆元 $h^{-1}$，因为 $h^{-1}(x)=h^{-1}(h(x))$$=(h^{-1}\circ h)(x)=I(x)=x$，所以 $h^{-1}\in G^x$，于是 $gh^{-1}(x)=g(h^{-1}(x))=g(x)=x$，所以 $gh^{-1}\in G^x$。所以 $G^x$ 是 $G$ 的子群。</p>
-<p>根据拉格朗日定理，$|G^x||G:G^x|=|G|$，其中 $G:G^x$ 表示 $G^x$ 的所有左陪集构成的集合。所以现在只要证明 $|G(x)|=|G:G^x|$。考虑映射 $\varphi: G(x)\rightarrow G:G^x$，$\varphi(g(x))=gG^x$，下证 $\varphi$ 是双射：</p>
+<h2 id="Eliminate-allocation-from-sbrk-easy"><a href="#Eliminate-allocation-from-sbrk-easy" class="headerlink" title="Eliminate allocation from sbrk() (easy)"></a>Eliminate allocation from sbrk() (easy)</h2><p>该部分要做的事情很简单：在 <code>sbrk()</code> 系统调用的处理函数中，不要分配内存，只修改进程的 sz 即可。由于我们只修改了 sz 而没有为新申请的空间绑定页面，所以当用户程序使用这块内存的时候 (load/store指令)，就会因为页表无法翻译虚拟地址而报 kernel panic。</p>
+<h2 id="Lazy-allocation-moderate"><a href="#Lazy-allocation-moderate" class="headerlink" title="Lazy allocation (moderate)"></a>Lazy allocation (moderate)</h2><p>在该部分需要做的修改和注意事项在课上基本讲过，可以参考 Lecture 08 的课堂笔记。总体来说，我们需要在 usertrap() 中识别出缺页异常并写一个缺页异常的处理函数：申请一个物理页面，将导致错误的虚拟地址所在的虚拟页面映射过去。此外，由于延迟分配的存在，我们在 uvmunmap() 时释放的不一定是已经映射过的地址，应当取消其中的一些 panic 语句。</p>
+<h2 id="Lazytests-and-Usertests-moderate"><a href="#Lazytests-and-Usertests-moderate" class="headerlink" title="Lazytests and Usertests (moderate)"></a>Lazytests and Usertests (moderate)</h2><p>在该部分我们要额外处理 <code>sbrk()</code> 系统调用的一些细节：</p>
 <ul>
-<li>如果 $g(x),f(x)\in G(x)$ 满足 $gG^x=fG^x$，两边左乘 $f^{-1}$ 有 $(f^{-1}g)G^x=G^x$，所以有 $f^{-1}g\in G^x$，$(f^{-1}\circ g)(x)=x$。两边左乘 $f$ 即有 $g(x)=f(x)$，所以 $\varphi$ 是单射。</li>
-<li>对于 $G:G^x$ 中的任意一个左陪集 $gG^x$，存在 $g(x)\in G(x)$，$\varphi(g(x))=gG^x$，所以 $\varphi$ 是满射。</li>
+<li><p>当 <code>sbrk()</code> 传入的参数是负数时，我们应当调用 uvmdealloc() 正常进行释放。uvmdealloc() 释放的虚拟页面可能已经映射了物理页面，可能还没有映射物理页面。我们在上一个部分中已经取消了 uvmunmap() 函数中对该内容的检查，所以没有问题。</p>
+</li>
+<li><p>当 <code>sbrk()</code> 进行了非法的操作，如引起错误的虚拟地址不在堆区范围内，或者内存不足、无法分配新物理页面，则杀死当前进程。</p>
+</li>
+<li><p>除了缺页异常中需要处理延迟分配的问题，<code>read()</code> / <code>write()</code> 系统调用中也要处理延迟分配问题。该系统调用的函数调用路径 (以 write() 为例) 为  sys_write() $\rightarrow$ filewrite() $\rightarrow$ writei() $\rightarrow$ either_copyin() $\rightarrow$ copyin() $\rightarrow$  walkaddr()。内核为了在内核空间和用户空间之间传递数据，会调用 copyin()/copyout()/copyinstr()。这些函数会抓着用户虚拟地址在用户页表中进行一次 page table walk，以翻译出其物理地址。该过程中可能会因为延迟分配的问题翻译失败，我们要判断这种情况，并进行分配，代码细节和 usertrap() 中的非常类似，但需要注意的是由于 usertests 的设置问题，<u>在 walkaddr() 中遇到非法情况不能直接杀死进程</u>。</p>
+<p>  (注：事实上，如果将 lab pgtbl 中的代码添加进来，用户进程和内核共用一份页表，就可以由硬件完成所有的 page table walk，延迟分配的处理函数也只需要写一遍。)</p>
+</li>
 </ul>
-<p>结合以上两点，$\varphi$ 是双射，从而有 $|G(x)|=|G:G^x|$。</p>
-<p>综上，轨道稳定子定理得证。$\blacktriangle$ </p>
-</blockquote>
-<p>再考虑 Burnside 引理的证明，我们有</p>
-<p>$$<br>\begin{align}<br>\sum_{g\in G}|X^g| &amp;= |\{(g,x)\in G\times X: g(x)=x\}|\\<br>&amp;= \sum_{x\in X}|G^x|\\<br>&amp;= \sum_{x\in X}\frac{|G|}{|G(x)|}\quad (轨道稳定子定理)\\<br>&amp;= |G|\sum_{Y\in X/G}\sum_{x\in Y}\frac{1}{|G(x)|}\\<br>&amp;= |G|\sum_{Y\in X/G}\sum_{x\in Y}\frac{1}{|Y|}\quad (*)\\<br>&amp;= |G||X/G|<br>\end{align}<br>$$<br>注： $(*)$ 一步的道理来自映射集合 $X$ 在 $G$ 的作用下的等价类的含义。事实上对于任意 $x\in G$，$x$ 的轨道就是 $x$ 所在的等价类。</p>
-<h2 id="Polya定理"><a href="#Polya定理" class="headerlink" title="Polya定理"></a>Polya定理</h2><h3 id="描述-1"><a href="#描述-1" class="headerlink" title="描述"></a>描述</h3><p>在 Burnside 引理的基本条件的基础上，若 $X$ 是全部从 $A$ 到 $B$ 映射的集合（那么显然有 $X$ 在 $G$ 的作用下封闭），那么<br>$$<br>|X/G|=\frac{1}{|G|}\sum_{g\in G}|B|^{c(g)}<br>$$<br>其中 $c(g)$ 表示置换 $g$ 中的轮换（循环子置换）个数。</p>
-<h3 id="证明-1"><a href="#证明-1" class="headerlink" title="证明"></a>证明</h3><p>事实上 Polya 定理是在 Burnside 引理的基础上给出了一种高效计算 $|X^g|$ 的方法。 当 $X$ 是全部从 $A$ 到 $B$ 的映射的集合时，映射 $\phi$ 在 $g$ 的作用下是不动映射的充要条件是对于 $g$ 中的每个轮换，轮换中元素对应的 $\phi$ 值相同。$\phi$ 值有 $|B|$ 种选择，从而根据乘法原理，不动映射的个数是 $|B|^{c(g)}$。</p>
+<p>该实验中还有如下的几个细节：</p>
+<ul>
+<li>笔者查阅了一些网上的代码，发现它们处理 “用户栈地址” 的方式各不相同：有的人使用 p-&gt;kernel_sp，这实际上是进程的内核栈的栈顶地址。有的人使用 p-&gt;trapframe-&gt;sp，这是用户进程在陷入内核时的用户栈指针，由于用户栈此时不一定空，所以 p-&gt;trapframe-&gt;sp 并不一定指向栈底。从严谨的角度来说，获取栈底地址应该使用 <code>PGROUNDUP(p-&gt;trapframe-&gt;sp)</code>。笔者采用的另一种稍愚笨一些的方法为：在 proc 结构体中新建一个 ustack 变量，在 <code>exec()</code> 系统调用中把用户栈底的地址保存在其中。</li>
+<li>该实验中对于边界情况的判断要格外小心，usertest 中有很多针对边界情况的测试。p-&gt;sz，即 program break，指向的是用户内存顶部的下一个地址，第一个未被使用的地址，因此判断合法范围时一定是 <code>va &lt; p-&gt;sz</code>。此外 <code>PGROUNDUP(p-&gt;trapframe-&gt;sp)</code> 得到的地址为用户栈底地址的下一位，因此下界一定是 <code>PGROUNDUP(p-&gt;trapframe-&gt;sp) &lt;= va</code> 。(usertest 中的 copyinstr3 测试了当参数字符串的结束符处于未分配空间时程序是否能返回 -1)</li>
+</ul>
 
     </div>
 
@@ -251,22 +264,18 @@
     
 
     <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/%E6%95%B0%E5%AD%A6%E7%AC%94%E8%AE%B0/" rel="tag"># 数学笔记</a>
-              <a href="/tags/%E7%BE%A4%E8%AE%BA/" rel="tag"># 群论</a>
-          </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/11/02/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2007%20%E9%A2%98%E8%A7%A3/" rel="prev" title="问题求解 III - 07 题解">
-                  <i class="fa fa-chevron-left"></i> 问题求解 III - 07 题解
+                <a href="/2022/02/01/MIT-6.S081%20Lecture%2007%20-%20QA%20for%20Labs%201/" rel="prev" title="MIT-6.S081 Lecture 07: Q&A for Labs #1">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 07: Q&A for Labs #1
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/12/11/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2010%20%E9%A2%98%E8%A7%A3/" rel="next" title="问题求解 III - 10 题解">
-                  问题求解 III - 10 题解 <i class="fa fa-chevron-right"></i>
+                <a href="/2022/02/03/MIT-6.S081%20Lecture%2008%20-%20Page%20Faults/" rel="next" title="MIT-6.S081 Lecture 08: Page Faults">
+                  MIT-6.S081 Lecture 08: Page Faults <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
