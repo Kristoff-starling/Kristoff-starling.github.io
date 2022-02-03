@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="The benefits of virtual memory, besides offering isolation, include levels of indirection. We have already seen some interesting usage of mappings, such as trampoline page and guard page, but these ma">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT-6.S081 Lecture 08: Page Faults">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lecture%2008%20-%20Page%20Faults/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="The benefits of virtual memory, besides offering isolation, include levels of indirection. We have already seen some interesting usage of mappings, such as trampoline page and guard page, but these ma">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-02-03T08:43:17.119Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lecture%2008%20-%20Page%20Faults/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lecture%2008%20-%20Page%20Faults/","path":"2022/02/03/MIT-6.S081 Lecture 08 - Page Faults/","title":"MIT-6.S081 Lecture 08: Page Faults"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MIT-6.S081 Lecture 08: Page Faults | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lazy-allocation"><span class="nav-number">1.</span> <span class="nav-text">Lazy allocation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Zero-fill-in-demand"><span class="nav-number">2.</span> <span class="nav-text">Zero fill in demand</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Copy-on-write-COW-fork"><span class="nav-number">3.</span> <span class="nav-text">Copy-on-write (COW) fork</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demand-paging"><span class="nav-number">4.</span> <span class="nav-text">Demand paging</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Memory-mapped-files"><span class="nav-number">5.</span> <span class="nav-text">Memory-mapped files</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lecture%2008%20-%20Page%20Faults/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT-6.S081 Lecture 08: Page Faults
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-02-03 00:00:00 / 修改时间：16:43:17" itemprop="dateCreated datePublished" datetime="2022-02-03T00:00:00+08:00">2022-02-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>The benefits of virtual memory, besides offering isolation, include levels of indirection. We have already seen some interesting usage of mappings, such as trampoline page and guard page, but these mappings are relatively static. With the aid of page faults, the mappings become dynamic: when page faults occur, the kernel can change page table mappings. Combination of page table and page fault provides enormous amount of flexibility.</p>
+<span id="more"></span>
+
+<p>The kernel needs necessary information to handle with page faults:</p>
+<ul>
+<li><p>The faulting virtual address: RISC-V hardware stores it in the stval register.</p>
+</li>
+<li><p>The type of page faults, including instruction page fault, load page fault and store page fault. RISC-V manual specifies each type’s scause number:</p>
+<table>
+<thead>
+<tr>
+<th>page fault type</th>
+<th>scause number</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>instruction page fault</td>
+<td>12</td>
+</tr>
+<tr>
+<td>load page fault</td>
+<td>13</td>
+</tr>
+<tr>
+<td>store page fault</td>
+<td>15</td>
+</tr>
+</tbody></table>
+</li>
+<li><p>the va of instruction that causes the exception. The PC value is stored in sepc register and transferred into the trap frame.</p>
+</li>
+</ul>
+<h2 id="Lazy-allocation"><a href="#Lazy-allocation" class="headerlink" title="Lazy allocation"></a>Lazy allocation</h2><p>Xv6 provides <code>sbrk()</code> system call for user program to grow or shrink its heap size. Xv6 uses “eager allocation” for <code>sbrk()</code>, i.e. it immediately allocates physical memory for the applications. However, it’s difficult for applications to estimate the amount of heap space, so they usually ask for more pages than they need. Using page faults, kernel can respond to the system call in a more intelligent manner.    </p>
+<p>In lazy allocation, when <code>sbrk()</code> is called, we only increase p-&gt;sz by n, not allocating any physical pages. When the user program load/store a virtual address later in the heap, page fault exception is triggered. The kernel checks the faulting va in stval register: if <code>p-&gt;stack &lt; faulting va &lt; p-&gt;sz</code>, we call kalloc() to allocate physical page, update the user page table, and re-execute the instruction.</p>
+<p>Here’s a simple version of code implementation:</p>
+<p>In sys_sbrk(), we don’t need to call growproc() to allocate physical pages, the only thing we need to do is to modify p-&gt;sz:</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">uint64</span><br><span class="line">sys_sbrk(void)</span><br><span class="line">&#123;</span><br><span class="line">  int addr;</span><br><span class="line">  int n;</span><br><span class="line"></span><br><span class="line">  if(argint(0, &amp;n) &lt; 0)</span><br><span class="line">    return -1;</span><br><span class="line">  addr = myproc()-&gt;sz;</span><br><span class="line"><span class="addition">+ p-&gt;sz = p-&gt;sz + n;</span></span><br><span class="line"><span class="deletion">- if(growproc(n) &lt; 0)</span></span><br><span class="line"><span class="deletion">-   return -1;</span></span><br><span class="line">  return addr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Currently, if we boot xv6 and execute shell instruction <code>echo hello</code>, we’ll get a kernel panic:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">usertrap(): unexpected scause 0x000000000000000f pid=3</span><br><span class="line">			sepc = 0x00000000000012a4 stval=0x0000000000004008</span><br></pre></td></tr></table></figure>
+
+<p>The instruction at 0x12a4 is a store instruction, so the value in scause is 0xf. User program shell has 4 pages and the faulting va stored in stval register is just above the stack and belongs to the heap area.</p>
+<p>We need to modify the kernel to let xv6 handle with the page fault instead of directly triggering panic:</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">void</span><br><span class="line">usertrap(void)</span><br><span class="line">&#123;</span><br><span class="line">  ...</span><br><span class="line">  if(r_scause() == 8)&#123;</span><br><span class="line">    // system call</span><br><span class="line">    ...</span><br><span class="line">  &#125; else if((which_dev = devintr()) != 0)&#123;</span><br><span class="line">    // ok</span><br><span class="line"><span class="addition">+ &#125; else if (r_scause() = 15)&#123;</span></span><br><span class="line"><span class="addition">+ 	uint64 va = r_stval();</span></span><br><span class="line"><span class="addition">+ 	printf(&quot;page fault %p\n&quot;, va);</span></span><br><span class="line"><span class="addition">+ 	uint64 ka = (uint64) kalloc();</span></span><br><span class="line"><span class="addition">+ 	if(ka == 0)&#123;</span></span><br><span class="line"><span class="addition">+ 	  p-&gt;killed = 1;</span></span><br><span class="line"><span class="addition">+ 	&#125; else&#123;</span></span><br><span class="line"><span class="addition">+ 	  memset((void *)ka, 0, PGSIZE);</span></span><br><span class="line"><span class="addition">+ 	  va = PGROUNDDOWN(va);</span></span><br><span class="line"><span class="addition">+ 	  if (mappages(p-&gt;pagetable, va, PGSIZE, ka, PTE_W|PTE_U|PTE_R) != 0)</span></span><br><span class="line"><span class="addition">+ 	  &#123;</span></span><br><span class="line"><span class="addition">+ 	  	kfree((void *)ka);</span></span><br><span class="line"><span class="addition">+ 	  	p-&gt;killed = 1;</span></span><br><span class="line"><span class="addition">+ 	  &#125;</span></span><br><span class="line"><span class="addition">+ 	&#125;</span></span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    printf(&quot;usertrap(): unexpected scause %p pid=%d\n&quot;, r_scause(), p-&gt;pid);</span><br><span class="line">    printf(&quot;            sepc=%p stval=%p\n&quot;, r_sepc(), r_stval());</span><br><span class="line">    p-&gt;killed = 1;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  if(p-&gt;killed)</span><br><span class="line">    exit(-1);</span><br><span class="line"></span><br><span class="line">  // give up the CPU if this is a timer interrupt.</span><br><span class="line">  if(which_dev == 2)</span><br><span class="line">    yield();</span><br><span class="line"></span><br><span class="line">  usertrapret();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>in usertrap(), we insert a branch for handling with page faults. We read stval register to get the faulting virtual address, allocate a new physical page, and call mappages() to insert mappings in the user page table.</p>
+<p>However, we cannot let xv6 run correctly by only those modification. There’s another kernel panic message:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">panic: uvmunmap: not mapped</span><br></pre></td></tr></table></figure>
+
+<p>uvmunmap() doesn’t allow us to unmap pages that hasn’t benn allocated, but in lazy allocation this is valid. Therefore we need to modify uvmunmap():</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">void</span><br><span class="line">uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)</span><br><span class="line">&#123;</span><br><span class="line">  uint64 a;</span><br><span class="line">  pte_t *pte;</span><br><span class="line"></span><br><span class="line">  if((va % PGSIZE) != 0)</span><br><span class="line">    panic(&quot;uvmunmap: not aligned&quot;);</span><br><span class="line"></span><br><span class="line">  for(a = va; a &lt; va + npages*PGSIZE; a += PGSIZE)&#123;</span><br><span class="line">    if((pte = walk(pagetable, a, 0)) == 0)</span><br><span class="line">      panic(&quot;uvmunmap: walk&quot;);</span><br><span class="line">    if((*pte &amp; PTE_V) == 0)</span><br><span class="line"><span class="deletion">-     panic(&quot;uvmunmap: not mapped&quot;);</span></span><br><span class="line"><span class="addition">+     continue;</span></span><br><span class="line">    if(PTE_FLAGS(*pte) == PTE_V)</span><br><span class="line">      panic(&quot;uvmunmap: not a leaf&quot;);</span><br><span class="line">    if(do_free)&#123;</span><br><span class="line">      uint64 pa = PTE2PA(*pte);</span><br><span class="line">      kfree((void*)pa);</span><br><span class="line">    &#125;</span><br><span class="line">    *pte = 0;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Zero-fill-in-demand"><a href="#Zero-fill-in-demand" class="headerlink" title="Zero fill in demand"></a>Zero fill in demand</h2><p>Ususally there are lots of zero pages in the user space. For example, in the ELF file there is a .bss segment, in xv6, when we use <code>exec()</code> system call to load a program, the kernel allocate pages for the .bss segment and set the values as zero. </p>
+<p>A clever implementation is: during <code>exec()</code>, we only allocate one zero page in the physical memory and map all the zero pages in the virtual memory space to it. Those mappings should be read only. In the future when one zero page needs to be modified, a page fault exception will be triggered, and the kernel should allocate another zero page in the physical memory and modify page table’s PTE to map the virtual page being written to the new page (read-and-write).</p>
+<p>This “lazy zero page allocation” has at least 2 advantages:</p>
+<ul>
+<li>In some cases, only a small part of the .bss segment will be modified and zero-fill-in-demand saves lots of physical space.</li>
+<li>In <code>exec()</code> we don’t need to do lots of allocations, which makes <code>exec()</code> faster and provides better interact performance between users and the kernel. (Of course, we somehow “postpone” the penalty: a page fault contains hundreds of load/store instructions, which is very expensive.)</li>
+</ul>
+<h2 id="Copy-on-write-COW-fork"><a href="#Copy-on-write-COW-fork" class="headerlink" title="Copy-on-write (COW) fork"></a>Copy-on-write (COW) fork</h2><p>An observation is that: when we use <code>fork()</code> system call, xv6 creates physical pages and copies all the memory pages in the parent process into child process. Usually, there’s an <code>exec()</code> system call afterwards and xv6 frees the pages that have just be created.</p>
+<p>Copy-on-write fork somehow optimizes it. During a <code>fork()</code> system call, we copy the parent process’s page table into the child’s page table, i.e. let parent and child map to the same physical pages, instead of making copies of physical pages at once. </p>
+<p>However, we should remember that parent and child’s modifications cannot be visible to each other. To achieve the isolation, we set the PTEs as read-only PTEs. In the future, when parent/child process makes a modification, a page fault exception will be triggered, and the kernel is responsible for copying the corresponding physical page, updating page tables, changing the PTEs as read-and-write PTEs, and restarting the faulting instruction.</p>
+<blockquote>
+<p><strong>Q: How can the kernel tells the copy-on-write page fault from other invalid page faults?</strong></p>
+<p>Almost all the hardware supporting paging, including RISC-V, can address this issue. In RISC-V’s PTE format, there are some bits called RSW bits, which are available for kernel use. Kernel can set copy-on-write bit in the RSW area, and when page faults happen, the kernel checks the copy-on-write bit to decide whether it’s a valid page fault.</p>
+</blockquote>
+<p>If copy-on-write fork is implemented, there’s another things worth attention: in unmodified xv6, one physical page belongs to more or less one process except the trampoline page, which will never be freed. However, in copy-on-write-fork situation, there will be pages belonging to multiple processes, so when a process is being freed, it cannot directly free all the corresponding physical pages since other processes may be using them. A reasonable approach is that, we maintain a “ref count” for each page recording the number of processes using this page, and we free a page when its ref count equals zero.</p>
+<h2 id="Demand-paging"><a href="#Demand-paging" class="headerlink" title="Demand paging"></a>Demand paging</h2><p>For unmodified xv6, In <code>exec()</code> system call the kernel loads all the text segment pages and data segment pages into the memory. Accessing files is quite expensive and sometimes the user program doesn’t use all its instructions and data.</p>
+<p>If demand paging is implemented, in <code>exec()</code>, the kernel doesn’t load the pages, but set the PTEs as invalid (PTE_V bit removed). So when the user program executes its first instruction, a page fault exception will be triggered. The text/data segment pages are beforehand binded to corresponding files, and in the page fault handler, the kernel copies pages from the file to the memory, updating page tables and restarting the faulting instruction.</p>
+<p>In some situation, when a page fault happens and the kernel needs to load a new page into memory, there’s no free pages - the memory is used up. In this case, the kernel should firstly choose one page and evict it into the file/disk, and then use the just freed physical page to load the new page. After that, it can restart the faulting instruction.</p>
+<p>There are several strategies for choosing the evicted page. The most commonly used strategy is to evict the least recently used page (LRU strategy). Another useful strategy is that the kernel prefers to choose non-dirty page than dirty page, since evicting non-dirty page only requires disabling the corresponding PTE. In hardware, RISC-V’s PTE format includes PTE_A bit representing whether the page has been accessed recently, which is helpful for implementing LRU (of course, the operating system should periodically clear all the PTE_A bits). There’s also a PTE_D bit representing whether the page has ever been modified.</p>
+<h2 id="Memory-mapped-files"><a href="#Memory-mapped-files" class="headerlink" title="Memory-mapped files"></a>Memory-mapped files</h2><p>Most modern operating system provides <code>mmap()</code> system call, which aims at letting user program use load/store instructions to directly read/write files instead of repeatedly using expensive  <code>read()</code> / <code>write()</code> system calls. The declaration of <code>mmap()</code> is</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">mmap</span><span class="params">(<span class="keyword">void</span> *va, <span class="keyword">size_t</span> length, <span class="keyword">int</span> prot, <span class="keyword">int</span> flags, <span class="keyword">int</span> fd, <span class="keyword">off_t</span> offset)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>It will map the specified virtual address to the file descriptor. Some operating systems eagerly do the mappings: it loads pages in the files into the memory. However, by utilizing page fault mechanism, we can firstly only maintain a virtual memory area (vma) recording necessary information, and when a paging fault happens, it loads needed pages into memory, and when the file is closed, the kernel should write dirty pages back to the file/disk.</p>
+<blockquote>
+<p><strong>Q: What if multiple processes share one file page?</strong></p>
+<p>We don’t know the exact order of read/write operations in the two processes, so it’s an undefined behavior, we don’t need to do extra maintenance. If we implement a file locking in the file system, we can address the synchronizing issue.</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/01/MIT-6.S081%20Lecture%2007%20-%20QA%20for%20Labs%201/" rel="prev" title="MIT-6.S081 Lecture 07: Q&A for Labs #1">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 07: Q&A for Labs #1
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
