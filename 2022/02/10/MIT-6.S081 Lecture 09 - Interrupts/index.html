@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Type top in the command line and you can check the memory usage, processes information etc. in the terminal: 123456789101112131415161718192021222324top - 11:57:33 up 1 day,  1:04,  1 user,  load avera">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT-6.S081 Lecture 09: Interrupts">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/10/MIT-6.S081%20Lecture%2009%20-%20Interrupts/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Type top in the command line and you can check the memory usage, processes information etc. in the terminal: 123456789101112131415161718192021222324top - 11:57:33 up 1 day,  1:04,  1 user,  load avera">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-02-10T14:34:00.028Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/10/MIT-6.S081%20Lecture%2009%20-%20Interrupts/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/10/MIT-6.S081%20Lecture%2009%20-%20Interrupts/","path":"2022/02/10/MIT-6.S081 Lecture 09 - Interrupts/","title":"MIT-6.S081 Lecture 09: Interrupts"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MIT-6.S081 Lecture 09: Interrupts | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#RISC-V-Interrupt-Structure"><span class="nav-number">1.</span> <span class="nav-text">RISC-V Interrupt Structure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Organization-of-Drivers"><span class="nav-number">2.</span> <span class="nav-text">Organization of Drivers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Programming-Devices"><span class="nav-number">3.</span> <span class="nav-text">Programming Devices</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Interrupts-on-Hardware"><span class="nav-number">4.</span> <span class="nav-text">Interrupts on Hardware</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Case-Study"><span class="nav-number">5.</span> <span class="nav-text">Case Study: $</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Case-Study-ls"><span class="nav-number">6.</span> <span class="nav-text">Case Study: ls</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Interrupts-and-Concurrency"><span class="nav-number">7.</span> <span class="nav-text">Interrupts and Concurrency</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Interrupt-Evolution"><span class="nav-number">8.</span> <span class="nav-text">Interrupt Evolution</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/10/MIT-6.S081%20Lecture%2009%20-%20Interrupts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT-6.S081 Lecture 09: Interrupts
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-02-10 00:00:00 / 修改时间：22:34:00" itemprop="dateCreated datePublished" datetime="2022-02-10T00:00:00+08:00">2022-02-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Type <code>top</code> in the command line and you can check the memory usage, processes information etc. in the terminal:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">top - 11:57:33 up 1 day,  1:04,  1 user,  load average: 0.21, 0.25, 0.32</span><br><span class="line">Tasks: 354 total,   1 running, 353 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.9 us,  0.7 sy,  0.0 ni, 98.4 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">MiB Mem :  15661.3 total,    586.9 free,   2944.0 used,  12130.4 buff/cache</span><br><span class="line">MiB Swap:  19531.0 total,  19528.5 free,      2.5 used.  11403.6 avail Mem </span><br><span class="line"></span><br><span class="line">    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND  </span><br><span class="line">    840 root      20   0  421340  21428  16712 S   9.0   0.1   3:59.57 Network+ </span><br><span class="line">   4461 starling   9 -11 2834104  17456  13760 S   4.0   0.1  32:30.95 pulseau+ </span><br><span class="line">    949 root      20   0   10488   6496   4940 S   1.0   0.0  14:10.30 EasyMon+ </span><br><span class="line">    962 root      20   0  407004   9836   7688 S   1.0   0.1   8:50.53 ECAgent  </span><br><span class="line"> 113206 starling  20   0   36.3g  67604  51524 S   0.7   0.4   0:17.59 code     </span><br><span class="line">   4466 starling  20   0   10520   6480   3740 S   0.3   0.0   0:27.20 dbus-da+ </span><br><span class="line">   4615 starling  20   0 6096848 442400 163960 S   0.3   2.8  18:26.29 gnome-s+ </span><br><span class="line">   5241 starling  20   0  561596  35788  26204 S   0.3   0.2   5:20.81 sogoupi+ </span><br><span class="line"> 112573 starling  20   0 4934416 716796 396344 S   0.3   4.5   1:10.73 GeckoMa+ </span><br><span class="line"> 113141 starling  20   0   36.3g 165072  55252 S   0.3   1.0   0:08.28 code     </span><br><span class="line"> 113678 starling  20   0   40.6g 274404 121660 S   0.3   1.7   4:42.63 Typora   </span><br><span class="line"> 116933 starling  20   0 2571540 173676 127868 S   0.3   1.1   0:24.61 Isolate+ </span><br><span class="line"> 120059 root      20   0       0      0      0 I   0.3   0.0   0:00.03 kworker+ </span><br><span class="line"> 120151 starling  20   0   21704   4412   3460 R   0.3   0.0   0:00.77 top      </span><br><span class="line">      1 root      20   0  165108  11200   7684 S   0.0   0.1   0:04.22 systemd  </span><br><span class="line">      2 root      20   0       0      0      0 S   0.0   0.0   0:00.15 kthreadd </span><br><span class="line">      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>We can see that there’s little free memory left, most memory is used by the buffer cache. That’s a very common case in modern operating systems. Leaving too much memory space idle is wasteful, so operating systems usually make full use of the memory space. In this case, handling page fault exception and evicting pages out to the disk is very frequent.</p>
+<hr>
+<p>Sometimes the hardware wants attention, so they generate interrupts. The software should save its work, process the interrupts, and afterwards resume its work. The saving and resuming procedures are similar to those of system calls and traps, they all use the same mechanism. But the following features make interrupts different and be worth of a lecture:</p>
+<ul>
+<li>Asynchronous: interrupts can happen at any time. A system call must happen when a user program is running, but when interrupts come, we have no idea which process is being executed, or whether there is a process running.</li>
+<li>Concurrency. We have to address a lot of issues about concurrency and parallelism. This is the start point of talking about concurrency. The devices and the CPU are independent parts: CPU executes instructions while devices handling I/O events. This is true parallelism.</li>
+<li>Device programming: devices like ether-net cards and UART needs programming. There may be manual illustrating the function of each control register, but devices are often pool documented. </li>
+</ul>
+<h2 id="RISC-V-Interrupt-Structure"><a href="#RISC-V-Interrupt-Structure" class="headerlink" title="RISC-V Interrupt Structure"></a>RISC-V Interrupt Structure</h2><p>The first question is: where are interrupts come from? Interrupts come from the various devices. Devices send the interrupts to a device called platform-level interrupt controller (PLIC), CPU cores can access PLIC to see whether there’s an pending interrupts. When a CPU core finishes processing an interrupt, it sends a signal to the PLIC and PLIC knows that this interrupts can be forgot.</p>
+<blockquote>
+<p><strong>Q: Does PLIC has some mechanism to ensure fairness?</strong></p>
+<p>It’s up to the kernel. The kernel programs the PLIC hardware. PLIC doesn’t really actively choose service of delivering interrupts. The kernel fetches the interrupts and decides where interrupts should be sent. The kernel can also decide the priority of different kinds of interrupts. There is a huge amount of flexibility.</p>
+</blockquote>
+<h2 id="Organization-of-Drivers"><a href="#Organization-of-Drivers" class="headerlink" title="Organization of Drivers"></a>Organization of Drivers</h2><p>Drivers are codes used for managing devices. A typical driver structure includes 2 parts:</p>
+<ul>
+<li>Top part: this part handle system calls related to the device such as <code>read()</code> and <code>write()</code> system calls. It interacts with the user processes, so things like copyin()/copyout() are done in this part.</li>
+<li>Bottom part: this part serves as the interrupt handler of the corresponding device. When the device raises an interrupt, the kernel catches it and calls functions in the bottom part of its driver to handle the interrupt. It may happen that the current process is not the previous pending process, so the interrupt handler cannot count on any information about the process in the CPU core (e.g. page table).</li>
+</ul>
+<h2 id="Programming-Devices"><a href="#Programming-Devices" class="headerlink" title="Programming Devices"></a>Programming Devices</h2><p>In xv6 we use memory mapped I/O. In this case devices show up at particular addresses in the physical memory space, which are determined by the hardware board manufacturers. The operating systems should know these addresses in order to programming devices. OS can use normal load/store instructions to read/write the control registers of the devices.</p>
+<h2 id="Interrupts-on-Hardware"><a href="#Interrupts-on-Hardware" class="headerlink" title="Interrupts on Hardware"></a>Interrupts on Hardware</h2><p>The PLIC hardware is responsible for receiving interrupts from different devices and routing them to CPU cores. If a CPU core receives an interrupt and the SIE bit of sstatus register is set (i.e. interrupt enabled), the hardware will do the following things:</p>
+<ul>
+<li>Clear the SIE bit in sstatus register to temporarily disable interrupts.</li>
+<li>store PC value into sepc register.</li>
+<li>save the current mode, and then switch to supervisor mode.</li>
+<li>copy the address in stvec register into PC. In xv6, it goes to usertrap()/kerneltrap().</li>
+</ul>
+<h2 id="Case-Study"><a href="#Case-Study" class="headerlink" title="Case Study: $"></a>Case Study: <code>$</code></h2><p>We want to know how the prompt <code>$</code> shows up in the console. In general, the device puts <code>$</code> into the UART, and UART generates an interrupt when the char has been sent.</p>
+<p>RISC-V hardware has some supports for interrupts:</p>
+<ul>
+<li>SIE register. The supervisor interrupt enable register has a bit for external interrupt, a bit for software interrupt and a bit for timer interrupt. Here we only focus on external interrupts.</li>
+<li>SSTATUS register. This control register contains a bit that can enable/disable interrupts.</li>
+<li>SIP register. The supervisor interrupt pending register, together with SCAUSE register, contain information about what interrupt is coming.</li>
+</ul>
+<p>In main(), xv6 does a bunch of preparations which get ready for interrupts. The true time when interrupt is able to come in is when scheduler() calls intr_on():</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">scheduler</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">proc</span> *<span class="title">p</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">cpu</span> *<span class="title">c</span> =</span> mycpu();</span><br><span class="line">  </span><br><span class="line">  c-&gt;proc = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span>(;;)&#123;</span><br><span class="line">    <span class="comment">// Avoid deadlock by ensuring that devices can interrupt.</span></span><br><span class="line">    intr_on();</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>intr_on() is responsible for writing SSTATUS_SIE bit into SSTATUS register:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">intr_on</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  w_sstatus(r_sstatus() | SSTATUS_SIE);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Every CPU core runs scheduler() code, and when intr_on() is called, the corresponding core is able to accept interrupts.</p>
+<p>The first user process, <code>init</code>, opens the console device and assign 0/1/2 to standard input/output/error.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(open(<span class="string">&quot;console&quot;</span>, O_RDWR) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">    mknod(<span class="string">&quot;console&quot;</span>, CONSOLE, <span class="number">0</span>);</span><br><span class="line">    open(<span class="string">&quot;console&quot;</span>, O_RDWR);</span><br><span class="line">&#125;</span><br><span class="line">dup(<span class="number">0</span>);  <span class="comment">// stdout</span></span><br><span class="line">dup(<span class="number">0</span>);  <span class="comment">// stderr</span></span><br></pre></td></tr></table></figure>
+
+<p>Then in user program <code>/user/sh.c</code>, getcmd() function uses fprintf() to print a prompt to stderr. Here fprintf() doesn’t know what’s behind the file descriptor 2, maybe a file, a pipe or a device.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span></span></span><br><span class="line"><span class="function"><span class="title">getcmd</span><span class="params">(<span class="keyword">char</span> *buf, <span class="keyword">int</span> nbuf)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="built_in">fprintf</span>(<span class="number">2</span>, <span class="string">&quot;$ &quot;</span>);</span><br><span class="line">  <span class="built_in">memset</span>(buf, <span class="number">0</span>, nbuf);</span><br><span class="line">  gets(buf, nbuf);</span><br><span class="line">  <span class="keyword">if</span>(buf[<span class="number">0</span>] == <span class="number">0</span>) <span class="comment">// EOF</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>fprintf() will eventually use <code>write()</code> system call to write a character. Refer to the xv6-book notes for the procedure after that.</p>
+<h2 id="Case-Study-ls"><a href="#Case-Study-ls" class="headerlink" title="Case Study: ls"></a>Case Study: <code>ls</code></h2><p>We want to know how the command <code>ls</code> is typed into the console. In general, the keyboard connects to the receive line of UART. When a character is typed, UART generates an interrupt to let the kernel fetches that char.</p>
+<p>When a interrupt is received by the kernel, usertrap()/kerneltrap() calls devintr() to check whether there’s an interrupt and do corresponding operations. devintr() calls plic_claim() to make the CPU core claim the type of device and call uartintr() to handle UART interrupt. In uartintr(), it calls uartgetc() to get the character <code>l</code> and <code>s</code>, and calls consoleintr() to put them into buffer.</p>
+<h2 id="Interrupts-and-Concurrency"><a href="#Interrupts-and-Concurrency" class="headerlink" title="Interrupts and Concurrency"></a>Interrupts and Concurrency</h2><p>Concurrency issues in interrupts are difficult to tackle with. Here are some common concurrency problems:</p>
+<ul>
+<li>Devices and CPU cores run in parallel. It’s called producer-consumer parallelism and needs to be carefully managed.</li>
+<li>Interrupts can stop the current program. If it stops the user program, the procedure is similar to traps. However, interrupt can also stop the kernel, which means that the instruction sequence in kernel code may not be continuous either now. We have to carefully enable/disable interrupts in kernel code to avoid crashing.</li>
+<li>The top of drivers and the bottom of drivers may run in parallel. For example, when the shell program use <code>write()</code> system call to put a dollar prompt on the display, i.e. the top of the console driver is running, another CPU core may be handling interrupts from uart. The top and bottom share resources such as the buffer array. To make sure each core can see the correct, up-to-date content, we need a mechanism to ensure that only one core can do operations to shared resources at a time. Xv6 uses locks to realize that.</li>
+</ul>
+<p>Xv6 uses buffer array to address the producer-consumer parallelism. There are a read pointer and a write pointer for each buffer. The buffer is empty when <code>r==w</code>, the buffer is full when <code>w+1 mod BUFFER_SIZE==r</code>. The producer puts characters at the end of the queue and updates write pointer, while the consumer reads characters at the beginning of the queue and updates read pointer. Buffer array successfully decouple devices and CPU cores, making them able to run separately at high speed.</p>
+<blockquote>
+<p><strong>Q: Is there multiple buffer arrays, one for each CPU core?</strong></p>
+<p>The buffer array is an array declared in <code>/kernel/uart.c</code> and is set in RAM. There’s only one RAM so there’s only one buffer array. There are several CPU cores running processes in parallel, and they may access the UART device at the same time, i.e. access the buffer array in parallel. </p>
+<p>The main task for locking is to serialize accesses. Only the core that acquires the lock has access to the array and the read/write pointers. After it releases the lock, other cores can acquire the lock.</p>
+</blockquote>
+<h2 id="Interrupt-Evolution"><a href="#Interrupt-Evolution" class="headerlink" title="Interrupt Evolution"></a>Interrupt Evolution</h2><p>Interrupts used to be very fast because hardware is very simple in old times. Nowadays, interrupts are slow because devices are more complicated. They have to do lots of preliminary work before generating an interrupt. On the other hand, kernel design becomes more complicated and it takes longer to handle an interrupt.</p>
+<p>For some fast devices, e.g. high performing network card, there may be a stream of packets and the period is even shorter than the interrupt handling time. In this case, we have another strategy - polling. The CPU keeps checking a particular control register, once there’s data in, the CPU handles it. For slow devices, polling wastes CPU cycles on checking registers, but if devices are fast, polling can save frequent entry/exit cost.</p>
+<p>Nowadays, sophisticated devices can dynamically switch between polling and interrupts.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/03/MIT-6.S081%20Lecture%2008%20-%20Page%20Faults/" rel="prev" title="MIT-6.S081 Lecture 08: Page Faults">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 08: Page Faults
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
