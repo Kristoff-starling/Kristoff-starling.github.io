@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://kristoff-starling.github.io/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/</loc>
+    
+    <lastmod>2022-02-17</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://kristoff-starling.github.io/2022/01/27/MIT-6.S081%20Lab%2002%20-%20System%20calls/</loc>
     
     <lastmod>2022-02-17</lastmod>
@@ -489,6 +498,20 @@
   
   <url>
     <loc>https://kristoff-starling.github.io/categories/MIT-6-S081-Introduction-to-Operating-Systems/Lab-Reports/</loc>
+    <lastmod>2022-02-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kristoff-starling.github.io/categories/NJU-22020230-Operating-Systems/</loc>
+    <lastmod>2022-02-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kristoff-starling.github.io/categories/NJU-22020230-Operating-Systems/Lecture-Notes/</loc>
     <lastmod>2022-02-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

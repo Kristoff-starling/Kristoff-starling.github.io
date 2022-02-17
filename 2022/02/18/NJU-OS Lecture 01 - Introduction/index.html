@@ -22,27 +22,27 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="Address SpacesVirtual memory helps realize memory isolation. The basic idea is simple: we want each process to have its own address space. The address spaces are independent.">
+<meta name="description" content="关于计算机信息使用 uname -a 命令可以查看操作系统，时间，硬件架构等。  What is Operating System? Operating system is responsible for makeing it easy to run programs, allowing programs to share memory and interact with devices.  -">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MIT-6.S081 Lecture 04: Page Tables">
-<meta property="og:url" content="https://kristoff-starling.github.io/2022/01/27/MIT-6.S081%20Lecture%2004%20-%20Page%20Tables/index.html">
+<meta property="og:title" content="NJU-OS Lecture 01: Introduction">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/index.html">
 <meta property="og:site_name" content="starling的小屋">
-<meta property="og:description" content="Address SpacesVirtual memory helps realize memory isolation. The basic idea is simple: we want each process to have its own address space. The address spaces are independent.">
+<meta property="og:description" content="关于计算机信息使用 uname -a 命令可以查看操作系统，时间，硬件架构等。  What is Operating System? Operating system is responsible for makeing it easy to run programs, allowing programs to share memory and interact with devices.  -">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-01-26T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-02-17T08:49:07.271Z">
+<meta property="article:published_time" content="2022-02-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-02-17T16:09:48.103Z">
 <meta property="article:author" content="starling">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://kristoff-starling.github.io/2022/01/27/MIT-6.S081%20Lecture%2004%20-%20Page%20Tables/">
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/01/27/MIT-6.S081%20Lecture%2004%20-%20Page%20Tables/","path":"2022/01/27/MIT-6.S081 Lecture 04 - Page Tables/","title":"MIT-6.S081 Lecture 04: Page Tables"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/","path":"2022/02/18/NJU-OS Lecture 01 - Introduction/","title":"NJU-OS Lecture 01: Introduction"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>MIT-6.S081 Lecture 04: Page Tables | starling的小屋</title>
+<title>NJU-OS Lecture 01: Introduction | starling的小屋</title>
   
 
 
@@ -120,7 +120,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Address-Spaces"><span class="nav-number">1.</span> <span class="nav-text">Address Spaces</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paging-Hardware"><span class="nav-number">2.</span> <span class="nav-text">Paging Hardware</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-xv6-VMcode-amp-Layout"><span class="nav-number">3.</span> <span class="nav-text">Code: xv6 VMcode &amp; Layout</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">关于计算机信息</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Operating-System"><span class="nav-number"></span> <span class="nav-text">What is Operating System?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ENIAC"><span class="nav-number"></span> <span class="nav-text">ENIAC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1950s-Computer"><span class="nav-number"></span> <span class="nav-text">1950s Computer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1960s-Computer"><span class="nav-number"></span> <span class="nav-text">1960s Computer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1970s-Computer"><span class="nav-number"></span> <span class="nav-text">1970s+ Computer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Today"><span class="nav-number"></span> <span class="nav-text">Today</span></a></div>
         </div>
         <!--/noindex-->
 
@@ -185,7 +185,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/01/27/MIT-6.S081%20Lecture%2004%20-%20Page%20Tables/">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -198,7 +198,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          MIT-6.S081 Lecture 04: Page Tables
+          NJU-OS Lecture 01: Introduction
         </h1>
 
         <div class="post-meta-container">
@@ -208,27 +208,21 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2022-01-27 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-27T00:00:00+08:00">2022-01-27</time>
+      <time title="创建时间：2022-02-18 00:00:00 / 修改时间：00:09:48" itemprop="dateCreated datePublished" datetime="2022-02-18T00:00:00+08:00">2022-02-18</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-02-17 16:49:07" itemprop="dateModified" datetime="2022-02-17T16:49:07+08:00">2022-02-17</time>
-      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
         </span>
     </span>
 
@@ -249,19 +243,55 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="Address-Spaces"><a href="#Address-Spaces" class="headerlink" title="Address Spaces"></a>Address Spaces</h2><p>Virtual memory helps realize memory isolation. The basic idea is simple: we want each process to have its own address space. The address spaces are independent.</p>
-<span id="more"></span>
-
-<h2 id="Paging-Hardware"><a href="#Paging-Hardware" class="headerlink" title="Paging Hardware"></a>Paging Hardware</h2><p>We need a method to maintain the mappings of virtual memory to physical memory. The most common method is to maintain page tables.</p>
-<p>We should be aware that page table is a hardware mechanism: all the addresses that the CPU gets are virtual addresses. The memory management unit (MMU) is responsible for translating virtual addresses to physical addresses according to the page table and we use the “pa” to access main memory. The page tables are stored somewhere in the main memory and the satp register in the CPU stores the physical address the current page table.</p>
-<p>If we maintain the mappings for each virtual address, we will have $2^{64}$ entries and it’s obviously unreasonable. Actually we maintain the mappings for <strong>pages</strong>. The size of each page is 4096 bytes. i.e. The lower 12 bits of va are offset in page. We use 39 bits virtual address - 27 bits for VPN and 12 for offset, and we use 56 bits physical address.</p>
-<p>Maintaining $2^{27}$ entries is also a huge task. If all the processes store their page table in the memory, the physical memory will soon be used up. The real RISC-V design of page table has multi-level page tables. The 27 bits are divided into 9+9+9. We use the top 9 bits to index the page directory, and we get the physical address of the lower level page directory. Then we use the second 9 bits to index the next page directory… Each page table/directory is stored in a page. Since each page is 4KB in size and each PTE is 8B in size, there are $512=2^9$ entries in a page, that’s where the “9” comes from.</p>
-<p>The advantage of the page table tree is that we can leave unused page table entry empty. In that case, we don’t need to create the lower-level page tables for that entry, and it greatly saves memory space.</p>
-<p>The hierarchical page tables make the translation very expensive. In modern design there’s a kind of “cache of PTE entries”, called <strong>Translation Look-aside Buffer (TLB)</strong>, that helps accelerate the procedure. It stores the recently used [VA,PA] mappings and before translation you can firstly refer to to TLB to see if the mapping exists. </p>
-<p>In most architectures, the TLB is transparent to the OS. i.e. OS doesn’t care about the implementation details of TLB. It just needs to be aware of the existence of TLB and when switching page tables, it needs to flush the TLB. (In RISC-V, that’s the instruction <code>sfence.vma()</code>)</p>
-<h2 id="Code-xv6-VMcode-amp-Layout"><a href="#Code-xv6-VMcode-amp-Layout" class="headerlink" title="Code: xv6 VMcode &amp; Layout"></a>Code: xv6 VMcode &amp; Layout</h2><p>In xv6, physical addresses above 0x80000000 are mapped to the DRAM chips. physical addresses below 0x80000000 are used by I/O devices.</p>
-<p>For simplicity, the kernel mappings are identity mappings. i.e. va=pa. Pages for kernel stacks and guard pages are exceptions: guard pages are not mapped so they’re put in the high address of virtual address space to save physical memory space. Refer to the “Xv6-book Notes” for details.</p>
-<p>Refer to the “Xv6 Source code Manual” for details about how the kernel sets up the kernel address space.</p>
+        <blockquote>
+<h5 id="关于计算机信息"><a href="#关于计算机信息" class="headerlink" title="关于计算机信息"></a>关于计算机信息</h5><p>使用 <code>uname -a</code> 命令可以查看操作系统，时间，硬件架构等。</p>
+</blockquote>
+<h2 id="What-is-Operating-System"><a href="#What-is-Operating-System" class="headerlink" title="What is Operating System?"></a>What is Operating System?</h2><blockquote>
+<p>Operating system is responsible for makeing it easy to run programs, allowing programs to share memory and interact with devices.  - OSTEP</p>
+</blockquote>
+<p>操作系统：“管理软硬件资源，为程序提供服务”的东西。</p>
+<h3 id="ENIAC"><a href="#ENIAC" class="headerlink" title="ENIAC"></a>ENIAC</h3><ul>
+<li><p>逻辑门：真空电子管。</p>
+</li>
+<li><p>存储器：延迟线内存，类似于“小丑扔球”的技巧，将数据不断地扔进延迟线，拿出来以后经过放大器再扔进延迟线。</p>
+</li>
+<li><p>输入输出：打一针/将纸带挪动一下。</p>
+</li>
+</ul>
+<p>不需要操作系统。能运行程序就不错了，不需要“管理程序的程序”。</p>
+<h3 id="1950s-Computer"><a href="#1950s-Computer" class="headerlink" title="1950s Computer"></a>1950s Computer</h3><p>更快更小的逻辑门 (晶体管)，更大的内存 (磁芯内存)，更丰富的 I/O 设备。因为 I/O 设备速度严重低于处理器速度，所以中断机制出现。更多的人使用通用计算机，他们希望使用 API，而不是直接使用硬件。因此诞生了 FORTRAN 编程语言。</p>
+<p>1950s 的操作系统：管理多个程序依次排队运行的库函数和调度器。</p>
+<ul>
+<li>计算机非常贵非常少，多个用户排队使用计算机。<ul>
+<li>很多程序卡片 $\rightarrow$ OS $\rightarrow$ 硬件</li>
+</ul>
+</li>
+<li>操作 (operate) 任务 (job) 的系统 (system)<ul>
+<li>批处理系统：程序自动切换 (换卡) + 提供库函数 API</li>
+</ul>
+</li>
+</ul>
+<h3 id="1960s-Computer"><a href="#1960s-Computer" class="headerlink" title="1960s Computer"></a>1960s Computer</h3><p>更大的内存，更多的高级语言 (COBOL, BASIC etc.) … 我们可以将多个程序同时放到程序里。但计算机中只有一个 CPU。</p>
+<p>1960s 的操作系统：</p>
+<ul>
+<li><p>传统的执行流：A on CPU (30s) $\rightarrow$ A on device (5min) $\rightarrow$ A on CPU (30s) B on CPU (30s)</p>
+</li>
+<li><p>理想的执行流：</p>
+<p>  CPU:         A on CPU(30s) $\rightarrow$ OS 调度 $\rightarrow$ B on CPU (30s)         $\rightarrow$ OS 调度 $\rightarrow$ A on CPU</p>
+<p>  Device:                                                   $\rightarrow$ A on device (5min)</p>
+</li>
+</ul>
+<p>这就是多道程序 (multiprogramming)。为了防止恶意程序对别的程序和操作系统本身的破坏，我们还需要对每个程序的运行有一个好的隔离机制。</p>
+<p>多道程序在程序使用设备时发生切换。在引入时钟中断后，操作系统成为计算机的霸主：操作系统决定谁来运行。</p>
+<h3 id="1970s-Computer"><a href="#1970s-Computer" class="headerlink" title="1970s+ Computer"></a>1970s+ Computer</h3><p>计算机空前发展，与今天已无大异。</p>
+<p>分时系统趋于成熟，UNIX 诞生，奠定现代操作系统的形态。</p>
+<h3 id="Today"><a href="#Today" class="headerlink" title="Today"></a>Today</h3><p>操作系统：虚拟化硬件资源，为应用程序提供服务。</p>
+<p>面对的问题：</p>
+<ul>
+<li>更复杂的处理器和内存：非对称多处理器， Non-uniform Memory Access etc.。</li>
+<li>更多的设备和资源。</li>
+<li>……</li>
+</ul>
 
     </div>
 
@@ -275,14 +305,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/01/26/MIT-6.S081%20Lab%2001%20-%20Xv6%20and%20Unix%20utilities/" rel="prev" title="MIT-6.S081 Lab 01: Xv6 and Unix utilities">
-                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lab 01: Xv6 and Unix utilities
+                <a href="/2022/02/10/MIT-6.S081%20Lecture%2009%20-%20Interrupts/" rel="prev" title="MIT-6.S081 Lecture 09: Interrupts">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 09: Interrupts
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/01/27/MIT-6.S081%20Lab%2002%20-%20System%20calls/" rel="next" title="MIT-6.S081 Lab 02: System calls">
-                  MIT-6.S081 Lab 02: System calls <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>

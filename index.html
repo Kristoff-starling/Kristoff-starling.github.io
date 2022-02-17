@@ -129,13 +129,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -170,6 +170,132 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/" class="post-title-link" itemprop="url">NJU-OS Lecture 01: Introduction</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-02-18 00:00:00 / 修改时间：00:09:48" itemprop="dateCreated datePublished" datetime="2022-02-18T00:00:00+08:00">2022-02-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <blockquote>
+<h5 id="关于计算机信息"><a href="#关于计算机信息" class="headerlink" title="关于计算机信息"></a>关于计算机信息</h5><p>使用 <code>uname -a</code> 命令可以查看操作系统，时间，硬件架构等。</p>
+</blockquote>
+<h2 id="What-is-Operating-System"><a href="#What-is-Operating-System" class="headerlink" title="What is Operating System?"></a>What is Operating System?</h2><blockquote>
+<p>Operating system is responsible for makeing it easy to run programs, allowing programs to share memory and interact with devices.  - OSTEP</p>
+</blockquote>
+<p>操作系统：“管理软硬件资源，为程序提供服务”的东西。</p>
+<h3 id="ENIAC"><a href="#ENIAC" class="headerlink" title="ENIAC"></a>ENIAC</h3><ul>
+<li><p>逻辑门：真空电子管。</p>
+</li>
+<li><p>存储器：延迟线内存，类似于“小丑扔球”的技巧，将数据不断地扔进延迟线，拿出来以后经过放大器再扔进延迟线。</p>
+</li>
+<li><p>输入输出：打一针/将纸带挪动一下。</p>
+</li>
+</ul>
+<p>不需要操作系统。能运行程序就不错了，不需要“管理程序的程序”。</p>
+<h3 id="1950s-Computer"><a href="#1950s-Computer" class="headerlink" title="1950s Computer"></a>1950s Computer</h3><p>更快更小的逻辑门 (晶体管)，更大的内存 (磁芯内存)，更丰富的 I/O 设备。因为 I/O 设备速度严重低于处理器速度，所以中断机制出现。更多的人使用通用计算机，他们希望使用 API，而不是直接使用硬件。因此诞生了 FORTRAN 编程语言。</p>
+<p>1950s 的操作系统：管理多个程序依次排队运行的库函数和调度器。</p>
+<ul>
+<li>计算机非常贵非常少，多个用户排队使用计算机。<ul>
+<li>很多程序卡片 $\rightarrow$ OS $\rightarrow$ 硬件</li>
+</ul>
+</li>
+<li>操作 (operate) 任务 (job) 的系统 (system)<ul>
+<li>批处理系统：程序自动切换 (换卡) + 提供库函数 API</li>
+</ul>
+</li>
+</ul>
+<h3 id="1960s-Computer"><a href="#1960s-Computer" class="headerlink" title="1960s Computer"></a>1960s Computer</h3><p>更大的内存，更多的高级语言 (COBOL, BASIC etc.) … 我们可以将多个程序同时放到程序里。但计算机中只有一个 CPU。</p>
+<p>1960s 的操作系统：</p>
+<ul>
+<li><p>传统的执行流：A on CPU (30s) $\rightarrow$ A on device (5min) $\rightarrow$ A on CPU (30s) B on CPU (30s)</p>
+</li>
+<li><p>理想的执行流：</p>
+<p>  CPU:         A on CPU(30s) $\rightarrow$ OS 调度 $\rightarrow$ B on CPU (30s)         $\rightarrow$ OS 调度 $\rightarrow$ A on CPU</p>
+<p>  Device:                                                   $\rightarrow$ A on device (5min)</p>
+</li>
+</ul>
+<p>这就是多道程序 (multiprogramming)。为了防止恶意程序对别的程序和操作系统本身的破坏，我们还需要对每个程序的运行有一个好的隔离机制。</p>
+<p>多道程序在程序使用设备时发生切换。在引入时钟中断后，操作系统成为计算机的霸主：操作系统决定谁来运行。</p>
+<h3 id="1970s-Computer"><a href="#1970s-Computer" class="headerlink" title="1970s+ Computer"></a>1970s+ Computer</h3><p>计算机空前发展，与今天已无大异。</p>
+<p>分时系统趋于成熟，UNIX 诞生，奠定现代操作系统的形态。</p>
+<h3 id="Today"><a href="#Today" class="headerlink" title="Today"></a>Today</h3><p>操作系统：虚拟化硬件资源，为应用程序提供服务。</p>
+<p>面对的问题：</p>
+<ul>
+<li>更复杂的处理器和内存：非对称多处理器， Non-uniform Memory Access etc.。</li>
+<li>更多的设备和资源。</li>
+<li>……</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1009,97 +1135,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/01/27/MIT-6.S081%20Lab%2002%20-%20System%20calls/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/01/27/MIT-6.S081%20Lecture%2004%20-%20Page%20Tables/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/01/27/MIT-6.S081%20Lecture%2004%20-%20Page%20Tables/" class="post-title-link" itemprop="url">MIT-6.S081 Lecture 04: Page Tables</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2022-01-27 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-27T00:00:00+08:00">2022-01-27</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-02-17 16:49:07" itemprop="dateModified" datetime="2022-02-17T16:49:07+08:00">2022-02-17</time>
-      </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="Address-Spaces"><a href="#Address-Spaces" class="headerlink" title="Address Spaces"></a>Address Spaces</h2><p>Virtual memory helps realize memory isolation. The basic idea is simple: we want each process to have its own address space. The address spaces are independent.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/01/27/MIT-6.S081%20Lecture%2004%20-%20Page%20Tables/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
