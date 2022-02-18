@@ -22,27 +22,27 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
-<meta name="description" content="关于计算机信息使用 uname -a 命令可以查看操作系统，时间，硬件架构等。">
+<meta name="description" content="(注：该文档主要参考&#x2F;翻译了这篇博客。) ANSI Escape Code 是一种屏幕序列控制码，主要格式介绍如下：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="NJU-OS Lecture 01: Introduction">
-<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/index.html">
+<meta property="og:title" content="ANSI Escape Code: Quick Manual">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/18/ANSI%20Escape%20Code%20-%20Quick%20Manual/index.html">
 <meta property="og:site_name" content="starling的小屋">
-<meta property="og:description" content="关于计算机信息使用 uname -a 命令可以查看操作系统，时间，硬件架构等。">
+<meta property="og:description" content="(注：该文档主要参考&#x2F;翻译了这篇博客。) ANSI Escape Code 是一种屏幕序列控制码，主要格式介绍如下：">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-02-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-02-17T16:12:31.879Z">
+<meta property="article:modified_time" content="2022-02-18T05:16:35.059Z">
 <meta property="article:author" content="starling">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/">
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/18/ANSI%20Escape%20Code%20-%20Quick%20Manual/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/","path":"2022/02/18/NJU-OS Lecture 01 - Introduction/","title":"NJU-OS Lecture 01: Introduction"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/18/ANSI%20Escape%20Code%20-%20Quick%20Manual/","path":"2022/02/18/ANSI Escape Code - Quick Manual/","title":"ANSI Escape Code: Quick Manual"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>NJU-OS Lecture 01: Introduction | starling的小屋</title>
+<title>ANSI Escape Code: Quick Manual | starling的小屋</title>
   
 
 
@@ -120,7 +120,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">关于计算机信息</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-Operating-System"><span class="nav-number"></span> <span class="nav-text">What is Operating System?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ENIAC"><span class="nav-number"></span> <span class="nav-text">ENIAC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1950s-Computer"><span class="nav-number"></span> <span class="nav-text">1950s Computer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1960s-Computer"><span class="nav-number"></span> <span class="nav-text">1960s Computer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1970s-Computer"><span class="nav-number"></span> <span class="nav-text">1970s+ Computer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Today"><span class="nav-number"></span> <span class="nav-text">Today</span></a></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Control-Sequence"><span class="nav-number">1.</span> <span class="nav-text">Control Sequence</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Available-Function"><span class="nav-number">2.</span> <span class="nav-text">Available Function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SGR"><span class="nav-number">3.</span> <span class="nav-text">SGR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Miscellany"><span class="nav-number">4.</span> <span class="nav-text">Miscellany</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -185,7 +185,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/18/ANSI%20Escape%20Code%20-%20Quick%20Manual/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -198,7 +198,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          NJU-OS Lecture 01: Introduction
+          ANSI Escape Code: Quick Manual
         </h1>
 
         <div class="post-meta-container">
@@ -210,7 +210,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-02-18 00:00:00 / 修改时间：00:12:31" itemprop="dateCreated datePublished" datetime="2022-02-18T00:00:00+08:00">2022-02-18</time>
+      <time title="创建时间：2022-02-18 00:00:00 / 修改时间：13:16:35" itemprop="dateCreated datePublished" datetime="2022-02-18T00:00:00+08:00">2022-02-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -222,7 +222,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+          <a href="/categories/NJU-22020230-Operating-Systems/Material/" itemprop="url" rel="index"><span itemprop="name">Material</span></a>
         </span>
     </span>
 
@@ -243,57 +243,219 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <blockquote>
-<h5 id="关于计算机信息"><a href="#关于计算机信息" class="headerlink" title="关于计算机信息"></a>关于计算机信息</h5><p>使用 <code>uname -a</code> 命令可以查看操作系统，时间，硬件架构等。</p>
-</blockquote>
+        <p>(注：该文档主要参考/翻译了<a target="_blank" rel="noopener" href="https://notes.burke.libbey.me/ansi-escape-codes/#:~:text=ANSI%20escapes%20always%20start%20with%20%5Cx1b%2C%20or%20%5Ce%2C,of%20these%20escape%20codes%20start%20with%20%5Cx1b%20%5B.">这篇博客</a>。)</p>
+<p>ANSI Escape Code 是一种屏幕序列控制码，主要格式介绍如下：</p>
 <span id="more"></span>
 
-<h2 id="What-is-Operating-System"><a href="#What-is-Operating-System" class="headerlink" title="What is Operating System?"></a>What is Operating System?</h2><blockquote>
-<p>Operating system is responsible for makeing it easy to run programs, allowing programs to share memory and interact with devices.  - OSTEP</p>
-</blockquote>
-<p>操作系统：“管理软硬件资源，为程序提供服务”的东西。</p>
-<h3 id="ENIAC"><a href="#ENIAC" class="headerlink" title="ENIAC"></a>ENIAC</h3><ul>
-<li><p>逻辑门：真空电子管。</p>
-</li>
-<li><p>存储器：延迟线内存，类似于“小丑扔球”的技巧，将数据不断地扔进延迟线，拿出来以后经过放大器再扔进延迟线。</p>
-</li>
-<li><p>输入输出：打一针/将纸带挪动一下。</p>
-</li>
-</ul>
-<p>不需要操作系统。能运行程序就不错了，不需要“管理程序的程序”。</p>
-<h3 id="1950s-Computer"><a href="#1950s-Computer" class="headerlink" title="1950s Computer"></a>1950s Computer</h3><p>更快更小的逻辑门 (晶体管)，更大的内存 (磁芯内存)，更丰富的 I/O 设备。因为 I/O 设备速度严重低于处理器速度，所以中断机制出现。更多的人使用通用计算机，他们希望使用 API，而不是直接使用硬件。因此诞生了 FORTRAN 编程语言。</p>
-<p>1950s 的操作系统：管理多个程序依次排队运行的库函数和调度器。</p>
+<h2 id="Control-Sequence"><a href="#Control-Sequence" class="headerlink" title="Control Sequence"></a>Control Sequence</h2><p>一个控制序列总是由 <code>&lt;ESC&gt;</code> 开头的。<code>&lt;ESC&gt;</code> 的表示方法有 <code>\x1b</code>、<code>\e</code> 和 <code>\033</code> 三种，这三种表示方法等价。控制序列的语法为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">control sequence ::= &lt;\033[&gt; + (p1;)(p2)...(pn) + &lt;a letter&gt; </span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>&lt;&gt;</code> 中的内容是必须要有的，<code>()</code> 中的内容是可以选择的。这里的 <code>&lt;a letter&gt;</code> 可以理解为一个函数的名字，而前面的若干个以 <code>;</code> 隔开的数字可以理解为函数的参数，例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\033[0;1;3m</span><br></pre></td></tr></table></figure>
+
+<p>就可以理解为函数 <code>m(0, 1, 3)</code>。如果字母之前没有参数，则函数没有参数。</p>
+<h2 id="Available-Function"><a href="#Available-Function" class="headerlink" title="Available Function"></a>Available Function</h2><p>ANSI Escape Code 中可使用的常见函数如下表：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>name</th>
+<th>signature</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td>Cursor Up</td>
+<td>(n=1)</td>
+<td>Move cursor up by <code>n</code></td>
+</tr>
+<tr>
+<td>B</td>
+<td>Cursor Down</td>
+<td>(n=1)</td>
+<td>Move cursor down by <code>n</code></td>
+</tr>
+<tr>
+<td>C</td>
+<td>Cursor Forward</td>
+<td>(n=1)</td>
+<td>Move cursor forward by <code>n</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td>Cursor Back</td>
+<td>(n=1)</td>
+<td>Move cursor back by <code>n</code></td>
+</tr>
+<tr>
+<td>E</td>
+<td>Cursor Next Line</td>
+<td>(n=1)</td>
+<td>Move cursor to the beginning of the line <code>n</code> lines down</td>
+</tr>
+<tr>
+<td>F</td>
+<td>Cursor Previous Line</td>
+<td>(n=1)</td>
+<td>Move cursor to the beginning of the line <code>n</code> lines up</td>
+</tr>
+<tr>
+<td>G</td>
+<td>Cursor Horizontal Absolute</td>
+<td>(n=1)</td>
+<td>Move cursor to the the column <code>n</code> within the current row</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Cursor Position</td>
+<td>(n=1, m=1)</td>
+<td>Move cursor to row <code>n</code>, column <code>m</code>, counting from the top left corner</td>
+</tr>
+<tr>
+<td>J</td>
+<td>Erase in Display</td>
+<td>(n=0)</td>
+<td>Clear part of the screen. 0, 1, 2, and 3 have various specific functions</td>
+</tr>
+<tr>
+<td>K</td>
+<td>Erase in Line</td>
+<td>(n=0)</td>
+<td>Clear part of the line. 0, 1, and 2 have various specific functions</td>
+</tr>
+<tr>
+<td>S</td>
+<td>Scroll Up</td>
+<td>(n=1)</td>
+<td>Scroll window up by <code>n</code> lines</td>
+</tr>
+<tr>
+<td>T</td>
+<td>Scroll Down</td>
+<td>(n=1)</td>
+<td>Scroll window down by <code>n</code> lines</td>
+</tr>
+<tr>
+<td>s</td>
+<td>Save Cursor Position</td>
+<td>()</td>
+<td>Save current cursor position for use with <code>u</code></td>
+</tr>
+<tr>
+<td>u</td>
+<td>Restore Cursor Position</td>
+<td>()</td>
+<td>Set cursor back to position last saved by <code>s</code></td>
+</tr>
+<tr>
+<td>f</td>
+<td>…</td>
+<td>…</td>
+<td>(same as G)</td>
+</tr>
+<tr>
+<td>m</td>
+<td>SGR</td>
+<td>(*)</td>
+<td>Set graphics mode. More below</td>
+</tr>
+</tbody></table>
+<h2 id="SGR"><a href="#SGR" class="headerlink" title="SGR"></a>SGR</h2><p>SGR 函数的参数较为复杂，下表专门列举了 SGR 的各个参数的意义：</p>
+<table>
+<thead>
+<tr>
+<th>value</th>
+<th>name / description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>Reset: turn off all attributes</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Bold (or bright, it’s up to the terminal and the user config to some extent)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Italic</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Underline</td>
+</tr>
+<tr>
+<td>30–37</td>
+<td>Set text colour from the basic colour palette of 0–7</td>
+</tr>
+<tr>
+<td>38;5;<em>n</em></td>
+<td>Set text colour to index <code>n</code> in a <a target="_blank" rel="noopener" href="https://commons.wikimedia.org/wiki/File:Xterm_256color_chart.svg">256-colour palette</a> (e.g. <code>\x1b[38;5;34m</code>)</td>
+</tr>
+<tr>
+<td>38;2;<em>r</em>;<em>g</em>;<em>b</em></td>
+<td>Set text colour to an RGB value (e.g. <code>\x1b[38;2;255;255;0m</code>)</td>
+</tr>
+<tr>
+<td>40–47</td>
+<td>Set background colour</td>
+</tr>
+<tr>
+<td>48;5;<em>n</em></td>
+<td>Set background colour to index <code>n</code> in a 256-colour palette</td>
+</tr>
+<tr>
+<td>48;2;<em>r</em>;<em>g</em>;<em>b</em></td>
+<td>Set background colour to an RGB value</td>
+</tr>
+<tr>
+<td>90–97</td>
+<td>Set text colour from the <strong>bright</strong> colour palette of 0–7</td>
+</tr>
+<tr>
+<td>100–107</td>
+<td>Set background colour from the <strong>bright</strong> colour palette of 0–7</td>
+</tr>
+</tbody></table>
+<p>其中比较重要的用法列举如下：</p>
 <ul>
-<li>计算机非常贵非常少，多个用户排队使用计算机。<ul>
-<li>很多程序卡片 $\rightarrow$ OS $\rightarrow$ 硬件</li>
-</ul>
+<li><p>30-37 号用于设置字符的颜色，编号与颜色的对应关系为</p>
+<table>
+<thead>
+<tr>
+<th>No.</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Color</strong></td>
+<td>Black</td>
+<td>Red</td>
+<td>Green</td>
+<td>Yellow</td>
+<td>Blue</td>
+<td>Magenta(紫罗兰)</td>
+<td>cyan(青色)</td>
+<td>white</td>
+</tr>
+</tbody></table>
 </li>
-<li>操作 (operate) 任务 (job) 的系统 (system)<ul>
-<li>批处理系统：程序自动切换 (换卡) + 提供库函数 API</li>
-</ul>
+<li><p>在设置完字符颜色/背景颜色后，之后输出的字符都会是当前的颜色。如果想要关闭这个颜色设置，需要再使用一次 <code>\033[0m</code> 来清空。</p>
 </li>
 </ul>
-<h3 id="1960s-Computer"><a href="#1960s-Computer" class="headerlink" title="1960s Computer"></a>1960s Computer</h3><p>更大的内存，更多的高级语言 (COBOL, BASIC etc.) … 我们可以将多个程序同时放到程序里。但计算机中只有一个 CPU。</p>
-<p>1960s 的操作系统：</p>
-<ul>
-<li><p>传统的执行流：A on CPU (30s) $\rightarrow$ A on device (5min) $\rightarrow$ A on CPU (30s) B on CPU (30s)</p>
-</li>
-<li><p>理想的执行流：</p>
-<p>  CPU:         A on CPU(30s) $\rightarrow$ OS 调度 $\rightarrow$ B on CPU (30s)         $\rightarrow$ OS 调度 $\rightarrow$ A on CPU</p>
-<p>  Device:                                                   $\rightarrow$ A on device (5min)</p>
-</li>
-</ul>
-<p>这就是多道程序 (multiprogramming)。为了防止恶意程序对别的程序和操作系统本身的破坏，我们还需要对每个程序的运行有一个好的隔离机制。</p>
-<p>多道程序在程序使用设备时发生切换。在引入时钟中断后，操作系统成为计算机的霸主：操作系统决定谁来运行。</p>
-<h3 id="1970s-Computer"><a href="#1970s-Computer" class="headerlink" title="1970s+ Computer"></a>1970s+ Computer</h3><p>计算机空前发展，与今天已无大异。</p>
-<p>分时系统趋于成熟，UNIX 诞生，奠定现代操作系统的形态。</p>
-<h3 id="Today"><a href="#Today" class="headerlink" title="Today"></a>Today</h3><p>操作系统：虚拟化硬件资源，为应用程序提供服务。</p>
-<p>面对的问题：</p>
-<ul>
-<li>更复杂的处理器和内存：非对称多处理器， Non-uniform Memory Access etc.。</li>
-<li>更多的设备和资源。</li>
-<li>……</li>
-</ul>
+<p><strong>Example</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\x1b[38;2;255;255;0mH\x1b[0;1;3;35me\x1b[95ml\x1b[42ml\x1b[0;41mo\x1b[0m</span><br></pre></td></tr></table></figure>
+
+<p>上述代码可以打印出一个每个字符颜色和背景各异的 “Hello” 字符串。</p>
+<h2 id="Miscellany"><a href="#Miscellany" class="headerlink" title="Miscellany"></a>Miscellany</h2><p>另外一对有用的命令是 <code>\033[?25h</code> 和 <code>\033[?25l</code> ，用于显示和隐藏光标。此外，<code>\r</code> 和 <code>\033[1G]</code> 的作用相当：将光标移动到该行的开头。</p>
 
     </div>
 
@@ -307,11 +469,14 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/02/18/ANSI%20Escape%20Code%20-%20Quick%20Manual/" rel="prev" title="ANSI Escape Code: Quick Manual">
-                  <i class="fa fa-chevron-left"></i> ANSI Escape Code: Quick Manual
+                <a href="/2022/02/10/MIT-6.S081%20Lecture%2009%20-%20Interrupts/" rel="prev" title="MIT-6.S081 Lecture 09: Interrupts">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 09: Interrupts
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2022/02/18/NJU-OS%20Lecture%2001%20-%20Introduction/" rel="next" title="NJU-OS Lecture 01: Introduction">
+                  NJU-OS Lecture 01: Introduction <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
