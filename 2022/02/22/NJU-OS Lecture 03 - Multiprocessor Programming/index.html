@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 <meta name="description" content="并发：一个计算机程序被分成了若干个部分，在不改变程序最终运行结果的情况下，这些部分被乱序地执行。并发执行的多个部分会共享资源。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NJU-OS Lecture 03: Multiprocessor Programming">
@@ -30,7 +30,7 @@
 <meta property="og:description" content="并发：一个计算机程序被分成了若干个部分，在不改变程序最终运行结果的情况下，这些部分被乱序地执行。并发执行的多个部分会共享资源。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-02-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-02-22T13:42:31.680Z">
+<meta property="article:modified_time" content="2022-02-22T13:46:43.205Z">
 <meta property="article:author" content="starling">
 <meta name="twitter:card" content="summary">
 
@@ -78,6 +78,7 @@
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -90,11 +91,37 @@
         <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
         <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
         <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
 
 </div>
         
@@ -210,7 +237,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2022-02-22 00:00:00 / 修改时间：21:42:31" itemprop="dateCreated datePublished" datetime="2022-02-22T00:00:00+08:00">2022-02-22</time>
+      <time title="创建时间：2022-02-22 00:00:00 / 修改时间：21:46:43" itemprop="dateCreated datePublished" datetime="2022-02-22T00:00:00+08:00">2022-02-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -253,7 +280,20 @@
 <li>若干个栈帧链，每条栈帧链属于一个线程。</li>
 </ul>
 <p>在并发程序中，每一步的结果都是 non-deterministic 的，它的状态转移图是长成这样的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">stateDiagram-v2</span><br><span class="line">	state1: (g, T1, T2)</span><br><span class="line">	state1 --&gt; state2: 线程T1执行</span><br><span class="line">	state1 --&gt; state3: 线程T2执行</span><br><span class="line">	state2: (g&#x27;,T1&#x27;,T2)</span><br><span class="line">	state3: (g&#x27;,T1,T2&#x27;)</span><br><span class="line">	state2 --&gt; state4: 线程T1执行</span><br><span class="line">	state2 --&gt; state5: 线程T2执行</span><br><span class="line">	state3 --&gt; state6: 线程T1执行</span><br><span class="line">	state3 --&gt; state7: 线程T2执行</span><br><span class="line">	state4: ……</span><br><span class="line">	state5: ……</span><br><span class="line">	state6: ……</span><br><span class="line">	state7: ……</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">stateDiagram-v2
+    state1: (g, T1, T2)
+    state1 --> state2: 线程T1执行
+    state1 --> state3: 线程T2执行
+    state2: (g',T1',T2)
+    state3: (g',T1,T2')
+    state2 --> state4: 线程T1执行
+    state2 --> state5: 线程T2执行
+    state3 --> state6: 线程T1执行
+    state3 --> state7: 线程T2执行
+    state4: ……
+    state5: ……
+    state6: ……
+    state7: ……</pre>
 
 <h2 id="Simplified-Thread-API"><a href="#Simplified-Thread-API" class="headerlink" title="Simplified Thread API"></a>Simplified Thread API</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// thread.h</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdatomic.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> NTHREAD 6400</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span> T_FREE = <span class="number">0</span>, T_LIVE, T_DEAD, &#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> id, status;</span><br><span class="line">  <span class="keyword">pthread_t</span> thread;</span><br><span class="line">  <span class="keyword">void</span> (*entry)(<span class="keyword">int</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread</span> <span class="title">tpool</span>[<span class="title">NTHREAD</span>], *<span class="title">tptr</span> =</span> tpool;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">wrapper</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">thread</span> *<span class="title">thread</span> =</span> (struct thread *)arg;</span><br><span class="line">  thread-&gt;entry(thread-&gt;id);</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">create</span><span class="params">(<span class="keyword">void</span> *fn)</span> </span>&#123;</span><br><span class="line">  assert(tptr - tpool &lt; NTHREAD);</span><br><span class="line">  *tptr = (struct thread) &#123;</span><br><span class="line">    .id = tptr - tpool + <span class="number">1</span>,</span><br><span class="line">    .status = T_LIVE,</span><br><span class="line">    .entry = fn,</span><br><span class="line">  &#125;;</span><br><span class="line">  pthread_create(&amp;(tptr-&gt;thread), <span class="literal">NULL</span>, wrapper, tptr);</span><br><span class="line">  ++tptr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">join</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; NTHREAD; i++) &#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">thread</span> *<span class="title">t</span> =</span> &amp;tpool[i];</span><br><span class="line">    <span class="keyword">if</span> (t-&gt;status == T_LIVE) &#123;</span><br><span class="line">      pthread_join(t-&gt;thread, <span class="literal">NULL</span>);</span><br><span class="line">      t-&gt;status = T_DEAD;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">__attribute__((destructor)) <span class="function"><span class="keyword">void</span> <span class="title">cleanup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  join();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -277,7 +317,23 @@
 
 <ul>
 <li><p>假设当前有三个线程 T1,T2,T3，T1 中调用了 <code>join()</code>，则之后的状态机如下：</p>
-  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">stateDiagram-v2</span><br><span class="line">    state1:(T1(join),T2,T3)</span><br><span class="line">    state1 --&gt; state1: 线程 T1 执行</span><br><span class="line">    state1 --&gt; state2: 线程 T2 执行</span><br><span class="line">    state1 --&gt; state3: 线程 T3 执行</span><br><span class="line">    state2:(T1(join), T2(end), T3)</span><br><span class="line">    state3:(T1(join), T2, T3(end))</span><br><span class="line">    state2 --&gt; state2: 线程 T1 执行</span><br><span class="line">    state2 --&gt; state4: 线程 T3 执行</span><br><span class="line">    state3 --&gt; state3: 线程 T1 执行</span><br><span class="line">    state3 --&gt; state4: 线程 T2 执行</span><br><span class="line">    state4: (T1,T2(end),T3(end))</span><br><span class="line">    note right of state4</span><br><span class="line">        T2,T3 线程均结束，T1 死循环解除</span><br><span class="line">    end note</span><br><span class="line">    state4 --&gt; state5</span><br><span class="line">    state5: ……</span><br></pre></td></tr></table></figure></li>
+  <pre class="mermaid">        stateDiagram-v2
+      state1:(T1(join),T2,T3)
+      state1 --> state1: 线程 T1 执行
+      state1 --> state2: 线程 T2 执行
+      state1 --> state3: 线程 T3 执行
+      state2:(T1(join), T2(end), T3)
+      state3:(T1(join), T2, T3(end))
+      state2 --> state2: 线程 T1 执行
+      state2 --> state4: 线程 T3 执行
+      state3 --> state3: 线程 T1 执行
+      state3 --> state4: 线程 T2 执行
+      state4: (T1,T2(end),T3(end))
+      note right of state4
+          T2,T3 线程均结束，T1 死循环解除
+      end note
+      state4 --> state5
+      state5: ……</pre></li>
 <li><p>原理：join() 中主线程会遍历线程数组，调用 pthread_join() 函数等待它们一一结束，将其状态设置为 T_DEAD，然后返回。pthread_join() 函数的声明为：</p>
   <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_join</span><span class="params">(<span class="keyword">pthread_t</span> thread, <span class="keyword">void</span> **retval)</span></span>;</span><br></pre></td></tr></table></figure>
 
@@ -486,6 +542,7 @@
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
 
   
+<script src="/js/third-party/search/local-search.js"></script>
 
 
   <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
