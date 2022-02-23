@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。 对于 sum.c ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性： 123456789void Tsum()&amp;#123;	for (int i &#x3D; 0; i &lt; N; i++)	&amp;#123;+		lock();		sum++;+		unlock();">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 04: Understanding Concurrent Programs">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/23/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。 对于 sum.c ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性： 123456789void Tsum()&amp;#123;	for (int i &#x3D; 0; i &lt; N; i++)	&amp;#123;+		lock();		sum++;+		unlock();">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-02-23T12:59:31.157Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/23/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/23/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/","path":"2022/02/23/NJU-OS Lecture 04 - Understanding Concurrent Programs/","title":"NJU-OS Lecture 04: Understanding Concurrent Programs"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 04: Understanding Concurrent Programs | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Peterson-Algorithm"><span class="nav-number">1.</span> <span class="nav-text">Peterson Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Model-Checker"><span class="nav-number">2.</span> <span class="nav-text">Model Checker</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/23/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 04: Understanding Concurrent Programs
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-02-23 00:00:00 / 修改时间：20:59:31" itemprop="dateCreated datePublished" datetime="2022-02-23T00:00:00+08:00">2022-02-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。</p>
+<p>对于 <code>sum.c</code> ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">void Tsum()</span><br><span class="line">&#123;</span><br><span class="line">	for (int i = 0; i &lt; N; i++)</span><br><span class="line">	&#123;</span><br><span class="line"><span class="addition">+		lock();</span></span><br><span class="line">		sum++;</span><br><span class="line"><span class="addition">+		unlock();</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>一个失败的尝试：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK   1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> UNLOCK 0</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">retry:</span><br><span class="line">    <span class="keyword">if</span> (locked != UNLOCK)   <span class="comment">//*</span></span><br><span class="line">        <span class="keyword">goto</span> entry;</span><br><span class="line">    locked = LOCK;          <span class="comment">//**</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// critical section</span></span><br><span class="line">    </span><br><span class="line">    locked = UNLOCK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从状态机的角度：</p>
+<pre class="mermaid">stateDiagram-v2
+    state1: T1-L*, T2-L*
+    state1 --> state2: 线程T1执行
+    state1 --> state3: 线程T2执行
+    state3: ……
+    state2: T1-L**, T2-L*
+    state2 --> state4: 线程T1执行
+    state2 --> state5: 线程T2执行
+    state4: ……
+    state5: T1-L**, T2-L**</pre>
+
+<p>可以看到存在一个状态，T1 和 T2 同时获得了锁。该方法失败的根本原因是：我们读锁状态的操作和写锁状态的操作无法原子地执行。</p>
+<h2 id="Peterson-Algorithm"><a href="#Peterson-Algorithm" class="headerlink" title="Peterson Algorithm"></a>Peterson Algorithm</h2><p>理解并发的最好方法就是用物理世界中的东西作类比：</p>
+<ul>
+<li>对共享内存的写：往黑板上贴便签条</li>
+<li>对共享内存的读：看黑板 (其实不同于人类，计算机的“读”只能看到一个“历史状态”)</li>
+</ul>
+<hr>
+<p>假设 Alice 和 Bob 想上厕所，为了不一起进入厕所，他们制定了如下协议：</p>
+<ul>
+<li>Alice 想上厕所，于是举起了自己的旗子 (step1，相当于 STORE 一个共享的变量)，然后将 Bob (对方) 的名字写在厕所门上 (step2，也相当于 STORE 一个共享变量)；如果 Bob 想上厕所也是同理。注意厕所门上的名字是可以覆盖的。</li>
+<li>Alice 检查门上的名字和厕所 (step3)，Alice 可以进入厕所当且仅当 Bob 没有举旗子，或者门上的名字是自己的。</li>
+<li>Alice 上完厕所后，把自己的旗子放下来 (step4)。</li>
+</ul>
+<p>我们讨论几种情况：</p>
+<ul>
+<li>Alice 检查的时候，如果 Bob 没举旗子，说明 Bob 还不想上厕所，那 Alice 可以上厕所。</li>
+<li>如果 Bob 也举旗子了，那结果是：先举旗子的人可以先进入厕所，因为后举旗子的人会把先举旗子的人的名字贴在门上，覆盖了先贴的人的内容。</li>
+<li>……</li>
+</ul>
+<p>一个完备的证明方法是画状态机。我们设置状态机 $(PC_1, PC_2, x, y, turn,status)$，六个状态分别表示 T1/T2 执行到第几行，T1/T2 的旗子有没有举起来，当前厕所门上写的是谁的名字，以及当前厕所状态。</p>
+<pre class="mermaid">stateDiagram-v2
+    s1: (1, 1, 0, 0, A, e)
+    s1 --> s2: T1
+    s2: (2, 1, 1, 0, A, e)
+    s1 --> s3: T2
+    s3: (1, 2, 0, 1, A, e)
+    note left of s3
+        T1先执行与T2先执行完全等价
+        该分支省略
+    end note
+    s2 --> s4: T1
+    s4: (3, 1, 1, 0, B, e)
+    s2 --> s5: T2
+    s5: (2, 2, 1, 1, A, e) 
+    s4 --> s6: T1
+    s6: (3, 1, 1, 0, B, A)
+    s4 --> s7: T2
+    s7: (3, 2, 1, 1, B, e)
+    s7 --> s7: T1
+    s7 --> s20: T2
+    s20: (3, 3, 1, 1, A, e)
+    s20 --> s14: T1
+    s20 --> s20: T2
+    s5 --> s7: T1
+    s5 --> s9: T2
+    s9: (2, 3, 1, 1, A, e)
+    note right of s9
+        与左孩子完全等价
+        该分支省略
+    end note
+    s6 --> s10: T1
+    s6 --> s11: T2
+    s11: (3, 2, 1, 1, B, A)
+    s10: (4, 1, 1, 0, B, e)
+    s10 --> s12: T1
+    s10 --> s15: T2
+    s12: (1, 1, 0, 0, B, e)
+    s15: (4, 2, 1, 1, B, e)
+    s11 --> s15: T1
+    s11 --> s14: T2
+    s14: (3, 3, 1, 1, A, A)
+    s14 --> s17: T1
+    s14 --> s14: T2
+    s15 --> s16: T1
+    s15 --> s17: T2
+    s16: (1, 2, 0, 1, B, e)
+    s17: (4, 3, 1, 1, A, e)
+    s17 --> s18: T1
+    s17 --> s17: T2
+    s18: (1, 3, 0, 1, A, e)</pre>
+
+<p>我们还可以写一个小程序验证 Peterson：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BARRIER __sync_synchronize()	</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">long</span> cnt = atomic_fetch_add(&amp;count, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">int</span> i = atomic_fetch_add(&amp;nested, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (i != <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d threads in the critical section @ count=%ld\n&quot;</span>, i, cnt);</span><br><span class="line">    assert(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  atomic_fetch_add(&amp;nested, <span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> x = <span class="number">0</span>, y = <span class="number">0</span>, turn;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    x = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = B;                BARRIER; <span class="comment">// &lt;- this is critcal for x86</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!y) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != B) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    x = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    y = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = A;                BARRIER;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!x) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != A) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    y = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 critical_section() 中，代码主要做的事情是操作一个共享变量，如果某个时刻 <code>nested == 2</code>，说明两个线程同时进入了临界区域，则报错。</p>
+<p>由于现代编译器和多处理器会调整语句顺序/乱序执行……所以我们在每条语句后面添加一条 <code>__sync_synchronize()</code> 来保证编译按照顺序进行，且多处理器之间具有可见性。事实证明，如果去掉 BARRIER 会发生错误。</p>
+<h2 id="Model-Checker"><a href="#Model-Checker" class="headerlink" title="Model Checker"></a>Model Checker</h2><p>我们希望用程序自动画出状态机。<a href="https://kristoff-starling.github.io/files/model-checker.py">model-checker.py</a> 帮助我们完成了这项工作，其中用到的 python 语言机制较多，暂时留坑。我们可以用 <code>model-checker.py</code> 中编写的装饰器来编写多个线程，<a href="https://kristoff-starling.github.io/files/peterson-flag.py">peterson-flag.py</a> 是一个示例。使用命令 <code>python3 model-checker.py xxx.py</code> 可以输出状态机的所有节点和转移关系。</p>
+<p><code>model-checker.py</code> 主要利用了 python generator 的机制来快速获得进程的状态机。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numbers</span>(<span class="params">init=<span class="number">0</span>, step=<span class="number">1</span></span>):</span></span><br><span class="line">    n = init</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        n += step</span><br><span class="line">        <span class="keyword">yield</span> n</span><br><span class="line"></span><br><span class="line">g = numbers()</span><br><span class="line">h = numbers(<span class="number">100</span>, <span class="number">200</span>)</span><br><span class="line"><span class="built_in">print</span>(g, h)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br></pre></td></tr></table></figure>
+
+<p>该程序输出结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;generator object numbers at 0x7f0a75b4fcf0&gt; &lt;generator object numbers at 0x7f0a759f9ba0&gt;</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">300</span><br><span class="line">3</span><br><span class="line">500</span><br></pre></td></tr></table></figure>
+
+<p>虽然 numbers() 里面是一个死循环，但执行 numbers() 还是可以退出，这得益于 <code>yield</code> 语句，yield 的功能类似于操作系统的调度，它会主动让出执行流。<code>g.__next__()</code> 语句可以从被打断处重新进入，继续执行函数直到遇到下一次 yield。如果我们在每一条语句后面都加上一个 yield，让 yield 后面返回所有的线程局部变量，我们就获得了函数每执行一步之后的状态机。</p>
+<p>Model checker 将验证程序正确性的问题转化成了一个图论问题：</p>
+<ul>
+<li><p>Safety (线程是否互斥)：从初始状态出发，是否存在到红色 (互斥失败) 节点的路径？</p>
+<blockquote>
+<p>图搜索</p>
+</blockquote>
+</li>
+<li><p>Liveness：是否从任意黑色 (没有人执行临界区域代码) 状态出发，总能在有限步内到达蓝色/绿色 (有一个线程执行临界区域代码) 节点？</p>
+<blockquote>
+<p>这等价于只考虑图中的黑色节点，是否存在环。只要对黑色节点的导出子图求 SCC 即可。</p>
+</blockquote>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/22/NJU-OS%20Lecture%2003%20-%20Multiprocessor%20Programming/" rel="prev" title="NJU-OS Lecture 03: Multiprocessor Programming">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 03: Multiprocessor Programming
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

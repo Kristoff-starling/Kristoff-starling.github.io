@@ -2526,4 +2526,131 @@
         <category>Lecture Notes</category>
       </categories>
   </entry>
+  <entry>
+    <title>NJU-OS Lecture 04: Understanding Concurrent Programs</title>
+    <url>/2022/02/23/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/</url>
+    <content><![CDATA[<p>互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。</p>
+<p>对于 <code>sum.c</code> ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">void Tsum()</span><br><span class="line">&#123;</span><br><span class="line">	for (int i = 0; i &lt; N; i++)</span><br><span class="line">	&#123;</span><br><span class="line"><span class="addition">+		lock();</span></span><br><span class="line">		sum++;</span><br><span class="line"><span class="addition">+		unlock();</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>一个失败的尝试：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK   1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> UNLOCK 0</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">retry:</span><br><span class="line">    <span class="keyword">if</span> (locked != UNLOCK)   <span class="comment">//*</span></span><br><span class="line">        <span class="keyword">goto</span> entry;</span><br><span class="line">    locked = LOCK;          <span class="comment">//**</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// critical section</span></span><br><span class="line">    </span><br><span class="line">    locked = UNLOCK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从状态机的角度：</p>
+<pre class="mermaid">stateDiagram-v2
+    state1: T1-L*, T2-L*
+    state1 --> state2: 线程T1执行
+    state1 --> state3: 线程T2执行
+    state3: ……
+    state2: T1-L**, T2-L*
+    state2 --> state4: 线程T1执行
+    state2 --> state5: 线程T2执行
+    state4: ……
+    state5: T1-L**, T2-L**</pre>
+
+<p>可以看到存在一个状态，T1 和 T2 同时获得了锁。该方法失败的根本原因是：我们读锁状态的操作和写锁状态的操作无法原子地执行。</p>
+<h2 id="Peterson-Algorithm"><a href="#Peterson-Algorithm" class="headerlink" title="Peterson Algorithm"></a>Peterson Algorithm</h2><p>理解并发的最好方法就是用物理世界中的东西作类比：</p>
+<ul>
+<li>对共享内存的写：往黑板上贴便签条</li>
+<li>对共享内存的读：看黑板 (其实不同于人类，计算机的“读”只能看到一个“历史状态”)</li>
+</ul>
+<hr>
+<p>假设 Alice 和 Bob 想上厕所，为了不一起进入厕所，他们制定了如下协议：</p>
+<ul>
+<li>Alice 想上厕所，于是举起了自己的旗子 (step1，相当于 STORE 一个共享的变量)，然后将 Bob (对方) 的名字写在厕所门上 (step2，也相当于 STORE 一个共享变量)；如果 Bob 想上厕所也是同理。注意厕所门上的名字是可以覆盖的。</li>
+<li>Alice 检查门上的名字和厕所 (step3)，Alice 可以进入厕所当且仅当 Bob 没有举旗子，或者门上的名字是自己的。</li>
+<li>Alice 上完厕所后，把自己的旗子放下来 (step4)。</li>
+</ul>
+<p>我们讨论几种情况：</p>
+<ul>
+<li>Alice 检查的时候，如果 Bob 没举旗子，说明 Bob 还不想上厕所，那 Alice 可以上厕所。</li>
+<li>如果 Bob 也举旗子了，那结果是：先举旗子的人可以先进入厕所，因为后举旗子的人会把先举旗子的人的名字贴在门上，覆盖了先贴的人的内容。</li>
+<li>……</li>
+</ul>
+<p>一个完备的证明方法是画状态机。我们设置状态机 $(PC_1, PC_2, x, y, turn,status)$，六个状态分别表示 T1/T2 执行到第几行，T1/T2 的旗子有没有举起来，当前厕所门上写的是谁的名字，以及当前厕所状态。</p>
+<pre class="mermaid">stateDiagram-v2
+    s1: (1, 1, 0, 0, A, e)
+    s1 --> s2: T1
+    s2: (2, 1, 1, 0, A, e)
+    s1 --> s3: T2
+    s3: (1, 2, 0, 1, A, e)
+    note left of s3
+        T1先执行与T2先执行完全等价
+        该分支省略
+    end note
+    s2 --> s4: T1
+    s4: (3, 1, 1, 0, B, e)
+    s2 --> s5: T2
+    s5: (2, 2, 1, 1, A, e) 
+    s4 --> s6: T1
+    s6: (3, 1, 1, 0, B, A)
+    s4 --> s7: T2
+    s7: (3, 2, 1, 1, B, e)
+    s7 --> s7: T1
+    s7 --> s20: T2
+    s20: (3, 3, 1, 1, A, e)
+    s20 --> s14: T1
+    s20 --> s20: T2
+    s5 --> s7: T1
+    s5 --> s9: T2
+    s9: (2, 3, 1, 1, A, e)
+    note right of s9
+        与左孩子完全等价
+        该分支省略
+    end note
+    s6 --> s10: T1
+    s6 --> s11: T2
+    s11: (3, 2, 1, 1, B, A)
+    s10: (4, 1, 1, 0, B, e)
+    s10 --> s12: T1
+    s10 --> s15: T2
+    s12: (1, 1, 0, 0, B, e)
+    s15: (4, 2, 1, 1, B, e)
+    s11 --> s15: T1
+    s11 --> s14: T2
+    s14: (3, 3, 1, 1, A, A)
+    s14 --> s17: T1
+    s14 --> s14: T2
+    s15 --> s16: T1
+    s15 --> s17: T2
+    s16: (1, 2, 0, 1, B, e)
+    s17: (4, 3, 1, 1, A, e)
+    s17 --> s18: T1
+    s17 --> s17: T2
+    s18: (1, 3, 0, 1, A, e)</pre>
+
+<p>我们还可以写一个小程序验证 Peterson：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BARRIER __sync_synchronize()	</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">long</span> cnt = atomic_fetch_add(&amp;count, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">int</span> i = atomic_fetch_add(&amp;nested, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (i != <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d threads in the critical section @ count=%ld\n&quot;</span>, i, cnt);</span><br><span class="line">    assert(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  atomic_fetch_add(&amp;nested, <span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> x = <span class="number">0</span>, y = <span class="number">0</span>, turn;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    x = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = B;                BARRIER; <span class="comment">// &lt;- this is critcal for x86</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!y) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != B) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    x = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    y = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = A;                BARRIER;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!x) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != A) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    y = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 critical_section() 中，代码主要做的事情是操作一个共享变量，如果某个时刻 <code>nested == 2</code>，说明两个线程同时进入了临界区域，则报错。</p>
+<p>由于现代编译器和多处理器会调整语句顺序/乱序执行……所以我们在每条语句后面添加一条 <code>__sync_synchronize()</code> 来保证编译按照顺序进行，且多处理器之间具有可见性。事实证明，如果去掉 BARRIER 会发生错误。</p>
+<h2 id="Model-Checker"><a href="#Model-Checker" class="headerlink" title="Model Checker"></a>Model Checker</h2><p>我们希望用程序自动画出状态机。<a href="https://kristoff-starling.github.io/files/model-checker.py">model-checker.py</a> 帮助我们完成了这项工作，其中用到的 python 语言机制较多，暂时留坑。我们可以用 <code>model-checker.py</code> 中编写的装饰器来编写多个线程，<a href="https://kristoff-starling.github.io/files/peterson-flag.py">peterson-flag.py</a> 是一个示例。使用命令 <code>python3 model-checker.py xxx.py</code> 可以输出状态机的所有节点和转移关系。</p>
+<p><code>model-checker.py</code> 主要利用了 python generator 的机制来快速获得进程的状态机。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numbers</span>(<span class="params">init=<span class="number">0</span>, step=<span class="number">1</span></span>):</span></span><br><span class="line">    n = init</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        n += step</span><br><span class="line">        <span class="keyword">yield</span> n</span><br><span class="line"></span><br><span class="line">g = numbers()</span><br><span class="line">h = numbers(<span class="number">100</span>, <span class="number">200</span>)</span><br><span class="line"><span class="built_in">print</span>(g, h)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br></pre></td></tr></table></figure>
+
+<p>该程序输出结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;generator object numbers at 0x7f0a75b4fcf0&gt; &lt;generator object numbers at 0x7f0a759f9ba0&gt;</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">300</span><br><span class="line">3</span><br><span class="line">500</span><br></pre></td></tr></table></figure>
+
+<p>虽然 numbers() 里面是一个死循环，但执行 numbers() 还是可以退出，这得益于 <code>yield</code> 语句，yield 的功能类似于操作系统的调度，它会主动让出执行流。<code>g.__next__()</code> 语句可以从被打断处重新进入，继续执行函数直到遇到下一次 yield。如果我们在每一条语句后面都加上一个 yield，让 yield 后面返回所有的线程局部变量，我们就获得了函数每执行一步之后的状态机。</p>
+<p>Model checker 将验证程序正确性的问题转化成了一个图论问题：</p>
+<ul>
+<li><p>Safety (线程是否互斥)：从初始状态出发，是否存在到红色 (互斥失败) 节点的路径？</p>
+<blockquote>
+<p>图搜索</p>
+</blockquote>
+</li>
+<li><p>Liveness：是否从任意黑色 (没有人执行临界区域代码) 状态出发，总能在有限步内到达蓝色/绿色 (有一个线程执行临界区域代码) 节点？</p>
+<blockquote>
+<p>这等价于只考虑图中的黑色节点，是否存在环。只要对黑色节点的导出子图求 SCC 即可。</p>
+</blockquote>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
 </search>
