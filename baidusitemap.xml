@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/03/06/NJU-OS%20Lecture%2006%20-%20Concurrent%20Programming%20-%20Synchronization/</loc>
+    <lastmod>2022-03-06</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/03/01/NJU-OS%20Lecture%2005%20-%20Concurrent%20Programming%20-%20Mutex/</loc>
     <lastmod>2022-03-01</lastmod>
   </url>
