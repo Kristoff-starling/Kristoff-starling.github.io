@@ -2939,7 +2939,7 @@
   </entry>
   <entry>
     <title>NJU-OS Lecture 07: Concurrent Programming - Real World</title>
-    <url>/2022/03/06/NJU-OS%20Lecture%2007%20-%20Concurrent%20Programming%20-%20Real%20World/</url>
+    <url>/2022/03/08/NJU-OS%20Lecture%2007%20-%20Concurrent%20Programming%20-%20Real%20World/</url>
     <content><![CDATA[<h2 id="High-Performance-Computing"><a href="#High-Performance-Computing" class="headerlink" title="High Performance Computing"></a>High Performance Computing</h2><p>HPC: 解决需要 massive computation 的任务。</p>
 <p>基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 “join()” 汇总一下 (涉及线程、机器、共享内存之间的通信)。</p>
 <p>HPC 可以实现的原因：数据的局部性。例如我们想利用 HPC 进行一团气体的运动模拟，那么我们可以将立方体容器内的气体切分成很多块，每个线程管一块。每个线程管理的气体绝大部分的运动都是本地的，我们只需要处理少部分的相邻块的气体分子交换即可。</p>
