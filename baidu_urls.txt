@@ -1,4 +1,5 @@
 https://kristoff-starling.github.io/2022/03/06/NJU-OS%20Lecture%2006%20-%20Concurrent%20Programming%20-%20Synchronization/
+https://kristoff-starling.github.io/2022/03/06/NJU-OS%20Lecture%2007%20-%20Concurrent%20Programming%20-%20Real%20World/
 https://kristoff-starling.github.io/2022/03/01/NJU-OS%20Lecture%2005%20-%20Concurrent%20Programming%20-%20Mutex/
 https://kristoff-starling.github.io/2022/02/28/Stack-smashing%20Attack%20-%20An%20Introduction/
 https://kristoff-starling.github.io/2022/02/23/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/

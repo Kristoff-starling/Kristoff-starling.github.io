@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="High Performance ComputingHPC: 解决需要 massive computation 的任务。 基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 “join()” 汇总一下 (涉及线程、机器、共享内存之间的通信)。 HPC 可以实现的原因：数据的局部性。例如我们想利用 HPC 进">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 07: Concurrent Programming - Real World">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/03/06/NJU-OS%20Lecture%2007%20-%20Concurrent%20Programming%20-%20Real%20World/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="High Performance ComputingHPC: 解决需要 massive computation 的任务。 基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 “join()” 汇总一下 (涉及线程、机器、共享内存之间的通信)。 HPC 可以实现的原因：数据的局部性。例如我们想利用 HPC 进">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-07T16:21:00.014Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/03/06/NJU-OS%20Lecture%2007%20-%20Concurrent%20Programming%20-%20Real%20World/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/03/06/NJU-OS%20Lecture%2007%20-%20Concurrent%20Programming%20-%20Real%20World/","path":"2022/03/06/NJU-OS Lecture 07 - Concurrent Programming - Real World/","title":"NJU-OS Lecture 07: Concurrent Programming - Real World"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 07: Concurrent Programming - Real World | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#High-Performance-Computing"><span class="nav-number">1.</span> <span class="nav-text">High Performance Computing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example-Mandelbrot-Set"><span class="nav-number">1.1.</span> <span class="nav-text">Example: Mandelbrot Set</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Data-Center"><span class="nav-number">2.</span> <span class="nav-text">Data Center</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Goroutine"><span class="nav-number">2.1.</span> <span class="nav-text">Goroutine</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web-2-0"><span class="nav-number">3.</span> <span class="nav-text">Web 2.0</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">38</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/06/NJU-OS%20Lecture%2007%20-%20Concurrent%20Programming%20-%20Real%20World/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 07: Concurrent Programming - Real World
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-06 00:00:00" itemprop="dateCreated datePublished" datetime="2022-03-06T00:00:00+08:00">2022-03-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-08 00:21:00" itemprop="dateModified" datetime="2022-03-08T00:21:00+08:00">2022-03-08</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="High-Performance-Computing"><a href="#High-Performance-Computing" class="headerlink" title="High Performance Computing"></a>High Performance Computing</h2><p>HPC: 解决需要 massive computation 的任务。</p>
+<p>基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 “join()” 汇总一下 (涉及线程、机器、共享内存之间的通信)。</p>
+<p>HPC 可以实现的原因：数据的局部性。例如我们想利用 HPC 进行一团气体的运动模拟，那么我们可以将立方体容器内的气体切分成很多块，每个线程管一块。每个线程管理的气体绝大部分的运动都是本地的，我们只需要处理少部分的相邻块的气体分子交换即可。</p>
+<span id="more"></span>
+
+<h3 id="Example-Mandelbrot-Set"><a href="#Example-Mandelbrot-Set" class="headerlink" title="Example: Mandelbrot Set"></a>Example: Mandelbrot Set</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mandelbrot.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;thread.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> NT;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> W 6400</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> H 6400</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMG_FILE <span class="meta-string">&quot;./mandelbrot.ppm&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">belongs</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> x / (W / NT) == t;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> x[W][H];</span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> done = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">display</span><span class="params">(FILE *fp, <span class="keyword">int</span> step)</span> </span>&#123; </span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">int</span> rnd = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">int</span> w = W / step, h = H / step;</span><br><span class="line">  <span class="comment">// STFW: Portable Pixel Map</span></span><br><span class="line">  <span class="built_in">fprintf</span>(fp, <span class="string">&quot;P6\n %d %d 255\n&quot;</span>, w, h);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; H; j += step) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; W; i += step) &#123;</span><br><span class="line">      <span class="keyword">int</span> n = x[i][j];</span><br><span class="line">      <span class="keyword">int</span> r = <span class="number">255</span> * <span class="built_in">pow</span>((n - <span class="number">80</span>) / <span class="number">800.0</span>, <span class="number">3</span>);</span><br><span class="line">      <span class="keyword">int</span> g = <span class="number">255</span> * <span class="built_in">pow</span>((n - <span class="number">80</span>) / <span class="number">800.0</span>, <span class="number">0.7</span>);</span><br><span class="line">      <span class="keyword">int</span> b = <span class="number">255</span> * <span class="built_in">pow</span>((n - <span class="number">80</span>) / <span class="number">800.0</span>, <span class="number">0.5</span>);</span><br><span class="line">      fputc(r, fp); fputc(g, fp); fputc(b, fp);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tworker</span><span class="params">(<span class="keyword">int</span> tid)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; W; i++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; H; j++)</span><br><span class="line">      <span class="keyword">if</span> (belongs(i, j, tid - <span class="number">1</span>)) &#123;</span><br><span class="line">        <span class="keyword">double</span> a = <span class="number">0</span>, b = <span class="number">0</span>, c, d;</span><br><span class="line">        <span class="keyword">while</span> ((c = a * a) + (d = b * b) &lt; <span class="number">4</span> &amp;&amp; x[i][j]++ &lt; <span class="number">880</span>) &#123;</span><br><span class="line">          b = <span class="number">2</span> * a * b + j * <span class="number">1024.0</span> / H * <span class="number">8e-9</span> - <span class="number">0.645411</span>;</span><br><span class="line">          a = c - d + i * <span class="number">1024.0</span> / W * <span class="number">8e-9</span> + <span class="number">0.356888</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  done++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tdisplay</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">float</span> ms = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    FILE *fp = popen(<span class="string">&quot;viu -&quot;</span>, <span class="string">&quot;w&quot;</span>); assert(fp);</span><br><span class="line">    display(fp, W / <span class="number">256</span>);</span><br><span class="line">    pclose(fp);</span><br><span class="line">    <span class="keyword">if</span> (done == NT) <span class="keyword">break</span>;</span><br><span class="line">    usleep(<span class="number">1000000</span> / <span class="number">5</span>);</span><br><span class="line">    ms += <span class="number">1000.0</span> / <span class="number">5</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Approximate render time: %.1lfs\n&quot;</span>, ms / <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">  FILE *fp = fopen(IMG_FILE, <span class="string">&quot;w&quot;</span>); assert(fp);</span><br><span class="line">  display(fp, <span class="number">2</span>);</span><br><span class="line">  fclose(fp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">  assert(argc == <span class="number">2</span>);</span><br><span class="line">  NT = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; NT; i++) &#123;</span><br><span class="line">    create(Tworker);</span><br><span class="line">  &#125;</span><br><span class="line">  create(Tdisplay);</span><br><span class="line">  join();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码使用一些数学手法画出一幅清晰度很高，非常美观的分形图。代码中有一些有意思的小工具：</p>
+<ul>
+<li><p>Tdisplay 线程中使用了 viu 命令行工具，它可以将一张图片以较低的分辨率打印在终端上，这可以在让我们看到图像生成的大致过程。我们可以看到该程序将画面切分成了多个部分，每个线程控制一个。</p>
+</li>
+<li><p>Tdisplay 线程最终将像素信息输出到了一个 ppm (portable pixel map) 文件中。对于 C 语言来说，这是一种非常方便的输出图像的方式：只需要在文件开头输出</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">P6</span><br><span class="line">W H COLOR <span class="comment">// 宽，高，颜色数</span></span><br></pre></td></tr></table></figure>
+
+<p>  然后一行一行地将每个点的 RGB 值输出即可。</p>
+</li>
+</ul>
+<h2 id="Data-Center"><a href="#Data-Center" class="headerlink" title="Data Center"></a>Data Center</h2><p>多副本情况下的低延迟、高可靠性问题。这其中存在一些互相矛盾的点</p>
+<ul>
+<li>Availability - 数据在 data center 应该有多个副本，这样如果某个副本坏了，数据不会丢失。此外，为了各地地人可以快速读取，服务器会把本地城市 data center 的数据直接返回。</li>
+<li>Consistency - ”我在南京屏蔽我妈，我妈在广州也要响应这个屏蔽。” 不能因为图快而不同步地直接读取本地副本。</li>
+<li>Partition Tolerance</li>
+</ul>
+<p>这门课的问题：如何在一台计算机上既可能高效地处理并行请求？</p>
+<p>我们的工具：线程、协程</p>
+<ul>
+<li>线程：可以在操作系统的调度算法下进行切换，但线程切换很“重”：需要保存上下文，需要陷入内核 (privilege level 的改变)……</li>
+<li>协程：更轻量级的并发 (只要遵守 calling convention，切换时不需要保存那么多寄存器，不需要进操作系统)，但只有执行 co_yield() 才会切换，如果某个线程执行了很慢的 I/O 系统调用，剩下的协程就都在摸鱼。</li>
+</ul>
+<h3 id="Goroutine"><a href="#Goroutine" class="headerlink" title="Goroutine"></a>Goroutine</h3><p>Go 是一门专门服务系统编程的语言。go 支持所谓的 goroutine: 在概念上它是线程，但它是使用类似于协程的原理实现的。每个 CPU 上只有一个线程，但这个线程下有多个 goroutine，每个 CPU 上有一个 Go worker 负责调度这些 goroutine。goroutine 切换的方式和协程相似，因此非常轻量级。对于某些会导致阻塞的系统调用 (如 sleep, rand)，go 会将他们改成 non-blocking 的版本，如果需要陷入内核进行长时间操作，它就会 yield 到另一个 goroutine 执行。这样，goroutine 将操作系统和 CPU 都利用到了100%。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Example from &quot;The Go Programming Language&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;fmt&quot;</span></span><br><span class="line">  <span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">go</span> spinner(<span class="number">100</span> * time.Millisecond)</span><br><span class="line">  <span class="keyword">const</span> n = <span class="number">45</span></span><br><span class="line">  fibN := fib(n) <span class="comment">// slow</span></span><br><span class="line">  fmt.Printf(<span class="string">&quot;\rFibonacci(%d) = %d\n&quot;</span>, n, fibN)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">spinner</span><span class="params">(delay time.Duration)</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, r := <span class="keyword">range</span> <span class="string">`-\|/`</span> &#123;</span><br><span class="line">      fmt.Printf(<span class="string">&quot;\r%c&quot;</span>, r)</span><br><span class="line">      time.Sleep(delay)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">  <span class="keyword">if</span> x &lt; <span class="number">2</span> &#123; <span class="keyword">return</span> x &#125;</span><br><span class="line">  <span class="keyword">return</span> fib(x - <span class="number">1</span>) + fib(x - <span class="number">2</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在主函数中，我们使用 <code>go spinner</code> 创建了一个新的 goroutine。该程序可以一边计算 Fibinacci 数列，一边在 spinner 协程中打印旋转的进度条。</p>
+<p>绝大部分的并发问题都可以通过生产者-消费者模型来解决。Go 语言封装了生产者-消费者队列，提供了用于 goroutines 之间通信的 API：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> stream = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">10</span>)</span><br><span class="line"><span class="keyword">const</span> n = <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">produce</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> i := <span class="number">0</span>; ; i++ &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;produce&quot;</span>, i)</span><br><span class="line">    stream &lt;- i</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">consume</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> &#123;</span><br><span class="line">    x := &lt;-stream</span><br><span class="line">    fmt.Println(<span class="string">&quot;consume&quot;</span>, x)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; n; i++ &#123;</span><br><span class="line">    <span class="keyword">go</span> produce()</span><br><span class="line">  &#125;</span><br><span class="line">  consume()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>make(chan int, 10)</code> 定义了一个通道，并规定了其最大容量 (最大容量为 0 的 channel 可以用来同步)。生产者通过 <code>stream &lt;- i</code> 往队列里面加东西，消费者通过 <code>x := &lt;-stream</code> 从队列里面取东西。其内部的锁，睡眠等细节问题全部对程序员透明。</p>
+<h2 id="Web-2-0"><a href="#Web-2-0" class="headerlink" title="Web 2.0"></a>Web 2.0</h2><p>在网页这种计算量、并发量都不大的场景下，我们使用的模型是单线程+事件模型。事件按照顺序执行，具有原子性 (减少了发生并发 bug 的可能)，遇到耗时的 API 就立刻返回 (结束一个事件)。</p>
+<p>为了代码的可维护性，描述流图的语言正在发展。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/01/NJU-OS%20Lecture%2005%20-%20Concurrent%20Programming%20-%20Mutex/" rel="prev" title="NJU-OS Lecture 05: Concurrent Programming: Mutex">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 05: Concurrent Programming: Mutex
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/06/NJU-OS%20Lecture%2006%20-%20Concurrent%20Programming%20-%20Synchronization/" rel="next" title="NJU-OS Lecture 06: Concurrent Programming: Synchronization">
+                  NJU-OS Lecture 06: Concurrent Programming: Synchronization <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
