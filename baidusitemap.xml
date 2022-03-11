@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/</loc>
+    <lastmod>2022-03-11</lastmod>
+  </url>
+  <url>
+    <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Minilab%2001%20-%20pstree/</loc>
+    <lastmod>2022-03-11</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/</loc>
     <lastmod>2022-03-11</lastmod>
   </url>

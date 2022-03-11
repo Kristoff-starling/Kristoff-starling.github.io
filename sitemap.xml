@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/</loc>
+    
+    <lastmod>2022-03-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Minilab%2001%20-%20pstree/</loc>
+    
+    <lastmod>2022-03-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/</loc>
     
     <lastmod>2022-03-11</lastmod>
@@ -600,6 +618,13 @@
   
   <url>
     <loc>https://kristoff-starling.github.io/categories/NJU-22020230-Operating-Systems/Lecture-Notes/</loc>
+    <lastmod>2022-03-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kristoff-starling.github.io/categories/NJU-22020230-Operating-Systems/Lab-Reports/</loc>
     <lastmod>2022-03-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

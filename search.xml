@@ -3042,4 +3042,83 @@
         <category>Lecture Notes</category>
       </categories>
   </entry>
+  <entry>
+    <title>NJU-OS Lab 00: amgame</title>
+    <url>/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/</url>
+    <content><![CDATA[<p>该实验的主要目的是在 abstract-machine 抽象的 bare-metal 上编写一个小游戏。笔者实现的小游戏是贪吃蛇。</p>
+<span id="more"></span>
+
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>我们需要使用的比较重要的 AM 的接口有：</p>
+<ul>
+<li><code>putch()</code> 及其封装版本 <code>puts()</code> ，负责向控制台输出字符和字符串。</li>
+<li><code>AM_TIMER_UPTIME</code> ，对该抽象寄存器进行读取可以获得系统启动以来运行时间的微秒数。</li>
+<li><code>AM_INPUT_KEYBRD</code>，对该抽象寄存器进行读取可以获得一个 AM_INPUT_KEYBRD_T 结构体，其中存储了当前是否有按键被按下，被按下的按键编码等。</li>
+<li><code>AM_GPU_CONFIG</code>，对该抽象寄存器进行读取可以获得 VGA 的基本信息，包括窗口宽高的像素数量。</li>
+<li><code>AM_GPU_FBDRAW</code>，对该抽象寄存器写入一个 AM_GPU_FBDRAW_T 结构体可以向 VGA 输出一个方格的颜色。</li>
+</ul>
+<h2 id="Game-Logic"><a href="#Game-Logic" class="headerlink" title="Game Logic"></a>Game Logic</h2><p>一个游戏的基本框架为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (uptime() &lt; next_frame);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> ((key = read_key() != AM_KEY_NONE)</span><br><span class="line">    	kbd_event(key);</span><br><span class="line">    </span><br><span class="line">    game_process();</span><br><span class="line">    screen_update();</span><br><span class="line">    next_frame += <span class="number">1000</span> / FPS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于贪吃蛇游戏：</p>
+<ul>
+<li><p>在 kbd_event() 中，我们需要处理 ESC 按键，令其调用 halt()，以及四个方向键用于控制贪吃蛇的行走方向。笔者还设置了按 <code>R</code> 键重新开始游戏的功能。</p>
+</li>
+<li><p>在 game_process() 中</p>
+<ul>
+<li>我们需要维护贪吃蛇每一节身体的位置，并将头部按照当前方向移动一格，判断有没有出现撞墙或者吃了自己的情况，如果出现了，在游戏主循环中应该停止画面更新。</li>
+<li>我们需要维护食物，如果食物和蛇头重合，则应该分数+1，并随机一个位置 (不能和蛇重合) 重新放置食物。</li>
+<li>为了逐步增加游戏的难度，笔者维护 <code>FPS = 5 + (score / 2)</code>，即每多得两分，贪吃蛇的移动速度便会加快一级。</li>
+</ul>
+</li>
+<li><p>在 screen_update() 中，我们可以将背景涂成黑色，将边缘涂成橙色，将蛇身涂成绿色，蛇头涂成蓝色，食物涂成红色。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lab Reports</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Minilab 01: pstree</title>
+    <url>/2022/03/11/NJU-OS%20Minilab%2001%20-%20pstree/</url>
+    <content><![CDATA[<p>该实验主要目的是实现一个精简版的 Linux pstree 命令行工具，以较为优美的方式打印当前系统中的进程树。</p>
+<span id="more"></span>
+
+<h2 id="Parse-args"><a href="#Parse-args" class="headerlink" title="Parse args"></a>Parse args</h2><p>首先对输入的选项列表进行分析。笔者使用了 C 库函数 getopt_long()，它不仅可以帮助我们快速解析选项，还可以同时识别一个选项的长短版本 (使用 C 库提供的 option 结构体可以定义每种选项的长短版本以及是否需要参数等)，识别多个选吸纳更合并给出的格式 etc.。</p>
+<p>定义好表格后，仅需一句话即可完成选项解析：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">option</span> <span class="title">table</span>[] =</span> &#123;</span><br><span class="line">    &#123;<span class="string">&quot;numeric-sort&quot;</span>, no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;n&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;show-pids&quot;</span>   , no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;p&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;version&quot;</span>     , no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;V&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0</span>             , <span class="number">0</span>          , <span class="literal">NULL</span>,  <span class="number">0</span> &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">getopt_long(argc, argv, <span class="string">&quot;-npV&quot;</span>, table, <span class="literal">NULL</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>关于版本信息</strong></p>
+<p>Linux 的 pstree 工具会将版本信息输出到标准错误流，为了模拟这一特性，我们可以使用 fprintf 语句将版本信息输出到 stderr 文件。</p>
+</blockquote>
+<h2 id="Fetch-Process-Information"><a href="#Fetch-Process-Information" class="headerlink" title="Fetch Process Information"></a>Fetch Process Information</h2><p>Linux 提供 procfs，我们可以用读写文件的 API 来获取操作系统中的进程状态。procfs 的根目录是 <code>/proc</code>，该目录中所有是数字的文件夹都存储了一个进程相关的信息，文件夹的数字名就是进程编号。配合使用 C 库函数 opendir() 和 readdir() 就可以遍历 <code>/proc</code> 下的所有内容并筛选出那些是数字的文件夹名。</p>
+<p>每个进程文件夹下的 <code>/proc/[pid]/stat</code> 文件中存储了我们打印进程树所需要的状态信息，包括但不限于进程的名字，进程的状态，进程号，父进程号等。我们可以利用这些信息把进程树构建出来。</p>
+<blockquote>
+<p><strong>关于进程名的格式</strong></p>
+<p>根据 <code>man proc</code> 的提示，所有的进程名都是用一对小括号包裹着的。笔者起初使用了 <code>scanf(&quot;%[^)]&quot;)</code> 的方法，读到右括号停止，但发现进程中有一些进程的进程名本身就带括号。因此只能一个字节一个字节读并同步维护一个括号的栈来确定什么时候停止。</p>
+</blockquote>
+<p>我们可以在 <code>/proc/sys/kernel/pid_max</code> 文件中查看进程号的最大值，在 64 位系统中，这个最大值为 $2^{22}$。为了代码编写的方便和效率，笔者开了一个这么大的数组 proc_pos[] 用于维护每个进程号对应到进程信息结构体数组 proc[] 的哪个位置。 proc 结构体中维护了一个当前进程的所有孩子的链表，孩子数量，进程名等信息。由于系统中真正在运行的进程个数远小于 $2^{22}$，这个做法可以省很多内存。</p>
+<p>事实上，Linux 的 pstree 工具还会将一个进程下的所有线程打印出来。我们可以在 <code>/proc/[pid]/task</code> 下看到所有的线程文件夹，<code>/proc/[pid]/task/[tid]/stat</code> 中也有各个线程的状态，不过本实验不要求打印线程。</p>
+<h2 id="Print-tree"><a href="#Print-tree" class="headerlink" title="Print tree"></a>Print tree</h2><p>打印进程树可以用对进程树的一次 dfs 来实现 —— 根节点是 1 号进程 systemd。这里需要注意的是遍历顺序的问题：在默认情况下，pstree 各个子树会按照进程名的字典序排序，如果有 <code>-n</code> 选项，则要按照进程号从小到大排序。在笔者的实现中，单向链表不方便进行高级的排序，但我们可以直接交换两个链表内部的内容，使用朴素的冒泡排序来完成工作。</p>
+<blockquote>
+<p><strong>更优美的显示</strong></p>
+<p>打印树结构的最简单的方法是使用缩进：我们只需要记录当前递归到第几层，并打印相应个数的 TAB 即可。为了实现像 Linux pstree 工具那样精美的树结构，我们需要以下观察：</p>
+<ul>
+<li>每个进程的第一个子进程不换行。仔细思考以下，我们会发现这个规则等价于我们只会在那些叶子进程处换行。</li>
+<li>每个进程名之前有一个树的节点符号，这个节点符号遵循的规则如下：<ul>
+<li>如果某进程有且仅有一个子进程，则节点符号为 <code>-</code>；</li>
+<li>如果某进程有大于一个子进程，则第一个孩子的节点符号是 <code>+</code>，最后一个孩子的节点符号是 <code>&#96;</code> ，中间孩子的节点符号是 <code>|</code>。</li>
+</ul>
+</li>
+<li>当我们在打印内层进程内容时，外层进程树会有 <code>|</code> 延伸下来，我们可以用一个栈记录所有需要打印 <code>|</code> 的位置。但需要注意的是：每个进程的最后一个子进程如果还有子进程，子进程的子进程是不会被子进程的父进程的 <code>|</code> 包裹住的，具体操作上，每个进程的最后一个子进程负责将父进程从栈中弹出。</li>
+</ul>
+</blockquote>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lab Reports</category>
+      </categories>
+  </entry>
 </search>
