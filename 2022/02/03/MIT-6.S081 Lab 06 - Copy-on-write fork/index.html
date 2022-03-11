@@ -22,27 +22,27 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="该实验的主要目的是在 abstract-machine 抽象的 bare-metal 上编写一个小游戏。笔者实现的小游戏是贪吃蛇。">
+<meta name="description" content="Progress  Implement copy-on write (hard)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="NJU-OS Lab 00: amgame">
-<meta property="og:url" content="https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/index.html">
+<meta property="og:title" content="MIT-6.S081 Lab 06: Copy-on-write fork">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lab%2006%20-%20Copy-on-write%20fork/index.html">
 <meta property="og:site_name" content="starling的小屋">
-<meta property="og:description" content="该实验的主要目的是在 abstract-machine 抽象的 bare-metal 上编写一个小游戏。笔者实现的小游戏是贪吃蛇。">
+<meta property="og:description" content="Progress  Implement copy-on write (hard)">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-03-10T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-03-11T09:44:46.282Z">
+<meta property="article:published_time" content="2022-02-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-11T12:37:35.987Z">
 <meta property="article:author" content="starling">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/">
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lab%2006%20-%20Copy-on-write%20fork/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/","path":"2022/03/11/NJU-OS Lab 00 - amgame/","title":"NJU-OS Lab 00: amgame"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lab%2006%20-%20Copy-on-write%20fork/","path":"2022/02/03/MIT-6.S081 Lab 06 - Copy-on-write fork/","title":"MIT-6.S081 Lab 06: Copy-on-write fork"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>NJU-OS Lab 00: amgame | starling的小屋</title>
+<title>MIT-6.S081 Lab 06: Copy-on-write fork | starling的小屋</title>
   
 
 
@@ -147,7 +147,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#API"><span class="nav-number">1.</span> <span class="nav-text">API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Game-Logic"><span class="nav-number">2.</span> <span class="nav-text">Game Logic</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Progress"><span class="nav-number">1.</span> <span class="nav-text">Progress</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implement-Copy-on-Write"><span class="nav-number">2.</span> <span class="nav-text">Implement Copy-on Write</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#kalloc-kfree"><span class="nav-number">2.1.</span> <span class="nav-text">kalloc()&#x2F;kfree()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uvmcopy-uvmcow"><span class="nav-number">2.2.</span> <span class="nav-text">uvmcopy()&#x2F;uvmcow()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Concurrency"><span class="nav-number">2.3.</span> <span class="nav-text">Concurrency</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -212,7 +212,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/03/MIT-6.S081%20Lab%2006%20-%20Copy-on-write%20fork/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -225,7 +225,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          NJU-OS Lab 00: amgame
+          MIT-6.S081 Lab 06: Copy-on-write fork
         </h1>
 
         <div class="post-meta-container">
@@ -235,21 +235,27 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-03-11 00:00:00 / 修改时间：17:44:46" itemprop="dateCreated datePublished" datetime="2022-03-11T00:00:00+08:00">2022-03-11</time>
+      <time title="创建时间：2022-02-03 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-03T00:00:00+08:00">2022-02-03</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-11 20:37:35" itemprop="dateModified" datetime="2022-03-11T20:37:35+08:00">2022-03-11</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/Lab-Reports/" itemprop="url" rel="index"><span itemprop="name">Lab Reports</span></a>
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/Lab-Reports/" itemprop="url" rel="index"><span itemprop="name">Lab Reports</span></a>
         </span>
     </span>
 
@@ -270,34 +276,27 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>该实验的主要目的是在 abstract-machine 抽象的 bare-metal 上编写一个小游戏。笔者实现的小游戏是贪吃蛇。</p>
+        <h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> Implement copy-on write (hard)</li>
+</ul>
 <span id="more"></span>
 
-<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>我们需要使用的比较重要的 AM 的接口有：</p>
-<ul>
-<li><code>putch()</code> 及其封装版本 <code>puts()</code> ，负责向控制台输出字符和字符串。</li>
-<li><code>AM_TIMER_UPTIME</code> ，对该抽象寄存器进行读取可以获得系统启动以来运行时间的微秒数。</li>
-<li><code>AM_INPUT_KEYBRD</code>，对该抽象寄存器进行读取可以获得一个 AM_INPUT_KEYBRD_T 结构体，其中存储了当前是否有按键被按下，被按下的按键编码等。</li>
-<li><code>AM_GPU_CONFIG</code>，对该抽象寄存器进行读取可以获得 VGA 的基本信息，包括窗口宽高的像素数量。</li>
-<li><code>AM_GPU_FBDRAW</code>，对该抽象寄存器写入一个 AM_GPU_FBDRAW_T 结构体可以向 VGA 输出一个方格的颜色。</li>
-</ul>
-<h2 id="Game-Logic"><a href="#Game-Logic" class="headerlink" title="Game Logic"></a>Game Logic</h2><p>一个游戏的基本框架为：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (uptime() &lt; next_frame);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> ((key = read_key() != AM_KEY_NONE)</span><br><span class="line">    	kbd_event(key);</span><br><span class="line">    </span><br><span class="line">    game_process();</span><br><span class="line">    screen_update();</span><br><span class="line">    next_frame += <span class="number">1000</span> / FPS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Implement-Copy-on-Write"><a href="#Implement-Copy-on-Write" class="headerlink" title="Implement Copy-on Write"></a>Implement Copy-on Write</h2><p>写时拷贝 fork 的大体思路是：在 fork 时不为子进程创建新的页面，而是让子进程指向父进程的所有页面，并将页面的权限改为只读。将来如果某个进程 (父/子) 需要修改页面，会发生 page fault exception，在 kernel 的处理程序中，如果是 COW page，则新分配一个页面，将当前的只读页面内容复制过去，让当前进程的页表指向这个新的页面并将权限设置为可读可写。</p>
+<h3 id="kalloc-kfree"><a href="#kalloc-kfree" class="headerlink" title="kalloc()/kfree()"></a>kalloc()/kfree()</h3><p>引入了 copy-on write 之后，一个物理页面可能会被多个进程的页表指向，这使得 kfree() 变得困难：某个进程被释放时，它拥有的物理页面不能被直接释放，否则别的进程就用不了这个页面了。我们需要为每个页面维护一个 reference count，只有一个页面的 reference count 为 0 了才能释放它。</p>
+<p>维护 reference count 的时机很有讲究。笔者最初使用的方案是在“映射“和“解除映射”的时候修改 reference count，即在 mappages() 函数、 uvmunmap() 函数和 COW 相关函数中修改 reference count。但 xv6 中对 mappages() 的用法比较灵活，例如</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">kvminit</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  ......</span><br><span class="line">  <span class="comment">// map kernel data and the physical RAM we&#x27;ll make use of.</span></span><br><span class="line">  kvmmap((uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, PTE_R | PTE_W);</span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>对于贪吃蛇游戏：</p>
-<ul>
-<li><p>在 kbd_event() 中，我们需要处理 ESC 按键，令其调用 halt()，以及四个方向键用于控制贪吃蛇的行走方向。笔者还设置了按 <code>R</code> 键重新开始游戏的功能。</p>
-</li>
-<li><p>在 game_process() 中</p>
-<ul>
-<li>我们需要维护贪吃蛇每一节身体的位置，并将头部按照当前方向移动一格，判断有没有出现撞墙或者吃了自己的情况，如果出现了，在游戏主循环中应该停止画面更新。</li>
-<li>我们需要维护食物，如果食物和蛇头重合，则应该分数+1，并随机一个位置 (不能和蛇重合) 重新放置食物。</li>
-<li>为了逐步增加游戏的难度，笔者维护 <code>FPS = 5 + (score / 2)</code>，即每多得两分，贪吃蛇的移动速度便会加快一级。</li>
-</ul>
-</li>
-<li><p>在 screen_update() 中，我们可以将背景涂成黑色，将边缘涂成橙色，将蛇身涂成绿色，蛇头涂成蓝色，食物涂成红色。</p>
-</li>
-</ul>
+<p>上述 kvmmap() 会对所有的物理页面做一个恒等映射。其实内核并没有真正拥有这些页面，做 mappages() 时，真实分配好的页面是不存在的，在 kvmmap() 中做这一步只是为了简化内核代码的书写 (如在调用 memmove() 时不需要在软件中跑一遍内核页表)。因此如果在 mappages() 的时候维护 reference count，会得到不正确的结果。</p>
+<p>一个合理的解决方案是在 COW 相关函数中增加 reference count，在 kfree() 中减少 reference count。kalloc() 中新出厂的页面默认 reference count 为 1。</p>
+<h3 id="uvmcopy-uvmcow"><a href="#uvmcopy-uvmcow" class="headerlink" title="uvmcopy()/uvmcow()"></a>uvmcopy()/uvmcow()</h3><p>我们需要修改 uvmcopy() 的实现，不为子进程分配新的页面，而是让子进程指向父进程的页面，更新父进程的 reference count，并设置页表项的标志位。这里要注意的是，除了取消页面的 PTE_W，为了将 cow page 的异常和普通的越权修改异常区分开来，我们应当在页表项中标志一个 PTE_COW 位。RISC-V ISA 的页表项格式中，8，9,10 三位是 RSW 位，留给软件自由使用，我们可以利用这些位来标记 PTE_COW。</p>
+<p>uvmcow() 是 COW 导致的 page fault exception 的处理函数。我们应当分配一个新页面，新页面没有 PTE_COW 位，有 PTE_W 位，将原始页面的内容复制过来，并修改当前进程的页表。</p>
+<h3 id="Concurrency"><a href="#Concurrency" class="headerlink" title="Concurrency"></a>Concurrency</h3><p>该实验中我们要开始面对并发 bug。<code>/kernel/kalloc.c</code> 中的空闲页面链表是用 kmem.lock 保护起来的。与此同理，我们维护 reference count 的数组也应该用一把锁保护起来。我们当然可以使用 kmem.lock，但如果新建一把锁专门用于保护 reference count 数组 (甚至是每个 referenct count 的单元格) 可以获得更好的并行度。</p>
+<p>Concurrency bug 中常见的一种是 TOCTTOU (time to check to time to use)。笔者曾经遇到过 xv6 在单核情况下可以正常运行，在多核情况下内存不够用的问题。经过排查发现问题出在如下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (krref(pa) == <span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    *pte |= PTE_W;</span><br><span class="line">    *pte &amp;= (~PTE_COW);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> ((mem = kalloc()) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-2</span>;</span><br><span class="line">  flags &amp;= (~PTE_COW); flags |= (PTE_W);</span><br><span class="line">  memmove(mem, (<span class="keyword">void</span> *)pa, PGSIZE);</span><br><span class="line">  kmref(pa, <span class="number">-1</span>);</span><br><span class="line">  <span class="keyword">if</span> (mappages(pagetable, va, PGSIZE, (uint64)mem, flags) != <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的逻辑是：如果当前页面只剩一个 reference，就不必再申请新页面，而是直接修改一下本页面页表项的标志信息。否则当前页面有多个 reference，申请一个新页面并让当前进程指向它，调用 <code>kmref(pa,-1)</code> 更新原页面的 reference count。</p>
+<p>这段代码的 bug 在于进入 else 分支后，<code>krref(pa)&gt;=2</code> 的假设不一定成立。假设有两个进程并发地执行该程序段且 pa 有且仅有两个 reference，那么两个进程都会通过 if 判断进入 else 分支，然后使用 kmref() 更新 reference count，这样 pa 页面的 reference count 变成了 0 但没有进程去 free 它，我们丢失了一个页面。这个 bug 触发次数越多，系统内可用的内存就越少。</p>
+<p>想要修复这个 bug，一种选择是给整个 if 语句上锁，另一种选择是不使用 if 并把 kmref() 改成 kfree() 或 uvmunmap()。</p>
 
     </div>
 
@@ -311,13 +310,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/03/11/NJU-OS%20Minilab%2001%20-%20pstree/" rel="prev" title="NJU-OS Minilab 01: pstree">
-                  <i class="fa fa-chevron-left"></i> NJU-OS Minilab 01: pstree
+                <a href="/2022/02/01/MIT-6.S081%20Lecture%2007%20-%20QA%20for%20Labs%201/" rel="prev" title="MIT-6.S081 Lecture 07: Q&A for Labs #1">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 07: Q&A for Labs #1
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/03/11/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/" rel="next" title="NJU-OS Lecture 08: Concurrent Bugs & Confrontation">
-                  NJU-OS Lecture 08: Concurrent Bugs & Confrontation <i class="fa fa-chevron-right"></i>
+                <a href="/2022/02/03/MIT-6.S081%20Lecture%2008%20-%20Page%20Faults/" rel="next" title="MIT-6.S081 Lecture 08: Page Faults">
+                  MIT-6.S081 Lecture 08: Page Faults <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
