@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Applications may want multiple CPU cores, so the kernel must handle parallel system calls, e.g. carefully maintain shared data structure in parallel. We use locks to ensure correct sharing, but on the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT-6.S081 Lecture 10: Multiprocessors and Locks">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/03/12/MIT-6.S081%20Lecture%2010%20-%20Multiprocessors%20and%20Locks/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Applications may want multiple CPU cores, so the kernel must handle parallel system calls, e.g. carefully maintain shared data structure in parallel. We use locks to ensure correct sharing, but on the">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-11T16:33:56.394Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/03/12/MIT-6.S081%20Lecture%2010%20-%20Multiprocessors%20and%20Locks/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/03/12/MIT-6.S081%20Lecture%2010%20-%20Multiprocessors%20and%20Locks/","path":"2022/03/12/MIT-6.S081 Lecture 10 - Multiprocessors and Locks/","title":"MIT-6.S081 Lecture 10: Multiprocessors and Locks"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>MIT-6.S081 Lecture 10: Multiprocessors and Locks | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-Lock"><span class="nav-number">1.</span> <span class="nav-text">Why Lock?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lock-Abstraction"><span class="nav-number">2.</span> <span class="nav-text">Lock Abstraction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#When-to-Lock"><span class="nav-number">3.</span> <span class="nav-text">When to Lock?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lock-Perspectives"><span class="nav-number">4.</span> <span class="nav-text">Lock Perspectives</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deadlock"><span class="nav-number">5.</span> <span class="nav-text">Deadlock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lock-Performance"><span class="nav-number">6.</span> <span class="nav-text">Lock Performance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-Lock-Implementation"><span class="nav-number">7.</span> <span class="nav-text">Code: Lock Implementation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-Locks-and-Interrupts"><span class="nav-number">8.</span> <span class="nav-text">Code: Locks and Interrupts</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-Memory-Ordering"><span class="nav-number">9.</span> <span class="nav-text">Code: Memory Ordering</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/12/MIT-6.S081%20Lecture%2010%20-%20Multiprocessors%20and%20Locks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          MIT-6.S081 Lecture 10: Multiprocessors and Locks
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-12 00:00:00 / 修改时间：00:33:56" itemprop="dateCreated datePublished" datetime="2022-03-12T00:00:00+08:00">2022-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Applications may want multiple CPU cores, so the kernel must handle parallel system calls, e.g. carefully maintain shared data structure in parallel. We use locks to ensure correct sharing, but on the other hand, locks can limit performance.</p>
+<p>The frequency of CPU clock gradually reaches a limit at 2010, which means that single thread performance cannot be optimized. However, the number of transistors keeps growing, so having multiple cores is our only choice to increase performance.</p>
+<span id="more"></span>
+
+<h2 id="Why-Lock"><a href="#Why-Lock" class="headerlink" title="Why Lock?"></a>Why Lock?</h2><p>We use lock to avoid race conditions. For example, if we delete the <code>acquire(kmem.lock)</code> and <code>release(kmem.lock)</code> in kfree(), it’s possible that pages are lost during freeing.</p>
+<h2 id="Lock-Abstraction"><a href="#Lock-Abstraction" class="headerlink" title="Lock Abstraction"></a>Lock Abstraction</h2><p>The lock in xv6 is simply a struct:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">lock</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> locked;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>there are two APIs: <code>acquire(struct lock *lk)</code> and <code>release(struct lock *lk)</code>，at one time, only one process can acquire the lock, and other processes have to wait until the first process calls release().</p>
+<p>The area between acquire() and release() is called critical section. The code in critical sections are executed <strong>atomically</strong>, i.e. either <strong>all or none</strong> of the code is executed, it’s impossible for codes in the same critical section to interweave.</p>
+<p>Programs usually have many locks, aiming at more parallelism. If there’s only one lock in the kernel, to ensure correctness, the lock must protects all the codes in the kernel (the so called ‘big kernel lock’). In this case, the execution of the whole kernel is serialized. If we use multiple locks, it’s allowable to let two processes using different locks run in parallel.</p>
+<h2 id="When-to-Lock"><a href="#When-to-Lock" class="headerlink" title="When to Lock?"></a>When to Lock?</h2><p>A conservative rule (guideline): if 2 processes access a shared data structure and at least one operation is writing, then we have to lock that data structure.</p>
+<p>From some aspects, the guideline is too strict: we can use lock-free programming. But lock-free programming is so tricky that we won’t cover that. From some aspects, the guideline is too loose: in printf() we use lock to ensure that the printed message is atomic.</p>
+<p>We may want data structures to automatically acquire and release locks when we’re accessing them, but there are cases when we need more flexible lock management. Consider a system call <code>rename()</code> . Suppose now we deal with <code>rename(&quot;d1/x&quot;, &quot;d2/y&quot;)</code>, if we act like this:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lock(d1); erase(&quot;d1/x&quot;); release(d1); (**)</span><br><span class="line">lock(d2); add(&quot;d2/y&quot;); release(d2);</span><br></pre></td></tr></table></figure>
+
+<p>then at time <code>**</code>, from other processes’ perspective, the file doesn’t exist! - obviously incorrect. The correct implementation is</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lock(d1 and d2); erase(&quot;d1/x&quot;); add(&quot;d2/y&quot;); release(d1 and d2);</span><br></pre></td></tr></table></figure>
+
+<p>In this example, we see that sometimes we need multiple locks before doing operations.</p>
+<h2 id="Lock-Perspectives"><a href="#Lock-Perspectives" class="headerlink" title="Lock Perspectives"></a>Lock Perspectives</h2><ul>
+<li>Locks help avoid lost updates. (e.g. kfree() )</li>
+<li>Locks make multi-step operations (critical section) atomic.</li>
+<li>Locks help maintain invariants. (e.g. in kfree(), the lock protects moments when there are multiple pointers pointing to the head node.)</li>
+</ul>
+<h2 id="Deadlock"><a href="#Deadlock" class="headerlink" title="Deadlock"></a>Deadlock</h2><p>Let’s look at a case which may lead to deadlock:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CPU1							CPU2</span><br><span class="line">rename(&quot;d1/x&quot;, &quot;d2/y&quot;)			rename(&quot;d2/a&quot;, &quot;d1/b&quot;)</span><br><span class="line">acquire(d1)						acquire(d2)</span><br><span class="line">acquire(d2) &lt;-- blocked			acquire(d1) &lt;-- blocked</span><br></pre></td></tr></table></figure>
+
+<p>The solution is to always acquire locks in order. (actually, it’s OK for CPU2 to acquire d1 and then d2 in this case.) Here the lock ordering is a partial order.</p>
+<p>Lock makes modularity more complicated. Suppose a function f() in module 1 calls a function g() in module 2, f() must ensure that locks in g() will not violate global lock ordering, which means that the internals of module 2 (in terms of locks) must be visible to module 1, which somehow violates the module abstraction principle.</p>
+<h2 id="Lock-Performance"><a href="#Lock-Performance" class="headerlink" title="Lock Performance"></a>Lock Performance</h2><p>Locks lead to serialization, which influences performance. To increase performance, we need to split up data structures and introduce more locks, which require lots of work.</p>
+<p>A general approach is to firstly use coarse-grained locks, and do profiling tests to see whether we need smaller locks to increase parallelism.</p>
+<h2 id="Code-Lock-Implementation"><a href="#Code-Lock-Implementation" class="headerlink" title="Code: Lock Implementation"></a>Code: Lock Implementation</h2><p>The most common way to acquire locks is to use the hardware test-and-set support. In RISC-V, we use the <code>amoswap addr, r1, r2</code> atomic instruction. It can be viewed as the following pseudo instructions:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">lock addr</span><br><span class="line">	tmp   &lt;-- *addr</span><br><span class="line">	*addr &lt;-- r1</span><br><span class="line">	r2    &lt;-- tmp</span><br><span class="line">unlock addr</span><br></pre></td></tr></table></figure>
+
+<p>Hardware test-and-set support is dependent on memory system. If the memories are sitting on a share bus, a memory controller (bus arbiter) is responsible for sorting the locks in order. If processors have caches, the cache coherence protocol will ensure the consistency.</p>
+<p>In acquire() in xv6, we use the C function <code>__sync_lock_test_and_set()</code> to do atomic operations. Refer to Xv6 Source Code Manual for more details.  </p>
+<p>In release(), we may wonder that why we still need to use atomic instruction to set the lock: a simple store instruction can finish that. However, the store instruction may be executed differently depending on architecture design. <code>sw</code> may be decomposed to several micro instructions, which leads to lost of atomicity.</p>
+<h2 id="Code-Locks-and-Interrupts"><a href="#Code-Locks-and-Interrupts" class="headerlink" title="Code: Locks and Interrupts"></a>Code: Locks and Interrupts</h2><p>In acquire(), we must firstly turn off the interrupts. That’s because unexpected interrupts may cause deadlock. For example, in <code>/kernel/uart.c</code>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">uartputc</span><span class="params">(<span class="keyword">int</span> c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  acquire(&amp;uart_tx_lock);			<span class="comment">// *</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(panicked)&#123;						<span class="comment">// *</span></span><br><span class="line">    <span class="keyword">for</span>(;;)</span><br><span class="line">      ;</span><br><span class="line">  &#125;</span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">uartintr</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// read and process incoming characters.</span></span><br><span class="line">  <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">    <span class="keyword">int</span> c = uartgetc();</span><br><span class="line">    <span class="keyword">if</span>(c == <span class="number">-1</span>)</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    consoleintr(c);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// send buffered characters.</span></span><br><span class="line">  acquire(&amp;uart_tx_lock);</span><br><span class="line">  uartstart();</span><br><span class="line">  release(&amp;uart_tx_lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Suppose that we don’t turn off interrupts when holding locks, we acquire the lock <code>uart_tx_lock</code> in uartputc(), and when we’re in the critical section, the uart hardware sends an interrupt, leading us to uartintr(). In uartintr() the kernel tries to acquire the lock <code>uart_tx_lock</code>, but the lock is held by the interrupted thread, on the other hand, it’s impossible for the interrupted thread to move on unless interrupt handler returns. So a deadlock appears.</p>
+<h2 id="Code-Memory-Ordering"><a href="#Code-Memory-Ordering" class="headerlink" title="Code: Memory Ordering"></a>Code: Memory Ordering</h2><p>Modern compilers and processors usually adjust instruction order to increase performance. For example,</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lock = <span class="number">1</span>;</span><br><span class="line">x = x + <span class="number">1</span>; <span class="comment">// ---+</span></span><br><span class="line">lock = <span class="number">0</span>;  <span class="comment">//	 |</span></span><br><span class="line">		   <span class="comment">// &lt;--+		</span></span><br></pre></td></tr></table></figure>
+
+<p>It’s possible for compilers/processors to move <code>x = x + 1</code> to the end of the paragraph. If the code is executed in a single-core, serial mode, it’s absolutely OK and correct. But if it’s executed on mult-core processors, it’s a disaster.</p>
+<p>To avoid such things, we can build a memory fence. In RISC-V, it’s a <code>mfence</code> instruction and it’s encapsulated as <code>__sync_synchronize()</code> in libc. We put memory fence at the beginning of acquire() and the end of release() to ensure that no instruction will be unexpectedly moved out of our critical section.</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/11/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/" rel="prev" title="NJU-OS Lecture 08: Concurrent Bugs & Confrontation">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 08: Concurrent Bugs & Confrontation
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

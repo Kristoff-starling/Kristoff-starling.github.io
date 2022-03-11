@@ -3151,4 +3151,60 @@
         <category>Lab Reports</category>
       </categories>
   </entry>
+  <entry>
+    <title>MIT-6.S081 Lecture 10: Multiprocessors and Locks</title>
+    <url>/2022/03/12/MIT-6.S081%20Lecture%2010%20-%20Multiprocessors%20and%20Locks/</url>
+    <content><![CDATA[<p>Applications may want multiple CPU cores, so the kernel must handle parallel system calls, e.g. carefully maintain shared data structure in parallel. We use locks to ensure correct sharing, but on the other hand, locks can limit performance.</p>
+<p>The frequency of CPU clock gradually reaches a limit at 2010, which means that single thread performance cannot be optimized. However, the number of transistors keeps growing, so having multiple cores is our only choice to increase performance.</p>
+<span id="more"></span>
+
+<h2 id="Why-Lock"><a href="#Why-Lock" class="headerlink" title="Why Lock?"></a>Why Lock?</h2><p>We use lock to avoid race conditions. For example, if we delete the <code>acquire(kmem.lock)</code> and <code>release(kmem.lock)</code> in kfree(), it’s possible that pages are lost during freeing.</p>
+<h2 id="Lock-Abstraction"><a href="#Lock-Abstraction" class="headerlink" title="Lock Abstraction"></a>Lock Abstraction</h2><p>The lock in xv6 is simply a struct:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">lock</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> locked;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>there are two APIs: <code>acquire(struct lock *lk)</code> and <code>release(struct lock *lk)</code>，at one time, only one process can acquire the lock, and other processes have to wait until the first process calls release().</p>
+<p>The area between acquire() and release() is called critical section. The code in critical sections are executed <strong>atomically</strong>, i.e. either <strong>all or none</strong> of the code is executed, it’s impossible for codes in the same critical section to interweave.</p>
+<p>Programs usually have many locks, aiming at more parallelism. If there’s only one lock in the kernel, to ensure correctness, the lock must protects all the codes in the kernel (the so called ‘big kernel lock’). In this case, the execution of the whole kernel is serialized. If we use multiple locks, it’s allowable to let two processes using different locks run in parallel.</p>
+<h2 id="When-to-Lock"><a href="#When-to-Lock" class="headerlink" title="When to Lock?"></a>When to Lock?</h2><p>A conservative rule (guideline): if 2 processes access a shared data structure and at least one operation is writing, then we have to lock that data structure.</p>
+<p>From some aspects, the guideline is too strict: we can use lock-free programming. But lock-free programming is so tricky that we won’t cover that. From some aspects, the guideline is too loose: in printf() we use lock to ensure that the printed message is atomic.</p>
+<p>We may want data structures to automatically acquire and release locks when we’re accessing them, but there are cases when we need more flexible lock management. Consider a system call <code>rename()</code> . Suppose now we deal with <code>rename(&quot;d1/x&quot;, &quot;d2/y&quot;)</code>, if we act like this:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock(d1); erase(&quot;d1/x&quot;); release(d1); (**)</span><br><span class="line">lock(d2); add(&quot;d2/y&quot;); release(d2);</span><br></pre></td></tr></table></figure>
+
+<p>then at time <code>**</code>, from other processes’ perspective, the file doesn’t exist! - obviously incorrect. The correct implementation is</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock(d1 and d2); erase(&quot;d1/x&quot;); add(&quot;d2/y&quot;); release(d1 and d2);</span><br></pre></td></tr></table></figure>
+
+<p>In this example, we see that sometimes we need multiple locks before doing operations.</p>
+<h2 id="Lock-Perspectives"><a href="#Lock-Perspectives" class="headerlink" title="Lock Perspectives"></a>Lock Perspectives</h2><ul>
+<li>Locks help avoid lost updates. (e.g. kfree() )</li>
+<li>Locks make multi-step operations (critical section) atomic.</li>
+<li>Locks help maintain invariants. (e.g. in kfree(), the lock protects moments when there are multiple pointers pointing to the head node.)</li>
+</ul>
+<h2 id="Deadlock"><a href="#Deadlock" class="headerlink" title="Deadlock"></a>Deadlock</h2><p>Let’s look at a case which may lead to deadlock:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CPU1							CPU2</span><br><span class="line">rename(&quot;d1/x&quot;, &quot;d2/y&quot;)			rename(&quot;d2/a&quot;, &quot;d1/b&quot;)</span><br><span class="line">acquire(d1)						acquire(d2)</span><br><span class="line">acquire(d2) &lt;-- blocked			acquire(d1) &lt;-- blocked</span><br></pre></td></tr></table></figure>
+
+<p>The solution is to always acquire locks in order. (actually, it’s OK for CPU2 to acquire d1 and then d2 in this case.) Here the lock ordering is a partial order.</p>
+<p>Lock makes modularity more complicated. Suppose a function f() in module 1 calls a function g() in module 2, f() must ensure that locks in g() will not violate global lock ordering, which means that the internals of module 2 (in terms of locks) must be visible to module 1, which somehow violates the module abstraction principle.</p>
+<h2 id="Lock-Performance"><a href="#Lock-Performance" class="headerlink" title="Lock Performance"></a>Lock Performance</h2><p>Locks lead to serialization, which influences performance. To increase performance, we need to split up data structures and introduce more locks, which require lots of work.</p>
+<p>A general approach is to firstly use coarse-grained locks, and do profiling tests to see whether we need smaller locks to increase parallelism.</p>
+<h2 id="Code-Lock-Implementation"><a href="#Code-Lock-Implementation" class="headerlink" title="Code: Lock Implementation"></a>Code: Lock Implementation</h2><p>The most common way to acquire locks is to use the hardware test-and-set support. In RISC-V, we use the <code>amoswap addr, r1, r2</code> atomic instruction. It can be viewed as the following pseudo instructions:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock addr</span><br><span class="line">	tmp   &lt;-- *addr</span><br><span class="line">	*addr &lt;-- r1</span><br><span class="line">	r2    &lt;-- tmp</span><br><span class="line">unlock addr</span><br></pre></td></tr></table></figure>
+
+<p>Hardware test-and-set support is dependent on memory system. If the memories are sitting on a share bus, a memory controller (bus arbiter) is responsible for sorting the locks in order. If processors have caches, the cache coherence protocol will ensure the consistency.</p>
+<p>In acquire() in xv6, we use the C function <code>__sync_lock_test_and_set()</code> to do atomic operations. Refer to Xv6 Source Code Manual for more details.  </p>
+<p>In release(), we may wonder that why we still need to use atomic instruction to set the lock: a simple store instruction can finish that. However, the store instruction may be executed differently depending on architecture design. <code>sw</code> may be decomposed to several micro instructions, which leads to lost of atomicity.</p>
+<h2 id="Code-Locks-and-Interrupts"><a href="#Code-Locks-and-Interrupts" class="headerlink" title="Code: Locks and Interrupts"></a>Code: Locks and Interrupts</h2><p>In acquire(), we must firstly turn off the interrupts. That’s because unexpected interrupts may cause deadlock. For example, in <code>/kernel/uart.c</code>:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">uartputc</span><span class="params">(<span class="keyword">int</span> c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  acquire(&amp;uart_tx_lock);			<span class="comment">// *</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(panicked)&#123;						<span class="comment">// *</span></span><br><span class="line">    <span class="keyword">for</span>(;;)</span><br><span class="line">      ;</span><br><span class="line">  &#125;</span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">uartintr</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// read and process incoming characters.</span></span><br><span class="line">  <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">    <span class="keyword">int</span> c = uartgetc();</span><br><span class="line">    <span class="keyword">if</span>(c == <span class="number">-1</span>)</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    consoleintr(c);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// send buffered characters.</span></span><br><span class="line">  acquire(&amp;uart_tx_lock);</span><br><span class="line">  uartstart();</span><br><span class="line">  release(&amp;uart_tx_lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Suppose that we don’t turn off interrupts when holding locks, we acquire the lock <code>uart_tx_lock</code> in uartputc(), and when we’re in the critical section, the uart hardware sends an interrupt, leading us to uartintr(). In uartintr() the kernel tries to acquire the lock <code>uart_tx_lock</code>, but the lock is held by the interrupted thread, on the other hand, it’s impossible for the interrupted thread to move on unless interrupt handler returns. So a deadlock appears.</p>
+<h2 id="Code-Memory-Ordering"><a href="#Code-Memory-Ordering" class="headerlink" title="Code: Memory Ordering"></a>Code: Memory Ordering</h2><p>Modern compilers and processors usually adjust instruction order to increase performance. For example,</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">lock = <span class="number">1</span>;</span><br><span class="line">x = x + <span class="number">1</span>; <span class="comment">// ---+</span></span><br><span class="line">lock = <span class="number">0</span>;  <span class="comment">//	 |</span></span><br><span class="line">		   <span class="comment">// &lt;--+		</span></span><br></pre></td></tr></table></figure>
+
+<p>It’s possible for compilers/processors to move <code>x = x + 1</code> to the end of the paragraph. If the code is executed in a single-core, serial mode, it’s absolutely OK and correct. But if it’s executed on mult-core processors, it’s a disaster.</p>
+<p>To avoid such things, we can build a memory fence. In RISC-V, it’s a <code>mfence</code> instruction and it’s encapsulated as <code>__sync_synchronize()</code> in libc. We put memory fence at the beginning of acquire() and the end of release() to ensure that no instruction will be unexpectedly moved out of our critical section.</p>
+]]></content>
+      <categories>
+        <category>MIT-6.S081 Introduction to Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
 </search>
