@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/</loc>
+    <lastmod>2022-03-17</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/03/12/MIT-6.S081%20Lecture%2010%20-%20Multiprocessors%20and%20Locks/</loc>
     <lastmod>2022-03-12</lastmod>
   </url>

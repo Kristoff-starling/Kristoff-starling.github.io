@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Bare-metal &amp; Software数字电路本身就是一个巨大的状态机。硬件厂商会保证 CPU reset 后处理器处在一个确定的状态，各个单元的固定的值会写在手册中。以 x86 为例，手册规定了 CPU reset 后 rip 的值会是 0xfff0，EFLAGS 的值为 0x2，当前硬件运行在 16-bit 模式中，不响应中断。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 09: State Machine of OS">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Bare-metal &amp; Software数字电路本身就是一个巨大的状态机。硬件厂商会保证 CPU reset 后处理器处在一个确定的状态，各个单元的固定的值会写在手册中。以 x86 为例，手册规定了 CPU reset 后 rip 的值会是 0xfff0，EFLAGS 的值为 0x2，当前硬件运行在 16-bit 模式中，不响应中断。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-17T09:28:27.079Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/","path":"2022/03/11/NJU-OS Lecture 09 - State Machine of OS/","title":"NJU-OS Lecture 09: State Machine of OS"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 09: State Machine of OS | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bare-metal-amp-Software"><span class="nav-number">1.</span> <span class="nav-text">Bare-metal &amp; Software</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-Firmware"><span class="nav-number">2.</span> <span class="nav-text">Code: Firmware</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#State-Machine-of-OS"><span class="nav-number">3.</span> <span class="nav-text">State Machine of OS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-AbstractMachine"><span class="nav-number">4.</span> <span class="nav-text">Code: AbstractMachine</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">44</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 09: State Machine of OS
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-11 00:00:00" itemprop="dateCreated datePublished" datetime="2022-03-11T00:00:00+08:00">2022-03-11</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-17 17:28:27" itemprop="dateModified" datetime="2022-03-17T17:28:27+08:00">2022-03-17</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Bare-metal-amp-Software"><a href="#Bare-metal-amp-Software" class="headerlink" title="Bare-metal &amp; Software"></a>Bare-metal &amp; Software</h2><p>数字电路本身就是一个巨大的状态机。硬件厂商会保证 CPU reset 后处理器处在一个确定的状态，各个单元的固定的值会写在手册中。以 x86 为例，手册规定了 CPU reset 后 rip 的值会是 0xfff0，EFLAGS 的值为 0x2，当前硬件运行在 16-bit 模式中，不响应中断。</p>
+<span id="more"></span>
+
+<p>CPU 只是一个周而复始的取值译码执行的东西，因此它马上会做的事情就是取出 0xfff0 处的指令并执行。0xfff0 处通常是一个跳转指令，PC 会跳转到固件代码执行。固件 (Firmware) 是硬件厂商写死在一块 ROM 上的代码，常见的固件程序有 BIOS 和 UEFI 两种，后者更加现代机制更加复杂，这里简介 Legacy BIOS 的过程：</p>
+<p>BIOS 的主要工作是扫描各个硬盘/U盘/软盘……然后将第一个可引导的设备的第一个扇区 (512B) 加载到地址 0x7c00 处。可引导的设备的第一个扇区会遵循主引导记录 (Master Boot Record, MBR) 的格式。如果我们使用命令</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat executable-x86_64-qemu | head -c <span class="number">512</span> | xxd</span><br></pre></td></tr></table></figure>
+
+<p>查看一个镜像文件的前 512 个字节，我们可以看到其末尾一定是 0x55aa。这是 MBR 的结束标志。</p>
+<p>此时硬件仍然工作在 16-bit 模式上。规定 <code>CS:IP=0x7c00</code> ，即 <code>(R[CS]&lt;&lt;4) | R[IP] == 0x7c00</code> ，其他没有任何约束。Firmware 执行结束后，PC 跳转到 0x7c00 执行，刚刚加载过来的是 Legacy boot (boot loader)，它负责完成操作系统的加载：初始化栈和堆区，为 main() 传递参数等等。</p>
+<h2 id="Code-Firmware"><a href="#Code-Firmware" class="headerlink" title="Code: Firmware"></a>Code: Firmware</h2><p>QEMU 是一个全系统模拟器，我们可以通过 GDB 远程连接的方式来调试 QEMU，从而观测各个时刻的系统状态。</p>
+<p>一个启动 QEMU 并使用 GDB 监听的脚本如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">qemu-system-x86_64 \</span><br><span class="line">  -smp 1\</span><br><span class="line">  -S -s\</span><br><span class="line">  -drive format=raw,file=amgame-x86_64-qemu &amp;</span><br><span class="line">pid=$!</span><br><span class="line"></span><br><span class="line">gdb -x remote.gdb ; <span class="built_in">kill</span> -9 $!</span><br></pre></td></tr></table></figure>
+
+<p><code>qemu-system-x86_64</code> 启动了一个 x86-64 架构的 QEMU 模拟器，之后的各个选项和参数的意义如下：</p>
+<ul>
+<li><code>-smp 1</code> 指定了 QEMU 模拟单核 CPU。</li>
+<li><code>-S</code> 选项表示让 QEMU 停止在 CPU reset 后的第一条指令上。</li>
+<li><code>-s</code> 选项是 <code>-gdb tcp::1234</code> 的简写，表示在端口 1234 打开一个 gdbserver。</li>
+<li><code>-drive format=raw,file=amgame-x86_64-qemu</code> 告诉了 QEMU 用于引导的设备。这里笔者使用了 Lab0 中 amgame 的镜像。</li>
+</ul>
+<p>gdb 的 <code>-x</code> 选项后面可以跟一个脚本，表示在启动 gdb 之后自动运行后面的脚本。笔者在脚本中只做了一行配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">target remote localhost:1234</span><br></pre></td></tr></table></figure>
+
+<p>表示连接到 gdbserver。之前我们给运行 QEMU 的进程分配了一个进程号，现在用 <code>kill -9 $!</code> 可以在退出 gdb 之后帮我们自动杀死 QEMU 的进程。</p>
+<p>运行这个脚本，我们可以看到 QEMU 停在了 CPU reset 后的初始状态。使用 <code>i r</code> 命令打印寄存器信息，可以看到 <code>rip = 0xfff0</code>，<code>eflags = 0x2</code> 等，符合手册的约定。此时如果使用命令 <code>x/16xb 0x7c00</code> 查看地址 0x7c00 附近的内存内容，可以看到全部是 0 (注：<code>x</code> 是打印，<code>16</code> 是打印 16 个 byte，<code>x</code> 是按照十六进制打印，<code>b</code> 是将各个 byte 分开)。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0x7c00:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br><span class="line">0x7c08:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br></pre></td></tr></table></figure>
+
+<p>想要监控 BIOS 的行为，我们可以用命令 <code>wa *0x7c00</code> 在这个地址上打一个断点，然后 continue，该地址的值出现变化时 GDB 会停下并通知我们。</p>
+<p>当前系统仍处于 16 位模式，因此需要用 cs 和 rip 两个寄存器来定位指令的位置。使用 <code>x/i ($cs * 16 + $rip)</code> 查看当前指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0xfa591:	rep insl (%dx),%es:(%edi)</span><br></pre></td></tr></table></figure>
+
+<p>这是一条内存拷贝指令，刚开始可以看到 <code>%es:(%edi) == 0x7c00</code> ，随着 repeat 的推进，<code>(%edi)</code> 的值逐渐变大。如果再查看 0x7c00 附近的内容，可以看到 MBR 正在被逐渐搬入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0x7c00:	0xfa	0x31	0xc0	0x8e	0xd8	0x8e	0xc0	0x8e</span><br><span class="line">0x7c08:	0xd0	0xb8	0x01	0x4f	0xb9	0x12	0x01	0xbf</span><br><span class="line">0x7c10:	0x00	0x40	0xcd	0x10	0x00	0x00	0x00	0x00</span><br><span class="line">0x7c18:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br></pre></td></tr></table></figure>
+
+<h2 id="State-Machine-of-OS"><a href="#State-Machine-of-OS" class="headerlink" title="State Machine of OS"></a>State Machine of OS</h2><p>Firmware 和 boot loader 共同完成了操作系统的加载。进入 C 代码后，操作系统将完全遵循 C 语言的形式语义（当然，调用 AbstractMachine API 的部分是对 C 语言形式语义的补充）。</p>
+<p>AbstractMachine 对 C 程序语义的扩展主要是以下几个部分：</p>
+<ul>
+<li>TRM + MPE<ul>
+<li>完全等同于多线程。将整个系统的状态机从一条链变成多条链，之后的执行将是 non-deterministic 的。</li>
+<li>IOE API 相当于库函数。</li>
+</ul>
+</li>
+<li>CTE<ul>
+<li>允许创建多个执行流。</li>
+<li>yield() 会主动切换，中断会被动切换。</li>
+</ul>
+</li>
+<li>VME<ul>
+<li>创建一个“经过地址翻译的执行模式”。</li>
+</ul>
+</li>
+</ul>
+<p>整个系统的状态机大致可以看成如下过程：</p>
+<pre class="mermaid">flowchart LR
+    subgraph CPUReset
+        PC=0xfff0 --- EFLAGS=0x2 --- CR0=... --- S0[...]
+    end
+    id0((init))-. CPU Reset .-> CPUReset
+    CPUReset -. Firmware .-> Boot
+    subgraph Boot
+        PC=0x7c00 --- MBR[MBR at 0x7c00] --- ...
+    end
+    Boot -. OS booter .-> main
+    subgraph main
+        g[global] -.- sf[stack frame] -.- PC -.- S[...]
+    end
+    main -. mpe_init .-> multithread
+    subgraph multithread
+        gg[global]
+        sf1[stack frame] --- pc1[PC] --- o1[...]
+        sf2[stack frame] --- pc2[PC] --- o2[...]
+    end
+    multithread -. CPU1 .-> state1((...))
+    multithread -. CPU2 .-> state2((...))
+    multithread -. Interrupt .-> state3((...))</pre>
+
+<h2 id="Code-AbstractMachine"><a href="#Code-AbstractMachine" class="headerlink" title="Code: AbstractMachine"></a>Code: AbstractMachine</h2><blockquote>
+<p><strong>Unix Philosophy</strong></p>
+<p>Makefile 中的变量的定义可能散落在世界各处，因此静态地读 Makefile 效果可能不好。好的方式是直接观测 Makefile 做了怎样的事情。这里提供一套命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">make mainargs=HelloOS run -nB \</span><br><span class="line">| grep -ve <span class="string">&#x27;^\(\#\|echo\|mkdir\|make\)&#x27;</span> \</span><br><span class="line">| sed <span class="string">&quot;s#<span class="variable">$AM_HOME</span>#\$AM_HOME#g&quot;</span> \</span><br><span class="line">| sed <span class="string">&quot;s#<span class="variable">$PWD</span>#.#g&quot;</span> \</span><br><span class="line">| vim -</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>make 的 <code>-n</code> 选项可以只输出执行的命令而不真正执行，<code>-B</code> 选项可以忽略已经编译好的内容从头编译。</li>
+<li>grep 用于筛选，<code>-v</code> 选项表示反向筛选，<code>-e</code> 表示使用正则表达式匹配。</li>
+<li>sed 可以作替换，这里将冗长的路径名替换成了短的。</li>
+<li>vim - 命令可以将输出导入到 vim 中查看。</li>
+</ul>
+<p>在 vim 中使用 <code>:%s/ /\r  /g</code> 可以将空格改为换行，从而提高可读性。</p>
+</blockquote>
+<p>通过观察 Makefile 的输出结果，我们可以看到它是如何创建镜像文件以及传输命令行参数的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">( cat <span class="variable">$AM_HOME</span>/am/src/x86/qemu/boot/bootblock.o;</span><br><span class="line">  head -c 1024 /dev/zero; </span><br><span class="line">  cat ./build/threados-x86_64-qemu.elf )</span><br><span class="line">&gt; ./build/threados-x86_64-qemu</span><br></pre></td></tr></table></figure>
+
+<p><code>bootblock.o</code> 是主引导记录。<code>head -c 1024 /dev/zero</code> 取出了 1024B 的 \0。<code>threados-x86_64-qemu.elf</code> 是我们之前编译、链接得到的 elf 文件。将这三者拼接起来输出到文件 <code>threados-x86_64-qemu</code> 中，就制作好了镜像文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">( <span class="built_in">echo</span> -n HelloOS; ) | dd <span class="keyword">if</span>=/dev/stdin of=./build/threados-x86_64-qemu </span><br><span class="line"> bs=512 count=2 seek=1 conv=notrunc status=none</span><br></pre></td></tr></table></figure>
+
+<p>参数 HelloOS 被输出后，dd 指定 input file 为 stdin，output file 为我们刚刚制作的镜像，将参数写到了第二个扇区里 (即 MBR 后面紧跟着的扇区)。</p>
+<p>之前我们用 GDB 调试了固件将 MBR 加载到 0x7c00 的过程，现在我们可以继续用 GDB 调试 OS booter 的运行过程。</p>
+<blockquote>
+<p><strong>没有 OS booter 的符号表怎么办？</strong></p>
+<p>仔细阅读 AbstractMachine 的 Makefile，我们发现 <code>bootblock.o</code> 就是主引导记录，它的生成过程如下：</p>
+<ul>
+<li><p><code>gcc -static -m32 -fno-pic -g -Os -nostdlib -Ttext 0x7c00 -I$AM_HOME/am/src -o bootblock.o start.S main.c</code>，该命令编译 <code>am/src/x86/qemu/boot/</code> 目录下的 <code>main.c</code> 和 <code>start.S</code> 并链接成一个 <code>bootblock.o</code>。</p>
+<p>  为了生成带有调试信息的二进制文件，我们应当加入 <code>-g</code> 选项。</p>
+</li>
+<li><p><code>python genboot.py bootblock.o</code> 对 <code>bootblock.o</code> 做了进一步的修改，阅读 <code>genboot.py</code> ：</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os, sys, pathlib, subprocess</span><br><span class="line"></span><br><span class="line">f = pathlib.Path(sys.argv[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    objcopy = os.getenv(<span class="string">&#x27;CROSS_COMPILE&#x27;</span>, <span class="string">&#x27;&#x27;</span>) + <span class="string">&#x27;objcopy&#x27;</span></span><br><span class="line">    data = subprocess.run(</span><br><span class="line">        [objcopy, <span class="string">&#x27;-S&#x27;</span>, <span class="string">&#x27;-O&#x27;</span>, <span class="string">&#x27;binary&#x27;</span>, <span class="string">&#x27;-j&#x27;</span>, <span class="string">&#x27;.text&#x27;</span>, f, <span class="string">&#x27;/dev/stdout&#x27;</span>],</span><br><span class="line">        capture_output=<span class="literal">True</span>).stdout</span><br><span class="line">    <span class="keyword">assert</span> <span class="built_in">len</span>(data) &lt;= <span class="number">510</span></span><br><span class="line">    data += <span class="string">b&#x27;\0&#x27;</span> * (<span class="number">510</span> - <span class="built_in">len</span>(data)) + <span class="string">b&#x27;\x55\xaa&#x27;</span></span><br><span class="line">    f.write_bytes(data)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    f.unlink()</span><br><span class="line">    <span class="keyword">raise</span></span><br></pre></td></tr></table></figure>
+
+<p>  它的主要工作是用 objcopy 工具将 <code>bootblock.o</code> 中的关键内容拷贝出来，<code>-S</code> 选项表示丢弃重定位信息，符号信息，调试信息等不需要的内容；<code>-j .text</code> 表示只保留代码节。拷贝出来后在字节流的后面补上若干 0，最后加上 0x55aa，以形成一个 MBR。</p>
+</li>
+</ul>
+<p>为了获得符号表，笔者做了如下修改：将第一步生成的 <code>bootblock.o</code> 备份一份重命名为 <code> boot-sym.o</code> 用于加载符号表，并在 gdb 启动时的自动化脚本中添加：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">symbol-file /path/to/boot-sym.o</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>在 GDB 中打断点 <code>wa ($rip != 0x7c00)</code> (或者 <code>b _start</code>) 即可定位到 OS booter。此时机器仍然处于 16 位模式，GDB 不支持 16 位的调试，打印出来的汇编命令会出现错误。我们可以在 <code>$AM_HOME/am/src/x86/qemu/boot/start.S</code> 中找到对应的指令。可以看到在执行了不多的几条指令后，PC 跳转到了函数 start32。start32 执行了几条简单的指令后跳转到了 load_kernel()。(在 load_kernel() 中终于可以用 layout src 调试了)</p>
+<p>load_kernel() 和 nanos-lite 中的 loader() 功能类似：将 elf 文件中的各个段拷贝到内存的指定地址 0x8000，并跳转到入口函数启动内核。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Elf32_Ehdr *elf32 = (<span class="keyword">void</span> *)<span class="number">0x8000</span>;</span><br><span class="line">Elf64_Ehdr *elf64 = (<span class="keyword">void</span> *)<span class="number">0x8000</span>;</span><br><span class="line"><span class="keyword">int</span> is_ap = boot_record()-&gt;is_ap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!is_ap) &#123;</span><br><span class="line">    <span class="comment">// load argument (string) to memory</span></span><br><span class="line">    copy_from_disk((<span class="keyword">void</span> *)MAINARG_ADDR, <span class="number">1024</span>, <span class="number">-1024</span>);</span><br><span class="line">    <span class="comment">// load elf header to memory</span></span><br><span class="line">    copy_from_disk(elf32, <span class="number">4096</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (elf32-&gt;e_machine == EM_X86_64) &#123;</span><br><span class="line">      load_elf64(elf64);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      load_elf32(elf32);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码调用 copy_from_disk() 将 mainargs 以及 elf 文件从 disk 中拷贝出来，再调用 load_elf() 将其加载到 0x8000 位置。在执行 if 之前通过 <code>p *elf64</code> 查看 0x8000 附近的内容，可以看到各个字段全部为空。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(gdb) p *elf64</span><br><span class="line"><span class="variable">$1</span> = &#123;e_ident = <span class="string">&#x27;\000&#x27;</span> &lt;repeats 15 <span class="built_in">times</span>&gt;, e_type = 0, e_machine = 0,</span><br><span class="line">  e_version = 0, e_entry = 0, e_phoff = 0, e_shoff = 0, e_flags = 0,</span><br><span class="line">  e_ehsize = 0, e_phentsize = 0, e_phnum = 0, e_shentsize = 0, e_shnum = 0,</span><br><span class="line">  e_shstrndx = 0&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">load_program</span><span class="params">(<span class="keyword">uint32_t</span> filesz, <span class="keyword">uint32_t</span> memsz, <span class="keyword">uint32_t</span> paddr, <span class="keyword">uint32_t</span> offset)</span> </span>&#123;</span><br><span class="line">  copy_from_disk((<span class="keyword">void</span> *)paddr, filesz, offset);</span><br><span class="line">  <span class="keyword">char</span> *bss = (<span class="keyword">void</span> *)(paddr + filesz);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">uint32_t</span> i = filesz; i != memsz; i++) &#123;</span><br><span class="line">    *bss++ = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">load_elf64</span><span class="params">(Elf64_Ehdr *elf)</span> </span>&#123;</span><br><span class="line">  Elf64_Phdr *ph = (Elf64_Phdr *)((<span class="keyword">char</span> *)elf + elf-&gt;e_phoff);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; elf-&gt;e_phnum; i++, ph++) &#123;</span><br><span class="line">    load_program(</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_filesz,</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_memsz,</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_paddr,</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_offset</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>load_elf() 根据 elf 文件的 program header 调用 load_program() 将各个段加载到内存中。load_program() 中的一个小细节是：filesz 和 memsz 的差值是 elf 为 .bss 节预留的空位，根据 C 程序的约定，操作系统有义务将其填充为 0。</p>
+<p>执行完 load_elf() 后，再查看 0x8000 附近的内存，可以看到已经被填上了内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(gdb) p *elf64</span><br><span class="line"><span class="variable">$1</span> = &#123;e_ident = <span class="string">&quot;\177ELF\002\001\001\000\000\000\000\000\000\000\000&quot;</span>,</span><br><span class="line">  e_type = 2, e_machine = 62, e_version = 1, e_entry = 1049360, e_phoff = 64,</span><br><span class="line">  e_shoff = 152256, e_flags = 0, e_ehsize = 64, e_phentsize = 56, e_phnum = 2,</span><br><span class="line">  e_shentsize = 64, e_shnum = 17, e_shstrndx = 16&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (elf32-&gt;e_machine == EM_X86_64) &#123;</span><br><span class="line">  ((<span class="keyword">void</span>(*)())(<span class="keyword">uint32_t</span>)elf64-&gt;e_entry)();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  ((<span class="keyword">void</span>(*)())(<span class="keyword">uint32_t</span>)elf32-&gt;e_entry)();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后这两行，根据架构跳转到 elf 文件中 e_entry 所保存的入口函数地址。这里使用了 C 语言的技巧，将一个地址强制转换成一个函数指针并调用从而实现跳转。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/08/NJU-OS%20Lecture%2007%20-%20Concurrent%20Programming%20-%20Real%20World/" rel="prev" title="NJU-OS Lecture 07: Concurrent Programming - Real World">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 07: Concurrent Programming - Real World
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/11/MIT-6.S081%20Lab%2006%20-%20Copy-on-write%20fork/" rel="next" title="MIT-6.S081 Lab 06: Copy-on-write fork">
+                  MIT-6.S081 Lab 06: Copy-on-write fork <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
