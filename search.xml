@@ -932,6 +932,36 @@
       </categories>
   </entry>
   <entry>
+    <title>MIT-6.S081 Lab 06: Copy-on-write fork</title>
+    <url>/2022/03/11/MIT-6.S081%20Lab%2006%20-%20Copy-on-write%20fork/</url>
+    <content><![CDATA[<h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> Implement copy-on write (hard)</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Implement-Copy-on-Write"><a href="#Implement-Copy-on-Write" class="headerlink" title="Implement Copy-on Write"></a>Implement Copy-on Write</h2><p>写时拷贝 fork 的大体思路是：在 fork 时不为子进程创建新的页面，而是让子进程指向父进程的所有页面，并将页面的权限改为只读。将来如果某个进程 (父/子) 需要修改页面，会发生 page fault exception，在 kernel 的处理程序中，如果是 COW page，则新分配一个页面，将当前的只读页面内容复制过去，让当前进程的页表指向这个新的页面并将权限设置为可读可写。</p>
+<h3 id="kalloc-kfree"><a href="#kalloc-kfree" class="headerlink" title="kalloc()/kfree()"></a>kalloc()/kfree()</h3><p>引入了 copy-on write 之后，一个物理页面可能会被多个进程的页表指向，这使得 kfree() 变得困难：某个进程被释放时，它拥有的物理页面不能被直接释放，否则别的进程就用不了这个页面了。我们需要为每个页面维护一个 reference count，只有一个页面的 reference count 为 0 了才能释放它。</p>
+<p>维护 reference count 的时机很有讲究。笔者最初使用的方案是在“映射“和“解除映射”的时候修改 reference count，即在 mappages() 函数、 uvmunmap() 函数和 COW 相关函数中修改 reference count。但 xv6 中对 mappages() 的用法比较灵活，例如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">kvminit</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  ......</span><br><span class="line">  <span class="comment">// map kernel data and the physical RAM we&#x27;ll make use of.</span></span><br><span class="line">  kvmmap((uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, PTE_R | PTE_W);</span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述 kvmmap() 会对所有的物理页面做一个恒等映射。其实内核并没有真正拥有这些页面，做 mappages() 时，真实分配好的页面是不存在的，在 kvmmap() 中做这一步只是为了简化内核代码的书写 (如在调用 memmove() 时不需要在软件中跑一遍内核页表)。因此如果在 mappages() 的时候维护 reference count，会得到不正确的结果。</p>
+<p>一个合理的解决方案是在 COW 相关函数中增加 reference count，在 kfree() 中减少 reference count。kalloc() 中新出厂的页面默认 reference count 为 1。</p>
+<h3 id="uvmcopy-uvmcow"><a href="#uvmcopy-uvmcow" class="headerlink" title="uvmcopy()/uvmcow()"></a>uvmcopy()/uvmcow()</h3><p>我们需要修改 uvmcopy() 的实现，不为子进程分配新的页面，而是让子进程指向父进程的页面，更新父进程的 reference count，并设置页表项的标志位。这里要注意的是，除了取消页面的 PTE_W，为了将 cow page 的异常和普通的越权修改异常区分开来，我们应当在页表项中标志一个 PTE_COW 位。RISC-V ISA 的页表项格式中，8，9,10 三位是 RSW 位，留给软件自由使用，我们可以利用这些位来标记 PTE_COW。</p>
+<p>uvmcow() 是 COW 导致的 page fault exception 的处理函数。我们应当分配一个新页面，新页面没有 PTE_COW 位，有 PTE_W 位，将原始页面的内容复制过来，并修改当前进程的页表。</p>
+<h3 id="Concurrency"><a href="#Concurrency" class="headerlink" title="Concurrency"></a>Concurrency</h3><p>该实验中我们要开始面对并发 bug。<code>/kernel/kalloc.c</code> 中的空闲页面链表是用 kmem.lock 保护起来的。与此同理，我们维护 reference count 的数组也应该用一把锁保护起来。我们当然可以使用 kmem.lock，但如果新建一把锁专门用于保护 reference count 数组 (甚至是每个 referenct count 的单元格) 可以获得更好的并行度。</p>
+<p>Concurrency bug 中常见的一种是 TOCTTOU (time to check to time to use)。笔者曾经遇到过 xv6 在单核情况下可以正常运行，在多核情况下内存不够用的问题。经过排查发现问题出在如下代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (krref(pa) == <span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    *pte |= PTE_W;</span><br><span class="line">    *pte &amp;= (~PTE_COW);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> ((mem = kalloc()) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-2</span>;</span><br><span class="line">  flags &amp;= (~PTE_COW); flags |= (PTE_W);</span><br><span class="line">  memmove(mem, (<span class="keyword">void</span> *)pa, PGSIZE);</span><br><span class="line">  kmref(pa, <span class="number">-1</span>);</span><br><span class="line">  <span class="keyword">if</span> (mappages(pagetable, va, PGSIZE, (uint64)mem, flags) != <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的逻辑是：如果当前页面只剩一个 reference，就不必再申请新页面，而是直接修改一下本页面页表项的标志信息。否则当前页面有多个 reference，申请一个新页面并让当前进程指向它，调用 <code>kmref(pa,-1)</code> 更新原页面的 reference count。</p>
+<p>这段代码的 bug 在于进入 else 分支后，<code>krref(pa)&gt;=2</code> 的假设不一定成立。假设有两个进程并发地执行该程序段且 pa 有且仅有两个 reference，那么两个进程都会通过 if 判断进入 else 分支，然后使用 kmref() 更新 reference count，这样 pa 页面的 reference count 变成了 0 但没有进程去 free 它，我们丢失了一个页面。这个 bug 触发次数越多，系统内可用的内存就越少。</p>
+<p>想要修复这个 bug，一种选择是给整个 if 语句上锁，另一种选择是不使用 if 并把 kmref() 改成 kfree() 或 uvmunmap()。</p>
+]]></content>
+      <categories>
+        <category>MIT-6.S081 Introduction to Operating Systems</category>
+        <category>Lab Reports</category>
+      </categories>
+  </entry>
+  <entry>
     <title>MIT-6.S081 Lecture 01: Introduction and Examples</title>
     <url>/2022/01/25/MIT-6.S081%20Lecture%2001%20-%20Introduction%20and%20Examples/</url>
     <content><![CDATA[<h2 id="Purposes-of-O-S"><a href="#Purposes-of-O-S" class="headerlink" title="Purposes of O/S"></a>Purposes of O/S</h2><ul>
@@ -1554,6 +1584,99 @@
       </categories>
   </entry>
   <entry>
+    <title>MIT-6.S081 Lecture 10: Multiprocessors and Locks</title>
+    <url>/2022/03/12/MIT-6.S081%20Lecture%2010%20-%20Multiprocessors%20and%20Locks/</url>
+    <content><![CDATA[<p>Applications may want multiple CPU cores, so the kernel must handle parallel system calls, e.g. carefully maintain shared data structure in parallel. We use locks to ensure correct sharing, but on the other hand, locks can limit performance.</p>
+<p>The frequency of CPU clock gradually reaches a limit at 2010, which means that single thread performance cannot be optimized. However, the number of transistors keeps growing, so having multiple cores is our only choice to increase performance.</p>
+<span id="more"></span>
+
+<h2 id="Why-Lock"><a href="#Why-Lock" class="headerlink" title="Why Lock?"></a>Why Lock?</h2><p>We use lock to avoid race conditions. For example, if we delete the <code>acquire(kmem.lock)</code> and <code>release(kmem.lock)</code> in kfree(), it’s possible that pages are lost during freeing.</p>
+<h2 id="Lock-Abstraction"><a href="#Lock-Abstraction" class="headerlink" title="Lock Abstraction"></a>Lock Abstraction</h2><p>The lock in xv6 is simply a struct:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">lock</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> locked;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>there are two APIs: <code>acquire(struct lock *lk)</code> and <code>release(struct lock *lk)</code>，at one time, only one process can acquire the lock, and other processes have to wait until the first process calls release().</p>
+<p>The area between acquire() and release() is called critical section. The code in critical sections are executed <strong>atomically</strong>, i.e. either <strong>all or none</strong> of the code is executed, it’s impossible for codes in the same critical section to interweave.</p>
+<p>Programs usually have many locks, aiming at more parallelism. If there’s only one lock in the kernel, to ensure correctness, the lock must protects all the codes in the kernel (the so called ‘big kernel lock’). In this case, the execution of the whole kernel is serialized. If we use multiple locks, it’s allowable to let two processes using different locks run in parallel.</p>
+<h2 id="When-to-Lock"><a href="#When-to-Lock" class="headerlink" title="When to Lock?"></a>When to Lock?</h2><p>A conservative rule (guideline): if 2 processes access a shared data structure and at least one operation is writing, then we have to lock that data structure.</p>
+<p>From some aspects, the guideline is too strict: we can use lock-free programming. But lock-free programming is so tricky that we won’t cover that. From some aspects, the guideline is too loose: in printf() we use lock to ensure that the printed message is atomic.</p>
+<p>We may want data structures to automatically acquire and release locks when we’re accessing them, but there are cases when we need more flexible lock management. Consider a system call <code>rename()</code> . Suppose now we deal with <code>rename(&quot;d1/x&quot;, &quot;d2/y&quot;)</code>, if we act like this:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock(d1); erase(&quot;d1/x&quot;); release(d1); (**)</span><br><span class="line">lock(d2); add(&quot;d2/y&quot;); release(d2);</span><br></pre></td></tr></table></figure>
+
+<p>then at time <code>**</code>, from other processes’ perspective, the file doesn’t exist! - obviously incorrect. The correct implementation is</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock(d1 and d2); erase(&quot;d1/x&quot;); add(&quot;d2/y&quot;); release(d1 and d2);</span><br></pre></td></tr></table></figure>
+
+<p>In this example, we see that sometimes we need multiple locks before doing operations.</p>
+<h2 id="Lock-Perspectives"><a href="#Lock-Perspectives" class="headerlink" title="Lock Perspectives"></a>Lock Perspectives</h2><ul>
+<li>Locks help avoid lost updates. (e.g. kfree() )</li>
+<li>Locks make multi-step operations (critical section) atomic.</li>
+<li>Locks help maintain invariants. (e.g. in kfree(), the lock protects moments when there are multiple pointers pointing to the head node.)</li>
+</ul>
+<h2 id="Deadlock"><a href="#Deadlock" class="headerlink" title="Deadlock"></a>Deadlock</h2><p>Let’s look at a case which may lead to deadlock:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CPU1                            CPU2</span><br><span class="line">rename(&quot;d1/x&quot;, &quot;d2/y&quot;)          rename(&quot;d2/a&quot;, &quot;d1/b&quot;)</span><br><span class="line">acquire(d1)                     acquire(d2)</span><br><span class="line">acquire(d2) &lt;-- blocked         acquire(d1) &lt;-- blocked</span><br></pre></td></tr></table></figure>
+
+<p>The solution is to always acquire locks in order. (actually, it’s OK for CPU2 to acquire d1 and then d2 in this case.) Here the lock ordering is a partial order.</p>
+<p>Lock makes modularity more complicated. Suppose a function f() in module 1 calls a function g() in module 2, f() must ensure that locks in g() will not violate global lock ordering, which means that the internals of module 2 (in terms of locks) must be visible to module 1, which somehow violates the module abstraction principle.</p>
+<h2 id="Lock-Performance"><a href="#Lock-Performance" class="headerlink" title="Lock Performance"></a>Lock Performance</h2><p>Locks lead to serialization, which influences performance. To increase performance, we need to split up data structures and introduce more locks, which require lots of work.</p>
+<p>A general approach is to firstly use coarse-grained locks, and do profiling tests to see whether we need smaller locks to increase parallelism.</p>
+<h2 id="Code-Lock-Implementation"><a href="#Code-Lock-Implementation" class="headerlink" title="Code: Lock Implementation"></a>Code: Lock Implementation</h2><p>The most common way to acquire locks is to use the hardware test-and-set support. In RISC-V, we use the <code>amoswap addr, r1, r2</code> atomic instruction. It can be viewed as the following pseudo instructions:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock addr</span><br><span class="line">	tmp   &lt;-- *addr</span><br><span class="line">	*addr &lt;-- r1</span><br><span class="line">	r2    &lt;-- tmp</span><br><span class="line">unlock addr</span><br></pre></td></tr></table></figure>
+
+<p>Hardware test-and-set support is dependent on memory system. If the memories are sitting on a share bus, a memory controller (bus arbiter) is responsible for sorting the locks in order. If processors have caches, the cache coherence protocol will ensure the consistency.</p>
+<p>In acquire() in xv6, we use the C function <code>__sync_lock_test_and_set()</code> to do atomic operations. Refer to Xv6 Source Code Manual for more details.  </p>
+<p>In release(), we may wonder that why we still need to use atomic instruction to set the lock: a simple store instruction can finish that. However, the store instruction may be executed differently depending on architecture design. <code>sw</code> may be decomposed to several micro instructions, which leads to lost of atomicity.</p>
+<h2 id="Code-Locks-and-Interrupts"><a href="#Code-Locks-and-Interrupts" class="headerlink" title="Code: Locks and Interrupts"></a>Code: Locks and Interrupts</h2><p>In acquire(), we must firstly turn off the interrupts. That’s because unexpected interrupts may cause deadlock. For example, in <code>/kernel/uart.c</code>:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">uartputc</span><span class="params">(<span class="keyword">int</span> c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  acquire(&amp;uart_tx_lock);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(panicked)&#123;</span><br><span class="line">    <span class="keyword">for</span>(;;)</span><br><span class="line">      ;</span><br><span class="line">  &#125;</span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">uartintr</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// read and process incoming characters.</span></span><br><span class="line">  <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">    <span class="keyword">int</span> c = uartgetc();</span><br><span class="line">    <span class="keyword">if</span>(c == <span class="number">-1</span>)</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    consoleintr(c);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// send buffered characters.</span></span><br><span class="line">  acquire(&amp;uart_tx_lock);</span><br><span class="line">  uartstart();</span><br><span class="line">  release(&amp;uart_tx_lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Suppose that we don’t turn off interrupts when holding locks, we acquire the lock <code>uart_tx_lock</code> in uartputc(), and when we’re in the critical section, the uart hardware sends an interrupt, leading us to uartintr(). In uartintr() the kernel tries to acquire the lock <code>uart_tx_lock</code>, but the lock is held by the interrupted thread, on the other hand, it’s impossible for the interrupted thread to move on unless interrupt handler returns. So a deadlock appears.</p>
+<h2 id="Code-Memory-Ordering"><a href="#Code-Memory-Ordering" class="headerlink" title="Code: Memory Ordering"></a>Code: Memory Ordering</h2><p>Modern compilers and processors usually adjust instruction order to increase performance. For example,</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">lock = <span class="number">1</span>;</span><br><span class="line">x = x + <span class="number">1</span>; <span class="comment">// ---+</span></span><br><span class="line">lock = <span class="number">0</span>;  <span class="comment">//    |</span></span><br><span class="line">           <span class="comment">// &lt;--+		</span></span><br></pre></td></tr></table></figure>
+
+<p>It’s possible for compilers/processors to move <code>x = x + 1</code> to the end of the paragraph. If the code is executed in a single-core, serial mode, it’s absolutely OK and correct. But if it’s executed on mult-core processors, it’s a disaster.</p>
+<p>To avoid such things, we can build a memory fence. In RISC-V, it’s a <code>mfence</code> instruction and it’s encapsulated as <code>__sync_synchronize()</code> in libc. We put memory fence at the beginning of acquire() and the end of release() to ensure that no instruction will be unexpectedly moved out of our critical section.</p>
+]]></content>
+      <categories>
+        <category>MIT-6.S081 Introduction to Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Lab 00: amgame</title>
+    <url>/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/</url>
+    <content><![CDATA[<p>该实验的主要目的是在 abstract-machine 抽象的 bare-metal 上编写一个小游戏。笔者实现的小游戏是贪吃蛇。</p>
+<span id="more"></span>
+
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>我们需要使用的比较重要的 AM 的接口有：</p>
+<ul>
+<li><code>putch()</code> 及其封装版本 <code>puts()</code> ，负责向控制台输出字符和字符串。</li>
+<li><code>AM_TIMER_UPTIME</code> ，对该抽象寄存器进行读取可以获得系统启动以来运行时间的微秒数。</li>
+<li><code>AM_INPUT_KEYBRD</code>，对该抽象寄存器进行读取可以获得一个 AM_INPUT_KEYBRD_T 结构体，其中存储了当前是否有按键被按下，被按下的按键编码等。</li>
+<li><code>AM_GPU_CONFIG</code>，对该抽象寄存器进行读取可以获得 VGA 的基本信息，包括窗口宽高的像素数量。</li>
+<li><code>AM_GPU_FBDRAW</code>，对该抽象寄存器写入一个 AM_GPU_FBDRAW_T 结构体可以向 VGA 输出一个方格的颜色。</li>
+</ul>
+<h2 id="Game-Logic"><a href="#Game-Logic" class="headerlink" title="Game Logic"></a>Game Logic</h2><p>一个游戏的基本框架为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (uptime() &lt; next_frame);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> ((key = read_key() != AM_KEY_NONE)</span><br><span class="line">    	kbd_event(key);</span><br><span class="line">    </span><br><span class="line">    game_process();</span><br><span class="line">    screen_update();</span><br><span class="line">    next_frame += <span class="number">1000</span> / FPS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于贪吃蛇游戏：</p>
+<ul>
+<li><p>在 kbd_event() 中，我们需要处理 ESC 按键，令其调用 halt()，以及四个方向键用于控制贪吃蛇的行走方向。笔者还设置了按 <code>R</code> 键重新开始游戏的功能。</p>
+</li>
+<li><p>在 game_process() 中</p>
+<ul>
+<li>我们需要维护贪吃蛇每一节身体的位置，并将头部按照当前方向移动一格，判断有没有出现撞墙或者吃了自己的情况，如果出现了，在游戏主循环中应该停止画面更新。</li>
+<li>我们需要维护食物，如果食物和蛇头重合，则应该分数+1，并随机一个位置 (不能和蛇重合) 重新放置食物。</li>
+<li>为了逐步增加游戏的难度，笔者维护 <code>FPS = 5 + (score / 2)</code>，即每多得两分，贪吃蛇的移动速度便会加快一级。</li>
+</ul>
+</li>
+<li><p>在 screen_update() 中，我们可以将背景涂成黑色，将边缘涂成橙色，将蛇身涂成绿色，蛇头涂成蓝色，食物涂成红色。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lab Reports</category>
+      </categories>
+  </entry>
+  <entry>
     <title>NJU-OS Lecture 01: Introduction</title>
     <url>/2022/02/17/NJU-OS%20Lecture%2001%20-%20Introduction/</url>
     <content><![CDATA[<blockquote>
@@ -1861,6 +1984,385 @@
       <categories>
         <category>NJU-22020230 Operating Systems</category>
         <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Lecture 05: Concurrent Programming: Mutex</title>
+    <url>/2022/03/01/NJU-OS%20Lecture%2005%20-%20Concurrent%20Programming%20-%20Mutex/</url>
+    <content><![CDATA[<p>从 high level 来看，我们希望实现如下的结构体和 API：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">typdef <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;lock;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">(lock *lk)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">(lock *lk)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>若 lock() 函数返回，说明获得了这个锁，别的进程会停在 lock() 里直到获得锁的人调用了 unlock()。</p>
+<p>实现互斥的根本困难：不能同时读写共享内存。</p>
+<ul>
+<li>load 的时候不能 store，且看完之后眼睛立刻闭上，看到的都是过去的东西；</li>
+<li>store 的时候不能 load，贴字条的时候不知道覆盖了什么。</li>
+</ul>
+<h2 id="Spin-Lock"><a href="#Spin-Lock" class="headerlink" title="Spin Lock"></a>Spin Lock</h2><blockquote>
+<p>“解决一个问题有两种方法：一个是分析问题、提出算法、实现解决，一个是解决提出问题的人。“ —— jyy</p>
+</blockquote>
+<p>我们希望硬件支持一条“瞬间完成读和写”的指令：“请所有人闭眼，然后我睁开眼看一眼，并做一个操作”。</p>
+<h3 id="x86-Lock-Prefix"><a href="#x86-Lock-Prefix" class="headerlink" title="x86: Lock Prefix"></a>x86: Lock Prefix</h3><p>以 lock 为前缀的指令支持原子操作。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// sum-atomic.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;thread.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 100000000</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tsum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(<span class="string">&quot;lock addq $1, %0&quot;</span>: <span class="string">&quot;+m&quot;</span>(sum))</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  create(Tsum);</span><br><span class="line">  create(Tsum);</span><br><span class="line">  join();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;sum = %ld\n&quot;</span>, sum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于这里的 +1 操作使用了原子指令，所以程序总能得到 2N 的输出。</p>
+<p>此外，一条非常好用的原子指令是 xchg，它可以原子地将一个数值和一个内存地址上的值交换。用 C 语言封装后的形式可以是：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">xchg</span><span class="params">(<span class="keyword">volatile</span> <span class="keyword">int</span> *addr, <span class="keyword">int</span> newval)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> result;</span><br><span class="line">  <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span> <span class="params">(<span class="string">&quot;lock xchg %0, %1&quot;</span></span></span></span><br><span class="line"><span class="params"><span class="function">    : <span class="string">&quot;+m&quot;</span>(*addr), <span class="string">&quot;=a&quot;</span>(result) : <span class="string">&quot;1&quot;</span>(newval))</span></span>; <span class="comment">//xchg默认原子，即使不加前缀lock也可以</span></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>借助 <code>xchg</code> 指令，我们可以轻松地实现一个自旋锁：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> lock = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;<span class="keyword">while</span> (xchg(&amp;lock, <span class="number">1</span>));&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;xchg(&amp;lock, <span class="number">0</span>);&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在硬件层面，硬件可以保证所有的带 lock 的指令可以排出一个全序，且原子指令相关的内存都会被提前做好 (内存的可见性)。但这其中有很多技术细节，比如多核的 Cache 之间的一致性是 x86 的噩梦 (一旦某个 CPU 要获得所，其他所有 CPU 核的 L1 Cache 都要上锁)。</p>
+<h3 id="RISC-V-LR-SC"><a href="#RISC-V-LR-SC" class="headerlink" title="RISC-V: LR/SC"></a>RISC-V: LR/SC</h3><p>原子指令内部的本质是三个步骤：load(), exec(), store()。RISC-V 提供了 load-reserved/store-conditional (LR/SC) 机制：</p>
+<ul>
+<li>LR: 在共享内存上打一个标记，如果出现中断、别的线程写入等情况，这个标记会消失。</li>
+<li>exec()：在寄存器上做一些自己的事情</li>
+<li>SC：如果共享内存上的标记还在，则 store。</li>
+</ul>
+<p>这里给出一个用于自旋锁的 compare-and-swap (旧值等于某个值才将新值与其交换) 函数的实现，用这个函数实现自旋锁在轮询时可以比 xchg 少一次写入操作：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C语言语义</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cas</span><span class="params">(<span class="keyword">int</span> *addr, <span class="keyword">int</span> cmp_val, <span class="keyword">int</span> new_val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> old_val = *addr;</span><br><span class="line">    <span class="keyword">if</span> (old_val == cmp_val) &#123;*addr = new_val;<span class="keyword">return</span> <span class="number">0</span>;&#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cas:</span><br><span class="line">	lr.w t0, (a0)		# 获得旧值，并对(a0)打标记</span><br><span class="line">	bne t0, a1, fail	# 如果 old_val != cmp_val 则跳转到 fail</span><br><span class="line">	sc.w t0, a2, (a0)	# 如果标记还在，将a2写入(a0)，t0存储标记存在情况</span><br><span class="line">	bnez t0, cas		# 如果标记被冲刷了，说明出现race condition，回到cas重做</span><br><span class="line">	jr ra</span><br><span class="line">fail</span><br><span class="line">	li a0, 1</span><br><span class="line">	jr ra</span><br></pre></td></tr></table></figure>
+
+<p>如果有两个线程同时希望获得锁，第一个线程执行完 sc.w 后，第二个线程的标记被冲刷，从而第二个线程执行 sc.w 后 t0=1，无法获得锁。</p>
+<p>LR/SC 机制不仅可以实现锁，还可以让每个线程知道锁的拥堵情况。</p>
+<h2 id="Sleep-Lock"><a href="#Sleep-Lock" class="headerlink" title="Sleep Lock"></a>Sleep Lock</h2><p>自旋锁的性能缺陷：</p>
+<ul>
+<li>如果多个线程同时争抢锁，并行/并发的程序会因为自旋锁变得串行。除了进入临界区域的线程，其他的线程都在空转。</li>
+<li>如果持有自旋锁的线程被调度走了，那么所有的线程都进不去了。</li>
+</ul>
+<p>自旋锁的理想使用场景：</p>
+<ul>
+<li>临界区几乎不拥堵。</li>
+<li>持有自旋锁时禁止执行流切换 - 这件事对于应用程序来说太危险了，因此自旋锁一般用于操作系统内核中的并发数据结构 (临界区很短)。</li>
+</ul>
+<hr>
+<p>如果锁被占用，待在原地等待锁被释放是一件不太聪明的事情 (尤其是要等很长时间的时候)，我们希望一个线程在等待锁的时候可以被暂时挂起，让出 CPU，等到锁被释放时再唤醒等锁进程。</p>
+<p>C 语言代码是做不到 ”让出 CPU 的”，因此我们需要两个系统调用：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">syscall(SYSCALL_lock, &amp;lk);		<span class="comment">// 试图获得lk，如果失败则当前进程被挂起</span></span><br><span class="line">syscall(SYSCALL_unlock, &amp;lk);	<span class="comment">// 释放lk，并唤醒正在等待lk的进程</span></span><br></pre></td></tr></table></figure>
+
+<p>操作系统的工作是维护这个锁和等待锁的进程</p>
+<ul>
+<li>如果有线程尝试获得锁，且锁处于空闲状态，就把锁给他。</li>
+<li>如果有线程尝试获得锁但锁已经被取走了，则将当前线程加入等待锁的队列，并将其挂起。</li>
+<li>如果有线程释放了锁，就检查等待锁的队列中是否有线程，如果有则将锁交给下一位 (唤醒它)，如果没有则锁的状态为空闲。</li>
+<li>操作系统使用自旋锁保证自己对队列的操作是原子的。</li>
+</ul>
+<blockquote>
+<p><strong>Tip: GDB Usage</strong></p>
+<p>使用 GDB 调试多线程时，如果直接使用 next 命令，所有的线程都会向后走一步。为了更好地观测程序行为，我们可以使用 <code>set scheduler-lock on</code> 命令来打开线程锁，之后再使用 next 命令就只有当前线程会向前走一步。我们可以通过 <code>info threads</code> 来查看线程信息，通过 <code>thread id</code> 来切换当前调试的线程为 id。</p>
+</blockquote>
+<h2 id="Futex"><a href="#Futex" class="headerlink" title="Futex"></a>Futex</h2><ul>
+<li>自旋锁有更快的 fast path：如果获得锁成功，可以立刻进入临界区；但如果没有获得锁，则要浪费 CPU 时钟周期。</li>
+<li>睡眠锁有更快的 slow path: 如果没有获得锁，可以执行线程切换；但在能获得锁的情况下，也需要执行系统调用陷入内核。</li>
+</ul>
+<p>我们希望发明一种锁，对于 fast path，只需要一条原子指令就可以获得锁，对于 slow path，可以通过系统调用 yield。这就是 Futex = spin + mutex。</p>
+<p>我们可以利用 model checker 来确认 futex 的正确性：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Futex</span></span></span><br><span class="line"><span class="class">	<span class="title">locked</span>, <span class="title">waits</span> = &#x27;&#x27;, &#x27;&#x27;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">    <span class="title">def</span> <span class="title">tryacquire</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.locked:</span><br><span class="line">            <span class="comment"># Test-and-set (cmpxchg)</span></span><br><span class="line">            <span class="comment"># Same effect, but more efficient than xchg</span></span><br><span class="line">            self.locked = <span class="string">&#x27;🔒&#x27;</span></span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;🔒&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">release</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.waits:</span><br><span class="line">            self.waits = self.waits[<span class="number">1</span>:]		  <span class="comment"># 将队首元素踢出队列 &lt;=&gt; 将编号为队首元素的线程唤醒</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.locked = <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @thread</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">t1</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> self.tryacquire() == <span class="string">&#x27;🔒&#x27;</span>:     <span class="comment"># User</span></span><br><span class="line">                self.waits = self.waits + <span class="string">&#x27;1&#x27;</span> <span class="comment"># Kernel</span></span><br><span class="line">                <span class="keyword">while</span> <span class="string">&#x27;1&#x27;</span> <span class="keyword">in</span> self.waits:      <span class="comment"># Kernel</span></span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            cs = <span class="literal">True</span>                         <span class="comment"># User</span></span><br><span class="line">            <span class="keyword">del</span> cs                            <span class="comment"># User</span></span><br><span class="line">            self.release()                    <span class="comment"># Kernel</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @thread</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">t2</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> self.tryacquire() == <span class="string">&#x27;🔒&#x27;</span>:</span><br><span class="line">                self.waits = self.waits + <span class="string">&#x27;2&#x27;</span></span><br><span class="line">                <span class="keyword">while</span> <span class="string">&#x27;2&#x27;</span> <span class="keyword">in</span> self.waits:</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            cs = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">del</span> cs</span><br><span class="line">            self.release()</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Tip: 强大的 model checker</strong></p>
+<ul>
+<li><p>我们的 model checker 的原理是：对于有装饰器 thread 修饰的函数，在每条语句后添加 yield。因此我们可以轻松地实现一个原子的操作：只要将操作写成一个函数，并在一行内调用这个函数即可。再例如，xchg 原子操作在我们的 model checker 中可以很简单地写为</p>
+  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x, y = y, x</span><br></pre></td></tr></table></figure></li>
+<li><p>线程函数中的语句</p>
+  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="string">&#x27;1&#x27;</span> <span class="keyword">in</span> self.waits:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>  并不是内核的真正行为：内核会切换走去执行别的线程。但从这个正在等待的线程的视角，内核在做和自己无关的事等价于内核在自己这里轮询。因此我们精巧地模拟出了内核的正确行为。</p>
+</li>
+</ul>
+</blockquote>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Lecture 07: Concurrent Programming - Real World</title>
+    <url>/2022/03/08/NJU-OS%20Lecture%2007%20-%20Concurrent%20Programming%20-%20Real%20World/</url>
+    <content><![CDATA[<h2 id="High-Performance-Computing"><a href="#High-Performance-Computing" class="headerlink" title="High Performance Computing"></a>High Performance Computing</h2><p>HPC: 解决需要 massive computation 的任务。</p>
+<p>基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 “join()” 汇总一下 (涉及线程、机器、共享内存之间的通信)。</p>
+<p>HPC 可以实现的原因：数据的局部性。例如我们想利用 HPC 进行一团气体的运动模拟，那么我们可以将立方体容器内的气体切分成很多块，每个线程管一块。每个线程管理的气体绝大部分的运动都是本地的，我们只需要处理少部分的相邻块的气体分子交换即可。</p>
+<span id="more"></span>
+
+<h3 id="Example-Mandelbrot-Set"><a href="#Example-Mandelbrot-Set" class="headerlink" title="Example: Mandelbrot Set"></a>Example: Mandelbrot Set</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// mandelbrot.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;thread.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> NT;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> W 6400</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> H 6400</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMG_FILE <span class="meta-string">&quot;./mandelbrot.ppm&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">belongs</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> x / (W / NT) == t;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> x[W][H];</span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> done = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">display</span><span class="params">(FILE *fp, <span class="keyword">int</span> step)</span> </span>&#123; </span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">int</span> rnd = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">int</span> w = W / step, h = H / step;</span><br><span class="line">  <span class="comment">// STFW: Portable Pixel Map</span></span><br><span class="line">  <span class="built_in">fprintf</span>(fp, <span class="string">&quot;P6\n %d %d 255\n&quot;</span>, w, h);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; H; j += step) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; W; i += step) &#123;</span><br><span class="line">      <span class="keyword">int</span> n = x[i][j];</span><br><span class="line">      <span class="keyword">int</span> r = <span class="number">255</span> * <span class="built_in">pow</span>((n - <span class="number">80</span>) / <span class="number">800.0</span>, <span class="number">3</span>);</span><br><span class="line">      <span class="keyword">int</span> g = <span class="number">255</span> * <span class="built_in">pow</span>((n - <span class="number">80</span>) / <span class="number">800.0</span>, <span class="number">0.7</span>);</span><br><span class="line">      <span class="keyword">int</span> b = <span class="number">255</span> * <span class="built_in">pow</span>((n - <span class="number">80</span>) / <span class="number">800.0</span>, <span class="number">0.5</span>);</span><br><span class="line">      fputc(r, fp); fputc(g, fp); fputc(b, fp);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tworker</span><span class="params">(<span class="keyword">int</span> tid)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; W; i++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; H; j++)</span><br><span class="line">      <span class="keyword">if</span> (belongs(i, j, tid - <span class="number">1</span>)) &#123;</span><br><span class="line">        <span class="keyword">double</span> a = <span class="number">0</span>, b = <span class="number">0</span>, c, d;</span><br><span class="line">        <span class="keyword">while</span> ((c = a * a) + (d = b * b) &lt; <span class="number">4</span> &amp;&amp; x[i][j]++ &lt; <span class="number">880</span>) &#123;</span><br><span class="line">          b = <span class="number">2</span> * a * b + j * <span class="number">1024.0</span> / H * <span class="number">8e-9</span> - <span class="number">0.645411</span>;</span><br><span class="line">          a = c - d + i * <span class="number">1024.0</span> / W * <span class="number">8e-9</span> + <span class="number">0.356888</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  done++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tdisplay</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">float</span> ms = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    FILE *fp = popen(<span class="string">&quot;viu -&quot;</span>, <span class="string">&quot;w&quot;</span>); assert(fp);</span><br><span class="line">    display(fp, W / <span class="number">256</span>);</span><br><span class="line">    pclose(fp);</span><br><span class="line">    <span class="keyword">if</span> (done == NT) <span class="keyword">break</span>;</span><br><span class="line">    usleep(<span class="number">1000000</span> / <span class="number">5</span>);</span><br><span class="line">    ms += <span class="number">1000.0</span> / <span class="number">5</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Approximate render time: %.1lfs\n&quot;</span>, ms / <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">  FILE *fp = fopen(IMG_FILE, <span class="string">&quot;w&quot;</span>); assert(fp);</span><br><span class="line">  display(fp, <span class="number">2</span>);</span><br><span class="line">  fclose(fp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">  assert(argc == <span class="number">2</span>);</span><br><span class="line">  NT = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; NT; i++) &#123;</span><br><span class="line">    create(Tworker);</span><br><span class="line">  &#125;</span><br><span class="line">  create(Tdisplay);</span><br><span class="line">  join();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码使用一些数学手法画出一幅清晰度很高，非常美观的分形图。代码中有一些有意思的小工具：</p>
+<ul>
+<li><p>Tdisplay 线程中使用了 viu 命令行工具，它可以将一张图片以较低的分辨率打印在终端上，这可以在让我们看到图像生成的大致过程。我们可以看到该程序将画面切分成了多个部分，每个线程控制一个。</p>
+</li>
+<li><p>Tdisplay 线程最终将像素信息输出到了一个 ppm (portable pixel map) 文件中。对于 C 语言来说，这是一种非常方便的输出图像的方式：只需要在文件开头输出</p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">P6</span><br><span class="line">W H COLOR <span class="comment">// 宽，高，颜色数</span></span><br></pre></td></tr></table></figure>
+
+<p>  然后一行一行地将每个点的 RGB 值输出即可。</p>
+</li>
+</ul>
+<h2 id="Data-Center"><a href="#Data-Center" class="headerlink" title="Data Center"></a>Data Center</h2><p>多副本情况下的低延迟、高可靠性问题。这其中存在一些互相矛盾的点</p>
+<ul>
+<li>Availability - 数据在 data center 应该有多个副本，这样如果某个副本坏了，数据不会丢失。此外，为了各地地人可以快速读取，服务器会把本地城市 data center 的数据直接返回。</li>
+<li>Consistency - ”我在南京屏蔽我妈，我妈在广州也要响应这个屏蔽。” 不能因为图快而不同步地直接读取本地副本。</li>
+<li>Partition Tolerance</li>
+</ul>
+<p>这门课的问题：如何在一台计算机上既可能高效地处理并行请求？</p>
+<p>我们的工具：线程、协程</p>
+<ul>
+<li>线程：可以在操作系统的调度算法下进行切换，但线程切换很“重”：需要保存上下文，需要陷入内核 (privilege level 的改变)……</li>
+<li>协程：更轻量级的并发 (只要遵守 calling convention，切换时不需要保存那么多寄存器，不需要进操作系统)，但只有执行 co_yield() 才会切换，如果某个线程执行了很慢的 I/O 系统调用，剩下的协程就都在摸鱼。</li>
+</ul>
+<h3 id="Goroutine"><a href="#Goroutine" class="headerlink" title="Goroutine"></a>Goroutine</h3><p>Go 是一门专门服务系统编程的语言。go 支持所谓的 goroutine: 在概念上它是线程，但它是使用类似于协程的原理实现的。每个 CPU 上只有一个线程，但这个线程下有多个 goroutine，每个 CPU 上有一个 Go worker 负责调度这些 goroutine。goroutine 切换的方式和协程相似，因此非常轻量级。对于某些会导致阻塞的系统调用 (如 sleep, rand)，go 会将他们改成 non-blocking 的版本，如果需要陷入内核进行长时间操作，它就会 yield 到另一个 goroutine 执行。这样，goroutine 将操作系统和 CPU 都利用到了100%。</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Example from &quot;The Go Programming Language&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;fmt&quot;</span></span><br><span class="line">  <span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">go</span> spinner(<span class="number">100</span> * time.Millisecond)</span><br><span class="line">  <span class="keyword">const</span> n = <span class="number">45</span></span><br><span class="line">  fibN := fib(n) <span class="comment">// slow</span></span><br><span class="line">  fmt.Printf(<span class="string">&quot;\rFibonacci(%d) = %d\n&quot;</span>, n, fibN)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">spinner</span><span class="params">(delay time.Duration)</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, r := <span class="keyword">range</span> <span class="string">`-\|/`</span> &#123;</span><br><span class="line">      fmt.Printf(<span class="string">&quot;\r%c&quot;</span>, r)</span><br><span class="line">      time.Sleep(delay)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">  <span class="keyword">if</span> x &lt; <span class="number">2</span> &#123; <span class="keyword">return</span> x &#125;</span><br><span class="line">  <span class="keyword">return</span> fib(x - <span class="number">1</span>) + fib(x - <span class="number">2</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在主函数中，我们使用 <code>go spinner</code> 创建了一个新的 goroutine。该程序可以一边计算 Fibinacci 数列，一边在 spinner 协程中打印旋转的进度条。</p>
+<p>绝大部分的并发问题都可以通过生产者-消费者模型来解决。Go 语言封装了生产者-消费者队列，提供了用于 goroutines 之间通信的 API：</p>
+<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> stream = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">10</span>)</span><br><span class="line"><span class="keyword">const</span> n = <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">produce</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> i := <span class="number">0</span>; ; i++ &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;produce&quot;</span>, i)</span><br><span class="line">    stream &lt;- i</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">consume</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> &#123;</span><br><span class="line">    x := &lt;-stream</span><br><span class="line">    fmt.Println(<span class="string">&quot;consume&quot;</span>, x)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; n; i++ &#123;</span><br><span class="line">    <span class="keyword">go</span> produce()</span><br><span class="line">  &#125;</span><br><span class="line">  consume()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>make(chan int, 10)</code> 定义了一个通道，并规定了其最大容量 (最大容量为 0 的 channel 可以用来同步)。生产者通过 <code>stream &lt;- i</code> 往队列里面加东西，消费者通过 <code>x := &lt;-stream</code> 从队列里面取东西。其内部的锁，睡眠等细节问题全部对程序员透明。</p>
+<h2 id="Web-2-0"><a href="#Web-2-0" class="headerlink" title="Web 2.0"></a>Web 2.0</h2><p>在网页这种计算量、并发量都不大的场景下，我们使用的模型是单线程+事件模型。事件按照顺序执行，具有原子性 (减少了发生并发 bug 的可能)，遇到耗时的 API 就立刻返回 (结束一个事件)。</p>
+<p>为了代码的可维护性，描述流图的语言正在发展。</p>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Lecture 08: Concurrent Bugs &amp; Confrontation</title>
+    <url>/2022/03/11/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/</url>
+    <content><![CDATA[<p>Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。</p>
+<h2 id="Defensive-Programming"><a href="#Defensive-Programming" class="headerlink" title="Defensive Programming"></a>Defensive Programming</h2><p>一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。</p>
+<p>assert() 虽然不一定能写得对，但如果 assert() 和代码出错的概率是独立的，那么写 assert() 就使得程序出错的概率降低了一个数量级。</p>
+<span id="more"></span>
+
+<h2 id="Concurrent-Bugs"><a href="#Concurrent-Bugs" class="headerlink" title="Concurrent Bugs"></a>Concurrent Bugs</h2><h3 id="Deadlock"><a href="#Deadlock" class="headerlink" title="Deadlock"></a>Deadlock</h3><blockquote>
+<p><strong>一个中断相关的死锁</strong></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">os_run</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> spin_lock(&amp;lk);</span><br><span class="line"> spin_lock(&amp;xxx);</span><br><span class="line"> spin_unlock(&amp;xxx); <span class="comment">//------+</span></span><br><span class="line">&#125;					   <span class="comment">//  	   |</span></span><br><span class="line">					   <span class="comment">//	   | Interrupt</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">on_interrupt</span><span class="params">()</span>	   <span class="comment">//	   |</span></span></span><br><span class="line"><span class="function"></span>&#123;					   <span class="comment">//	   |</span></span><br><span class="line"> spin_lock(&amp;lk); <span class="comment">// &lt;-------+</span></span><br><span class="line"> ...</span><br><span class="line"> spin_unlock(&amp;lk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上锁的时候要关中断，且锁出现嵌套的时候，需要一个计数器来维护嵌套层数，只有完全无锁的时候才能开中断 (释放锁的时候不能莽开中断)。</p>
+</blockquote>
+<ul>
+<li><p>AA-deadlock：某个线程在试图获得自己已经获得的锁。这很容易检测出来。在编程的时候理应多使用如下的防御性编程：</p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (holding(lk)) panic();</span><br></pre></td></tr></table></figure></li>
+<li><p>ABBA-deadlock：进程在互相等待别人的锁。lock-ordering 是一种好的防御方法：系统中所有的锁必须排出一个无环的拓扑序。</p>
+<blockquote>
+<p>model checker 可以可视化地帮我们检查是否有死锁。如果某个节点所有的出边都指向自己，这就是一个陷入死锁的状态。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Data-Race"><a href="#Data-Race" class="headerlink" title="Data Race"></a>Data Race</h3><p>两个线程在同一时间访问同一个地址，且至少有一个是写。之所以被称为“竞争”是因为运行的结果取决于“谁跑赢了”。</p>
+<h3 id="Atomicity-Violation-AV-amp-Order-Violation-OV"><a href="#Atomicity-Violation-AV-amp-Order-Violation-OV" class="headerlink" title="Atomicity Violation (AV) &amp; Order Violation (OV)"></a>Atomicity Violation (AV) &amp; Order Violation (OV)</h3><p>TOCTTOU (time of check to time of use)：某段代码通常会检查某个条件 (time to check)，然后在认为这个条件的成立是 invariant 的情况下对其进行某种操作 (time of use)，但如果其他程序在中间插入做了某个改变 invariant 的操作，就会产生 bug。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">					   TIME		</span><br><span class="line">/home/abc/mailbox		|</span><br><span class="line">a symbolic link?		|</span><br><span class="line">		|				|		Delete /home/abc/mailbox</span><br><span class="line">		| 				|</span><br><span class="line">		| No			|		Create symbolic link</span><br><span class="line">		|				|		~/mailbox, pointing to </span><br><span class="line">		|				|		/etc/passwd</span><br><span class="line">Append the new message	|</span><br><span class="line">to /home/abc/mailbox	|</span><br></pre></td></tr></table></figure>
+
+<p>在上述过程中，如果攻击者利用 TOC 和 TOU 之间的窗口期将 <code>/home/abc/mailbox</code> 指向某个非法的文件 (打破了 kernel 之前检查的条件)，kernel 就可能会给普通用户 root 权限。</p>
+<h2 id="Bugs-Confrontation"><a href="#Bugs-Confrontation" class="headerlink" title="Bugs Confrontation"></a>Bugs Confrontation</h2><h3 id="Lockdep"><a href="#Lockdep" class="headerlink" title="Lockdep"></a>Lockdep</h3><p>我们可以为每把锁一个全局唯一的 allocation site。在所有获得锁/释放锁的时间点记录一份日志，然后对日志进行分析 (观察上锁顺序)，如果对于某两把锁 $x,y$，我们能观测到 $x\rightsquigarrow y\and y\rightsquigarrow x$，则检测出了可能的死锁。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// lock-site.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">lock</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> locked;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *site;</span><br><span class="line">&#125; <span class="keyword">lock_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STRINGIFY(s) #s</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TOSTRING(s)  STRINGIFY(s)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK_INIT() \</span></span><br><span class="line"><span class="meta">  ( (lock_t) &#123; .locked = 0, .site = __FILE__ <span class="meta-string">&quot;:&quot;</span> TOSTRING(__LINE__), &#125; )</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">lock_t</span> lk1 = LOCK_INIT();</span><br><span class="line"><span class="keyword">lock_t</span> lk2 = LOCK_INIT();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">(<span class="keyword">lock_t</span> *lk)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;LOCK   %s\n&quot;</span>, lk-&gt;site);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">(<span class="keyword">lock_t</span> *lk)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;UNLOCK %s\n&quot;</span>, lk-&gt;site);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">some_object</span> &#123;</span></span><br><span class="line">  <span class="keyword">lock_t</span> lock;</span><br><span class="line">  <span class="keyword">int</span> data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">object_init</span><span class="params">(struct some_object *obj)</span> </span>&#123;</span><br><span class="line">  obj-&gt;lock = LOCK_INIT();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  lock(&amp;lk1);</span><br><span class="line">  lock(&amp;lk2);</span><br><span class="line">  unlock(&amp;lk1);</span><br><span class="line">  unlock(&amp;lk2);</span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">some_object</span> *<span class="title">obj</span> =</span> <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(struct some_object));</span><br><span class="line">  assert(obj);</span><br><span class="line">  object_init(obj);</span><br><span class="line">  lock(&amp;obj-&gt;lock);</span><br><span class="line"></span><br><span class="line">  lock(&amp;lk2);</span><br><span class="line">  lock(&amp;lk1);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的 <code>lock-site.c</code> 提供了一种简单的为每个锁提供唯一 allocation site 的方法，其中的一些宏定义值得学习。</p>
+<h3 id="Sanitizer"><a href="#Sanitizer" class="headerlink" title="Sanitizer"></a>Sanitizer</h3><p>运行时的动态检查。AddressSanitizer 可以检查内存访问的 bug (监控所有的内存访问)，ThreadSanitizer 可以检查数据竞争 (内存访问 + lock/unlock)，此外还有 UBSanitizer, MemorySanitizer 等。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// uaf.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> *ptr = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">  *ptr = <span class="number">1</span>;</span><br><span class="line">  <span class="built_in">free</span>(ptr);</span><br><span class="line">  *ptr = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述程序存在 use-after-free 问题。在编译时加入 <code>-fsanitize=address</code>，运行程序时，我们可以得到丰富的报错信息。</p>
+<h3 id="Lightweight-Tools"><a href="#Lightweight-Tools" class="headerlink" title="Lightweight Tools"></a>Lightweight Tools</h3><h4 id="Stack-Canary"><a href="#Stack-Canary" class="headerlink" title="Stack Canary"></a>Stack Canary</h4><p>在栈顶和栈底设置一些存储了特殊值的内存单元 (金丝雀) 并定期检查这些单元。如果这些单元被修改了，说明发生了栈溢出。我们只需很短的代码就可以完成 stack canary：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAGIC 0x55555555</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BOTTOM (STK_SZ / sizeof(u32) - 1)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">stack</span> &#123;</span> <span class="keyword">char</span> data[STK_SZ]; &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">canary_init</span><span class="params">(struct <span class="built_in">stack</span> *s)</span> </span>&#123;</span><br><span class="line">  u32 *ptr = (u32 *)s;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CANARY_SZ; i++)</span><br><span class="line">    ptr[BOTTOM - i] = ptr[i] = MAGIC;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">canary_check</span><span class="params">(struct <span class="built_in">stack</span> *s)</span> </span>&#123;</span><br><span class="line">  u32 *ptr = (u32 *)s;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CANARY_SZ; i++) &#123;</span><br><span class="line">    panic_on(ptr[BOTTOM - i] != MAGIC, <span class="string">&quot;underflow&quot;</span>);</span><br><span class="line">    panic_on(ptr[i] != MAGIC, <span class="string">&quot;overflow&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们有时在 windows 中会看到的 “烫烫烫” 等字，其实是 stack canary 在 GB2312 编码下的结果：</p>
+<ul>
+<li>未初始化栈: <code>0xcccccccc</code></li>
+<li>未初始化堆: <code>0xcdcdcdcd</code></li>
+<li>对象头尾: <code>0xfdfdfdfd</code></li>
+<li>已回收内存: <code>0xdddddddd</code></li>
+</ul>
+<p>我们可以用</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">(<span class="string">b&#x27;\xcc&#x27;</span> * <span class="number">80</span>).decode(<span class="string">&#x27;gb2312&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>查看使用未初始化栈时得到的内容 (烫烫烫)。</p>
+<h4 id="Lightweight-Lockdep"><a href="#Lightweight-Lockdep" class="headerlink" title="Lightweight Lockdep"></a>Lightweight Lockdep</h4><p>很多情况下，我们可以在自旋锁自旋次数过多的时候直接报警，然后利用 GDB 的 backtrace 功能观察是否真的发生了死锁。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> spin_cnt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> (xchg(&amp;locked, <span class="number">1</span>)) &#123;</span><br><span class="line">  <span class="keyword">if</span> (spin_cnt++ &gt; SPIN_LIMIT) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Too many spin @ %s:%d\n&quot;</span>, __FILE__, __LINE__);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Lecture 09: State Machine of OS</title>
+    <url>/2022/03/17/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/</url>
+    <content><![CDATA[<h2 id="Bare-metal-amp-Software"><a href="#Bare-metal-amp-Software" class="headerlink" title="Bare-metal &amp; Software"></a>Bare-metal &amp; Software</h2><p>数字电路本身就是一个巨大的状态机。硬件厂商会保证 CPU reset 后处理器处在一个确定的状态，各个单元的固定的值会写在手册中。以 x86 为例，手册规定了 CPU reset 后 rip 的值会是 0xfff0，EFLAGS 的值为 0x2，当前硬件运行在 16-bit 模式中，不响应中断。</p>
+<span id="more"></span>
+
+<p>CPU 只是一个周而复始的取值译码执行的东西，因此它马上会做的事情就是取出 0xfff0 处的指令并执行。0xfff0 处通常是一个跳转指令，PC 会跳转到固件代码执行。固件 (Firmware) 是硬件厂商写死在一块 ROM 上的代码，常见的固件程序有 BIOS 和 UEFI 两种，后者更加现代机制更加复杂，这里简介 Legacy BIOS 的过程：</p>
+<p>BIOS 的主要工作是扫描各个硬盘/U盘/软盘……然后将第一个可引导的设备的第一个扇区 (512B) 加载到地址 0x7c00 处。可引导的设备的第一个扇区会遵循主引导记录 (Master Boot Record, MBR) 的格式。如果我们使用命令</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">cat executable-x86_64-qemu | head -c <span class="number">512</span> | xxd</span><br></pre></td></tr></table></figure>
+
+<p>查看一个镜像文件的前 512 个字节，我们可以看到其末尾一定是 0x55aa。这是 MBR 的结束标志。</p>
+<p>此时硬件仍然工作在 16-bit 模式上。规定 <code>CS:IP=0x7c00</code> ，即 <code>(R[CS]&lt;&lt;4) | R[IP] == 0x7c00</code> ，其他没有任何约束。Firmware 执行结束后，PC 跳转到 0x7c00 执行，刚刚加载过来的是 Legacy boot (boot loader)，它负责完成操作系统的加载：初始化栈和堆区，为 main() 传递参数等等。</p>
+<h2 id="Code-Firmware"><a href="#Code-Firmware" class="headerlink" title="Code: Firmware"></a>Code: Firmware</h2><p>QEMU 是一个全系统模拟器，我们可以通过 GDB 远程连接的方式来调试 QEMU，从而观测各个时刻的系统状态。</p>
+<p>一个启动 QEMU 并使用 GDB 监听的脚本如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">qemu-system-x86_64 \</span><br><span class="line">  -smp 1\</span><br><span class="line">  -S -s\</span><br><span class="line">  -drive format=raw,file=amgame-x86_64-qemu &amp;</span><br><span class="line">pid=$!</span><br><span class="line"></span><br><span class="line">gdb -x remote.gdb ; <span class="built_in">kill</span> -9 $!</span><br></pre></td></tr></table></figure>
+
+<p><code>qemu-system-x86_64</code> 启动了一个 x86-64 架构的 QEMU 模拟器，之后的各个选项和参数的意义如下：</p>
+<ul>
+<li><code>-smp 1</code> 指定了 QEMU 模拟单核 CPU。</li>
+<li><code>-S</code> 选项表示让 QEMU 停止在 CPU reset 后的第一条指令上。</li>
+<li><code>-s</code> 选项是 <code>-gdb tcp::1234</code> 的简写，表示在端口 1234 打开一个 gdbserver。</li>
+<li><code>-drive format=raw,file=amgame-x86_64-qemu</code> 告诉了 QEMU 用于引导的设备。这里笔者使用了 Lab0 中 amgame 的镜像。</li>
+</ul>
+<p>gdb 的 <code>-x</code> 选项后面可以跟一个脚本，表示在启动 gdb 之后自动运行后面的脚本。笔者在脚本中只做了一行配置：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">target remote localhost:1234</span><br></pre></td></tr></table></figure>
+
+<p>表示连接到 gdbserver。之前我们给运行 QEMU 的进程分配了一个进程号，现在用 <code>kill -9 $!</code> 可以在退出 gdb 之后帮我们自动杀死 QEMU 的进程。</p>
+<p>运行这个脚本，我们可以看到 QEMU 停在了 CPU reset 后的初始状态。使用 <code>i r</code> 命令打印寄存器信息，可以看到 <code>rip = 0xfff0</code>，<code>eflags = 0x2</code> 等，符合手册的约定。此时如果使用命令 <code>x/16xb 0x7c00</code> 查看地址 0x7c00 附近的内存内容，可以看到全部是 0 (注：<code>x</code> 是打印，<code>16</code> 是打印 16 个 byte，<code>x</code> 是按照十六进制打印，<code>b</code> 是将各个 byte 分开)。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0x7c00:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br><span class="line">0x7c08:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br></pre></td></tr></table></figure>
+
+<p>想要监控 BIOS 的行为，我们可以用命令 <code>wa *0x7c00</code> 在这个地址上打一个断点，然后 continue，该地址的值出现变化时 GDB 会停下并通知我们。</p>
+<p>当前系统仍处于 16 位模式，因此需要用 cs 和 rip 两个寄存器来定位指令的位置。使用 <code>x/i ($cs * 16 + $rip)</code> 查看当前指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0xfa591:	rep insl (%dx),%es:(%edi)</span><br></pre></td></tr></table></figure>
+
+<p>这是一条内存拷贝指令，刚开始可以看到 <code>%es:(%edi) == 0x7c00</code> ，随着 repeat 的推进，<code>(%edi)</code> 的值逐渐变大。如果再查看 0x7c00 附近的内容，可以看到 MBR 正在被逐渐搬入：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0x7c00:	0xfa	0x31	0xc0	0x8e	0xd8	0x8e	0xc0	0x8e</span><br><span class="line">0x7c08:	0xd0	0xb8	0x01	0x4f	0xb9	0x12	0x01	0xbf</span><br><span class="line">0x7c10:	0x00	0x40	0xcd	0x10	0x00	0x00	0x00	0x00</span><br><span class="line">0x7c18:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br></pre></td></tr></table></figure>
+
+<h2 id="State-Machine-of-OS"><a href="#State-Machine-of-OS" class="headerlink" title="State Machine of OS"></a>State Machine of OS</h2><p>Firmware 和 boot loader 共同完成了操作系统的加载。进入 C 代码后，操作系统将完全遵循 C 语言的形式语义（当然，调用 AbstractMachine API 的部分是对 C 语言形式语义的补充）。</p>
+<p>AbstractMachine 对 C 程序语义的扩展主要是以下几个部分：</p>
+<ul>
+<li>TRM + MPE<ul>
+<li>完全等同于多线程。将整个系统的状态机从一条链变成多条链，之后的执行将是 non-deterministic 的。</li>
+<li>IOE API 相当于库函数。</li>
+</ul>
+</li>
+<li>CTE<ul>
+<li>允许创建多个执行流。</li>
+<li>yield() 会主动切换，中断会被动切换。</li>
+</ul>
+</li>
+<li>VME<ul>
+<li>创建一个“经过地址翻译的执行模式”。</li>
+</ul>
+</li>
+</ul>
+<p>整个系统的状态机大致可以看成如下过程：</p>
+<pre class="mermaid">flowchart LR
+    subgraph CPUReset
+        PC=0xfff0 --- EFLAGS=0x2 --- CR0=... --- S0[...]
+    end
+    id0((init))-. CPU Reset .-> CPUReset
+    CPUReset -. Firmware .-> Boot
+    subgraph Boot
+        PC=0x7c00 --- MBR[MBR at 0x7c00] --- ...
+    end
+    Boot -. OS booter .-> main
+    subgraph main
+        g[global] -.- sf[stack frame] -.- PC -.- S[...]
+    end
+    main -. mpe_init .-> multithread
+    subgraph multithread
+        gg[global]
+        sf1[stack frame] --- pc1[PC] --- o1[...]
+        sf2[stack frame] --- pc2[PC] --- o2[...]
+    end
+    multithread -. CPU1 .-> state1((...))
+    multithread -. CPU2 .-> state2((...))
+    multithread -. Interrupt .-> state3((...))</pre>
+
+<h2 id="Code-AbstractMachine"><a href="#Code-AbstractMachine" class="headerlink" title="Code: AbstractMachine"></a>Code: AbstractMachine</h2><blockquote>
+<p><strong>Unix Philosophy</strong></p>
+<p>Makefile 中的变量的定义可能散落在世界各处，因此静态地读 Makefile 效果可能不好。好的方式是直接观测 Makefile 做了怎样的事情。这里提供一套命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make mainargs=HelloOS run -nB \</span><br><span class="line">| grep -ve <span class="string">&#x27;^\(\#\|echo\|mkdir\|make\)&#x27;</span> \</span><br><span class="line">| sed <span class="string">&quot;s#<span class="variable">$AM_HOME</span>#\$AM_HOME#g&quot;</span> \</span><br><span class="line">| sed <span class="string">&quot;s#<span class="variable">$PWD</span>#.#g&quot;</span> \</span><br><span class="line">| vim -</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>make 的 <code>-n</code> 选项可以只输出执行的命令而不真正执行，<code>-B</code> 选项可以忽略已经编译好的内容从头编译。</li>
+<li>grep 用于筛选，<code>-v</code> 选项表示反向筛选，<code>-e</code> 表示使用正则表达式匹配。</li>
+<li>sed 可以作替换，这里将冗长的路径名替换成了短的。</li>
+<li>vim - 命令可以将输出导入到 vim 中查看。</li>
+</ul>
+<p>在 vim 中使用 <code>:%s/ /\r  /g</code> 可以将空格改为换行，从而提高可读性。</p>
+</blockquote>
+<p>通过观察 Makefile 的输出结果，我们可以看到它是如何创建镜像文件以及传输命令行参数的：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">( cat <span class="variable">$AM_HOME</span>/am/src/x86/qemu/boot/bootblock.o;</span><br><span class="line">  head -c 1024 /dev/zero; </span><br><span class="line">  cat ./build/threados-x86_64-qemu.elf )</span><br><span class="line">&gt; ./build/threados-x86_64-qemu</span><br></pre></td></tr></table></figure>
+
+<p><code>bootblock.o</code> 是主引导记录。<code>head -c 1024 /dev/zero</code> 取出了 1024B 的 \0。<code>threados-x86_64-qemu.elf</code> 是我们之前编译、链接得到的 elf 文件。将这三者拼接起来输出到文件 <code>threados-x86_64-qemu</code> 中，就制作好了镜像文件。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">( <span class="built_in">echo</span> -n HelloOS; ) | dd <span class="keyword">if</span>=/dev/stdin of=./build/threados-x86_64-qemu </span><br><span class="line"> bs=512 count=2 seek=1 conv=notrunc status=none</span><br></pre></td></tr></table></figure>
+
+<p>参数 HelloOS 被输出后，dd 指定 input file 为 stdin，output file 为我们刚刚制作的镜像，将参数写到了第二个扇区里 (即 MBR 后面紧跟着的扇区)。</p>
+<p>之前我们用 GDB 调试了固件将 MBR 加载到 0x7c00 的过程，现在我们可以继续用 GDB 调试 OS booter 的运行过程。</p>
+<blockquote>
+<p><strong>没有 OS booter 的符号表怎么办？</strong></p>
+<p>仔细阅读 AbstractMachine 的 Makefile，我们发现 <code>bootblock.o</code> 就是主引导记录，它的生成过程如下：</p>
+<ul>
+<li><p><code>gcc -static -m32 -fno-pic -g -Os -nostdlib -Ttext 0x7c00 -I$AM_HOME/am/src -o bootblock.o start.S main.c</code>，该命令编译 <code>am/src/x86/qemu/boot/</code> 目录下的 <code>main.c</code> 和 <code>start.S</code> 并链接成一个 <code>bootblock.o</code>。</p>
+<p>  为了生成带有调试信息的二进制文件，我们应当加入 <code>-g</code> 选项。</p>
+</li>
+<li><p><code>python genboot.py bootblock.o</code> 对 <code>bootblock.o</code> 做了进一步的修改，阅读 <code>genboot.py</code> ：</p>
+  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os, sys, pathlib, subprocess</span><br><span class="line">    </span><br><span class="line">f = pathlib.Path(sys.argv[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    objcopy = os.getenv(<span class="string">&#x27;CROSS_COMPILE&#x27;</span>, <span class="string">&#x27;&#x27;</span>) + <span class="string">&#x27;objcopy&#x27;</span></span><br><span class="line">    data = subprocess.run(</span><br><span class="line">        [objcopy, <span class="string">&#x27;-S&#x27;</span>, <span class="string">&#x27;-O&#x27;</span>, <span class="string">&#x27;binary&#x27;</span>, <span class="string">&#x27;-j&#x27;</span>, <span class="string">&#x27;.text&#x27;</span>, f, <span class="string">&#x27;/dev/stdout&#x27;</span>],</span><br><span class="line">        capture_output=<span class="literal">True</span>).stdout</span><br><span class="line">    <span class="keyword">assert</span> <span class="built_in">len</span>(data) &lt;= <span class="number">510</span></span><br><span class="line">    data += <span class="string">b&#x27;\0&#x27;</span> * (<span class="number">510</span> - <span class="built_in">len</span>(data)) + <span class="string">b&#x27;\x55\xaa&#x27;</span></span><br><span class="line">    f.write_bytes(data)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    f.unlink()</span><br><span class="line">    <span class="keyword">raise</span></span><br></pre></td></tr></table></figure>
+
+<p>  它的主要工作是用 objcopy 工具将 <code>bootblock.o</code> 中的关键内容拷贝出来，<code>-S</code> 选项表示丢弃重定位信息，符号信息，调试信息等不需要的内容；<code>-j .text</code> 表示只保留代码节。拷贝出来后在字节流的后面补上若干 0，最后加上 0x55aa，以形成一个 MBR。</p>
+</li>
+</ul>
+<p>为了获得符号表，笔者做了如下修改：将第一步生成的 <code>bootblock.o</code> 备份一份重命名为 <code> boot-sym.o</code> 用于加载符号表，并在 gdb 启动时的自动化脚本中添加：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">symbol-file /path/to/boot-sym.o</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>在 GDB 中打断点 <code>wa ($rip != 0x7c00)</code> (或者 <code>b _start</code>) 即可定位到 OS booter。此时机器仍然处于 16 位模式，GDB 不支持 16 位的调试，打印出来的汇编命令会出现错误。我们可以在 <code>$AM_HOME/am/src/x86/qemu/boot/start.S</code> 中找到对应的指令。可以看到在执行了不多的几条指令后，PC 跳转到了函数 start32。start32 执行了几条简单的指令后跳转到了 load_kernel()。(在 load_kernel() 中终于可以用 layout src 调试了)</p>
+<p>load_kernel() 和 nanos-lite 中的 loader() 功能类似：将 elf 文件中的各个段拷贝到内存的指定地址 0x8000，并跳转到入口函数启动内核。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Elf32_Ehdr *elf32 = (<span class="keyword">void</span> *)<span class="number">0x8000</span>;</span><br><span class="line">Elf64_Ehdr *elf64 = (<span class="keyword">void</span> *)<span class="number">0x8000</span>;</span><br><span class="line"><span class="keyword">int</span> is_ap = boot_record()-&gt;is_ap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!is_ap) &#123;</span><br><span class="line">    <span class="comment">// load argument (string) to memory</span></span><br><span class="line">    copy_from_disk((<span class="keyword">void</span> *)MAINARG_ADDR, <span class="number">1024</span>, <span class="number">-1024</span>);</span><br><span class="line">    <span class="comment">// load elf header to memory</span></span><br><span class="line">    copy_from_disk(elf32, <span class="number">4096</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (elf32-&gt;e_machine == EM_X86_64) &#123;</span><br><span class="line">      load_elf64(elf64);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      load_elf32(elf32);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码调用 copy_from_disk() 将 mainargs 以及 elf 文件从 disk 中拷贝出来，再调用 load_elf() 将其加载到 0x8000 位置。在执行 if 之前通过 <code>p *elf64</code> 查看 0x8000 附近的内容，可以看到各个字段全部为空。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(gdb) p *elf64</span><br><span class="line"><span class="variable">$1</span> = &#123;e_ident = <span class="string">&#x27;\000&#x27;</span> &lt;repeats 15 <span class="built_in">times</span>&gt;, e_type = 0, e_machine = 0,</span><br><span class="line">  e_version = 0, e_entry = 0, e_phoff = 0, e_shoff = 0, e_flags = 0,</span><br><span class="line">  e_ehsize = 0, e_phentsize = 0, e_phnum = 0, e_shentsize = 0, e_shnum = 0,</span><br><span class="line">  e_shstrndx = 0&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">load_program</span><span class="params">(<span class="keyword">uint32_t</span> filesz, <span class="keyword">uint32_t</span> memsz, <span class="keyword">uint32_t</span> paddr, <span class="keyword">uint32_t</span> offset)</span> </span>&#123;</span><br><span class="line">  copy_from_disk((<span class="keyword">void</span> *)paddr, filesz, offset);</span><br><span class="line">  <span class="keyword">char</span> *bss = (<span class="keyword">void</span> *)(paddr + filesz);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">uint32_t</span> i = filesz; i != memsz; i++) &#123;</span><br><span class="line">    *bss++ = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">load_elf64</span><span class="params">(Elf64_Ehdr *elf)</span> </span>&#123;</span><br><span class="line">  Elf64_Phdr *ph = (Elf64_Phdr *)((<span class="keyword">char</span> *)elf + elf-&gt;e_phoff);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; elf-&gt;e_phnum; i++, ph++) &#123;</span><br><span class="line">    load_program(</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_filesz,</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_memsz,</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_paddr,</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_offset</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>load_elf() 根据 elf 文件的 program header 调用 load_program() 将各个段加载到内存中。load_program() 中的一个小细节是：filesz 和 memsz 的差值是 elf 为 .bss 节预留的空位，根据 C 程序的约定，操作系统有义务将其填充为 0。</p>
+<p>执行完 load_elf() 后，再查看 0x8000 附近的内存，可以看到已经被填上了内容：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(gdb) p *elf64</span><br><span class="line"><span class="variable">$1</span> = &#123;e_ident = <span class="string">&quot;\177ELF\002\001\001\000\000\000\000\000\000\000\000&quot;</span>,</span><br><span class="line">  e_type = 2, e_machine = 62, e_version = 1, e_entry = 1049360, e_phoff = 64,</span><br><span class="line">  e_shoff = 152256, e_flags = 0, e_ehsize = 64, e_phentsize = 56, e_phnum = 2,</span><br><span class="line">  e_shentsize = 64, e_shnum = 17, e_shstrndx = 16&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (elf32-&gt;e_machine == EM_X86_64) &#123;</span><br><span class="line">  ((<span class="keyword">void</span>(*)())(<span class="keyword">uint32_t</span>)elf64-&gt;e_entry)();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  ((<span class="keyword">void</span>(*)())(<span class="keyword">uint32_t</span>)elf32-&gt;e_entry)();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后这两行，根据架构跳转到 elf 文件中 e_entry 所保存的入口函数地址。这里使用了 C 语言的技巧，将一个地址强制转换成一个函数指针并调用从而实现跳转。</p>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Minilab 01: pstree</title>
+    <url>/2022/03/11/NJU-OS%20Minilab%2001%20-%20pstree/</url>
+    <content><![CDATA[<p>该实验主要目的是实现一个精简版的 Linux pstree 命令行工具，以较为优美的方式打印当前系统中的进程树。</p>
+<span id="more"></span>
+
+<h2 id="Parse-args"><a href="#Parse-args" class="headerlink" title="Parse args"></a>Parse args</h2><p>首先对输入的选项列表进行分析。笔者使用了 C 库函数 getopt_long()，它不仅可以帮助我们快速解析选项，还可以同时识别一个选项的长短版本 (使用 C 库提供的 option 结构体可以定义每种选项的长短版本以及是否需要参数等)，识别多个选吸纳更合并给出的格式 etc.。</p>
+<p>定义好表格后，仅需一句话即可完成选项解析：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">option</span> <span class="title">table</span>[] =</span> &#123;</span><br><span class="line">    &#123;<span class="string">&quot;numeric-sort&quot;</span>, no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;n&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;show-pids&quot;</span>   , no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;p&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;version&quot;</span>     , no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;V&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0</span>             , <span class="number">0</span>          , <span class="literal">NULL</span>,  <span class="number">0</span> &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">getopt_long(argc, argv, <span class="string">&quot;-npV&quot;</span>, table, <span class="literal">NULL</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>关于版本信息</strong></p>
+<p>Linux 的 pstree 工具会将版本信息输出到标准错误流，为了模拟这一特性，我们可以使用 fprintf 语句将版本信息输出到 stderr 文件。</p>
+</blockquote>
+<h2 id="Fetch-Process-Information"><a href="#Fetch-Process-Information" class="headerlink" title="Fetch Process Information"></a>Fetch Process Information</h2><p>Linux 提供 procfs，我们可以用读写文件的 API 来获取操作系统中的进程状态。procfs 的根目录是 <code>/proc</code>，该目录中所有是数字的文件夹都存储了一个进程相关的信息，文件夹的数字名就是进程编号。配合使用 C 库函数 opendir() 和 readdir() 就可以遍历 <code>/proc</code> 下的所有内容并筛选出那些是数字的文件夹名。</p>
+<p>每个进程文件夹下的 <code>/proc/[pid]/stat</code> 文件中存储了我们打印进程树所需要的状态信息，包括但不限于进程的名字，进程的状态，进程号，父进程号等。我们可以利用这些信息把进程树构建出来。</p>
+<blockquote>
+<p><strong>关于进程名的格式</strong></p>
+<p>根据 <code>man proc</code> 的提示，所有的进程名都是用一对小括号包裹着的。笔者起初使用了 <code>scanf(&quot;%[^)]&quot;)</code> 的方法，读到右括号停止，但发现进程中有一些进程的进程名本身就带括号。因此只能一个字节一个字节读并同步维护一个括号的栈来确定什么时候停止。</p>
+</blockquote>
+<p>我们可以在 <code>/proc/sys/kernel/pid_max</code> 文件中查看进程号的最大值，在 64 位系统中，这个最大值为 $2^{22}$。为了代码编写的方便和效率，笔者开了一个这么大的数组 proc_pos[] 用于维护每个进程号对应到进程信息结构体数组 proc[] 的哪个位置。 proc 结构体中维护了一个当前进程的所有孩子的链表，孩子数量，进程名等信息。由于系统中真正在运行的进程个数远小于 $2^{22}$，这个做法可以省很多内存。</p>
+<p>事实上，Linux 的 pstree 工具还会将一个进程下的所有线程打印出来。我们可以在 <code>/proc/[pid]/task</code> 下看到所有的线程文件夹，<code>/proc/[pid]/task/[tid]/stat</code> 中也有各个线程的状态，不过本实验不要求打印线程。</p>
+<h2 id="Print-tree"><a href="#Print-tree" class="headerlink" title="Print tree"></a>Print tree</h2><p>打印进程树可以用对进程树的一次 dfs 来实现 —— 根节点是 1 号进程 systemd。这里需要注意的是遍历顺序的问题：在默认情况下，pstree 各个子树会按照进程名的字典序排序，如果有 <code>-n</code> 选项，则要按照进程号从小到大排序。在笔者的实现中，单向链表不方便进行高级的排序，但我们可以直接交换两个链表内部的内容，使用朴素的冒泡排序来完成工作。</p>
+<blockquote>
+<p><strong>更优美的显示</strong></p>
+<p>打印树结构的最简单的方法是使用缩进：我们只需要记录当前递归到第几层，并打印相应个数的 TAB 即可。为了实现像 Linux pstree 工具那样精美的树结构，我们需要以下观察：</p>
+<ul>
+<li>每个进程的第一个子进程不换行。仔细思考以下，我们会发现这个规则等价于我们只会在那些叶子进程处换行。</li>
+<li>每个进程名之前有一个树的节点符号，这个节点符号遵循的规则如下：<ul>
+<li>如果某进程有且仅有一个子进程，则节点符号为 <code>-</code>；</li>
+<li>如果某进程有大于一个子进程，则第一个孩子的节点符号是 <code>+</code>，最后一个孩子的节点符号是 <code>&#96;</code> ，中间孩子的节点符号是 <code>|</code>。</li>
+</ul>
+</li>
+<li>当我们在打印内层进程内容时，外层进程树会有 <code>|</code> 延伸下来，我们可以用一个栈记录所有需要打印 <code>|</code> 的位置。但需要注意的是：每个进程的最后一个子进程如果还有子进程，子进程的子进程是不会被子进程的父进程的 <code>|</code> 包裹住的，具体操作上，每个进程的最后一个子进程负责将父进程从栈中弹出。</li>
+</ul>
+</blockquote>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lab Reports</category>
       </categories>
   </entry>
   <entry>
@@ -2719,100 +3221,6 @@
       </categories>
   </entry>
   <entry>
-    <title>NJU-OS Lecture 05: Concurrent Programming: Mutex</title>
-    <url>/2022/03/01/NJU-OS%20Lecture%2005%20-%20Concurrent%20Programming%20-%20Mutex/</url>
-    <content><![CDATA[<p>从 high level 来看，我们希望实现如下的结构体和 API：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">typdef <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;lock;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">(lock *lk)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">(lock *lk)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<p>若 lock() 函数返回，说明获得了这个锁，别的进程会停在 lock() 里直到获得锁的人调用了 unlock()。</p>
-<p>实现互斥的根本困难：不能同时读写共享内存。</p>
-<ul>
-<li>load 的时候不能 store，且看完之后眼睛立刻闭上，看到的都是过去的东西；</li>
-<li>store 的时候不能 load，贴字条的时候不知道覆盖了什么。</li>
-</ul>
-<h2 id="Spin-Lock"><a href="#Spin-Lock" class="headerlink" title="Spin Lock"></a>Spin Lock</h2><blockquote>
-<p>“解决一个问题有两种方法：一个是分析问题、提出算法、实现解决，一个是解决提出问题的人。“ —— jyy</p>
-</blockquote>
-<p>我们希望硬件支持一条“瞬间完成读和写”的指令：“请所有人闭眼，然后我睁开眼看一眼，并做一个操作”。</p>
-<h3 id="x86-Lock-Prefix"><a href="#x86-Lock-Prefix" class="headerlink" title="x86: Lock Prefix"></a>x86: Lock Prefix</h3><p>以 lock 为前缀的指令支持原子操作。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// sum-atomic.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;thread.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 100000000</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tsum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(<span class="string">&quot;lock addq $1, %0&quot;</span>: <span class="string">&quot;+m&quot;</span>(sum))</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  create(Tsum);</span><br><span class="line">  create(Tsum);</span><br><span class="line">  join();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;sum = %ld\n&quot;</span>, sum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>由于这里的 +1 操作使用了原子指令，所以程序总能得到 2N 的输出。</p>
-<p>此外，一条非常好用的原子指令是 xchg，它可以原子地将一个数值和一个内存地址上的值交换。用 C 语言封装后的形式可以是：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">xchg</span><span class="params">(<span class="keyword">volatile</span> <span class="keyword">int</span> *addr, <span class="keyword">int</span> newval)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> result;</span><br><span class="line">  <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span> <span class="params">(<span class="string">&quot;lock xchg %0, %1&quot;</span></span></span></span><br><span class="line"><span class="params"><span class="function">    : <span class="string">&quot;+m&quot;</span>(*addr), <span class="string">&quot;=a&quot;</span>(result) : <span class="string">&quot;1&quot;</span>(newval))</span></span>; <span class="comment">//xchg默认原子，即使不加前缀lock也可以</span></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>借助 <code>xchg</code> 指令，我们可以轻松地实现一个自旋锁：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> lock = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;<span class="keyword">while</span> (xchg(&amp;lock, <span class="number">1</span>));&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;xchg(&amp;lock, <span class="number">0</span>);&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在硬件层面，硬件可以保证所有的带 lock 的指令可以排出一个全序，且原子指令相关的内存都会被提前做好 (内存的可见性)。但这其中有很多技术细节，比如多核的 Cache 之间的一致性是 x86 的噩梦 (一旦某个 CPU 要获得所，其他所有 CPU 核的 L1 Cache 都要上锁)。</p>
-<h3 id="RISC-V-LR-SC"><a href="#RISC-V-LR-SC" class="headerlink" title="RISC-V: LR/SC"></a>RISC-V: LR/SC</h3><p>原子指令内部的本质是三个步骤：load(), exec(), store()。RISC-V 提供了 load-reserved/store-conditional (LR/SC) 机制：</p>
-<ul>
-<li>LR: 在共享内存上打一个标记，如果出现中断、别的线程写入等情况，这个标记会消失。</li>
-<li>exec()：在寄存器上做一些自己的事情</li>
-<li>SC：如果共享内存上的标记还在，则 store。</li>
-</ul>
-<p>这里给出一个用于自旋锁的 compare-and-swap (旧值等于某个值才将新值与其交换) 函数的实现，用这个函数实现自旋锁在轮询时可以比 xchg 少一次写入操作：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// C语言语义</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cas</span><span class="params">(<span class="keyword">int</span> *addr, <span class="keyword">int</span> cmp_val, <span class="keyword">int</span> new_val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> old_val = *addr;</span><br><span class="line">    <span class="keyword">if</span> (old_val == cmp_val) &#123;*addr = new_val;<span class="keyword">return</span> <span class="number">0</span>;&#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cas:</span><br><span class="line">	lr.w t0, (a0)		# 获得旧值，并对(a0)打标记</span><br><span class="line">	bne t0, a1, fail	# 如果 old_val != cmp_val 则跳转到 fail</span><br><span class="line">	sc.w t0, a2, (a0)	# 如果标记还在，将a2写入(a0)，t0存储标记存在情况</span><br><span class="line">	bnez t0, cas		# 如果标记被冲刷了，说明出现race condition，回到cas重做</span><br><span class="line">	jr ra</span><br><span class="line">fail</span><br><span class="line">	li a0, 1</span><br><span class="line">	jr ra</span><br></pre></td></tr></table></figure>
-
-<p>如果有两个线程同时希望获得锁，第一个线程执行完 sc.w 后，第二个线程的标记被冲刷，从而第二个线程执行 sc.w 后 t0=1，无法获得锁。</p>
-<p>LR/SC 机制不仅可以实现锁，还可以让每个线程知道锁的拥堵情况。</p>
-<h2 id="Sleep-Lock"><a href="#Sleep-Lock" class="headerlink" title="Sleep Lock"></a>Sleep Lock</h2><p>自旋锁的性能缺陷：</p>
-<ul>
-<li>如果多个线程同时争抢锁，并行/并发的程序会因为自旋锁变得串行。除了进入临界区域的线程，其他的线程都在空转。</li>
-<li>如果持有自旋锁的线程被调度走了，那么所有的线程都进不去了。</li>
-</ul>
-<p>自旋锁的理想使用场景：</p>
-<ul>
-<li>临界区几乎不拥堵。</li>
-<li>持有自旋锁时禁止执行流切换 - 这件事对于应用程序来说太危险了，因此自旋锁一般用于操作系统内核中的并发数据结构 (临界区很短)。</li>
-</ul>
-<hr>
-<p>如果锁被占用，待在原地等待锁被释放是一件不太聪明的事情 (尤其是要等很长时间的时候)，我们希望一个线程在等待锁的时候可以被暂时挂起，让出 CPU，等到锁被释放时再唤醒等锁进程。</p>
-<p>C 语言代码是做不到 ”让出 CPU 的”，因此我们需要两个系统调用：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">syscall(SYSCALL_lock, &amp;lk);		<span class="comment">// 试图获得lk，如果失败则当前进程被挂起</span></span><br><span class="line">syscall(SYSCALL_unlock, &amp;lk);	<span class="comment">// 释放lk，并唤醒正在等待lk的进程</span></span><br></pre></td></tr></table></figure>
-
-<p>操作系统的工作是维护这个锁和等待锁的进程</p>
-<ul>
-<li>如果有线程尝试获得锁，且锁处于空闲状态，就把锁给他。</li>
-<li>如果有线程尝试获得锁但锁已经被取走了，则将当前线程加入等待锁的队列，并将其挂起。</li>
-<li>如果有线程释放了锁，就检查等待锁的队列中是否有线程，如果有则将锁交给下一位 (唤醒它)，如果没有则锁的状态为空闲。</li>
-<li>操作系统使用自旋锁保证自己对队列的操作是原子的。</li>
-</ul>
-<blockquote>
-<p><strong>Tip: GDB Usage</strong></p>
-<p>使用 GDB 调试多线程时，如果直接使用 next 命令，所有的线程都会向后走一步。为了更好地观测程序行为，我们可以使用 <code>set scheduler-lock on</code> 命令来打开线程锁，之后再使用 next 命令就只有当前线程会向前走一步。我们可以通过 <code>info threads</code> 来查看线程信息，通过 <code>thread id</code> 来切换当前调试的线程为 id。</p>
-</blockquote>
-<h2 id="Futex"><a href="#Futex" class="headerlink" title="Futex"></a>Futex</h2><ul>
-<li>自旋锁有更快的 fast path：如果获得锁成功，可以立刻进入临界区；但如果没有获得锁，则要浪费 CPU 时钟周期。</li>
-<li>睡眠锁有更快的 slow path: 如果没有获得锁，可以执行线程切换；但在能获得锁的情况下，也需要执行系统调用陷入内核。</li>
-</ul>
-<p>我们希望发明一种锁，对于 fast path，只需要一条原子指令就可以获得锁，对于 slow path，可以通过系统调用 yield。这就是 Futex = spin + mutex。</p>
-<p>我们可以利用 model checker 来确认 futex 的正确性：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Futex</span></span></span><br><span class="line"><span class="class">	<span class="title">locked</span>, <span class="title">waits</span> = &#x27;&#x27;, &#x27;&#x27;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">    <span class="title">def</span> <span class="title">tryacquire</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.locked:</span><br><span class="line">            <span class="comment"># Test-and-set (cmpxchg)</span></span><br><span class="line">            <span class="comment"># Same effect, but more efficient than xchg</span></span><br><span class="line">            self.locked = <span class="string">&#x27;🔒&#x27;</span></span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;🔒&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">release</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.waits:</span><br><span class="line">            self.waits = self.waits[<span class="number">1</span>:]		  <span class="comment"># 将队首元素踢出队列 &lt;=&gt; 将编号为队首元素的线程唤醒</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.locked = <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @thread</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">t1</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> self.tryacquire() == <span class="string">&#x27;🔒&#x27;</span>:     <span class="comment"># User</span></span><br><span class="line">                self.waits = self.waits + <span class="string">&#x27;1&#x27;</span> <span class="comment"># Kernel</span></span><br><span class="line">                <span class="keyword">while</span> <span class="string">&#x27;1&#x27;</span> <span class="keyword">in</span> self.waits:      <span class="comment"># Kernel</span></span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            cs = <span class="literal">True</span>                         <span class="comment"># User</span></span><br><span class="line">            <span class="keyword">del</span> cs                            <span class="comment"># User</span></span><br><span class="line">            self.release()                    <span class="comment"># Kernel</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @thread</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">t2</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> self.tryacquire() == <span class="string">&#x27;🔒&#x27;</span>:</span><br><span class="line">                self.waits = self.waits + <span class="string">&#x27;2&#x27;</span></span><br><span class="line">                <span class="keyword">while</span> <span class="string">&#x27;2&#x27;</span> <span class="keyword">in</span> self.waits:</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            cs = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">del</span> cs</span><br><span class="line">            self.release()</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>Tip: 强大的 model checker</strong></p>
-<ul>
-<li><p>我们的 model checker 的原理是：对于有装饰器 thread 修饰的函数，在每条语句后添加 yield。因此我们可以轻松地实现一个原子的操作：只要将操作写成一个函数，并在一行内调用这个函数即可。再例如，xchg 原子操作在我们的 model checker 中可以很简单地写为</p>
-  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line">x, y = y, x</span><br></pre></td></tr></table></figure></li>
-<li><p>线程函数中的语句</p>
-  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="string">&#x27;1&#x27;</span> <span class="keyword">in</span> self.waits:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
-
-<p>  并不是内核的真正行为：内核会切换走去执行别的线程。但从这个正在等待的线程的视角，内核在做和自己无关的事等价于内核在自己这里轮询。因此我们精巧地模拟出了内核的正确行为。</p>
-</li>
-</ul>
-</blockquote>
-]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Lecture Notes</category>
-      </categories>
-  </entry>
-  <entry>
     <title>NJU-OS Lecture 06: Concurrent Programming: Synchronization</title>
     <url>/2022/03/06/NJU-OS%20Lecture%2006%20-%20Concurrent%20Programming%20-%20Synchronization/</url>
     <content><![CDATA[<p>线程同步：在某个时间点共同达到互相已知的状态。(每个线程都有可能做自己的某个耗时很长的工作)</p>
@@ -2931,414 +3339,6 @@
 <p>该段代码与之前相比的区别在于，哲学家总是看到左右叉子都有再同时拿起，吃完了就会放下。不会出现之前方法中的哲学家拿到一把叉子再等另一把叉子，自己手里的叉子也不给别人用的情况。</p>
 <p>系统中另一种常见的处理生产者-消费者模型的方法是 master-slave：我们安排一个服务员来维护所有的叉子，所有的哲学家都通过与服务员通信的方法来向服务员索要叉子/让服务员把叉子取走。</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tphilosopher</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">  send_request(id, EAT);</span><br><span class="line">  P(allowed[id]); <span class="comment">// waiter 会把叉子递给哲学家</span></span><br><span class="line">  philosopher_eat();</span><br><span class="line">  send_request(id, DONE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Twaiter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    (id, status) = receive_request();</span><br><span class="line">    <span class="keyword">if</span> (status == EAT) &#123; ... &#125;</span><br><span class="line">    <span class="keyword">if</span> (status == DONE) &#123; ... &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Lecture Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>NJU-OS Lecture 07: Concurrent Programming - Real World</title>
-    <url>/2022/03/08/NJU-OS%20Lecture%2007%20-%20Concurrent%20Programming%20-%20Real%20World/</url>
-    <content><![CDATA[<h2 id="High-Performance-Computing"><a href="#High-Performance-Computing" class="headerlink" title="High Performance Computing"></a>High Performance Computing</h2><p>HPC: 解决需要 massive computation 的任务。</p>
-<p>基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 “join()” 汇总一下 (涉及线程、机器、共享内存之间的通信)。</p>
-<p>HPC 可以实现的原因：数据的局部性。例如我们想利用 HPC 进行一团气体的运动模拟，那么我们可以将立方体容器内的气体切分成很多块，每个线程管一块。每个线程管理的气体绝大部分的运动都是本地的，我们只需要处理少部分的相邻块的气体分子交换即可。</p>
-<span id="more"></span>
-
-<h3 id="Example-Mandelbrot-Set"><a href="#Example-Mandelbrot-Set" class="headerlink" title="Example: Mandelbrot Set"></a>Example: Mandelbrot Set</h3><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// mandelbrot.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;thread.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;math.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> NT;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> W 6400</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> H 6400</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> IMG_FILE <span class="meta-string">&quot;./mandelbrot.ppm&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">belongs</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y, <span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> x / (W / NT) == t;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> x[W][H];</span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> done = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">display</span><span class="params">(FILE *fp, <span class="keyword">int</span> step)</span> </span>&#123; </span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">int</span> rnd = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">int</span> w = W / step, h = H / step;</span><br><span class="line">  <span class="comment">// STFW: Portable Pixel Map</span></span><br><span class="line">  <span class="built_in">fprintf</span>(fp, <span class="string">&quot;P6\n %d %d 255\n&quot;</span>, w, h);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; H; j += step) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; W; i += step) &#123;</span><br><span class="line">      <span class="keyword">int</span> n = x[i][j];</span><br><span class="line">      <span class="keyword">int</span> r = <span class="number">255</span> * <span class="built_in">pow</span>((n - <span class="number">80</span>) / <span class="number">800.0</span>, <span class="number">3</span>);</span><br><span class="line">      <span class="keyword">int</span> g = <span class="number">255</span> * <span class="built_in">pow</span>((n - <span class="number">80</span>) / <span class="number">800.0</span>, <span class="number">0.7</span>);</span><br><span class="line">      <span class="keyword">int</span> b = <span class="number">255</span> * <span class="built_in">pow</span>((n - <span class="number">80</span>) / <span class="number">800.0</span>, <span class="number">0.5</span>);</span><br><span class="line">      fputc(r, fp); fputc(g, fp); fputc(b, fp);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tworker</span><span class="params">(<span class="keyword">int</span> tid)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; W; i++)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; H; j++)</span><br><span class="line">      <span class="keyword">if</span> (belongs(i, j, tid - <span class="number">1</span>)) &#123;</span><br><span class="line">        <span class="keyword">double</span> a = <span class="number">0</span>, b = <span class="number">0</span>, c, d;</span><br><span class="line">        <span class="keyword">while</span> ((c = a * a) + (d = b * b) &lt; <span class="number">4</span> &amp;&amp; x[i][j]++ &lt; <span class="number">880</span>) &#123;</span><br><span class="line">          b = <span class="number">2</span> * a * b + j * <span class="number">1024.0</span> / H * <span class="number">8e-9</span> - <span class="number">0.645411</span>;</span><br><span class="line">          a = c - d + i * <span class="number">1024.0</span> / W * <span class="number">8e-9</span> + <span class="number">0.356888</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  done++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tdisplay</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">float</span> ms = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    FILE *fp = popen(<span class="string">&quot;viu -&quot;</span>, <span class="string">&quot;w&quot;</span>); assert(fp);</span><br><span class="line">    display(fp, W / <span class="number">256</span>);</span><br><span class="line">    pclose(fp);</span><br><span class="line">    <span class="keyword">if</span> (done == NT) <span class="keyword">break</span>;</span><br><span class="line">    usleep(<span class="number">1000000</span> / <span class="number">5</span>);</span><br><span class="line">    ms += <span class="number">1000.0</span> / <span class="number">5</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Approximate render time: %.1lfs\n&quot;</span>, ms / <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">  FILE *fp = fopen(IMG_FILE, <span class="string">&quot;w&quot;</span>); assert(fp);</span><br><span class="line">  display(fp, <span class="number">2</span>);</span><br><span class="line">  fclose(fp);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">  assert(argc == <span class="number">2</span>);</span><br><span class="line">  NT = atoi(argv[<span class="number">1</span>]);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; NT; i++) &#123;</span><br><span class="line">    create(Tworker);</span><br><span class="line">  &#125;</span><br><span class="line">  create(Tdisplay);</span><br><span class="line">  join();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这段代码使用一些数学手法画出一幅清晰度很高，非常美观的分形图。代码中有一些有意思的小工具：</p>
-<ul>
-<li><p>Tdisplay 线程中使用了 viu 命令行工具，它可以将一张图片以较低的分辨率打印在终端上，这可以在让我们看到图像生成的大致过程。我们可以看到该程序将画面切分成了多个部分，每个线程控制一个。</p>
-</li>
-<li><p>Tdisplay 线程最终将像素信息输出到了一个 ppm (portable pixel map) 文件中。对于 C 语言来说，这是一种非常方便的输出图像的方式：只需要在文件开头输出</p>
-  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">P6</span><br><span class="line">W H COLOR <span class="comment">// 宽，高，颜色数</span></span><br></pre></td></tr></table></figure>
-
-<p>  然后一行一行地将每个点的 RGB 值输出即可。</p>
-</li>
-</ul>
-<h2 id="Data-Center"><a href="#Data-Center" class="headerlink" title="Data Center"></a>Data Center</h2><p>多副本情况下的低延迟、高可靠性问题。这其中存在一些互相矛盾的点</p>
-<ul>
-<li>Availability - 数据在 data center 应该有多个副本，这样如果某个副本坏了，数据不会丢失。此外，为了各地地人可以快速读取，服务器会把本地城市 data center 的数据直接返回。</li>
-<li>Consistency - ”我在南京屏蔽我妈，我妈在广州也要响应这个屏蔽。” 不能因为图快而不同步地直接读取本地副本。</li>
-<li>Partition Tolerance</li>
-</ul>
-<p>这门课的问题：如何在一台计算机上既可能高效地处理并行请求？</p>
-<p>我们的工具：线程、协程</p>
-<ul>
-<li>线程：可以在操作系统的调度算法下进行切换，但线程切换很“重”：需要保存上下文，需要陷入内核 (privilege level 的改变)……</li>
-<li>协程：更轻量级的并发 (只要遵守 calling convention，切换时不需要保存那么多寄存器，不需要进操作系统)，但只有执行 co_yield() 才会切换，如果某个线程执行了很慢的 I/O 系统调用，剩下的协程就都在摸鱼。</li>
-</ul>
-<h3 id="Goroutine"><a href="#Goroutine" class="headerlink" title="Goroutine"></a>Goroutine</h3><p>Go 是一门专门服务系统编程的语言。go 支持所谓的 goroutine: 在概念上它是线程，但它是使用类似于协程的原理实现的。每个 CPU 上只有一个线程，但这个线程下有多个 goroutine，每个 CPU 上有一个 Go worker 负责调度这些 goroutine。goroutine 切换的方式和协程相似，因此非常轻量级。对于某些会导致阻塞的系统调用 (如 sleep, rand)，go 会将他们改成 non-blocking 的版本，如果需要陷入内核进行长时间操作，它就会 yield 到另一个 goroutine 执行。这样，goroutine 将操作系统和 CPU 都利用到了100%。</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Example from &quot;The Go Programming Language&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">  <span class="string">&quot;fmt&quot;</span></span><br><span class="line">  <span class="string">&quot;time&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">go</span> spinner(<span class="number">100</span> * time.Millisecond)</span><br><span class="line">  <span class="keyword">const</span> n = <span class="number">45</span></span><br><span class="line">  fibN := fib(n) <span class="comment">// slow</span></span><br><span class="line">  fmt.Printf(<span class="string">&quot;\rFibonacci(%d) = %d\n&quot;</span>, n, fibN)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">spinner</span><span class="params">(delay time.Duration)</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> _, r := <span class="keyword">range</span> <span class="string">`-\|/`</span> &#123;</span><br><span class="line">      fmt.Printf(<span class="string">&quot;\r%c&quot;</span>, r)</span><br><span class="line">      time.Sleep(delay)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fib</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">  <span class="keyword">if</span> x &lt; <span class="number">2</span> &#123; <span class="keyword">return</span> x &#125;</span><br><span class="line">  <span class="keyword">return</span> fib(x - <span class="number">1</span>) + fib(x - <span class="number">2</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在主函数中，我们使用 <code>go spinner</code> 创建了一个新的 goroutine。该程序可以一边计算 Fibinacci 数列，一边在 spinner 协程中打印旋转的进度条。</p>
-<p>绝大部分的并发问题都可以通过生产者-消费者模型来解决。Go 语言封装了生产者-消费者队列，提供了用于 goroutines 之间通信的 API：</p>
-<figure class="highlight go"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> stream = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">10</span>)</span><br><span class="line"><span class="keyword">const</span> n = <span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">produce</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> i := <span class="number">0</span>; ; i++ &#123;</span><br><span class="line">    fmt.Println(<span class="string">&quot;produce&quot;</span>, i)</span><br><span class="line">    stream &lt;- i</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">consume</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> &#123;</span><br><span class="line">    x := &lt;-stream</span><br><span class="line">    fmt.Println(<span class="string">&quot;consume&quot;</span>, x)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; n; i++ &#123;</span><br><span class="line">    <span class="keyword">go</span> produce()</span><br><span class="line">  &#125;</span><br><span class="line">  consume()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>make(chan int, 10)</code> 定义了一个通道，并规定了其最大容量 (最大容量为 0 的 channel 可以用来同步)。生产者通过 <code>stream &lt;- i</code> 往队列里面加东西，消费者通过 <code>x := &lt;-stream</code> 从队列里面取东西。其内部的锁，睡眠等细节问题全部对程序员透明。</p>
-<h2 id="Web-2-0"><a href="#Web-2-0" class="headerlink" title="Web 2.0"></a>Web 2.0</h2><p>在网页这种计算量、并发量都不大的场景下，我们使用的模型是单线程+事件模型。事件按照顺序执行，具有原子性 (减少了发生并发 bug 的可能)，遇到耗时的 API 就立刻返回 (结束一个事件)。</p>
-<p>为了代码的可维护性，描述流图的语言正在发展。</p>
-]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Lecture Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>NJU-OS Lecture 08: Concurrent Bugs &amp; Confrontation</title>
-    <url>/2022/03/11/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/</url>
-    <content><![CDATA[<p>Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。</p>
-<h2 id="Defensive-Programming"><a href="#Defensive-Programming" class="headerlink" title="Defensive Programming"></a>Defensive Programming</h2><p>一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。</p>
-<p>assert() 虽然不一定能写得对，但如果 assert() 和代码出错的概率是独立的，那么写 assert() 就使得程序出错的概率降低了一个数量级。</p>
-<span id="more"></span>
-
-<h2 id="Concurrent-Bugs"><a href="#Concurrent-Bugs" class="headerlink" title="Concurrent Bugs"></a>Concurrent Bugs</h2><h3 id="Deadlock"><a href="#Deadlock" class="headerlink" title="Deadlock"></a>Deadlock</h3><blockquote>
-<p><strong>一个中断相关的死锁</strong></p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">os_run</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> spin_lock(&amp;lk);</span><br><span class="line"> spin_lock(&amp;xxx);</span><br><span class="line"> spin_unlock(&amp;xxx); <span class="comment">//------+</span></span><br><span class="line">&#125;					   <span class="comment">//  	   |</span></span><br><span class="line">					   <span class="comment">//	   | Interrupt</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">on_interrupt</span><span class="params">()</span>	   <span class="comment">//	   |</span></span></span><br><span class="line"><span class="function"></span>&#123;					   <span class="comment">//	   |</span></span><br><span class="line"> spin_lock(&amp;lk); <span class="comment">// &lt;-------+</span></span><br><span class="line"> ...</span><br><span class="line"> spin_unlock(&amp;lk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上锁的时候要关中断，且锁出现嵌套的时候，需要一个计数器来维护嵌套层数，只有完全无锁的时候才能开中断 (释放锁的时候不能莽开中断)。</p>
-</blockquote>
-<ul>
-<li><p>AA-deadlock：某个线程在试图获得自己已经获得的锁。这很容易检测出来。在编程的时候理应多使用如下的防御性编程：</p>
-  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (holding(lk)) panic();</span><br></pre></td></tr></table></figure></li>
-<li><p>ABBA-deadlock：进程在互相等待别人的锁。lock-ordering 是一种好的防御方法：系统中所有的锁必须排出一个无环的拓扑序。</p>
-<blockquote>
-<p>model checker 可以可视化地帮我们检查是否有死锁。如果某个节点所有的出边都指向自己，这就是一个陷入死锁的状态。</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="Data-Race"><a href="#Data-Race" class="headerlink" title="Data Race"></a>Data Race</h3><p>两个线程在同一时间访问同一个地址，且至少有一个是写。之所以被称为“竞争”是因为运行的结果取决于“谁跑赢了”。</p>
-<h3 id="Atomicity-Violation-AV-amp-Order-Violation-OV"><a href="#Atomicity-Violation-AV-amp-Order-Violation-OV" class="headerlink" title="Atomicity Violation (AV) &amp; Order Violation (OV)"></a>Atomicity Violation (AV) &amp; Order Violation (OV)</h3><p>TOCTTOU (time of check to time of use)：某段代码通常会检查某个条件 (time to check)，然后在认为这个条件的成立是 invariant 的情况下对其进行某种操作 (time of use)，但如果其他程序在中间插入做了某个改变 invariant 的操作，就会产生 bug。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">					   TIME		</span><br><span class="line">/home/abc/mailbox		|</span><br><span class="line">a symbolic link?		|</span><br><span class="line">		|				|		Delete /home/abc/mailbox</span><br><span class="line">		| 				|</span><br><span class="line">		| No			|		Create symbolic link</span><br><span class="line">		|				|		~/mailbox, pointing to </span><br><span class="line">		|				|		/etc/passwd</span><br><span class="line">Append the new message	|</span><br><span class="line">to /home/abc/mailbox	|</span><br></pre></td></tr></table></figure>
-
-<p>在上述过程中，如果攻击者利用 TOC 和 TOU 之间的窗口期将 <code>/home/abc/mailbox</code> 指向某个非法的文件 (打破了 kernel 之前检查的条件)，kernel 就可能会给普通用户 root 权限。</p>
-<h2 id="Bugs-Confrontation"><a href="#Bugs-Confrontation" class="headerlink" title="Bugs Confrontation"></a>Bugs Confrontation</h2><h3 id="Lockdep"><a href="#Lockdep" class="headerlink" title="Lockdep"></a>Lockdep</h3><p>我们可以为每把锁一个全局唯一的 allocation site。在所有获得锁/释放锁的时间点记录一份日志，然后对日志进行分析 (观察上锁顺序)，如果对于某两把锁 $x,y$，我们能观测到 $x\rightsquigarrow y\and y\rightsquigarrow x$，则检测出了可能的死锁。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// lock-site.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">lock</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> locked;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *site;</span><br><span class="line">&#125; <span class="keyword">lock_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STRINGIFY(s) #s</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TOSTRING(s)  STRINGIFY(s)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK_INIT() \</span></span><br><span class="line"><span class="meta">  ( (lock_t) &#123; .locked = 0, .site = __FILE__ <span class="meta-string">&quot;:&quot;</span> TOSTRING(__LINE__), &#125; )</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">lock_t</span> lk1 = LOCK_INIT();</span><br><span class="line"><span class="keyword">lock_t</span> lk2 = LOCK_INIT();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">(<span class="keyword">lock_t</span> *lk)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;LOCK   %s\n&quot;</span>, lk-&gt;site);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">(<span class="keyword">lock_t</span> *lk)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;UNLOCK %s\n&quot;</span>, lk-&gt;site);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">some_object</span> &#123;</span></span><br><span class="line">  <span class="keyword">lock_t</span> lock;</span><br><span class="line">  <span class="keyword">int</span> data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">object_init</span><span class="params">(struct some_object *obj)</span> </span>&#123;</span><br><span class="line">  obj-&gt;lock = LOCK_INIT();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  lock(&amp;lk1);</span><br><span class="line">  lock(&amp;lk2);</span><br><span class="line">  unlock(&amp;lk1);</span><br><span class="line">  unlock(&amp;lk2);</span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">some_object</span> *<span class="title">obj</span> =</span> <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(struct some_object));</span><br><span class="line">  assert(obj);</span><br><span class="line">  object_init(obj);</span><br><span class="line">  lock(&amp;obj-&gt;lock);</span><br><span class="line"></span><br><span class="line">  lock(&amp;lk2);</span><br><span class="line">  lock(&amp;lk1);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面的 <code>lock-site.c</code> 提供了一种简单的为每个锁提供唯一 allocation site 的方法，其中的一些宏定义值得学习。</p>
-<h3 id="Sanitizer"><a href="#Sanitizer" class="headerlink" title="Sanitizer"></a>Sanitizer</h3><p>运行时的动态检查。AddressSanitizer 可以检查内存访问的 bug (监控所有的内存访问)，ThreadSanitizer 可以检查数据竞争 (内存访问 + lock/unlock)，此外还有 UBSanitizer, MemorySanitizer 等。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// uaf.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> *ptr = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">  *ptr = <span class="number">1</span>;</span><br><span class="line">  <span class="built_in">free</span>(ptr);</span><br><span class="line">  *ptr = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上述程序存在 use-after-free 问题。在编译时加入 <code>-fsanitize=address</code>，运行程序时，我们可以得到丰富的报错信息。</p>
-<h3 id="Lightweight-Tools"><a href="#Lightweight-Tools" class="headerlink" title="Lightweight Tools"></a>Lightweight Tools</h3><h4 id="Stack-Canary"><a href="#Stack-Canary" class="headerlink" title="Stack Canary"></a>Stack Canary</h4><p>在栈顶和栈底设置一些存储了特殊值的内存单元 (金丝雀) 并定期检查这些单元。如果这些单元被修改了，说明发生了栈溢出。我们只需很短的代码就可以完成 stack canary：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAGIC 0x55555555</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BOTTOM (STK_SZ / sizeof(u32) - 1)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">stack</span> &#123;</span> <span class="keyword">char</span> data[STK_SZ]; &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">canary_init</span><span class="params">(struct <span class="built_in">stack</span> *s)</span> </span>&#123;</span><br><span class="line">  u32 *ptr = (u32 *)s;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CANARY_SZ; i++)</span><br><span class="line">    ptr[BOTTOM - i] = ptr[i] = MAGIC;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">canary_check</span><span class="params">(struct <span class="built_in">stack</span> *s)</span> </span>&#123;</span><br><span class="line">  u32 *ptr = (u32 *)s;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CANARY_SZ; i++) &#123;</span><br><span class="line">    panic_on(ptr[BOTTOM - i] != MAGIC, <span class="string">&quot;underflow&quot;</span>);</span><br><span class="line">    panic_on(ptr[i] != MAGIC, <span class="string">&quot;overflow&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们有时在 windows 中会看到的 “烫烫烫” 等字，其实是 stack canary 在 GB2312 编码下的结果：</p>
-<ul>
-<li>未初始化栈: <code>0xcccccccc</code></li>
-<li>未初始化堆: <code>0xcdcdcdcd</code></li>
-<li>对象头尾: <code>0xfdfdfdfd</code></li>
-<li>已回收内存: <code>0xdddddddd</code></li>
-</ul>
-<p>我们可以用</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">(<span class="string">b&#x27;\xcc&#x27;</span> * <span class="number">80</span>).decode(<span class="string">&#x27;gb2312&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<p>查看使用未初始化栈时得到的内容 (烫烫烫)。</p>
-<h4 id="Lightweight-Lockdep"><a href="#Lightweight-Lockdep" class="headerlink" title="Lightweight Lockdep"></a>Lightweight Lockdep</h4><p>很多情况下，我们可以在自旋锁自旋次数过多的时候直接报警，然后利用 GDB 的 backtrace 功能观察是否真的发生了死锁。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> spin_cnt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> (xchg(&amp;locked, <span class="number">1</span>)) &#123;</span><br><span class="line">  <span class="keyword">if</span> (spin_cnt++ &gt; SPIN_LIMIT) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Too many spin @ %s:%d\n&quot;</span>, __FILE__, __LINE__);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Lecture Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>NJU-OS Lab 00: amgame</title>
-    <url>/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/</url>
-    <content><![CDATA[<p>该实验的主要目的是在 abstract-machine 抽象的 bare-metal 上编写一个小游戏。笔者实现的小游戏是贪吃蛇。</p>
-<span id="more"></span>
-
-<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>我们需要使用的比较重要的 AM 的接口有：</p>
-<ul>
-<li><code>putch()</code> 及其封装版本 <code>puts()</code> ，负责向控制台输出字符和字符串。</li>
-<li><code>AM_TIMER_UPTIME</code> ，对该抽象寄存器进行读取可以获得系统启动以来运行时间的微秒数。</li>
-<li><code>AM_INPUT_KEYBRD</code>，对该抽象寄存器进行读取可以获得一个 AM_INPUT_KEYBRD_T 结构体，其中存储了当前是否有按键被按下，被按下的按键编码等。</li>
-<li><code>AM_GPU_CONFIG</code>，对该抽象寄存器进行读取可以获得 VGA 的基本信息，包括窗口宽高的像素数量。</li>
-<li><code>AM_GPU_FBDRAW</code>，对该抽象寄存器写入一个 AM_GPU_FBDRAW_T 结构体可以向 VGA 输出一个方格的颜色。</li>
-</ul>
-<h2 id="Game-Logic"><a href="#Game-Logic" class="headerlink" title="Game Logic"></a>Game Logic</h2><p>一个游戏的基本框架为：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (uptime() &lt; next_frame);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> ((key = read_key() != AM_KEY_NONE)</span><br><span class="line">    	kbd_event(key);</span><br><span class="line">    </span><br><span class="line">    game_process();</span><br><span class="line">    screen_update();</span><br><span class="line">    next_frame += <span class="number">1000</span> / FPS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对于贪吃蛇游戏：</p>
-<ul>
-<li><p>在 kbd_event() 中，我们需要处理 ESC 按键，令其调用 halt()，以及四个方向键用于控制贪吃蛇的行走方向。笔者还设置了按 <code>R</code> 键重新开始游戏的功能。</p>
-</li>
-<li><p>在 game_process() 中</p>
-<ul>
-<li>我们需要维护贪吃蛇每一节身体的位置，并将头部按照当前方向移动一格，判断有没有出现撞墙或者吃了自己的情况，如果出现了，在游戏主循环中应该停止画面更新。</li>
-<li>我们需要维护食物，如果食物和蛇头重合，则应该分数+1，并随机一个位置 (不能和蛇重合) 重新放置食物。</li>
-<li>为了逐步增加游戏的难度，笔者维护 <code>FPS = 5 + (score / 2)</code>，即每多得两分，贪吃蛇的移动速度便会加快一级。</li>
-</ul>
-</li>
-<li><p>在 screen_update() 中，我们可以将背景涂成黑色，将边缘涂成橙色，将蛇身涂成绿色，蛇头涂成蓝色，食物涂成红色。</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Lab Reports</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>NJU-OS Minilab 01: pstree</title>
-    <url>/2022/03/11/NJU-OS%20Minilab%2001%20-%20pstree/</url>
-    <content><![CDATA[<p>该实验主要目的是实现一个精简版的 Linux pstree 命令行工具，以较为优美的方式打印当前系统中的进程树。</p>
-<span id="more"></span>
-
-<h2 id="Parse-args"><a href="#Parse-args" class="headerlink" title="Parse args"></a>Parse args</h2><p>首先对输入的选项列表进行分析。笔者使用了 C 库函数 getopt_long()，它不仅可以帮助我们快速解析选项，还可以同时识别一个选项的长短版本 (使用 C 库提供的 option 结构体可以定义每种选项的长短版本以及是否需要参数等)，识别多个选吸纳更合并给出的格式 etc.。</p>
-<p>定义好表格后，仅需一句话即可完成选项解析：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">option</span> <span class="title">table</span>[] =</span> &#123;</span><br><span class="line">    &#123;<span class="string">&quot;numeric-sort&quot;</span>, no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;n&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;show-pids&quot;</span>   , no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;p&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;version&quot;</span>     , no_argument, <span class="literal">NULL</span>, <span class="string">&#x27;V&#x27;</span>&#125;,</span><br><span class="line">    &#123;<span class="number">0</span>             , <span class="number">0</span>          , <span class="literal">NULL</span>,  <span class="number">0</span> &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">getopt_long(argc, argv, <span class="string">&quot;-npV&quot;</span>, table, <span class="literal">NULL</span>)</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>关于版本信息</strong></p>
-<p>Linux 的 pstree 工具会将版本信息输出到标准错误流，为了模拟这一特性，我们可以使用 fprintf 语句将版本信息输出到 stderr 文件。</p>
-</blockquote>
-<h2 id="Fetch-Process-Information"><a href="#Fetch-Process-Information" class="headerlink" title="Fetch Process Information"></a>Fetch Process Information</h2><p>Linux 提供 procfs，我们可以用读写文件的 API 来获取操作系统中的进程状态。procfs 的根目录是 <code>/proc</code>，该目录中所有是数字的文件夹都存储了一个进程相关的信息，文件夹的数字名就是进程编号。配合使用 C 库函数 opendir() 和 readdir() 就可以遍历 <code>/proc</code> 下的所有内容并筛选出那些是数字的文件夹名。</p>
-<p>每个进程文件夹下的 <code>/proc/[pid]/stat</code> 文件中存储了我们打印进程树所需要的状态信息，包括但不限于进程的名字，进程的状态，进程号，父进程号等。我们可以利用这些信息把进程树构建出来。</p>
-<blockquote>
-<p><strong>关于进程名的格式</strong></p>
-<p>根据 <code>man proc</code> 的提示，所有的进程名都是用一对小括号包裹着的。笔者起初使用了 <code>scanf(&quot;%[^)]&quot;)</code> 的方法，读到右括号停止，但发现进程中有一些进程的进程名本身就带括号。因此只能一个字节一个字节读并同步维护一个括号的栈来确定什么时候停止。</p>
-</blockquote>
-<p>我们可以在 <code>/proc/sys/kernel/pid_max</code> 文件中查看进程号的最大值，在 64 位系统中，这个最大值为 $2^{22}$。为了代码编写的方便和效率，笔者开了一个这么大的数组 proc_pos[] 用于维护每个进程号对应到进程信息结构体数组 proc[] 的哪个位置。 proc 结构体中维护了一个当前进程的所有孩子的链表，孩子数量，进程名等信息。由于系统中真正在运行的进程个数远小于 $2^{22}$，这个做法可以省很多内存。</p>
-<p>事实上，Linux 的 pstree 工具还会将一个进程下的所有线程打印出来。我们可以在 <code>/proc/[pid]/task</code> 下看到所有的线程文件夹，<code>/proc/[pid]/task/[tid]/stat</code> 中也有各个线程的状态，不过本实验不要求打印线程。</p>
-<h2 id="Print-tree"><a href="#Print-tree" class="headerlink" title="Print tree"></a>Print tree</h2><p>打印进程树可以用对进程树的一次 dfs 来实现 —— 根节点是 1 号进程 systemd。这里需要注意的是遍历顺序的问题：在默认情况下，pstree 各个子树会按照进程名的字典序排序，如果有 <code>-n</code> 选项，则要按照进程号从小到大排序。在笔者的实现中，单向链表不方便进行高级的排序，但我们可以直接交换两个链表内部的内容，使用朴素的冒泡排序来完成工作。</p>
-<blockquote>
-<p><strong>更优美的显示</strong></p>
-<p>打印树结构的最简单的方法是使用缩进：我们只需要记录当前递归到第几层，并打印相应个数的 TAB 即可。为了实现像 Linux pstree 工具那样精美的树结构，我们需要以下观察：</p>
-<ul>
-<li>每个进程的第一个子进程不换行。仔细思考以下，我们会发现这个规则等价于我们只会在那些叶子进程处换行。</li>
-<li>每个进程名之前有一个树的节点符号，这个节点符号遵循的规则如下：<ul>
-<li>如果某进程有且仅有一个子进程，则节点符号为 <code>-</code>；</li>
-<li>如果某进程有大于一个子进程，则第一个孩子的节点符号是 <code>+</code>，最后一个孩子的节点符号是 <code>&#96;</code> ，中间孩子的节点符号是 <code>|</code>。</li>
-</ul>
-</li>
-<li>当我们在打印内层进程内容时，外层进程树会有 <code>|</code> 延伸下来，我们可以用一个栈记录所有需要打印 <code>|</code> 的位置。但需要注意的是：每个进程的最后一个子进程如果还有子进程，子进程的子进程是不会被子进程的父进程的 <code>|</code> 包裹住的，具体操作上，每个进程的最后一个子进程负责将父进程从栈中弹出。</li>
-</ul>
-</blockquote>
-]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Lab Reports</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>MIT-6.S081 Lab 06: Copy-on-write fork</title>
-    <url>/2022/03/11/MIT-6.S081%20Lab%2006%20-%20Copy-on-write%20fork/</url>
-    <content><![CDATA[<h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><ul>
-<li><input checked="" disabled="" type="checkbox"> Implement copy-on write (hard)</li>
-</ul>
-<span id="more"></span>
-
-<h2 id="Implement-Copy-on-Write"><a href="#Implement-Copy-on-Write" class="headerlink" title="Implement Copy-on Write"></a>Implement Copy-on Write</h2><p>写时拷贝 fork 的大体思路是：在 fork 时不为子进程创建新的页面，而是让子进程指向父进程的所有页面，并将页面的权限改为只读。将来如果某个进程 (父/子) 需要修改页面，会发生 page fault exception，在 kernel 的处理程序中，如果是 COW page，则新分配一个页面，将当前的只读页面内容复制过去，让当前进程的页表指向这个新的页面并将权限设置为可读可写。</p>
-<h3 id="kalloc-kfree"><a href="#kalloc-kfree" class="headerlink" title="kalloc()/kfree()"></a>kalloc()/kfree()</h3><p>引入了 copy-on write 之后，一个物理页面可能会被多个进程的页表指向，这使得 kfree() 变得困难：某个进程被释放时，它拥有的物理页面不能被直接释放，否则别的进程就用不了这个页面了。我们需要为每个页面维护一个 reference count，只有一个页面的 reference count 为 0 了才能释放它。</p>
-<p>维护 reference count 的时机很有讲究。笔者最初使用的方案是在“映射“和“解除映射”的时候修改 reference count，即在 mappages() 函数、 uvmunmap() 函数和 COW 相关函数中修改 reference count。但 xv6 中对 mappages() 的用法比较灵活，例如</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">kvminit</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  ......</span><br><span class="line">  <span class="comment">// map kernel data and the physical RAM we&#x27;ll make use of.</span></span><br><span class="line">  kvmmap((uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, PTE_R | PTE_W);</span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上述 kvmmap() 会对所有的物理页面做一个恒等映射。其实内核并没有真正拥有这些页面，做 mappages() 时，真实分配好的页面是不存在的，在 kvmmap() 中做这一步只是为了简化内核代码的书写 (如在调用 memmove() 时不需要在软件中跑一遍内核页表)。因此如果在 mappages() 的时候维护 reference count，会得到不正确的结果。</p>
-<p>一个合理的解决方案是在 COW 相关函数中增加 reference count，在 kfree() 中减少 reference count。kalloc() 中新出厂的页面默认 reference count 为 1。</p>
-<h3 id="uvmcopy-uvmcow"><a href="#uvmcopy-uvmcow" class="headerlink" title="uvmcopy()/uvmcow()"></a>uvmcopy()/uvmcow()</h3><p>我们需要修改 uvmcopy() 的实现，不为子进程分配新的页面，而是让子进程指向父进程的页面，更新父进程的 reference count，并设置页表项的标志位。这里要注意的是，除了取消页面的 PTE_W，为了将 cow page 的异常和普通的越权修改异常区分开来，我们应当在页表项中标志一个 PTE_COW 位。RISC-V ISA 的页表项格式中，8，9,10 三位是 RSW 位，留给软件自由使用，我们可以利用这些位来标记 PTE_COW。</p>
-<p>uvmcow() 是 COW 导致的 page fault exception 的处理函数。我们应当分配一个新页面，新页面没有 PTE_COW 位，有 PTE_W 位，将原始页面的内容复制过来，并修改当前进程的页表。</p>
-<h3 id="Concurrency"><a href="#Concurrency" class="headerlink" title="Concurrency"></a>Concurrency</h3><p>该实验中我们要开始面对并发 bug。<code>/kernel/kalloc.c</code> 中的空闲页面链表是用 kmem.lock 保护起来的。与此同理，我们维护 reference count 的数组也应该用一把锁保护起来。我们当然可以使用 kmem.lock，但如果新建一把锁专门用于保护 reference count 数组 (甚至是每个 referenct count 的单元格) 可以获得更好的并行度。</p>
-<p>Concurrency bug 中常见的一种是 TOCTTOU (time to check to time to use)。笔者曾经遇到过 xv6 在单核情况下可以正常运行，在多核情况下内存不够用的问题。经过排查发现问题出在如下代码：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (krref(pa) == <span class="number">1</span>)</span><br><span class="line">&#123;</span><br><span class="line">    *pte |= PTE_W;</span><br><span class="line">    *pte &amp;= (~PTE_COW);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">if</span> ((mem = kalloc()) == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-2</span>;</span><br><span class="line">  flags &amp;= (~PTE_COW); flags |= (PTE_W);</span><br><span class="line">  memmove(mem, (<span class="keyword">void</span> *)pa, PGSIZE);</span><br><span class="line">  kmref(pa, <span class="number">-1</span>);</span><br><span class="line">  <span class="keyword">if</span> (mappages(pagetable, va, PGSIZE, (uint64)mem, flags) != <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这段代码的逻辑是：如果当前页面只剩一个 reference，就不必再申请新页面，而是直接修改一下本页面页表项的标志信息。否则当前页面有多个 reference，申请一个新页面并让当前进程指向它，调用 <code>kmref(pa,-1)</code> 更新原页面的 reference count。</p>
-<p>这段代码的 bug 在于进入 else 分支后，<code>krref(pa)&gt;=2</code> 的假设不一定成立。假设有两个进程并发地执行该程序段且 pa 有且仅有两个 reference，那么两个进程都会通过 if 判断进入 else 分支，然后使用 kmref() 更新 reference count，这样 pa 页面的 reference count 变成了 0 但没有进程去 free 它，我们丢失了一个页面。这个 bug 触发次数越多，系统内可用的内存就越少。</p>
-<p>想要修复这个 bug，一种选择是给整个 if 语句上锁，另一种选择是不使用 if 并把 kmref() 改成 kfree() 或 uvmunmap()。</p>
-]]></content>
-      <categories>
-        <category>MIT-6.S081 Introduction to Operating Systems</category>
-        <category>Lab Reports</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>MIT-6.S081 Lecture 10: Multiprocessors and Locks</title>
-    <url>/2022/03/12/MIT-6.S081%20Lecture%2010%20-%20Multiprocessors%20and%20Locks/</url>
-    <content><![CDATA[<p>Applications may want multiple CPU cores, so the kernel must handle parallel system calls, e.g. carefully maintain shared data structure in parallel. We use locks to ensure correct sharing, but on the other hand, locks can limit performance.</p>
-<p>The frequency of CPU clock gradually reaches a limit at 2010, which means that single thread performance cannot be optimized. However, the number of transistors keeps growing, so having multiple cores is our only choice to increase performance.</p>
-<span id="more"></span>
-
-<h2 id="Why-Lock"><a href="#Why-Lock" class="headerlink" title="Why Lock?"></a>Why Lock?</h2><p>We use lock to avoid race conditions. For example, if we delete the <code>acquire(kmem.lock)</code> and <code>release(kmem.lock)</code> in kfree(), it’s possible that pages are lost during freeing.</p>
-<h2 id="Lock-Abstraction"><a href="#Lock-Abstraction" class="headerlink" title="Lock Abstraction"></a>Lock Abstraction</h2><p>The lock in xv6 is simply a struct:</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">lock</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> locked;</span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>there are two APIs: <code>acquire(struct lock *lk)</code> and <code>release(struct lock *lk)</code>，at one time, only one process can acquire the lock, and other processes have to wait until the first process calls release().</p>
-<p>The area between acquire() and release() is called critical section. The code in critical sections are executed <strong>atomically</strong>, i.e. either <strong>all or none</strong> of the code is executed, it’s impossible for codes in the same critical section to interweave.</p>
-<p>Programs usually have many locks, aiming at more parallelism. If there’s only one lock in the kernel, to ensure correctness, the lock must protects all the codes in the kernel (the so called ‘big kernel lock’). In this case, the execution of the whole kernel is serialized. If we use multiple locks, it’s allowable to let two processes using different locks run in parallel.</p>
-<h2 id="When-to-Lock"><a href="#When-to-Lock" class="headerlink" title="When to Lock?"></a>When to Lock?</h2><p>A conservative rule (guideline): if 2 processes access a shared data structure and at least one operation is writing, then we have to lock that data structure.</p>
-<p>From some aspects, the guideline is too strict: we can use lock-free programming. But lock-free programming is so tricky that we won’t cover that. From some aspects, the guideline is too loose: in printf() we use lock to ensure that the printed message is atomic.</p>
-<p>We may want data structures to automatically acquire and release locks when we’re accessing them, but there are cases when we need more flexible lock management. Consider a system call <code>rename()</code> . Suppose now we deal with <code>rename(&quot;d1/x&quot;, &quot;d2/y&quot;)</code>, if we act like this:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock(d1); erase(&quot;d1/x&quot;); release(d1); (**)</span><br><span class="line">lock(d2); add(&quot;d2/y&quot;); release(d2);</span><br></pre></td></tr></table></figure>
-
-<p>then at time <code>**</code>, from other processes’ perspective, the file doesn’t exist! - obviously incorrect. The correct implementation is</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock(d1 and d2); erase(&quot;d1/x&quot;); add(&quot;d2/y&quot;); release(d1 and d2);</span><br></pre></td></tr></table></figure>
-
-<p>In this example, we see that sometimes we need multiple locks before doing operations.</p>
-<h2 id="Lock-Perspectives"><a href="#Lock-Perspectives" class="headerlink" title="Lock Perspectives"></a>Lock Perspectives</h2><ul>
-<li>Locks help avoid lost updates. (e.g. kfree() )</li>
-<li>Locks make multi-step operations (critical section) atomic.</li>
-<li>Locks help maintain invariants. (e.g. in kfree(), the lock protects moments when there are multiple pointers pointing to the head node.)</li>
-</ul>
-<h2 id="Deadlock"><a href="#Deadlock" class="headerlink" title="Deadlock"></a>Deadlock</h2><p>Let’s look at a case which may lead to deadlock:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CPU1                            CPU2</span><br><span class="line">rename(&quot;d1/x&quot;, &quot;d2/y&quot;)          rename(&quot;d2/a&quot;, &quot;d1/b&quot;)</span><br><span class="line">acquire(d1)                     acquire(d2)</span><br><span class="line">acquire(d2) &lt;-- blocked         acquire(d1) &lt;-- blocked</span><br></pre></td></tr></table></figure>
-
-<p>The solution is to always acquire locks in order. (actually, it’s OK for CPU2 to acquire d1 and then d2 in this case.) Here the lock ordering is a partial order.</p>
-<p>Lock makes modularity more complicated. Suppose a function f() in module 1 calls a function g() in module 2, f() must ensure that locks in g() will not violate global lock ordering, which means that the internals of module 2 (in terms of locks) must be visible to module 1, which somehow violates the module abstraction principle.</p>
-<h2 id="Lock-Performance"><a href="#Lock-Performance" class="headerlink" title="Lock Performance"></a>Lock Performance</h2><p>Locks lead to serialization, which influences performance. To increase performance, we need to split up data structures and introduce more locks, which require lots of work.</p>
-<p>A general approach is to firstly use coarse-grained locks, and do profiling tests to see whether we need smaller locks to increase parallelism.</p>
-<h2 id="Code-Lock-Implementation"><a href="#Code-Lock-Implementation" class="headerlink" title="Code: Lock Implementation"></a>Code: Lock Implementation</h2><p>The most common way to acquire locks is to use the hardware test-and-set support. In RISC-V, we use the <code>amoswap addr, r1, r2</code> atomic instruction. It can be viewed as the following pseudo instructions:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">lock addr</span><br><span class="line">	tmp   &lt;-- *addr</span><br><span class="line">	*addr &lt;-- r1</span><br><span class="line">	r2    &lt;-- tmp</span><br><span class="line">unlock addr</span><br></pre></td></tr></table></figure>
-
-<p>Hardware test-and-set support is dependent on memory system. If the memories are sitting on a share bus, a memory controller (bus arbiter) is responsible for sorting the locks in order. If processors have caches, the cache coherence protocol will ensure the consistency.</p>
-<p>In acquire() in xv6, we use the C function <code>__sync_lock_test_and_set()</code> to do atomic operations. Refer to Xv6 Source Code Manual for more details.  </p>
-<p>In release(), we may wonder that why we still need to use atomic instruction to set the lock: a simple store instruction can finish that. However, the store instruction may be executed differently depending on architecture design. <code>sw</code> may be decomposed to several micro instructions, which leads to lost of atomicity.</p>
-<h2 id="Code-Locks-and-Interrupts"><a href="#Code-Locks-and-Interrupts" class="headerlink" title="Code: Locks and Interrupts"></a>Code: Locks and Interrupts</h2><p>In acquire(), we must firstly turn off the interrupts. That’s because unexpected interrupts may cause deadlock. For example, in <code>/kernel/uart.c</code>:</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">uartputc</span><span class="params">(<span class="keyword">int</span> c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  acquire(&amp;uart_tx_lock);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(panicked)&#123;</span><br><span class="line">    <span class="keyword">for</span>(;;)</span><br><span class="line">      ;</span><br><span class="line">  &#125;</span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span></span></span><br><span class="line"><span class="function"><span class="title">uartintr</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// read and process incoming characters.</span></span><br><span class="line">  <span class="keyword">while</span>(<span class="number">1</span>)&#123;</span><br><span class="line">    <span class="keyword">int</span> c = uartgetc();</span><br><span class="line">    <span class="keyword">if</span>(c == <span class="number">-1</span>)</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    consoleintr(c);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// send buffered characters.</span></span><br><span class="line">  acquire(&amp;uart_tx_lock);</span><br><span class="line">  uartstart();</span><br><span class="line">  release(&amp;uart_tx_lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Suppose that we don’t turn off interrupts when holding locks, we acquire the lock <code>uart_tx_lock</code> in uartputc(), and when we’re in the critical section, the uart hardware sends an interrupt, leading us to uartintr(). In uartintr() the kernel tries to acquire the lock <code>uart_tx_lock</code>, but the lock is held by the interrupted thread, on the other hand, it’s impossible for the interrupted thread to move on unless interrupt handler returns. So a deadlock appears.</p>
-<h2 id="Code-Memory-Ordering"><a href="#Code-Memory-Ordering" class="headerlink" title="Code: Memory Ordering"></a>Code: Memory Ordering</h2><p>Modern compilers and processors usually adjust instruction order to increase performance. For example,</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">lock = <span class="number">1</span>;</span><br><span class="line">x = x + <span class="number">1</span>; <span class="comment">// ---+</span></span><br><span class="line">lock = <span class="number">0</span>;  <span class="comment">//    |</span></span><br><span class="line">           <span class="comment">// &lt;--+		</span></span><br></pre></td></tr></table></figure>
-
-<p>It’s possible for compilers/processors to move <code>x = x + 1</code> to the end of the paragraph. If the code is executed in a single-core, serial mode, it’s absolutely OK and correct. But if it’s executed on mult-core processors, it’s a disaster.</p>
-<p>To avoid such things, we can build a memory fence. In RISC-V, it’s a <code>mfence</code> instruction and it’s encapsulated as <code>__sync_synchronize()</code> in libc. We put memory fence at the beginning of acquire() and the end of release() to ensure that no instruction will be unexpectedly moved out of our critical section.</p>
-]]></content>
-      <categories>
-        <category>MIT-6.S081 Introduction to Operating Systems</category>
-        <category>Lecture Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>NJU-OS Lecture 09: State Machine of OS</title>
-    <url>/2022/03/17/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/</url>
-    <content><![CDATA[<h2 id="Bare-metal-amp-Software"><a href="#Bare-metal-amp-Software" class="headerlink" title="Bare-metal &amp; Software"></a>Bare-metal &amp; Software</h2><p>数字电路本身就是一个巨大的状态机。硬件厂商会保证 CPU reset 后处理器处在一个确定的状态，各个单元的固定的值会写在手册中。以 x86 为例，手册规定了 CPU reset 后 rip 的值会是 0xfff0，EFLAGS 的值为 0x2，当前硬件运行在 16-bit 模式中，不响应中断。</p>
-<span id="more"></span>
-
-<p>CPU 只是一个周而复始的取值译码执行的东西，因此它马上会做的事情就是取出 0xfff0 处的指令并执行。0xfff0 处通常是一个跳转指令，PC 会跳转到固件代码执行。固件 (Firmware) 是硬件厂商写死在一块 ROM 上的代码，常见的固件程序有 BIOS 和 UEFI 两种，后者更加现代机制更加复杂，这里简介 Legacy BIOS 的过程：</p>
-<p>BIOS 的主要工作是扫描各个硬盘/U盘/软盘……然后将第一个可引导的设备的第一个扇区 (512B) 加载到地址 0x7c00 处。可引导的设备的第一个扇区会遵循主引导记录 (Master Boot Record, MBR) 的格式。如果我们使用命令</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">cat executable-x86_64-qemu | head -c <span class="number">512</span> | xxd</span><br></pre></td></tr></table></figure>
-
-<p>查看一个镜像文件的前 512 个字节，我们可以看到其末尾一定是 0x55aa。这是 MBR 的结束标志。</p>
-<p>此时硬件仍然工作在 16-bit 模式上。规定 <code>CS:IP=0x7c00</code> ，即 <code>(R[CS]&lt;&lt;4) | R[IP] == 0x7c00</code> ，其他没有任何约束。Firmware 执行结束后，PC 跳转到 0x7c00 执行，刚刚加载过来的是 Legacy boot (boot loader)，它负责完成操作系统的加载：初始化栈和堆区，为 main() 传递参数等等。</p>
-<h2 id="Code-Firmware"><a href="#Code-Firmware" class="headerlink" title="Code: Firmware"></a>Code: Firmware</h2><p>QEMU 是一个全系统模拟器，我们可以通过 GDB 远程连接的方式来调试 QEMU，从而观测各个时刻的系统状态。</p>
-<p>一个启动 QEMU 并使用 GDB 监听的脚本如下：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">qemu-system-x86_64 \</span><br><span class="line">  -smp 1\</span><br><span class="line">  -S -s\</span><br><span class="line">  -drive format=raw,file=amgame-x86_64-qemu &amp;</span><br><span class="line">pid=$!</span><br><span class="line"></span><br><span class="line">gdb -x remote.gdb ; <span class="built_in">kill</span> -9 $!</span><br></pre></td></tr></table></figure>
-
-<p><code>qemu-system-x86_64</code> 启动了一个 x86-64 架构的 QEMU 模拟器，之后的各个选项和参数的意义如下：</p>
-<ul>
-<li><code>-smp 1</code> 指定了 QEMU 模拟单核 CPU。</li>
-<li><code>-S</code> 选项表示让 QEMU 停止在 CPU reset 后的第一条指令上。</li>
-<li><code>-s</code> 选项是 <code>-gdb tcp::1234</code> 的简写，表示在端口 1234 打开一个 gdbserver。</li>
-<li><code>-drive format=raw,file=amgame-x86_64-qemu</code> 告诉了 QEMU 用于引导的设备。这里笔者使用了 Lab0 中 amgame 的镜像。</li>
-</ul>
-<p>gdb 的 <code>-x</code> 选项后面可以跟一个脚本，表示在启动 gdb 之后自动运行后面的脚本。笔者在脚本中只做了一行配置：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">target remote localhost:1234</span><br></pre></td></tr></table></figure>
-
-<p>表示连接到 gdbserver。之前我们给运行 QEMU 的进程分配了一个进程号，现在用 <code>kill -9 $!</code> 可以在退出 gdb 之后帮我们自动杀死 QEMU 的进程。</p>
-<p>运行这个脚本，我们可以看到 QEMU 停在了 CPU reset 后的初始状态。使用 <code>i r</code> 命令打印寄存器信息，可以看到 <code>rip = 0xfff0</code>，<code>eflags = 0x2</code> 等，符合手册的约定。此时如果使用命令 <code>x/16xb 0x7c00</code> 查看地址 0x7c00 附近的内存内容，可以看到全部是 0 (注：<code>x</code> 是打印，<code>16</code> 是打印 16 个 byte，<code>x</code> 是按照十六进制打印，<code>b</code> 是将各个 byte 分开)。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0x7c00:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br><span class="line">0x7c08:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br></pre></td></tr></table></figure>
-
-<p>想要监控 BIOS 的行为，我们可以用命令 <code>wa *0x7c00</code> 在这个地址上打一个断点，然后 continue，该地址的值出现变化时 GDB 会停下并通知我们。</p>
-<p>当前系统仍处于 16 位模式，因此需要用 cs 和 rip 两个寄存器来定位指令的位置。使用 <code>x/i ($cs * 16 + $rip)</code> 查看当前指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0xfa591:	rep insl (%dx),%es:(%edi)</span><br></pre></td></tr></table></figure>
-
-<p>这是一条内存拷贝指令，刚开始可以看到 <code>%es:(%edi) == 0x7c00</code> ，随着 repeat 的推进，<code>(%edi)</code> 的值逐渐变大。如果再查看 0x7c00 附近的内容，可以看到 MBR 正在被逐渐搬入：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">0x7c00:	0xfa	0x31	0xc0	0x8e	0xd8	0x8e	0xc0	0x8e</span><br><span class="line">0x7c08:	0xd0	0xb8	0x01	0x4f	0xb9	0x12	0x01	0xbf</span><br><span class="line">0x7c10:	0x00	0x40	0xcd	0x10	0x00	0x00	0x00	0x00</span><br><span class="line">0x7c18:	0x00	0x00	0x00	0x00	0x00	0x00	0x00	0x00</span><br></pre></td></tr></table></figure>
-
-<h2 id="State-Machine-of-OS"><a href="#State-Machine-of-OS" class="headerlink" title="State Machine of OS"></a>State Machine of OS</h2><p>Firmware 和 boot loader 共同完成了操作系统的加载。进入 C 代码后，操作系统将完全遵循 C 语言的形式语义（当然，调用 AbstractMachine API 的部分是对 C 语言形式语义的补充）。</p>
-<p>AbstractMachine 对 C 程序语义的扩展主要是以下几个部分：</p>
-<ul>
-<li>TRM + MPE<ul>
-<li>完全等同于多线程。将整个系统的状态机从一条链变成多条链，之后的执行将是 non-deterministic 的。</li>
-<li>IOE API 相当于库函数。</li>
-</ul>
-</li>
-<li>CTE<ul>
-<li>允许创建多个执行流。</li>
-<li>yield() 会主动切换，中断会被动切换。</li>
-</ul>
-</li>
-<li>VME<ul>
-<li>创建一个“经过地址翻译的执行模式”。</li>
-</ul>
-</li>
-</ul>
-<p>整个系统的状态机大致可以看成如下过程：</p>
-<pre class="mermaid">flowchart LR
-    subgraph CPUReset
-        PC=0xfff0 --- EFLAGS=0x2 --- CR0=... --- S0[...]
-    end
-    id0((init))-. CPU Reset .-> CPUReset
-    CPUReset -. Firmware .-> Boot
-    subgraph Boot
-        PC=0x7c00 --- MBR[MBR at 0x7c00] --- ...
-    end
-    Boot -. OS booter .-> main
-    subgraph main
-        g[global] -.- sf[stack frame] -.- PC -.- S[...]
-    end
-    main -. mpe_init .-> multithread
-    subgraph multithread
-        gg[global]
-        sf1[stack frame] --- pc1[PC] --- o1[...]
-        sf2[stack frame] --- pc2[PC] --- o2[...]
-    end
-    multithread -. CPU1 .-> state1((...))
-    multithread -. CPU2 .-> state2((...))
-    multithread -. Interrupt .-> state3((...))</pre>
-
-<h2 id="Code-AbstractMachine"><a href="#Code-AbstractMachine" class="headerlink" title="Code: AbstractMachine"></a>Code: AbstractMachine</h2><blockquote>
-<p><strong>Unix Philosophy</strong></p>
-<p>Makefile 中的变量的定义可能散落在世界各处，因此静态地读 Makefile 效果可能不好。好的方式是直接观测 Makefile 做了怎样的事情。这里提供一套命令：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">make mainargs=HelloOS run -nB \</span><br><span class="line">| grep -ve <span class="string">&#x27;^\(\#\|echo\|mkdir\|make\)&#x27;</span> \</span><br><span class="line">| sed <span class="string">&quot;s#<span class="variable">$AM_HOME</span>#\$AM_HOME#g&quot;</span> \</span><br><span class="line">| sed <span class="string">&quot;s#<span class="variable">$PWD</span>#.#g&quot;</span> \</span><br><span class="line">| vim -</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>make 的 <code>-n</code> 选项可以只输出执行的命令而不真正执行，<code>-B</code> 选项可以忽略已经编译好的内容从头编译。</li>
-<li>grep 用于筛选，<code>-v</code> 选项表示反向筛选，<code>-e</code> 表示使用正则表达式匹配。</li>
-<li>sed 可以作替换，这里将冗长的路径名替换成了短的。</li>
-<li>vim - 命令可以将输出导入到 vim 中查看。</li>
-</ul>
-<p>在 vim 中使用 <code>:%s/ /\r  /g</code> 可以将空格改为换行，从而提高可读性。</p>
-</blockquote>
-<p>通过观察 Makefile 的输出结果，我们可以看到它是如何创建镜像文件以及传输命令行参数的：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">( cat <span class="variable">$AM_HOME</span>/am/src/x86/qemu/boot/bootblock.o;</span><br><span class="line">  head -c 1024 /dev/zero; </span><br><span class="line">  cat ./build/threados-x86_64-qemu.elf )</span><br><span class="line">&gt; ./build/threados-x86_64-qemu</span><br></pre></td></tr></table></figure>
-
-<p><code>bootblock.o</code> 是主引导记录。<code>head -c 1024 /dev/zero</code> 取出了 1024B 的 \0。<code>threados-x86_64-qemu.elf</code> 是我们之前编译、链接得到的 elf 文件。将这三者拼接起来输出到文件 <code>threados-x86_64-qemu</code> 中，就制作好了镜像文件。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">( <span class="built_in">echo</span> -n HelloOS; ) | dd <span class="keyword">if</span>=/dev/stdin of=./build/threados-x86_64-qemu </span><br><span class="line"> bs=512 count=2 seek=1 conv=notrunc status=none</span><br></pre></td></tr></table></figure>
-
-<p>参数 HelloOS 被输出后，dd 指定 input file 为 stdin，output file 为我们刚刚制作的镜像，将参数写到了第二个扇区里 (即 MBR 后面紧跟着的扇区)。</p>
-<p>之前我们用 GDB 调试了固件将 MBR 加载到 0x7c00 的过程，现在我们可以继续用 GDB 调试 OS booter 的运行过程。</p>
-<blockquote>
-<p><strong>没有 OS booter 的符号表怎么办？</strong></p>
-<p>仔细阅读 AbstractMachine 的 Makefile，我们发现 <code>bootblock.o</code> 就是主引导记录，它的生成过程如下：</p>
-<ul>
-<li><p><code>gcc -static -m32 -fno-pic -g -Os -nostdlib -Ttext 0x7c00 -I$AM_HOME/am/src -o bootblock.o start.S main.c</code>，该命令编译 <code>am/src/x86/qemu/boot/</code> 目录下的 <code>main.c</code> 和 <code>start.S</code> 并链接成一个 <code>bootblock.o</code>。</p>
-<p>  为了生成带有调试信息的二进制文件，我们应当加入 <code>-g</code> 选项。</p>
-</li>
-<li><p><code>python genboot.py bootblock.o</code> 对 <code>bootblock.o</code> 做了进一步的修改，阅读 <code>genboot.py</code> ：</p>
-  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os, sys, pathlib, subprocess</span><br><span class="line">    </span><br><span class="line">f = pathlib.Path(sys.argv[<span class="number">1</span>])</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    objcopy = os.getenv(<span class="string">&#x27;CROSS_COMPILE&#x27;</span>, <span class="string">&#x27;&#x27;</span>) + <span class="string">&#x27;objcopy&#x27;</span></span><br><span class="line">    data = subprocess.run(</span><br><span class="line">        [objcopy, <span class="string">&#x27;-S&#x27;</span>, <span class="string">&#x27;-O&#x27;</span>, <span class="string">&#x27;binary&#x27;</span>, <span class="string">&#x27;-j&#x27;</span>, <span class="string">&#x27;.text&#x27;</span>, f, <span class="string">&#x27;/dev/stdout&#x27;</span>],</span><br><span class="line">        capture_output=<span class="literal">True</span>).stdout</span><br><span class="line">    <span class="keyword">assert</span> <span class="built_in">len</span>(data) &lt;= <span class="number">510</span></span><br><span class="line">    data += <span class="string">b&#x27;\0&#x27;</span> * (<span class="number">510</span> - <span class="built_in">len</span>(data)) + <span class="string">b&#x27;\x55\xaa&#x27;</span></span><br><span class="line">    f.write_bytes(data)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    f.unlink()</span><br><span class="line">    <span class="keyword">raise</span></span><br></pre></td></tr></table></figure>
-
-<p>  它的主要工作是用 objcopy 工具将 <code>bootblock.o</code> 中的关键内容拷贝出来，<code>-S</code> 选项表示丢弃重定位信息，符号信息，调试信息等不需要的内容；<code>-j .text</code> 表示只保留代码节。拷贝出来后在字节流的后面补上若干 0，最后加上 0x55aa，以形成一个 MBR。</p>
-</li>
-</ul>
-<p>为了获得符号表，笔者做了如下修改：将第一步生成的 <code>bootblock.o</code> 备份一份重命名为 <code> boot-sym.o</code> 用于加载符号表，并在 gdb 启动时的自动化脚本中添加：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">symbol-file /path/to/boot-sym.o</span><br></pre></td></tr></table></figure>
-</blockquote>
-<p>在 GDB 中打断点 <code>wa ($rip != 0x7c00)</code> (或者 <code>b _start</code>) 即可定位到 OS booter。此时机器仍然处于 16 位模式，GDB 不支持 16 位的调试，打印出来的汇编命令会出现错误。我们可以在 <code>$AM_HOME/am/src/x86/qemu/boot/start.S</code> 中找到对应的指令。可以看到在执行了不多的几条指令后，PC 跳转到了函数 start32。start32 执行了几条简单的指令后跳转到了 load_kernel()。(在 load_kernel() 中终于可以用 layout src 调试了)</p>
-<p>load_kernel() 和 nanos-lite 中的 loader() 功能类似：将 elf 文件中的各个段拷贝到内存的指定地址 0x8000，并跳转到入口函数启动内核。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Elf32_Ehdr *elf32 = (<span class="keyword">void</span> *)<span class="number">0x8000</span>;</span><br><span class="line">Elf64_Ehdr *elf64 = (<span class="keyword">void</span> *)<span class="number">0x8000</span>;</span><br><span class="line"><span class="keyword">int</span> is_ap = boot_record()-&gt;is_ap;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!is_ap) &#123;</span><br><span class="line">    <span class="comment">// load argument (string) to memory</span></span><br><span class="line">    copy_from_disk((<span class="keyword">void</span> *)MAINARG_ADDR, <span class="number">1024</span>, <span class="number">-1024</span>);</span><br><span class="line">    <span class="comment">// load elf header to memory</span></span><br><span class="line">    copy_from_disk(elf32, <span class="number">4096</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">if</span> (elf32-&gt;e_machine == EM_X86_64) &#123;</span><br><span class="line">      load_elf64(elf64);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      load_elf32(elf32);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这段代码调用 copy_from_disk() 将 mainargs 以及 elf 文件从 disk 中拷贝出来，再调用 load_elf() 将其加载到 0x8000 位置。在执行 if 之前通过 <code>p *elf64</code> 查看 0x8000 附近的内容，可以看到各个字段全部为空。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(gdb) p *elf64</span><br><span class="line"><span class="variable">$1</span> = &#123;e_ident = <span class="string">&#x27;\000&#x27;</span> &lt;repeats 15 <span class="built_in">times</span>&gt;, e_type = 0, e_machine = 0,</span><br><span class="line">  e_version = 0, e_entry = 0, e_phoff = 0, e_shoff = 0, e_flags = 0,</span><br><span class="line">  e_ehsize = 0, e_phentsize = 0, e_phnum = 0, e_shentsize = 0, e_shnum = 0,</span><br><span class="line">  e_shstrndx = 0&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">load_program</span><span class="params">(<span class="keyword">uint32_t</span> filesz, <span class="keyword">uint32_t</span> memsz, <span class="keyword">uint32_t</span> paddr, <span class="keyword">uint32_t</span> offset)</span> </span>&#123;</span><br><span class="line">  copy_from_disk((<span class="keyword">void</span> *)paddr, filesz, offset);</span><br><span class="line">  <span class="keyword">char</span> *bss = (<span class="keyword">void</span> *)(paddr + filesz);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">uint32_t</span> i = filesz; i != memsz; i++) &#123;</span><br><span class="line">    *bss++ = <span class="number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">load_elf64</span><span class="params">(Elf64_Ehdr *elf)</span> </span>&#123;</span><br><span class="line">  Elf64_Phdr *ph = (Elf64_Phdr *)((<span class="keyword">char</span> *)elf + elf-&gt;e_phoff);</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; elf-&gt;e_phnum; i++, ph++) &#123;</span><br><span class="line">    load_program(</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_filesz,</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_memsz,</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_paddr,</span><br><span class="line">      (<span class="keyword">uint32_t</span>)ph-&gt;p_offset</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>load_elf() 根据 elf 文件的 program header 调用 load_program() 将各个段加载到内存中。load_program() 中的一个小细节是：filesz 和 memsz 的差值是 elf 为 .bss 节预留的空位，根据 C 程序的约定，操作系统有义务将其填充为 0。</p>
-<p>执行完 load_elf() 后，再查看 0x8000 附近的内存，可以看到已经被填上了内容：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">(gdb) p *elf64</span><br><span class="line"><span class="variable">$1</span> = &#123;e_ident = <span class="string">&quot;\177ELF\002\001\001\000\000\000\000\000\000\000\000&quot;</span>,</span><br><span class="line">  e_type = 2, e_machine = 62, e_version = 1, e_entry = 1049360, e_phoff = 64,</span><br><span class="line">  e_shoff = 152256, e_flags = 0, e_ehsize = 64, e_phentsize = 56, e_phnum = 2,</span><br><span class="line">  e_shentsize = 64, e_shnum = 17, e_shstrndx = 16&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (elf32-&gt;e_machine == EM_X86_64) &#123;</span><br><span class="line">  ((<span class="keyword">void</span>(*)())(<span class="keyword">uint32_t</span>)elf64-&gt;e_entry)();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  ((<span class="keyword">void</span>(*)())(<span class="keyword">uint32_t</span>)elf32-&gt;e_entry)();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>最后这两行，根据架构跳转到 elf 文件中 e_entry 所保存的入口函数地址。这里使用了 C 语言的技巧，将一个地址强制转换成一个函数指针并调用从而实现跳转。</p>
 ]]></content>
       <categories>
         <category>NJU-22020230 Operating Systems</category>
