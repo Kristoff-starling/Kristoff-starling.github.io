@@ -1,3 +1,4 @@
+https://kristoff-starling.github.io/2022/03/20/NJU-OS%20Lecture%2010%20-%20Application%20of%20State%20Machine/
 https://kristoff-starling.github.io/2022/03/17/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/
 https://kristoff-starling.github.io/2022/03/12/MIT-6.S081%20Lecture%2010%20-%20Multiprocessors%20and%20Locks/
 https://kristoff-starling.github.io/2022/03/11/MIT-6.S081%20Lab%2006%20-%20Copy-on-write%20fork/
