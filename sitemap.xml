@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://kristoff-starling.github.io/2022/01/20/Xv6-book%20Chapter%2001%20-%20Operating%20System%20Interfaces/</loc>
+    
+    <lastmod>2022-03-19</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://kristoff-starling.github.io/2022/03/20/NJU-OS%20Lecture%2010%20-%20Application%20of%20State%20Machine/</loc>
     
     <lastmod>2022-03-19</lastmod>
@@ -697,6 +706,13 @@
   
   <url>
     <loc>https://kristoff-starling.github.io/categories/NJU-22020230-Operating-Systems/Lecture-Notes/</loc>
+    <lastmod>2022-03-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kristoff-starling.github.io/categories/MIT-6-S081-Introduction-to-Operating-Systems/Book-Notes/</loc>
     <lastmod>2022-03-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
