@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="在 thread-os.c 中，操作系统启动后会初始化若干个线程 (的状态机)，或者说加载若干个程序。真正的操作系统启动后会创建第一个进程。如果查看 Linux 的源码，我们可以看到： 1234567if (!try_to_run_init_process(&quot;&#x2F;sbin&#x2F;init&quot;) ||	    !try_to_run_init_process(&quot;&#x2F;etc&#x2F;init">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 11: Processes in Operating Systems">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/03/25/NJU-OS%20Lecture%2011%20-%20Processes%20in%20Operating%20Systems/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="在 thread-os.c 中，操作系统启动后会初始化若干个线程 (的状态机)，或者说加载若干个程序。真正的操作系统启动后会创建第一个进程。如果查看 Linux 的源码，我们可以看到： 1234567if (!try_to_run_init_process(&quot;&#x2F;sbin&#x2F;init&quot;) ||	    !try_to_run_init_process(&quot;&#x2F;etc&#x2F;init">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-25T08:22:04.757Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/03/25/NJU-OS%20Lecture%2011%20-%20Processes%20in%20Operating%20Systems/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/03/25/NJU-OS%20Lecture%2011%20-%20Processes%20in%20Operating%20Systems/","path":"2022/03/25/NJU-OS Lecture 11 - Processes in Operating Systems/","title":"NJU-OS Lecture 11: Processes in Operating Systems"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 11: Processes in Operating Systems | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Minimal-Linux"><span class="nav-number">1.</span> <span class="nav-text">A Minimal Linux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fork"><span class="nav-number">2.</span> <span class="nav-text">fork()</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example-fork-demo-c"><span class="nav-number">2.1.</span> <span class="nav-text">Example: fork-demo.c</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Example-fork-printf-c"><span class="nav-number">2.2.</span> <span class="nav-text">Example: fork-printf.c</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#execve"><span class="nav-number">3.</span> <span class="nav-text">execve()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#exit"><span class="nav-number">4.</span> <span class="nav-text">_exit()</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/25/NJU-OS%20Lecture%2011%20-%20Processes%20in%20Operating%20Systems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 11: Processes in Operating Systems
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-25 00:00:00 / 修改时间：16:22:04" itemprop="dateCreated datePublished" datetime="2022-03-25T00:00:00+08:00">2022-03-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>在 <code>thread-os.c</code> 中，操作系统启动后会初始化若干个线程 (的状态机)，或者说加载若干个程序。真正的操作系统启动后会创建第一个进程。如果查看 Linux 的源码，我们可以看到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!try_to_run_init_process(<span class="string">&quot;/sbin/init&quot;</span>) ||</span><br><span class="line">	    !try_to_run_init_process(<span class="string">&quot;/etc/init&quot;</span>) ||</span><br><span class="line">	    !try_to_run_init_process(<span class="string">&quot;/bin/init&quot;</span>) ||</span><br><span class="line">	    !try_to_run_init_process(<span class="string">&quot;/bin/sh&quot;</span>))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">panic(<span class="string">&quot;No working init found.  Try passing init= option to kernel. &quot;</span></span><br><span class="line">	      <span class="string">&quot;See Linux Documentation/admin-guide/init.rst for guidance.&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>内核会按照一个特定的顺序加载“第一个程序”，如果都无法加载，Linux kernel 会直接拒绝启动。</p>
+<span id="more"></span>
+
+<h2 id="A-Minimal-Linux"><a href="#A-Minimal-Linux" class="headerlink" title="A Minimal Linux"></a>A Minimal Linux</h2><p>我们可以在 qemu 上调试 vmlinuz 内核。如下命令会启动一个没有图形界面，128M 内存的 linux 内核：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">qemu-system-x86_64 \</span><br><span class="line">	  -nographic \</span><br><span class="line">	  -serial mon:stdio \</span><br><span class="line">	  -m 128 \</span><br><span class="line">	  -kernel vmlinuz \</span><br><span class="line">	  -initrd build/initramfs.cpio.gz \</span><br><span class="line">	  -append <span class="string">&quot;console=ttyS0 quiet acpi=off&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>initramfs.cpio.gz</code> 是内核启动时存放在内存中的一个很小的文件系统的镜像，它打包了如下目录结构中地 initramfs 中的内容。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">├── initramfs</span><br><span class="line">│   ├── bin</span><br><span class="line">│   │   └── busybox</span><br><span class="line">│   └── init</span><br><span class="line">├── Makefile</span><br><span class="line">└── vmlinuz</span><br></pre></td></tr></table></figure>
+
+<p>启动内核后我们会得到一个 shell，当前的环境很简陋，但我们仍然可以用 <code>/bin/busybox 命令</code> 的方式使用一些 busybox 内置的命令，比如 ls 和 cat。</p>
+<p>操作系统启动的第一个进程是 init。init 是一个脚本，有一行命令：<code>/bin/busybox sh</code>，它启动一个 shell。我们可以试试将 <code>/bin/busybox sh</code> 换成 <code>/bin/busybox echo hello</code>：可以看到操作系统确实打印了 hello，但随即报了 kernel panic。这是因为初始进程 init 返回了。</p>
+<p>尽管现在的环境很简陋，但我们执行一些简单的代码就可以获得丰富的体验：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">c1=<span class="string">&quot;arch ash base64 cat chattr chgrp chmod chown conspy cp cpio cttyhack date dd df dmesg dnsdomainname dumpkmap echo ed egrep false fatattr fdflush fgrep fsync getopt grep gunzip gzip hostname hush ionice iostat ipcalc kbd_mode kill link linux32 linux64 ln login ls lsattr lzop makemime mkdir mknod mktemp more mount mountpoint mpstat mt mv netstat nice nuke pidof ping ping6 pipe_progress printenv ps pwd reformime resume rev rm rmdir rpm run-parts scriptreplay sed setarch setpriv setserial sh sleep stat stty su sync tar touch true umount uname usleep vi watch zcat&quot;</span></span><br><span class="line">c2=<span class="string">&quot;[ [[ awk basename bc beep blkdiscard bunzip2 bzcat bzip2 cal chpst chrt chvt cksum clear cmp comm crontab cryptpw cut dc deallocvt diff dirname dos2unix dpkg dpkg-deb du dumpleases eject env envdir envuidgid expand expr factor fallocate fgconsole find flock fold free ftpget ftpput fuser groups hd head hexdump hexedit hostid id install ipcrm ipcs killall last less logger logname lpq lpr lsof lspci lsscsi lsusb lzcat lzma man md5sum mesg microcom mkfifo mkpasswd nc nl nmeter nohup nproc nsenter nslookup od openvt passwd paste patch pgrep pkill pmap printf pscan&quot;</span></span><br><span class="line">c3=<span class="string">&quot;pstree pwdx readlink realpath renice reset resize rpm2cpio runsv runsvdir rx script seq setfattr setkeycodes setsid setuidgid sha1sum sha256sum sha3sum sha512sum showkey shred shuf smemcap softlimit sort split ssl_client strings sum sv svc svok tac tail taskset tcpsvd tee telnet test tftp time timeout top tr traceroute traceroute6 truncate ts tty ttysize udhcpc6 udpsvd unexpand uniq unix2dos unlink unlzma unshare unxz unzip uptime users uudecode uuencode vlock volname w wall wc wget which who whoami whois xargs xxd xz xzcat yes&quot;</span></span><br><span class="line"><span class="keyword">for</span> cmd <span class="keyword">in</span> <span class="variable">$c1</span> <span class="variable">$c2</span> <span class="variable">$c3</span>; <span class="keyword">do</span></span><br><span class="line">  /bin/busybox ln -s /bin/busybox /bin/<span class="variable">$cmd</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">mkdir -p /proc &amp;&amp; mount -t proc  none /proc</span><br><span class="line">mkdir -p /sys  &amp;&amp; mount -t sysfs none /sys</span><br><span class="line"><span class="built_in">export</span> PS1=<span class="string">&#x27;(linux) &#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>现在我们可以直接使用命令不再需要加 /bin/busybox 的前缀 (得益于代码中的软链接)，我们还挂载了 procfs 和 sysfs。可以使用 ps 等命令查看进程。此外，我们可以运行任何放入到文件系统中的程序：例如之前的示例代码 <code>minimal.S</code> 和 <code>logisim.c</code>，只要是静态链接得到的可执行文件都可以在我们的 minimal Linux 中直接运行。</p>
+<p>这一切说明操作系统没有什么神秘的：<strong>内核创建了第一个进程 init，然后这个进程通过各种各样的系统调用就能创造全世界。</strong>完成一切以后操作系统将退到幕后成为一个“中断处理程序”。此外，操作系统为应用程序提供各类 API，让应用程序创建/管理进程，地址空间，文件系统等。</p>
+<h2 id="fork"><a href="#fork" class="headerlink" title="fork()"></a>fork()</h2><p>fork() 的含义非常简单：它会将当前进程的状态机完全复制一遍，作为当前进程的子进程。这两个进程几乎完全一样：相同的地址空间，相同的寄存器值…… (当然，进程号是不同的)，除了 fork() 的返回值在两个进程中不同：fork() 在父进程中返回子进程的进程号，在子进程中返回 0。</p>
+<blockquote>
+<p><strong>Fork Bomb</strong></p>
+<p>状态机的复制也需要消耗一定的资源。如下的一段代码可以让 OS 崩溃：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:() &#123; :|:&amp; &#125;;:</span><br></pre></td></tr></table></figure>
+
+<p>将其格式化后可以看出它的原理：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">:() &#123;</span><br><span class="line"> : | : &amp;</span><br><span class="line">&#125;; :</span><br></pre></td></tr></table></figure>
+
+<p>bash 允许冒号作为标识符。: 这个函数的作用是用 fork 创建两个自己，用管道连接起来，然后放到后台执行。这样这个脚本就会像链式反应一样不断生成很多函数，直至系统资源耗尽。</p>
+</blockquote>
+<h3 id="Example-fork-demo-c"><a href="#Example-fork-demo-c" class="headerlink" title="Example: fork-demo.c"></a>Example: <code>fork-demo.c</code></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fork-demo.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">pid_t</span> pid1 = fork();</span><br><span class="line">  <span class="keyword">pid_t</span> pid2 = fork();</span><br><span class="line">  <span class="keyword">pid_t</span> pid3 = fork();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Hello World from (%d, %d, %d)\n&quot;</span>, pid1, pid2, pid3);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行这段程序，我们可以看到所有的 8 种可能的结果：进程号是 0 / 真实值。我们可以画出状态机中的一条路径来理解这个输出 (即不考虑多个进程时程序的 non-deterministic 行为，总是挑选可以继续执行的进程号最小的进程走下一步)：</p>
+<pre class="mermaid">flowchart
+subgraph state1
+    id0(*,*,* PC=1,pid=1)
+end
+state1 -. pid=1 .- state2
+subgraph state2
+    id1(2,*,* PC=2,pid=1) --> id2(0,*,* PC=2,pid=2)
+end
+state2 -. pid=1 .- state3
+subgraph state3
+    id3(2,3,* PC=3,pid=1) --> id4(0,*,* PC=2,pid=2)
+    id3 --> id5(2,0,* PC=3, pid=3)
+end
+state3 -. pid=1 .- state4
+subgraph state4
+    id6(2,3,4 PC=4,pid=1) --> id7(0,*,* PC=2,pid=2)
+    id6 --> id8(2,0,* PC=3,pid=3)
+    id6 --> id9(2,3,0 PC=4,pid=4)
+end
+state4 -. pid=2 .- state5
+subgraph state5
+    id10(2,3,4 PC=4,pid=1) --> id11(0,5,* PC=3,pid=2) --> id14(0,0,* PC=3,pid=5)
+    id10 --> id12(2,0,* PC=3,pid=3)
+    id10 --> id13(2,3,0 PC=4,pid=4)
+end
+state5 -. pid=2 .- state6
+subgraph state6
+    id15(2,3,4 PC=4,pid=1) --> id18(0,5,6 PC=4,pid=2) --> id19(0,0,* PC=3,pid=5)
+    id15 --> id16(2,0,* PC=3,pid=3)
+    id15 --> id17(2,3,0 PC=4,pid=4)
+    id18 --> id20(0,5,0 PC=4,pid=6)
+end
+state6 -. pid=3 .- state7
+subgraph state7
+    id21(2,3,4 PC=4,pid=1) --> id24(0,5,6 PC=4,pid=2) --> id25(0,0,* PC=3,pid=5)
+    id21 --> id22(2,0,7 PC=4,pid=3) --> id27(2,0,0 PC=4,pid=7)
+    id21 --> id23(2,3,0 PC=4,pid=4)
+    id24 --> id26(0,5,0 PC=4,pid=6)
+end
+state7 -. pid=5 .- state8
+subgraph state8
+    id28(2,3,4 PC=4,pid=1) --> id32(0,5,6 PC=4,pid=2) --> id33(0,0,8 PC=4,pid=5) --> id35(0,0,0 PC=4,pid=8)
+    id28 --> id29(2,0,7 PC=4,pid=3) --> id31(2,0,0 PC=4,pid=7)
+    id28 --> id30(2,3,0 PC=4,pid=4)
+    id32 --> id34(0,5,0 PC=4,pid=6)
+end</pre>
+
+<h3 id="Example-fork-printf-c"><a href="#Example-fork-printf-c" class="headerlink" title="Example: fork-printf.c"></a>Example: <code>fork-printf.c</code></h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// fork-printf.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> n = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">    fork();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello\n&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">    wait(<span class="literal">NULL</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从抽象的状态机的角度分析，刚开始只有一个进程，第一轮一个进程变成两个进程，并分别打印 hello；第二轮两个进程变成 4 个进程，并分别打印 hello，最后应该总共有 6 个 hello。</p>
+<p>运行该程序可以看到，终端上确实输出了 6 个 hello，但诡异的事情是：如果我们用管道或者重定向到文件的方式，都会得到 8 个 hello。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./fork-printf | cat    <span class="comment"># 8个hello</span></span><br><span class="line">./fork-printf &gt; output <span class="comment"># 8个hello</span></span><br><span class="line">./fork-printf | wc -l  <span class="comment"># 8</span></span><br></pre></td></tr></table></figure>
+
+<p>这件“诡异”的事情和 printf 的缓冲区有关。我们认为 printf 的语义是立即输出给定的字符串，但 printf 为了性能考虑 (尽可能少地与 io 交互)，会设置 buffer，将要输出的内容先预留在 buffer 中，待 buffer 满了 / 进程结束时再将 buffer 中的内容一并输出。</p>
+<p>printf 根据标准输出指向的文件不同会使用不同的 buffer。当 stdout 是 tty 时，printf 使用 line buffer，即遇到换行符会清空一次 buffer，所以当我们输出到终端时看到的结果是 6 个；当 stdout 是管道或者文件时，printf 使用 full buffer，只有 buffer 满了才会清空。在这种情况下，第一轮的两个进程不会输出 hello，而是会将 hello 保存在 buffer 中，第二轮两个进程变 4 个进程时，fork() 复制状态机，当然也会复制 buffer 里的内容，因此新生成的两个进程的 buffer 里自带一个 hello，再执行 printf 后，每个进程的 buffer 里都有两个 hello。进程结束时内核清空 buffer，于是 4 个进程每个打印两个 hello，最终有 8 个 hello。</p>
+<p>如果我们在程序开头加一句 <code>setbuf(stdout, NULL)</code>，指定 stdout 不使用 buffer，或者在 printf() 之后加 <code>ffush(stdout)</code> ，那么各种情况下我们都会得到 6 个 hello。</p>
+<blockquote>
+<p><strong>Tip: setbuf()</strong></p>
+<p>setbuf() 函数可以指定向某个文件输出时使用的 buffer。与之相关的还有 setvbuf() （可以用 <code>_IONBF</code>  <code>_IOLBF</code> <code>_IOFBF</code> 制定无缓冲、行缓冲、全缓冲）等。</p>
+<p>使用 setbuf() 时要小心的一点是我们注册的 buffer 不能在输出流被关闭之前被释放，例如下面的程序就是错误的 (undefined behavior)：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">64</span>];</span><br><span class="line">    setbuf(<span class="built_in">stdout</span>, buf);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello, world\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><strong>计算机系统里没有魔法。机器永远是对的。</strong></p>
+<h2 id="execve"><a href="#execve" class="headerlink" title="execve()"></a>execve()</h2><p>execve() 的作用是重置一个状态机，运行 execve() 的参数中所写的程序。如果该系统调用执行成功，它不会返回，它后面的指令也不会被执行。结合运用 fork() 和 execve()，我们便可以创建新的状态机并运行新的程序。execve() 的声明如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">execve</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *filename, <span class="keyword">char</span> * <span class="keyword">const</span> argv, <span class="keyword">char</span> * <span class="keyword">const</span> envp)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中 filename 为想要加载的程序，argv 为传给新程序入口函数的参数，envp 为环境变量列表。下面是一个简单的示例程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// execve-demo.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">char</span> * <span class="keyword">const</span> argv[] = &#123;</span><br><span class="line">    <span class="string">&quot;/bin/bash&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;env&quot;</span>, <span class="literal">NULL</span>,</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">char</span> * <span class="keyword">const</span> envp[] = &#123;</span><br><span class="line">    <span class="string">&quot;HELLO=WORLD&quot;</span>, <span class="literal">NULL</span>,</span><br><span class="line">  &#125;;</span><br><span class="line">  execve(argv[<span class="number">0</span>], argv, envp);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Should not reach here!\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它使用 execve() 执行了命令 <code>/bin/bash -c env</code> 来打印环境变量。运行该程序，我们可以看到我们指定的环境变量 HELLO=WORLD 被打印，且 “should not reach here” 没有被打印。</p>
+<p>系统中有很多有意思的环境变量。例如我们可以配置 <code>$AM_HOME</code> 来简写目录；bash 中的环境变量 PS1 决定了命令行提示符长什么样子；execvp()/gcc 等会根据 <code>$PATH</code> 中的目录一个一个去找有没有我们指定的程序 etc。我们可以 hack 这个行为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PATH= /bin/gcc program.c</span><br></pre></td></tr></table></figure>
+
+<p>便会看到</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc: fatal error: cannot execute ‘as’: execvp: No such file or directory</span><br><span class="line">compilation terminated.</span><br></pre></td></tr></table></figure>
+
+<h2 id="exit"><a href="#exit" class="headerlink" title="_exit()"></a>_exit()</h2><p>exit() 用于销毁一个状态机。<code>_exit(int status)</code> 会销毁当前状态机，并允许有一个返回值。子进程被销毁了会通知父进程。这其中有一些值得思考的问题，例如如果这是一个多线程程序，exit() 应当销毁当前的线程还是当前的进程？</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// exit-demo.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/syscall.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Goodbye, Cruel OS World!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">  atexit(func);</span><br><span class="line">  setvbuf(<span class="built_in">stdout</span>, <span class="literal">NULL</span>, _IOFBF, <span class="number">1024</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Unflushed Buffer\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (argc &lt; <span class="number">2</span>) <span class="keyword">return</span> EXIT_FAILURE;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">&quot;exit&quot;</span>) == <span class="number">0</span>)</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">&quot;_exit&quot;</span>) == <span class="number">0</span>)</span><br><span class="line">    _exit(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">&quot;__exit&quot;</span>) == <span class="number">0</span>)</span><br><span class="line">    syscall(SYS_exit, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>exit-demo.c</code> 展示了各种不同的 exit 方法行为的不同，其中 atexit() 注册了一个在 exit() 的时候会调用的函数。各种运行方式的结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>执行内容</th>
+<th>系统调用</th>
+<th>是否调用 atexit</th>
+<th>输出内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>./exit-demo</code></td>
+<td><code>return EXIT_FAILURE</code></td>
+<td>exit_group(1)</td>
+<td>是</td>
+<td>func &amp; buffer</td>
+</tr>
+<tr>
+<td><code>./exit-demo exit</code></td>
+<td><code>exit(0)</code></td>
+<td>exit_group(0)</td>
+<td>是</td>
+<td>func &amp; buffer</td>
+</tr>
+<tr>
+<td><code>./exit-demo _exit</code></td>
+<td><code>_exit(0)</code></td>
+<td>exit_group(0)</td>
+<td>否</td>
+<td>无</td>
+</tr>
+<tr>
+<td><code>./exit-demo __exit</code></td>
+<td><code>syscall(SYS_exit, 0)</code></td>
+<td>exit(0)</td>
+<td>否</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<p>注：C 程序中的 exit(0) 是 <code>stdlib.h</code> 中的 libc 函数。</p>
+<p>注：exit_group() 系统调用会终止当前进程的所有线程，而 exit() 系统调用只终止当前线程。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/20/NJU-OS%20Lecture%2010%20-%20Application%20of%20State%20Machine/" rel="prev" title="NJU-OS Lecture 10: Application of State Machine">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 10: Application of State Machine
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
