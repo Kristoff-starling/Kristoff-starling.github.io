@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Address Space在 C 程序中，我们可以用指针访问任何可以访问的东西：比如 main() 函数的首地址，这个地址存储的内容就是 main() 的第一条指令。如果我们随便访问一个奇怪的地址，我们会得到段错误；如果我们往 main() 的首地址处写东西，我们也会得到段错误。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 12: Address Space of Process">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/03/27/NJU-OS%20Lecture%2012%20-%20Address%20Space%20of%20Process/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Address Space在 C 程序中，我们可以用指针访问任何可以访问的东西：比如 main() 函数的首地址，这个地址存储的内容就是 main() 的第一条指令。如果我们随便访问一个奇怪的地址，我们会得到段错误；如果我们往 main() 的首地址处写东西，我们也会得到段错误。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-27T15:26:34.688Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/03/27/NJU-OS%20Lecture%2012%20-%20Address%20Space%20of%20Process/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/03/27/NJU-OS%20Lecture%2012%20-%20Address%20Space%20of%20Process/","path":"2022/03/27/NJU-OS Lecture 12 - Address Space of Process/","title":"NJU-OS Lecture 12: Address Space of Process"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 12: Address Space of Process | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Address-Space"><span class="nav-number">1.</span> <span class="nav-text">Address Space</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Statically-Link"><span class="nav-number">1.1.</span> <span class="nav-text">Statically Link</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dynamically-Link"><span class="nav-number">1.2.</span> <span class="nav-text">Dynamically Link</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Managing-Address-Space"><span class="nav-number">2.</span> <span class="nav-text">Managing Address Space</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Isolation-of-Address-Space"><span class="nav-number">3.</span> <span class="nav-text">Isolation of Address Space</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Jinshan-Drifter"><span class="nav-number">3.1.</span> <span class="nav-text">Jinshan Drifter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Pseudo-hardware"><span class="nav-number">3.2.</span> <span class="nav-text">Pseudo-hardware</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Variable-Speed-Gear"><span class="nav-number">3.3.</span> <span class="nav-text">Variable Speed Gear</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hooking"><span class="nav-number">3.4.</span> <span class="nav-text">Hooking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Protection"><span class="nav-number">3.5.</span> <span class="nav-text">Protection</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/27/NJU-OS%20Lecture%2012%20-%20Address%20Space%20of%20Process/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 12: Address Space of Process
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-27 00:00:00 / 修改时间：23:26:34" itemprop="dateCreated datePublished" datetime="2022-03-27T00:00:00+08:00">2022-03-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Address-Space"><a href="#Address-Space" class="headerlink" title="Address Space"></a>Address Space</h2><p>在 C 程序中，我们可以用指针访问任何可以访问的东西：比如 main() 函数的首地址，这个地址存储的内容就是 main() 的第一条指令。如果我们随便访问一个奇怪的地址，我们会得到段错误；如果我们往 main() 的首地址处写东西，我们也会得到段错误。</p>
+<span id="more"></span>
+
+<p>命令行工具 pmap 可以帮助我们观察一个进程的地址空间。我们以最小的程序 <code>minimal.S</code> 为例，在 GDB 中调试时可以用 <code>info inferiors</code> 查看进程号，并用 <code>pmap pid</code> 来查看地址空间：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">0000000000400000      4K r---- a.out</span><br><span class="line">0000000000401000      4K r-x-- a.out</span><br><span class="line">00007ffff7ff9000     16K r----   [ anon ]</span><br><span class="line">00007ffff7ffd000      8K r-x--   [ anon ]</span><br><span class="line">00007ffffffde000    132K rw---   [ stack ]</span><br><span class="line">ffffffffff600000      4K --x--   [ anon ]</span><br><span class="line"> total              168K</span><br></pre></td></tr></table></figure>
+
+<p>0x401000 之后的内容是代码段，这一段有可执行的权限。此外我们在栈上有环境变量，命令行参数等。</p>
+<p>我们可以通过 <code>strace pmap pid</code> 来观察 pmap 是如何实现的。可以看到 pmap 使用了 openat() 系统调用来打开 procfs 中的 <code>/proc/pid/maps</code> 文件。查看这个文件，我们能看到比 pmap 更丰富的地址空间信息。</p>
+<h3 id="Statically-Link"><a href="#Statically-Link" class="headerlink" title="Statically Link"></a>Statically Link</h3><p>我们尝试查看一个静态链接的二进制文件 (空 main() 函数编译得到) 的地址空间：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">0000000000400000      4K r---- a.out</span><br><span class="line">0000000000401000    560K r-x-- a.out</span><br><span class="line">000000000048d000    160K r---- a.out</span><br><span class="line">00000000004b5000     16K r---- a.out</span><br><span class="line">00000000004b9000     12K rw--- a.out</span><br><span class="line">00000000004bc000    140K rw---   [ anon ]</span><br><span class="line">00007ffff7ff9000     16K r----   [ anon ]</span><br><span class="line">00007ffff7ffd000      8K r-x--   [ anon ]</span><br><span class="line">00007ffffffde000    132K rw---   [ stack ]</span><br><span class="line">ffffffffff600000      4K --x--   [ anon ]</span><br><span class="line"> total             1052K</span><br></pre></td></tr></table></figure>
+
+<p>可以看到的地址空间的内容更加丰富。第一个段是 ELF header，后面的可读可执行段是代码段，再后面有只读数据段等等。我们可以将其和 ELF 文件的 program header 进行对比：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Program Headers:</span><br><span class="line">  Type           Offset             VirtAddr           PhysAddr</span><br><span class="line">                 FileSiz            MemSiz              Flags  Align</span><br><span class="line">  LOAD           0x0000000000000000 0x0000000000400000 0x0000000000400000</span><br><span class="line">                 0x0000000000000528 0x0000000000000528  R      0x1000</span><br><span class="line">  LOAD           0x0000000000001000 0x0000000000401000 0x0000000000401000</span><br><span class="line">                 0x000000000008bf1d 0x000000000008bf1d  R E    0x1000</span><br><span class="line">  LOAD           0x000000000008d000 0x000000000048d000 0x000000000048d000</span><br><span class="line">                 0x0000000000027315 0x0000000000027315  R      0x1000</span><br><span class="line">  LOAD           0x00000000000b4908 0x00000000004b5908 0x00000000004b5908</span><br><span class="line">                 0x00000000000059e8 0x00000000000072b8  RW     0x1000 </span><br></pre></td></tr></table></figure>
+
+<p>可以看到地址和权限都能对应上。计算机系统的世界里没有魔法。</p>
+<h3 id="Dynamically-Link"><a href="#Dynamically-Link" class="headerlink" title="Dynamically Link"></a>Dynamically Link</h3><p>动态链接的结果会更复杂一些：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">555555554000-555555555000 r--p  103:0a  /home/starling/a.out</span><br><span class="line">555555555000-555555556000 r-xp  103:0a  /home/starling/a.out</span><br><span class="line">555555556000-555555557000 r--p  103:0a  /home/starling/a.out</span><br><span class="line">555555557000-555555558000 r--p  103:0a  /home/starling/a.out</span><br><span class="line">555555558000-555555559000 rw-p  103:0a  /home/starling/a.out</span><br><span class="line">7ffff7dbe000-7ffff7dc0000 rw-p  00:00 0  // ???</span><br><span class="line">7ffff7dc0000-7ffff7de6000 r--p  103:09  /usr/lib/x86_64-linux-gnu/libc-2.33.so</span><br><span class="line">7ffff7de6000-7ffff7f51000 r-xp  103:09  /usr/lib/x86_64-linux-gnu/libc-2.33.so</span><br><span class="line">7ffff7f51000-7ffff7f9d000 r--p  103:09  /usr/lib/x86_64-linux-gnu/libc-2.33.so</span><br><span class="line">7ffff7f9d000-7ffff7fa0000 r--p  103:09  /usr/lib/x86_64-linux-gnu/libc-2.33.so</span><br><span class="line">7ffff7fa0000-7ffff7fa3000 rw-p  103:09  /usr/lib/x86_64-linux-gnu/libc-2.33.so</span><br><span class="line">7ffff7fa3000-7ffff7fae000 rw-p  00:00 0  // ???</span><br><span class="line">7ffff7fc3000-7ffff7fc7000 r--p  00:00 0 [vvar]</span><br><span class="line">7ffff7fc7000-7ffff7fc9000 r-xp  00:00 0 [vdso]</span><br><span class="line">7ffff7fc9000-7ffff7fca000 r--p  103:09  /usr/lib/x86_64-linux-gnu/ld-2.33.so</span><br><span class="line">7ffff7fca000-7ffff7ff1000 r-xp  103:09  /usr/lib/x86_64-linux-gnu/ld-2.33.so</span><br><span class="line">7ffff7ff1000-7ffff7ffb000 r--p  103:09  /usr/lib/x86_64-linux-gnu/ld-2.33.so</span><br><span class="line">7ffff7ffb000-7ffff7ffd000 r--p  103:09  /usr/lib/x86_64-linux-gnu/ld-2.33.so</span><br><span class="line">7ffff7ffd000-7ffff7fff000 rw-p  103:09  /usr/lib/x86_64-linux-gnu/ld-2.33.so</span><br><span class="line">7ffffffde000-7ffffffff000 rw-p  00:00 0 [stack]</span><br><span class="line">ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0 [vsyscall]</span><br></pre></td></tr></table></figure>
+
+<p>我们看到多了很多的段，比如 libc 库的段和加载器的段。可以引起我们关注的一个问题是：有两个没有名字的东西是什么？这两个段可读可写不可执行，是否有可能是 bss 段？我们可以做实验验证这一点：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> ch[<span class="number">1</span> &lt;&lt; <span class="number">30</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再次运行并查看，可以看到没有名字的段变大了很多。再做一次实验：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> ch[<span class="number">1</span> &lt;&lt; <span class="number">30</span>] = &#123;<span class="number">1</span>&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到这次编译变慢了很多，生成的可执行文件非常大。查看地址空间，匿名段上方多了一个很大的段，显然是可读可写数据段，匿名段的大小很小。因此我们可以确定没有名字的段就是 bss 段。</p>
+<p>另外一个有意思的问题是：vvar 段和 vdso 段是什么？</p>
+<p>我们有时候想要执行系统调用，但又不想陷入操作系统内核 (因为这样比较耗时)，vdso 提供了这样一些不陷入内核就可以完成系统调用功能的函数。一个典型的例子是 <code>__vdso_gettimeofday()</code>。在使用时，我们并不需要加上 <code>__vdso</code> 的前缀，编译器会自动帮我们链接到 vdso 函数。下面是一个例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// vdso.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">gettime</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> <span class="title">t</span>;</span></span><br><span class="line">  gettimeofday(&amp;t, <span class="literal">NULL</span>); <span class="comment">// trapless system call</span></span><br><span class="line">  <span class="keyword">return</span> t.tv_sec + t.tv_usec / <span class="number">1000000.0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Time stamp: %ld\n&quot;</span>, time(<span class="literal">NULL</span>)); <span class="comment">// trapless system call</span></span><br><span class="line">  <span class="keyword">double</span> st = gettime();</span><br><span class="line">  sleep(<span class="number">1</span>);</span><br><span class="line">  <span class="keyword">double</span> ed = gettime();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Time: %.6lfs\n&quot;</span>, ed - st);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>vdso.c</code> 中调用了函数 time() 和 gettimeofday()，它们都不会陷入内核。我们可以用 GDB 调试它并查看汇编代码。我们发现 time() 函数的从一个奇怪的地方搬了一些数过来，这些数就构成了时间：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">0x7ffff7fc7c00 &lt;time&gt;:      lea    -0x4b87(%rip),%rax               # 0x7ffff7fc3080</span><br><span class="line">0x7ffff7fc7c07 &lt;time+7&gt;:    lea    -0x1b8e(%rip),%rdx               # 0x7ffff7fc6080</span><br><span class="line">0x7ffff7fc7c0e &lt;time+14&gt;:   cmpl   $0x7fffffff,-0x4b94(%rip)        # 0x7ffff7fc3084</span><br><span class="line">0x7ffff7fc7c18 &lt;time+24&gt;:   cmove  %rdx,%rax</span><br><span class="line">0x7ffff7fc7c1c &lt;time+28&gt;:   mov    0x20(%rax),%rax</span><br><span class="line">0x7ffff7fc7c20 &lt;time+32&gt;:   test   %rdi,%rdi</span><br><span class="line">0x7ffff7fc7c23 &lt;time+35&gt;:   je     0x7ffff7fc7c28 &lt;time+40&gt;</span><br><span class="line">0x7ffff7fc7c25 &lt;time+37&gt;:   mov    %rax,(%rdi)</span><br><span class="line">0x7ffff7fc7c28 &lt;time+40&gt;:   ret </span><br></pre></td></tr></table></figure>
+
+<p>如果我们在 GDB 中直接用 <code>x</code> 指令打印那个地址，会发现我们无权访问 (GDB 不允许我们访问另一个进程的地址空间)，但对照 <code>/proc/pid/maps</code> 的结果，我们可以看到 time() 函数在 vdso 段，它所抓取的数据在 vvar 段。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">7ffff7fc3000-7ffff7fc7000 r--p 00000000 00:00 0                          [vvar]</span><br><span class="line">7ffff7fc7000-7ffff7fc9000 r-xp 00000000 00:00 0                          [vdso]</span><br></pre></td></tr></table></figure>
+
+<p>该虚拟系统调用实现的原理不太复杂：操作系统在 vvar 段维护一个大致时间的变量，每过一会儿去更新一下，系统中所有的进程都可以使用 vvar 段的数据。</p>
+<h2 id="Managing-Address-Space"><a href="#Managing-Address-Space" class="headerlink" title="Managing Address Space"></a>Managing Address Space</h2><p>进程的地址空间不是一成不变的，在进程执行过程中可以修改。如果我们用 GDB 调试一个动态链接的程序，用 starti 让其暂停在第一条汇编指令 (此时 PC 在加载器中)，再用 pmap 查看地址空间，可以看到此时只有 .so，还没有 libc 相关的段。但执行到 main() 函数时，地址空间中有了 libc 相关的段。</p>
+<p>增加/删除/修改地址空间需要系统调用的支持。Linux 提供了 mmap() 系统调用添加映射，munmap() 系统调用删除映射，mprotect() 函数修改映射的权限。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">mmap</span><span class="params">(<span class="keyword">void</span> *addr, <span class="keyword">size_t</span> length, <span class="keyword">int</span> prot, <span class="keyword">int</span> flags,</span></span></span><br><span class="line"><span class="params"><span class="function">                  <span class="keyword">int</span> fd, <span class="keyword">off_t</span> offset)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>手册中有对 mmap() 的详细描述，比如 addr 本身并不指定 mmap() 映射的地址，只会作为一个映射地址的参考；该函数返回的地址是实际映射的地址。有意思的一点是，mmap() 可以直接将文件中的一大块区域映射到地址空间中：事实上文件并不会被立刻搬入内存，而是在使用时才会将要使用的部分搬进来 (缺页异常)。(注：如果不想映射到文件，而只是开辟一段映射空间，可以在 flags 字段使用 MAP_ANONYMOUS，并将 fd 设置为 -1，操作系统会自动将这段填充为 0。)</p>
+<p>有了 mmap() 系统调用以后，操作系统的加载器变得非常好写：我们只需要根据 ELF 文件中所写的需要加载的内容一一调用 mmap() 即可。我们可以用 strace 观测一个程序加载、运行时的所有 mmap() 操作。</p>
+<p>有了文件映射之后，随之而来的是一系列一致性问题：进程对文件的修改是否需要立即生效？不同进程映射到同一个文件应当共享内存还是各自有本地副本？操作系统还提供了 msync() 系统调用处理同步相关的问题。这才是系统真正的复杂性。</p>
+<p>下面是两个 mmap() 的例子：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mmap-alloc.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> GiB * (1024LL * 1024 * 1024)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">volatile</span> <span class="keyword">uint8_t</span> *p = mmap(<span class="literal">NULL</span>, <span class="number">3</span> GiB, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, <span class="number">-1</span>, <span class="number">0</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;mmap: %lx\n&quot;</span>, (<span class="keyword">uintptr_t</span>)p);</span><br><span class="line">  <span class="keyword">if</span> ((<span class="keyword">intptr_t</span>)p == <span class="number">-1</span>) &#123;</span><br><span class="line">    perror(<span class="string">&quot;cannot map&quot;</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  *(<span class="keyword">int</span> *)(p + <span class="number">1</span> GiB) = <span class="number">114</span>;</span><br><span class="line">  *(<span class="keyword">int</span> *)(p + <span class="number">2</span> GiB) = <span class="number">514</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Read get: %d\n&quot;</span>, *(<span class="keyword">int</span> *)(p + <span class="number">1</span> GiB));</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Read get: %d\n&quot;</span>, *(<span class="keyword">int</span> *)(p + <span class="number">2</span> GiB));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们用 mmap() 映射了一点 3G 的内存空间，并在其中某个位置写了东西，并访问这个位置。我们可以看到虽然我们映射了很大的一块空间，但这个系统调用只用了极短的时间 (一些延迟映射相关的技术)。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># mmap-disk.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> mmap, hexdump</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;/dev/sda&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> fp:</span><br><span class="line">    mm = mmap.mmap(fp.fileno(), prot=mmap.PROT_READ, length=<span class="number">128</span> &lt;&lt; <span class="number">30</span>)</span><br><span class="line">    hexdump.hexdump(mm[:<span class="number">512</span>])</span><br></pre></td></tr></table></figure>
+
+<p>我们可以将整个磁盘映射到地址空间中，并打印第一个扇区的内容，可以看到结尾处标志 MBR 的 0x55aa。</p>
+<h2 id="Isolation-of-Address-Space"><a href="#Isolation-of-Address-Space" class="headerlink" title="Isolation of Address Space"></a>Isolation of Address Space</h2><p>虚拟内存机制为我们提供了内存隔离：每个进程只能在自己的地址空间映射中做事，访问别的进程的地址会触发段错误，或者说，在本地的地址空间中根本看不到别的进程的地址。（真的吗？）</p>
+<h3 id="Jinshan-Drifter"><a href="#Jinshan-Drifter" class="headerlink" title="Jinshan Drifter"></a>Jinshan Drifter</h3><p>在访问检查不严格的程序中，其他进程有办法可以侵入，读取和修改数据。这里展示一个类似于“金山游侠”的红警外挂程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdbool.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LENGTH(arr)  (sizeof(arr) / sizeof(arr[0]))</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n, fd, pid;</span><br><span class="line"><span class="keyword">uint64_t</span> found[<span class="number">4096</span>];</span><br><span class="line"><span class="keyword">bool</span> reset;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">scan</span><span class="params">(<span class="keyword">uint16_t</span> val)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">uintptr_t</span> start, kb;</span><br><span class="line">  <span class="keyword">char</span> perm[<span class="number">16</span>];</span><br><span class="line">  FILE *fp = popen(<span class="string">&quot;pmap -x $(pidof dosbox) | tail -n +3&quot;</span>, <span class="string">&quot;r&quot;</span>); assert(fp);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (reset) n = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (<span class="built_in">fscanf</span>(fp, <span class="string">&quot;%lx&quot;</span>, &amp;start) == <span class="number">1</span> &amp;&amp; (<span class="keyword">intptr_t</span>)start &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    assert(<span class="built_in">fscanf</span>(fp, <span class="string">&quot;%ld%*ld%*ld%s%*[^\n]s&quot;</span>, &amp;kb, perm) &gt;= <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (perm[<span class="number">1</span>] != <span class="string">&#x27;w&#x27;</span>) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">uintptr_t</span> size = kb * <span class="number">1024</span>;</span><br><span class="line">    <span class="keyword">char</span> *mem = <span class="built_in">malloc</span>(size); assert(mem);</span><br><span class="line">    assert(lseek(fd, start, SEEK_SET) != (<span class="keyword">off_t</span>)<span class="number">-1</span>);</span><br><span class="line">    assert(read(fd, mem, size) == size);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size; i += <span class="number">2</span>) &#123;</span><br><span class="line">      <span class="keyword">uint16_t</span> v = *(<span class="keyword">uint16_t</span> *)(&amp;mem[i]);</span><br><span class="line">      <span class="keyword">if</span> (reset) &#123;</span><br><span class="line">        <span class="keyword">if</span> (val == v &amp;&amp; n &lt; LENGTH(found)) found[n++] = start + i;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n; j++) &#123;</span><br><span class="line">	      <span class="keyword">if</span> (found[j] == start + i &amp;&amp; v != val) found[j] = <span class="number">0</span>;</span><br><span class="line">	    &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(mem);</span><br><span class="line">  &#125;</span><br><span class="line">  pclose(fp);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> s = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (found[i] != <span class="number">0</span>) s++;</span><br><span class="line">  &#125;</span><br><span class="line">  reset = <span class="literal">false</span>;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;There are %d match(es).\n&quot;</span>, s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">overwrite</span><span class="params">(<span class="keyword">uint16_t</span> val)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> s = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">    <span class="keyword">if</span> (found[i] != <span class="number">0</span>) &#123;</span><br><span class="line">      assert(lseek(fd, found[i], SEEK_SET) != (<span class="keyword">off_t</span>)<span class="number">-1</span>);</span><br><span class="line">      write(fd, &amp;val, <span class="number">2</span>);</span><br><span class="line">      s++;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;%d value(s) written.\n&quot;</span>, s);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">char</span> buf[<span class="number">32</span>];</span><br><span class="line">  setbuf(<span class="built_in">stdout</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">  FILE *fp = popen(<span class="string">&quot;pidof dosbox&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">  assert(<span class="built_in">fscanf</span>(fp, <span class="string">&quot;%d&quot;</span>, &amp;pid) == <span class="number">1</span>);</span><br><span class="line">  pclose(fp);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">sprintf</span>(buf, <span class="string">&quot;/proc/%d/mem&quot;</span>, pid);</span><br><span class="line">  fd = open(buf, O_RDWR); assert(fd &gt; <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (reset = <span class="literal">true</span>; !feof(<span class="built_in">stdin</span>); ) &#123;</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;(DOSBox %d) &quot;</span>, pid);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, buf) &lt;= <span class="number">0</span>) &#123; close(fd); <span class="built_in">exit</span>(<span class="number">0</span>); &#125;</span><br><span class="line">    <span class="keyword">switch</span> (buf[<span class="number">0</span>]) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;q&#x27;</span>: close(fd); <span class="built_in">exit</span>(<span class="number">0</span>); <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;s&#x27;</span>: <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;val); scan(val); <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;w&#x27;</span>: <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;val); overwrite(val); <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">&#x27;r&#x27;</span>: reset = <span class="literal">true</span>; <span class="built_in">printf</span>(<span class="string">&quot;Search results reset.\n&quot;</span>); <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>popen() 函数的声明如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">FILE *<span class="title">popen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *command, <span class="keyword">const</span> <span class="keyword">char</span> *type)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>它的作用是创建一个管道，fork 当前进程，并执行 shell 命令 command。type 字段指示了管道的数据流向，“r” 表示当前进程从管道读取 command 的输出，”w” 表示当前进程通过管道向 command 输出。</p>
+<p>main() 函数的主要工作是</p>
+<ul>
+<li>利用 popen() 执行命令 <code>pidof dosbox</code>，获得正在运行的 dosbox 进程的进程号，并用 open() 函数打开该进程下的一个文件 <code>/proc/pid/mem</code>，获得一个文件描述符 (open() 中的权限要设置为可读可写，因为我们既要读取游戏信息，又要修改数据)。根据 proc 的手册，我们可以通过这个文件访问该进程的地址空间信息。</li>
+<li>不断从 stdin (控制台) 读取用户输入，对于 <code>s val</code> 型输入，在内存中尝试匹配所有的 val。对于 <code>w val</code> 型输入，将之前匹配到的所有位置改写为 val。对于 <code>r</code> ，重置之前的匹配结果，对于 <code>q</code>，退出外挂程序。</li>
+</ul>
+<p>scan() 函数负责在 dosbox 的地址空间中匹配所有的 val，其具体工作是：</p>
+<ul>
+<li>利用 popen() 执行命令 <code>pmap $(pidof dosbox) | tail -n +3</code>，<code>tail -n +3</code> 可以指定从 pmap 输出结果的第 3 行开始读取。pmap 输出的第一行通常是进程号，第二行是 ELF 文件头，因此从第 3 行开始处理。</li>
+<li>while () 循环访问 dosbox 地址空间的所有可读可写段 (游戏中值得关注的数据，例如金钱、资源，一定是可以修改的)，访问这些段中的每个地址，看其是否等于 val 并修改 found[] 数组。found[] 数组记录了上一次 reset 以来满足所有匹配结果的地址。</li>
+</ul>
+<p>overwrite() 函数负责修改数据。它只要将 found[] 中所有地址处的数据改成我们想要的 val 即可。</p>
+<p>这个外挂需要动态使用：外挂刚开始也不知道存储金钱的地址在哪里，但我们可以不断花钱，并拿新的钱的剩余量去 scan，做若干轮之后我们就可以锁定金钱的地址。此时再修改该地址的值，便可以拥有钞能力。</p>
+<h3 id="Pseudo-hardware"><a href="#Pseudo-hardware" class="headerlink" title="Pseudo-hardware"></a>Pseudo-hardware</h3><p>有一些类似 “2秒17枪” 的外挂可以以人类无法达到的速度大量重复执行任务。这类外挂可以通过写一个驱动模仿假的硬件，或者利用操作系统/窗口管理器的 API 实现。</p>
+<h3 id="Variable-Speed-Gear"><a href="#Variable-Speed-Gear" class="headerlink" title="Variable Speed Gear"></a>Variable Speed Gear</h3><p>变速齿轮是另外一类常见的外挂，可以调节游戏的进度 (比如加快动画播放的速度，减小延迟等)。其实现的机制通常和代码注入有关：我们需要找到类似于 gettimeofday() 等时间相关 API 的函数位置，然后改写这部分代码，让它跳转到我们自己编写的函数，这样就可以任意调节时间了。</p>
+<h3 id="Hooking"><a href="#Hooking" class="headerlink" title="Hooking"></a>Hooking</h3><p>我们不仅可以修改数据，还可以修改代码，这就是代码注入技术 (hooking)。下面是一个简单的给程序打热补丁 (dynamic software update) 的示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/mman.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdbool.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span>     </span>&#123; <span class="built_in">printf</span>(<span class="string">&quot;In old function %s\n&quot;</span>, __func__); &#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo_new</span><span class="params">()</span> </span>&#123; <span class="built_in">printf</span>(<span class="string">&quot;In new function %s\n&quot;</span>, __func__); &#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">jmp</span> &#123;</span></span><br><span class="line">  <span class="keyword">uint32_t</span> opcode: <span class="number">8</span>;</span><br><span class="line">  <span class="keyword">int32_t</span>  offset: <span class="number">32</span>;</span><br><span class="line">&#125; __attribute__((packed));</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> JMP(off) ((struct jmp) &#123; 0xe9, off - sizeof(struct jmp) &#125;)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PG_SIZE sysconf(_SC_PAGESIZE)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">within_page</span><span class="params">(<span class="keyword">void</span> *addr)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (<span class="keyword">uintptr_t</span>)addr % PG_SIZE + <span class="keyword">sizeof</span>(struct jmp) &lt;= PG_SIZE;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DSU</span><span class="params">(<span class="keyword">void</span> *old, <span class="keyword">void</span> *<span class="keyword">new</span>)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">void</span> *base = (<span class="keyword">void</span> *)((<span class="keyword">uintptr_t</span>)old &amp; ~(PG_SIZE - <span class="number">1</span>));</span><br><span class="line">  <span class="keyword">size_t</span> len = PG_SIZE * (within_page(old) ? <span class="number">1</span> : <span class="number">2</span>);</span><br><span class="line">  <span class="keyword">int</span> flags = PROT_WRITE | PROT_READ | PROT_EXEC;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Dynamically updating...\n&quot;</span>); fflush(<span class="built_in">stdout</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (mprotect(base, len, flags) == <span class="number">0</span>) &#123;</span><br><span class="line">    *(struct jmp *)old = JMP((<span class="keyword">char</span> *)<span class="keyword">new</span> - (<span class="keyword">char</span> *)old); <span class="comment">// **PATCH**</span></span><br><span class="line">    mprotect(base, len, flags &amp; ~PROT_WRITE);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    perror(<span class="string">&quot;DSU fail&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  foo();</span><br><span class="line">  DSU(foo, foo_new);</span><br><span class="line">  foo();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行这个程序，我们可以看到虽然两次调用的都是 foo()，但在执行过 DSU() 函数打补丁之后，第二次执行 foo() 其实跳转到了 foo_new() 执行。该程序的原理是改写 foo() 函数的第一条指令，在 foo 地址处写一个间接跳转指令跳到 foo_new()。为了实现这点，代码中的细节有：</p>
+<ul>
+<li>使用 mprotect() 系统调用修改 foo() 函数所在区域的权限。代码段本身是不可写的，我们要为其加上修改权限。这里的”区域“有一点微妙：如果我们要插入的跳转指令正好横跨了两个页面，则我们需要为连续两个页面开放修改权限。within_page() 函数判断了这一点。</li>
+<li><code>*(struct jmp *)old = JMP((char *)new - (char *)old);</code> 是打补丁的核心语句。JMP 宏的原理是写上一个间接跳转的操作码，然后计算两个函数地址的 delta。</li>
+</ul>
+<h3 id="Protection"><a href="#Protection" class="headerlink" title="Protection"></a>Protection</h3><p>防外挂的主要方法是保证控制流和数据流的完整性。事实上，大部分外挂都像是游戏程序的“调试器”：它们不断监听游戏状态并修改游戏数据/代码。我们可以对独立的进程/驱动做完整性检验，还可以拦截向本进程的 ReadProcessMemory 和 WriteProcessMemory 请求，发现后立刻拒绝执行并封号。</p>
+<p>其他的一些解决方法包括：从统计学的角度找出不符合规律的操作；让程序在云/沙盒中运行 (即“计算不再信任操作系统”)。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/25/NJU-OS%20Lecture%2011%20-%20Processes%20in%20Operating%20Systems/" rel="prev" title="NJU-OS Lecture 11: Processes in Operating Systems">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 11: Processes in Operating Systems
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

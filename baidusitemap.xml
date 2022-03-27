@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/03/27/NJU-OS%20Lecture%2012%20-%20Address%20Space%20of%20Process/</loc>
+    <lastmod>2022-03-27</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/03/25/NJU-OS%20Lecture%2011%20-%20Processes%20in%20Operating%20Systems/</loc>
     <lastmod>2022-03-25</lastmod>
   </url>
