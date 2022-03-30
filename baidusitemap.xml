@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/03/30/NJU-OS%20Lecture%2013%20-%20System%20Calls%20and%20UNIX%20Shell/</loc>
+    <lastmod>2022-03-30</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/</loc>
     <lastmod>2022-03-28</lastmod>
   </url>

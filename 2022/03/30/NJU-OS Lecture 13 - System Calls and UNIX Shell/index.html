@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="我们是操作系统用户，但操作系统 API 并不是我们作为人类用户直接使用的，那么“我们”到底应该怎么使用操作系统？  Shell我们需要一个与人类交互的程序，这就是 Shell。之所以叫做 shell，是因为它就像包裹住操作系统内核的一层“壳”：它向内使用系统调用与内核交互，向外与人类用户交互。(Shell 不一定是命令行终端！现在的图形界面也是一种 graphical shell。)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 13: System Calls and UNIX Shell">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/03/30/NJU-OS%20Lecture%2013%20-%20System%20Calls%20and%20UNIX%20Shell/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="我们是操作系统用户，但操作系统 API 并不是我们作为人类用户直接使用的，那么“我们”到底应该怎么使用操作系统？  Shell我们需要一个与人类交互的程序，这就是 Shell。之所以叫做 shell，是因为它就像包裹住操作系统内核的一层“壳”：它向内使用系统调用与内核交互，向外与人类用户交互。(Shell 不一定是命令行终端！现在的图形界面也是一种 graphical shell。)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-30T13:02:26.169Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/03/30/NJU-OS%20Lecture%2013%20-%20System%20Calls%20and%20UNIX%20Shell/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/03/30/NJU-OS%20Lecture%2013%20-%20System%20Calls%20and%20UNIX%20Shell/","path":"2022/03/30/NJU-OS Lecture 13 - System Calls and UNIX Shell/","title":"NJU-OS Lecture 13: System Calls and UNIX Shell"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 13: System Calls and UNIX Shell | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Shell"><span class="nav-number">1.</span> <span class="nav-text">Shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Xv6-Shell"><span class="nav-number">1.1.</span> <span class="nav-text">Xv6 Shell</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Shell-Programming-Language"><span class="nav-number">1.2.</span> <span class="nav-text">The Shell Programming Language</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TTY-and-Job-Control"><span class="nav-number">2.</span> <span class="nav-text">TTY and Job Control</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Session-Process-Group-and-Signal"><span class="nav-number">2.1.</span> <span class="nav-text">Session, Process Group and Signal</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">49</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/30/NJU-OS%20Lecture%2013%20-%20System%20Calls%20and%20UNIX%20Shell/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 13: System Calls and UNIX Shell
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-30 00:00:00 / 修改时间：21:02:26" itemprop="dateCreated datePublished" datetime="2022-03-30T00:00:00+08:00">2022-03-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>我们是操作系统用户，但操作系统 API 并不是我们作为人类用户直接使用的，那么“我们”到底应该怎么使用操作系统？</p>
+</blockquote>
+<h2 id="Shell"><a href="#Shell" class="headerlink" title="Shell"></a>Shell</h2><p>我们需要一个与人类交互的程序，这就是 Shell。之所以叫做 shell，是因为它就像包裹住操作系统内核的一层“壳”：它向内使用系统调用与内核交互，向外与人类用户交互。(Shell 不一定是命令行终端！现在的图形界面也是一种 graphical shell。)</p>
+<span id="more"></span>
+
+<p>Shell 本质上是一门 “把用户指令翻译成系统调用的编程语言”。(在 CLI 时代这一点体现得更明显)</p>
+<h3 id="Xv6-Shell"><a href="#Xv6-Shell" class="headerlink" title="Xv6 Shell"></a>Xv6 Shell</h3><blockquote>
+<p>关于 <code>-ffreestanding</code></p>
+<blockquote>
+<p> -ffreestanding<br>       Assert that compilation targets a freestanding environment.  This implies -fno-builtin.  A<br>       freestanding environment is one in which the standard library may not exist, and program<br>       startup may not necessarily be at “main”.  The most obvious example is an OS kernel.  This is<br>       equivalent to -fno-hosted.</p>
+</blockquote>
+<p>以上是 man gcc 中关于 <code>-ffreestanding</code> 选项的说明。加上这个选项后，编译目标是一个类似于“裸机”的 freestanding 的环境。没有标准库，程序的入口不再是 main() 而是 _start()。</p>
+</blockquote>
+<p><code>sh-xv6.c</code> 是一个零依赖的参考 xv6-riscv 实现的 shell，可以使用 <code>-ffreestanding</code> 选项编译到 <code>.o</code> 文件并直接用 ld 链接。为了实现零依赖，<code>sh-xv6.c</code> 做出了如下的改动：</p>
+<ul>
+<li><p><code>sh-xv6.c</code> 将 xv6 中的系统调用换成了如下利用 x86-64 syscall 指令的內联汇编代码：</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Minimum runtime library</span></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">syscall</span><span class="params">(<span class="keyword">int</span> num, ...)</span> </span>&#123;</span><br><span class="line">  va_list ap;</span><br><span class="line">  va_start(ap, num);</span><br><span class="line">  <span class="function"><span class="keyword">register</span> <span class="keyword">long</span> a0 <span class="title">asm</span> <span class="params">(<span class="string">&quot;rax&quot;</span>)</span> </span>= num;</span><br><span class="line">  <span class="function"><span class="keyword">register</span> <span class="keyword">long</span> a1 <span class="title">asm</span> <span class="params">(<span class="string">&quot;rdi&quot;</span>)</span> </span>= va_arg(ap, <span class="keyword">long</span>);</span><br><span class="line">  <span class="function"><span class="keyword">register</span> <span class="keyword">long</span> a2 <span class="title">asm</span> <span class="params">(<span class="string">&quot;rsi&quot;</span>)</span> </span>= va_arg(ap, <span class="keyword">long</span>);</span><br><span class="line">  <span class="function"><span class="keyword">register</span> <span class="keyword">long</span> a3 <span class="title">asm</span> <span class="params">(<span class="string">&quot;rdx&quot;</span>)</span> </span>= va_arg(ap, <span class="keyword">long</span>);</span><br><span class="line">  <span class="function"><span class="keyword">register</span> <span class="keyword">long</span> a4 <span class="title">asm</span> <span class="params">(<span class="string">&quot;r10&quot;</span>)</span> </span>= va_arg(ap, <span class="keyword">long</span>);</span><br><span class="line">  va_end(ap);</span><br><span class="line">  <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(<span class="string">&quot;syscall&quot;</span></span></span></span><br><span class="line"><span class="params"><span class="function">    : <span class="string">&quot;+r&quot;</span>(a0) : <span class="string">&quot;r&quot;</span>(a1), <span class="string">&quot;r&quot;</span>(a2), <span class="string">&quot;r&quot;</span>(a3), <span class="string">&quot;r&quot;</span>(a4)</span></span></span><br><span class="line"><span class="params"><span class="function">    : <span class="string">&quot;memory&quot;</span>, <span class="string">&quot;rcx&quot;</span>, <span class="string">&quot;r8&quot;</span>, <span class="string">&quot;r9&quot;</span>, <span class="string">&quot;r11&quot;</span>)</span></span>;</span><br><span class="line">  <span class="keyword">return</span> a0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  x86-64 系统调用的各个参数的安放位置可以通过 <code>man 2 syscall</code> 查阅。</p>
+</li>
+<li><p><code>sh-xv6.c</code> 将 xv6 中所有的 malloc() 替换成了如下的 zalloc()：</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> mem[<span class="number">4096</span>], *freem = mem;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">zalloc</span><span class="params">(<span class="keyword">size_t</span> sz)</span> </span>&#123;</span><br><span class="line">  assert(freem + sz &lt; mem + <span class="keyword">sizeof</span>(mem));</span><br><span class="line">  <span class="keyword">void</span> *ret = freem;</span><br><span class="line">  freem += sz;</span><br><span class="line">  <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  xv6 的写法中 malloc() 没有对应的 free()，这是因为命令总是在 fork 出的子进程上完成的，子进程结束时会自动释放分配的内存。因此 zalloc() 使用了一个 4KB 的数组来模拟堆区，只管分配不管释放，这样 zalloc() 的语义和 malloc() 是相同的 (注：fork() 的时候，父子进程的 mem[] 数组是互不影响的！)。</p>
+</li>
+</ul>
+<p>剩余的部分和 xv6 的 <code>sh.c</code> 基本无异，代价解读见 Xv6 源码解读手册。</p>
+<p>近距离观测 <code>sh-xv6.c</code> 的执行过程，我们有以下两种途径：</p>
+<ul>
+<li><p>GDB。注意 GDB 默认追踪父进程，我们更希望关注子进程的行为，即指令执行的行为。可以通过 <code>set follow-fork-mode</code> <code>set follow-exec-mode</code> 等来修改 GDB 的追踪行为。</p>
+</li>
+<li><p>strace。为了不将 shell 的输出和 strace 的输出混起来，我们可以这样做：使用命令</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strace -f -o /tmp/strace.log  ./sh</span><br></pre></td></tr></table></figure>
+
+<p>  将 strace 的输出打印到文件 <code>/tmp/strace.log</code> 中，<code>-f</code> 选项可以追踪所有子进程的系统调用。然后另开一个窗口执行</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tail -f /tmp/strace.log</span><br></pre></td></tr></table></figure>
+
+<p>  其中 <code>-f</code> 选项会 “output appended data as the file grows” (from <code>man tail</code>)。配合 Tmux，我们将获得良好的 strace 观测体验。</p>
+</li>
+</ul>
+<h3 id="The-Shell-Programming-Language"><a href="#The-Shell-Programming-Language" class="headerlink" title="The Shell Programming Language"></a>The Shell Programming Language</h3><p>使用 shell 本质上就是在编程。我们组合各种指令来完成复杂的任务。shell 提供基于文本替换的快速工作流的搭建：</p>
+<ul>
+<li>重定向：<code>cmd &gt; /dev/null</code></li>
+<li>顺序结构：<code>cmd1 ; cmd2</code> (两者都执行)，<code>cmd1 &amp;&amp; cmd2</code> (前者返回值为 0 才继续执行后者)，<code>cmd1 || cmd2</code> (前者返回值为 1 才继续执行后者) etc.</li>
+<li>管道：<code>cmd1 | cmd2</code></li>
+<li>预处理：<code>$()</code>  (将一个命令的输出作为另一个命令的参数)，<code>&lt;()</code> (将一个命令的输出重定向到一个文件，返回文件描述符作为另一个命令的参数) etc.</li>
+<li>环境变量</li>
+</ul>
+<p>现代 GUI 能完成的事情绝大多数 CLI 也能完成，比如在图形界面中，我们通过点”叉” “最小化” 来管理前后台任务，窗口。在 CLI 中我们也有 job control。在执行命令时，我们可以在后面加上 <code>&amp;</code> 使其在后台执行；对于一个正在前台运行的程序，我们可以通过 <code>ctrl+z</code> 将其暂时挂起，用 <code>bg %num</code> 将指定进程放到后台执行；对于在后台运行的程序，我们可以用 <code>fg %num</code> 将其拉到前台执行。</p>
+<hr>
+<p>UNIX shell 在自然语言、机器语言和1970s算力之间达到了一个优雅的平衡。但平衡意味着 UNIX shell 的设计也不是完美的。例如操作的优先级：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls &gt; a.txt | cat</span><br></pre></td></tr></table></figure>
+
+<p>重定向和管道的优先级谁高？使用不同的 shell会得到不同的结果。(bash 不会打印到终端，zsh 会打印到终端 etc.)</p>
+<p>再例如文件名中的空格会带来很大的危险：如果使用命令 <code>vim &quot;a b.txt&quot;</code>，事实上我们连续打开了 <code>a</code> 和 <code>b.txt</code>，这与我们的预期不同。这本质上是因为空格具有二义性：它有可能是分隔指令的符号。(Windows 的 powershell 有 object stream pipe，在管道中传递的东西不再是文本而是对象，这使得所有的东西都是 strongly typed 的，可以避免上述问题。)</p>
+<p>再比如，有些行为的意义可能是难以理解的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> hello &gt; /etc/a.txt</span><br></pre></td></tr></table></figure>
+
+<p>无法执行，shell 会返回 permission denied。这时我们本能地在前面加上 sudo：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">echo</span> hello &gt; /etc/a.txt</span><br></pre></td></tr></table></figure>
+
+<p>却发现仍然是 permission denied。联想 xv6-shell 中解析命令的机制，我们就不难理解这个问题的原因。shell 完成重定向输出的方法是：关闭 stdout 文件，打开 <code>/etc/a.txt</code> 文件 (其文件描述符绑定为 1)，然后执行左边的指令。也就是说，sudo 只修饰了左边的执行，打开文件的过程没有获得高权限，所以报错。</p>
+<h2 id="TTY-and-Job-Control"><a href="#TTY-and-Job-Control" class="headerlink" title="TTY and Job Control"></a>TTY and Job Control</h2><p>我们还有一些疑问：例如没有任何程序在读键盘输入的情况下为什么 Ctrl+C 可以退出程序？为什么在有些应用 (e.g. vim) 中 Ctrl+C 不能退出？如果当前程序 fork 出了多个进程，Ctrl+C 会退出所有程序吗？Tmux 为什么能管理多个窗口？</p>
+<p>答案是终端。终端是 UNIX 操作系统中的一类非常特别的设备。命令行中有工具 tty 可以查看连接到标准输入的终端文件名。如果我们在 Tmux 的不同窗口中使用 tty 命令，可以看到不同的窗口连接到了不同的终端设备。我们甚至可以做一些有趣的事情：在一个窗口中 <code>echo hello &gt; /dev/pts/other</code>，hello 将显示在另一个窗口中。</p>
+<blockquote>
+<p>为什么 <code>fork-printf.c</code> 可以根据标准输出对象的不同选择不同的 buffer mode？</p>
+</blockquote>
+<p>通过 strace 观察，可以看到程序使用了 fstat() 系统调用查看 1 号文件 (标准输出) 的信息。在有重定向的版本的系统调用序列中，ioctl() 系统调用返回了 ENOTTY。</p>
+<h3 id="Session-Process-Group-and-Signal"><a href="#Session-Process-Group-and-Signal" class="headerlink" title="Session, Process Group and Signal"></a>Session, Process Group and Signal</h3><blockquote>
+<p>Ctrl+C 为什么能退出？</p>
+</blockquote>
+<p>简单来说，我们的终端负责识别 Ctrl+C 的按键组合，并给<strong>前台</strong>进程发送一个 SIGINT 信号。前台程序有自由决定如何处理这个 SIGINT 信号，绝大部分的程序会在接收到 SIGINT 信号后退出，但我们也可以自己写一个 signal handler：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// signal-handler.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;signal.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">handler</span><span class="params">(<span class="keyword">int</span> signum)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">switch</span> (signum) &#123;</span><br><span class="line">    <span class="keyword">case</span> SIGINT:</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Received SIGINT!\n&quot;</span>);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> SIGQUIT:</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;Received SIGQUIT!\n&quot;</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cleanup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;atexit() cleanup\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  signal(SIGINT,  handler);</span><br><span class="line">  signal(SIGQUIT, handler);</span><br><span class="line">  atexit(cleanup);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">4096</span>];</span><br><span class="line">    <span class="keyword">int</span> nread = read(STDIN_FILENO, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">    buf[nread - <span class="number">1</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;[%d] Got: %s\n&quot;</span>, getpid(), buf);</span><br><span class="line">    <span class="keyword">if</span> (nread &lt; <span class="number">0</span>) &#123;</span><br><span class="line">      perror(<span class="string">&quot;read&quot;</span>);</span><br><span class="line">      <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 上面的程序为 SIGINT 和 SIGQUIT 两个信号注册了处理函数。运行该程序，我们发现按下 Ctrl+C 时程序不会退出，而是输出 <code>Received SIGINT!</code>。</p>
+<p>这时有一个更有意思的问题：如果我们在 main() 函数开头执行一个 fork()，那么父子进程的标准输入和输出会连向同一个 tty，这时按下 Ctrl+C 终端会将 SIGINT 发送给哪个进程呢？经过实验我们发现：fork() 以后的 <code>signal-handler.c</code> 在输入字符时，两个进程会争抢输入数据，呈现各打印了一部分内容的现象；如果按下 Ctrl+C，会出现两个 <code>Received SIGINT!</code>。这说明 SIGINT 信号同时发送给了这两个进程。</p>
+<p>阅读 setpgid() 的手册，我们可以看到更系统的解读：</p>
+<p>当我们打开一个 shell 时，我们就创建了一个会话 (session)，这个会话有一个 controlling terminal。一个会话里面可以有若干个进程组 (process group) (注：shell 本身也是一个进程组，通常称为 session leader)，一个进程 fork() 得到的子进程和父进程同属一个进程组，execve() 不会改变一个进程所属的进程组。在任何时刻，一个会话里有且仅有一个前台 (foreground) 进程组，剩余的进程组都是后台进程组。当终端给会话发送一个信号时，前台进程组里的每个进程都会接收到这个信号。只有前台进程组中的进程可以从终端读取数据，如果后台进程尝试从终端读取数据，会接收到一个 SIGTTIN 信号，该信号会将后台进程挂起。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/27/NJU-OS%20Lecture%2012%20-%20Address%20Space%20of%20Process/" rel="prev" title="NJU-OS Lecture 12: Address Space of Process">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 12: Address Space of Process
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
