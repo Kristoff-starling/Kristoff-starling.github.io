@@ -22,15 +22,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="很多时候，我们有一个任务等待另一个任务的需求，比如父线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：">
+<meta name="description" content="很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OSTEP Chapter 30: Condition Variables">
 <meta property="og:url" content="https://kristoff-starling.github.io/2022/02/22/OSTEP/OSTEP%20Chapter%2030%20-%20Condition%20Variables/index.html">
 <meta property="og:site_name" content="starling的小屋">
-<meta property="og:description" content="很多时候，我们有一个任务等待另一个任务的需求，比如父线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：">
+<meta property="og:description" content="很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-02-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-03-31T08:23:45.302Z">
+<meta property="article:modified_time" content="2022-03-31T10:23:47.652Z">
 <meta property="article:author" content="starling">
 <meta name="twitter:card" content="summary">
 
@@ -244,7 +244,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-03-31 16:23:45" itemprop="dateModified" datetime="2022-03-31T16:23:45+08:00">2022-03-31</time>
+        <time title="修改时间：2022-03-31 18:23:47" itemprop="dateModified" datetime="2022-03-31T18:23:47+08:00">2022-03-31</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -277,22 +277,22 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>很多时候，我们有一个任务等待另一个任务的需求，比如父线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：<span id="more"></span></p>
+        <p>很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：<span id="more"></span></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="keyword">int</span> done = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">child</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    do_something();</span><br><span class="line">    done = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">pthread_t</span> c;</span><br><span class="line">    Pthread_create(&amp;c, <span class="literal">NULL</span>, child, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">while</span> (done == <span class="number">0</span>)</span><br><span class="line">        ;</span><br><span class="line">    do_something_else();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>但这样做父线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。</p>
+<p>但这样做主线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。</p>
 <h2 id="30-1-Definition-and-Routines"><a href="#30-1-Definition-and-Routines" class="headerlink" title="30.1 Definition and Routines"></a>30.1 Definition and Routines</h2><p>为了让一个线程等待一个条件成立，我们通常使用条件变量 (condition variable)。条件变量可以理解为一个显式的队列，线程可以将自己加入到这个队列中挂起，当其他线程的操作使得条件变化时，它会唤醒这个“队列”中的线程。我们提供两个 API：<code>wait()</code> 可以让线程将自己加入到队列中等待；<code>signal()</code> 可以让别的线程改变了条件状态时向队列中的线程“发送信号”。</p>
 <p>POSIX 提供的条件变量 API 为</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_wait</span><span class="params">(<span class="keyword">pthread_cont_t</span> *c, <span class="keyword">pthread_mutex_t</span> *m)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_signal</span><span class="params">(<span class="keyword">pthread_cond_t</span> *c)</span></span>;</span><br></pre></td></tr></table></figure>
 
 <p>注意到 wait() 的参数中除了条件变量 c 还有一个自旋锁 m。wait() 的语义要求调用时线程必须拥有自旋锁 m，wait() 会负责释放这个自旋锁并使当前线程进入睡眠状态 (这两步是原子的)；当 signal() 使当前线程被唤醒后，wait() 会负责让线程重新获得自旋锁 m，然后返回。</p>
-<p>join.c 提供了一个父线程等待子线程结束的正确实现。事实上这个过程是很容易实现错的，比如如下一些写法：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2030%20-%20threads_cv/join.c">join.c</a> 提供了一个主线程等待子线程结束的正确实现。事实上这个过程是很容易实现错的，比如如下一些写法：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">thr_exit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Pthread_mutex_lock(&amp;m);</span><br><span class="line">    Pthread_cond_signal(&amp;c);</span><br><span class="line">    Pthread_mutex_unlock(&amp;m);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">thr_join</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Pthread_mutex_lock(&amp;m);</span><br><span class="line">    Pthread_cond_wait(&amp;c, &amp;m);</span><br><span class="line">    Pthread_mutex_unlock(&amp;m);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这个写法只有在 thr_join() 在 thr_exit() 之前执行的情况下才是正确的。如果颠倒了顺序，thr_join() 将永远不会被唤醒 (join_no_state_var.c 中，父线程里使用了 sleep() 以精确复现这一情形)。因此我们可以看到，使用条件变量时理应有一个条件状态的判断。</p>
+<p>这个写法只有在 thr_join() 在 thr_exit() 之前执行的情况下才是正确的。如果颠倒了顺序，thr_join() 将永远不会被唤醒 (<a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2030%20-%20threads_cv/join_no_state_var.c">join_no_state_var.c</a> 中，主线程里使用了 sleep() 以精确复现这一情形)。因此我们可以看到，使用条件变量时理应有一个条件状态的判断。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">thr_exit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    done = <span class="number">1</span>;</span><br><span class="line">    Pthread_cond_signal(&amp;c);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">thr_join</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (done == <span class="number">0</span>)</span><br><span class="line">        Pthread_cond_wait(&amp;c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这个写法没有用锁保护状态变量 done 的读写，缺失了原子性。这里的原子性缺失指的是：虽然在 while 判断时 <code>done == 0</code>，但在 wait() 时 done 可能已经不等于 0 了。考虑这样一种执行流：thr_join() 做完 while 判断进入循环，还没来得及 wait() 时，执行流被打断，thr_exit() 执行并 signal()，但此时队列中并没有线程。接着 thr_join() 继续执行陷入睡眠，那么它将永远不会被唤醒 (join_no_lock() 中在父线程使用了比子线程时间更长的 sleep() 以精确复现这一情况)。</p>
+<p>这个写法没有用锁保护状态变量 done 的读写，缺失了原子性。这里的原子性缺失指的是：虽然在 while 判断时 <code>done == 0</code>，但在 wait() 时 done 可能已经不等于 0 了。考虑这样一种执行流：thr_join() 做完 while 判断进入循环，还没来得及 wait() 时，执行流被打断，thr_exit() 执行并 signal()，但此时队列中并没有线程。接着 thr_join() 继续执行陷入睡眠，那么它将永远不会被唤醒 (<a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2030%20-%20threads_cv/join_no_lock.c">join_no_lock()</a> 中在主线程使用了比子线程时间更长的 sleep() 以精确复现这一情况)。</p>
 <blockquote>
 <p><strong>Tip: Always Hold The Lock While Signaling</strong></p>
 <p>POSIX 的 wait() 函数的语义已经要求了我们在调用 wait() 时必须要拥有自旋锁；虽然少数情况下我们可以无锁地调用 signal()，但为了安全和简单，我们应当在 signal() 时也用自旋锁保护。</p>
