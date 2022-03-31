@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Questions Let’s examine a simple program, “loop.s”. First, just read and understand it. Then, run it with these arguments (.&#x2F;x86.py -p loop.s -t 1 -i 100 -R dx) This specifies a single thread, an inte">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSTEP Chapter 26 - Homework">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/26/OSTEP/OSTEP%20Homework%2026/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Questions Let’s examine a simple program, “loop.s”. First, just read and understand it. Then, run it with these arguments (.&#x2F;x86.py -p loop.s -t 1 -i 100 -R dx) This specifies a single thread, an inte">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-31T08:23:13.067Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/26/OSTEP/OSTEP%20Homework%2026/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/26/OSTEP/OSTEP%20Homework%2026/","path":"2022/02/26/OSTEP/OSTEP Homework 26/","title":"OSTEP Chapter 26 - Homework"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OSTEP Chapter 26 - Homework | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Questions"><span class="nav-number">1.</span> <span class="nav-text">Questions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Solutions"><span class="nav-number">2.</span> <span class="nav-text">Solutions</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/26/OSTEP/OSTEP%20Homework%2026/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OSTEP Chapter 26 - Homework
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-26 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-26T00:00:00+08:00">2022-02-26</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-31 16:23:13" itemprop="dateModified" datetime="2022-03-31T16:23:13+08:00">2022-03-31</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">WISC-CS537 Introduction to Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/Homework/" itemprop="url" rel="index"><span itemprop="name">Homework</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Questions"><a href="#Questions" class="headerlink" title="Questions"></a>Questions</h2><ol>
+<li>Let’s examine a simple program, “loop.s”. First, just read and understand it. Then, run it with these arguments (<code>./x86.py -p loop.s -t 1 -i 100 -R dx</code>) This specifies a single thread, an interrupt every 100 instructions, and tracing of register %dx. What will %dx be during the run? Use the -c flag to check your answers; the answers, on the left, show the value of the register (or memory value) after the instruction on the right has run. <span id="more"></span></li>
+<li>Same code, different flags: (<code>./x86.py -p loop.s -t 2 -i 100 -a dx=3,dx=3 -R dx</code>) This specifies two threads, and initializes each %dx to 3. What values will %dx see? Run with -c to check. Does the presence of multiple threads affect your calculations? Is there a race in this code?</li>
+<li>Run this: <code>./x86.py -p loop.s -t 2 -i 3 -r -a dx=3,dx=3 -R dx</code> This makes the interrupt interval small/random; use different seeds (-s) to see different interleavings. Does the interrupt frequency change anything?</li>
+<li>Now, a different program, looping-race-nolock.s, which accesses a shared variable located at address 2000; we’ll call this variable value. Run it with a single thread to confirm your understanding: <code>./x86.py -p looping-race-nolock.s -t 1 -M 2000 </code> What is value (i.e., at memory address 2000) throughout the run? Use -c to check.</li>
+<li>Run with multiple iterations/threads: <code>./x86.py -p looping-race-nolock.s -t 2 -a bx=3 -M 2000</code> Why does each thread loop three times? What is final value of value?</li>
+<li>Run with random interrupt intervals: <code>./x86.py -p looping-race-nolock.s -t 2 -M 2000 -i 4 -r -s 0</code> with different seeds (-s 1, -s 2, etc.) Can you tell by looking at the thread interleaving what the final value of value will be? Does the timing of the interrupt matter? Where can it safely occur? Where not? In other words, where is the critical section exactly?</li>
+<li>Now examine fixed interrupt intervals: <code>./x86.py -p looping-race-nolock.s -a bx=1 -t 2 -M 2000 -i 1</code> What will the final value of the shared variable value be? What about when you change -i 2, -i 3, etc.? For which interrupt intervals does the program give the “correct” answer?</li>
+<li>Run the same for more loops (e.g., set -a bx=100). What interrupt intervals (-i) lead to a correct outcome? Which intervals are surprising?</li>
+<li>One last program: wait-for-me.s. Run: <code>./x86.py -p wait-for-me.s -a ax=1,ax=0 -R ax -M 2000</code> This sets the %ax register to 1 for thread 0, and 0 for thread 1, and watches %ax and memory location 2000. How should the code behave? How is the value at location 2000 being used by the threads? What will its final value be?</li>
+<li>Now switch the inputs: <code>./x86.py -p wait-for-me.s -a ax=0,ax=1 -R ax -M 2000</code> How do the threads behave? What is thread 0 doing? How would changing the interrupt interval (e.g., <code>-i 1000</code>, or perhaps to use random intervals) change the trace outcome? Is the program efficiently using the CPU?</li>
+</ol>
+<h2 id="Solutions"><a href="#Solutions" class="headerlink" title="Solutions"></a>Solutions</h2><ol>
+<li><p>%dx 寄存器初始值为 0，执行一次 sub 指令后变为 -1，随后跳出循环。</p>
+</li>
+<li><p>%dx 从 3 开始每做一次循环 -1,直到变为负数后退出。两个线程的行为是完全一样的。多线程没有影响计算，这里没有出现竞争条件。</p>
+</li>
+<li><p>中断的频率不会对线程行为产生任何影响。<code>loop.s</code> 中只有针对寄存器的行为，不同线程的寄存器之间是互相独立的。</p>
+</li>
+<li><p>循环只做了一次，地址 2000 处最终数值为 1。</p>
+</li>
+<li><p>%bx 寄存器的初始值为 3，所以每个线程做三次循环，最终地址 2000 处的值为 6。</p>
+</li>
+<li><p>使用 0 和 2 做种子可以得到正确的结果 2，因为两个线程临界区域的代码没有交叉：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># seed = 0</span><br><span class="line"> 2000      bx          Thread 0                Thread 1         </span><br><span class="line">    0       0   </span><br><span class="line">    0       0   1000 mov 2000, %ax</span><br><span class="line">    0       0   1001 add $1, %ax</span><br><span class="line">    1       0   1002 mov %ax, 2000</span><br><span class="line">    1      -1   1003 sub  $1, %bx</span><br><span class="line">    1       0   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">    1       0                            1000 mov 2000, %ax</span><br><span class="line">    1       0                            1001 add $1, %ax</span><br><span class="line">    2       0                            1002 mov %ax, 2000</span><br><span class="line">    2      -1                            1003 sub  $1, %bx</span><br><span class="line">    2      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">    2      -1   1004 test $0, %bx</span><br><span class="line">    2      -1   1005 jgt .top</span><br><span class="line">    2      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">    2      -1                            1004 test $0, %bx</span><br><span class="line">    2      -1                            1005 jgt .top</span><br><span class="line">    2      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">    2      -1   1006 halt</span><br><span class="line">    2      -1   ----- Halt;Switch -----  ----- Halt;Switch -----  </span><br><span class="line">    2      -1                            1006 halt</span><br></pre></td></tr></table></figure>
+
+<p> 使用 1 做种子会得到错误的结果 1，因为两个线程的临界区域出现了交叉 (第一个线程做了第一条指令后切换到了第二个线程)。</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">2000      bx          Thread 0                Thread 1         </span><br><span class="line">   0       0   </span><br><span class="line">   0       0   1000 mov 2000, %ax</span><br><span class="line">   0       0   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">   0       0                            1000 mov 2000, %ax</span><br><span class="line">   0       0                            1001 add $1, %ax</span><br><span class="line">   1       0                            1002 mov %ax, 2000</span><br><span class="line">   1      -1                            1003 sub  $1, %bx</span><br><span class="line">   1       0   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">   1       0   1001 add $1, %ax</span><br><span class="line">   1       0   1002 mov %ax, 2000</span><br><span class="line">   1      -1   1003 sub  $1, %bx</span><br><span class="line">   1      -1   1004 test $0, %bx</span><br><span class="line">   1      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">   1      -1                            1004 test $0, %bx</span><br><span class="line">   1      -1                            1005 jgt .top</span><br><span class="line">   1      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">   1      -1   1005 jgt .top</span><br><span class="line">   1      -1   1006 halt</span><br><span class="line">   1      -1   ----- Halt;Switch -----  ----- Halt;Switch -----  </span><br><span class="line">   1      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">   1      -1                            1006 halt</span><br></pre></td></tr></table></figure>
+
+<p> 只有两个线程在执行临界区域代码时保持原子性 (不被打断)，才能得到正确的结果。临界区域为：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">.main</span><br><span class="line">.top</span><br><span class="line"># &lt;-- critical section begin --&gt;</span><br><span class="line">mov 2000, %ax</span><br><span class="line">add $1, %ax</span><br><span class="line">mov %ax, 2000</span><br><span class="line"># &lt;--  critical section end  --&gt;</span><br><span class="line">sub $1, %bx</span><br><span class="line">test $0, %bx</span><br><span class="line">jgt .top</span><br><span class="line">halt</span><br></pre></td></tr></table></figure></li>
+<li><p>中断步长为 1 和 2 时无法获得正确的结果 (临界区域交织)。在只循环一次的情况下，中断步长大于等于 3 即可保证结果正确。</p>
+</li>
+<li><p>保证执行结果正确有以下几种思路：</p>
+<ul>
+<li>只要设置 <code>-i</code> 参数足够大以使得两个线程串行地执行，就可以保证结果正确。</li>
+<li>该汇编代码执行一个循环一共有 6 条语句，其中临界区域有 3 条语句。因此只要设置 <code>-i</code> 参数为 3 的倍数，就可以保证临界区域不会交叉。</li>
+</ul>
+<p> 对于那些不是 3 的倍数的参数，在参数较小时尚可预估 (比如如果设置 <code>-i 1/2</code>，则每个临界区域都会交织，最后答案为 N，<code>-i 4</code> 最后的结果会是 3N/2 上取整)，参数较大时得到的结果就难以理解了。</p>
+</li>
+<li><p><code>wait-for-me.s</code> 代码会根据 %ax 的值选择 waiter 或 signaller 身份。waiter 等待地址 2000 处值为 1结束，signaller 负责向 2000 处放一个 1。</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">.main</span><br><span class="line">test $1, %ax     # ax should be 1 (signaller) or 0 (waiter)</span><br><span class="line">je .signaller</span><br><span class="line"></span><br><span class="line">.waiter	</span><br><span class="line">mov  2000, %cx</span><br><span class="line">test $1, %cx</span><br><span class="line">jne .waiter</span><br><span class="line">halt</span><br><span class="line"></span><br><span class="line">.signaller</span><br><span class="line">mov  $1, 2000</span><br><span class="line">halt</span><br></pre></td></tr></table></figure>
+
+<p> 运行指令后会看到第一个线程放 1 结束，第二个线程看到有 1 结束。</p>
+</li>
+<li><p>如果反过来，则会看到线程 1 在轮询地址 2000 处的值，直到发生线程切换，线程 2 向 2000 处填写了 1，线程 1 才得以退出。这是自旋锁的雏形。如果将 <code>-i</code> 调得很大，线程 1 将浪费 CPU cycle 进行大量轮询。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/25/OSTEP/OSTEP%20Chapter%2027%20-%20Interlude%20-%20Thread%20API/" rel="prev" title="OSTEP Chapter 27: Interlude: Thread API">
+                  <i class="fa fa-chevron-left"></i> OSTEP Chapter 27: Interlude: Thread API
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/02/26/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/" rel="next" title="OSTEP Chapter 26: Concurrency: An Introduction">
+                  OSTEP Chapter 26: Concurrency: An Introduction <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

@@ -22,27 +22,27 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="一个多线程程序会有多个执行流，即有好几个 PC 并发&#x2F;并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。 虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为">
+<meta name="description" content="Questions First build main-race.c. Examine the code so you can see the (hopefully obvious) data race in the code. Now run helgrind (by typing valgrind –tool&#x3D;helgrind main-race) to see how it reports t">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OSTEP Chapter 26: Concurrency: An Introduction">
-<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/22/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/index.html">
+<meta property="og:title" content="OSTEP Chapter 27 - Homework">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/25/OSTEP/OSTEP%20Homework%2027/index.html">
 <meta property="og:site_name" content="starling的小屋">
-<meta property="og:description" content="一个多线程程序会有多个执行流，即有好几个 PC 并发&#x2F;并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。 虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为">
+<meta property="og:description" content="Questions First build main-race.c. Examine the code so you can see the (hopefully obvious) data race in the code. Now run helgrind (by typing valgrind –tool&#x3D;helgrind main-race) to see how it reports t">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-02-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-03-31T02:58:39.472Z">
+<meta property="article:published_time" content="2022-02-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-31T08:23:19.969Z">
 <meta property="article:author" content="starling">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/22/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/">
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/25/OSTEP/OSTEP%20Homework%2027/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/22/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/","path":"2022/02/22/OSTEP/OSTEP Chapter 26 - Concurrency An Introduction/","title":"OSTEP Chapter 26: Concurrency: An Introduction"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/25/OSTEP/OSTEP%20Homework%2027/","path":"2022/02/25/OSTEP/OSTEP Homework 27/","title":"OSTEP Chapter 27 - Homework"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>OSTEP Chapter 26: Concurrency: An Introduction | starling的小屋</title>
+<title>OSTEP Chapter 27 - Homework | starling的小屋</title>
   
 
 
@@ -148,7 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#26-1-Why-Use-Threads"><span class="nav-number">1.</span> <span class="nav-text">26.1 Why Use Threads?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-2-An-Example-Thread-Creation"><span class="nav-number">2.</span> <span class="nav-text">26.2 An Example: Thread Creation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-3-Why-It-Gets-Worse-Shared-Data"><span class="nav-number">3.</span> <span class="nav-text">26.3 Why It Gets Worse: Shared Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-4-The-Heart-Of-The-Problem-Uncontrolled-Scheduling"><span class="nav-number">4.</span> <span class="nav-text">26.4 The Heart Of The Problem: Uncontrolled Scheduling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-5-The-Wish-For-Atomicity"><span class="nav-number">5.</span> <span class="nav-text">26.5 The Wish For Atomicity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-6-One-More-Problem-Waiting-For-Another"><span class="nav-number">6.</span> <span class="nav-text">26.6 One More Problem: Waiting For Another</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-7-Summary-Why-in-OS-Class"><span class="nav-number">7.</span> <span class="nav-text">26.7 Summary: Why in OS Class?</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Questions"><span class="nav-number">1.</span> <span class="nav-text">Questions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Solutions"><span class="nav-number">2.</span> <span class="nav-text">Solutions</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -162,13 +162,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -213,7 +213,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/22/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/25/OSTEP/OSTEP%20Homework%2027/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -226,7 +226,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          OSTEP Chapter 26: Concurrency: An Introduction
+          OSTEP Chapter 27 - Homework
         </h1>
 
         <div class="post-meta-container">
@@ -237,14 +237,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-02-22 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-22T00:00:00+08:00">2022-02-22</time>
+      <time title="创建时间：2022-02-25 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-25T00:00:00+08:00">2022-02-25</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-03-31 10:58:39" itemprop="dateModified" datetime="2022-03-31T10:58:39+08:00">2022-03-31</time>
+        <time title="修改时间：2022-03-31 16:23:19" itemprop="dateModified" datetime="2022-03-31T16:23:19+08:00">2022-03-31</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -256,7 +256,7 @@
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/Book-Notes/" itemprop="url" rel="index"><span itemprop="name">Book Notes</span></a>
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/Homework/" itemprop="url" rel="index"><span itemprop="name">Homework</span></a>
         </span>
     </span>
 
@@ -277,38 +277,45 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>一个多线程程序会有多个执行流，即有好几个 PC 并发/并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。</p>
-<p>虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为 thread-local storage。</p>
-<span id="more"></span>
+        <h2 id="Questions"><a href="#Questions" class="headerlink" title="Questions"></a>Questions</h2><ol>
+<li>First build main-race.c. Examine the code so you can see the (hopefully obvious) data race in the code. Now run helgrind (by typing valgrind –tool=helgrind main-race) to see how it reports the race. Does it<br>point to the right lines of code? What other information does it give to you? <span id="more"></span></li>
+<li>What happens when you remove one of the offending lines of code? Now add a lock around one of the updates to the shared variable, and then around both. What does helgrind report in each of these cases?</li>
+<li>Now let’s look at main-deadlock.c. Examine the code. This code has a problem known as deadlock (which we discuss in much more depth in a forthcoming chapter). Can you see what problem it might have?</li>
+<li>Now run helgrind on this code. What does helgrind report?</li>
+<li>Now run helgrind on main-deadlock-global.c. Examine the code; does it have the same problem that main-deadlock.c has? Should helgrind be reporting the same error? What does this tell you about tools like helgrind?</li>
+<li>Let’s next look at main-signal.c. This code uses a variable (done) to signal that the child is done and that the parent can now continue. Why is this code inefficient? (what does the parent end up spending its time doing, particularly if the child thread takes a long time to complete?)</li>
+<li>Now run helgrind on this program. What does it report? Is the code correct?</li>
+<li>Now look at a slightly modified version of the code, which is found in main-signal-cv.c. This version uses a condition variable to do the signaling (and associated lock). Why is this code preferred to the previous<br>version? Is it correctness, or performance, or both?</li>
+<li>Once again run helgrind on main-signal-cv. Does it report any errors?</li>
+</ol>
+<h2 id="Solutions"><a href="#Solutions" class="headerlink" title="Solutions"></a>Solutions</h2><ol>
+<li><p>helgrind 工具可以准确地报告出 <code>main-race.c</code> 的第 15 行和第 8 行的操作存在 data race。此外，helgrind 可以报告出产生数据竞争的地址 (0 bytes inside data symbol “balance”)，还可以报告线程创建的过程：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">---Thread-Announcement------------------------------------------</span><br><span class="line">Thread #2 was created</span><br><span class="line">   at 0x49A9D42: clone (clone.S:71)</span><br><span class="line">   by 0x4878281: create_thread (createthread.c:103)</span><br><span class="line">   by 0x4879C8B: pthread_create@@GLIBC_2.2.5 (pthread_create.c:821)</span><br><span class="line">   by 0x484D627: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)</span><br><span class="line">   by 0x109209: main (main-race.c:14)</span><br></pre></td></tr></table></figure></li>
+<li><p>如果删除掉任意一个对 balance 的操作，helgrind 就不会报告错误。如果只用锁保护一处操作，helgrind 仍然会报告 data race (且能报告处哪一处操作被锁保护了)。如果用锁将两处操作都保护了，helgrind 不会报告错误。</p>
+</li>
+<li><p><code>main-deadlock.c</code> 存在发生死锁的风险：如果 p1 线程获得了锁 m1，然后 p2 线程获得了锁 m2，这时 p1 线程试图获得锁 m2，p2 线程试图获得锁 m1，它们都得不到需要的锁，也不会释放自己已经得到的锁，从而陷入死锁。</p>
+</li>
+<li><p>helgrind 会报告形如下面所示的错误：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Thread #3: lock order &quot;0x10C040 before 0x10C080&quot; violated</span><br><span class="line"></span><br><span class="line">Observed (incorrect) order is: acquisition of lock at 0x10C080</span><br><span class="line"> ...</span><br><span class="line"> followed by a later acquisition of lock at 0x10C040</span><br><span class="line">   ...</span><br><span class="line"></span><br><span class="line">Required order was established by acquisition of lock at 0x10C040</span><br><span class="line"> ...</span><br><span class="line"> followed by a later acquisition of lock at 0x10C080</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">Lock at 0x10C040 was first observed</span><br><span class="line"> ...</span><br><span class="line"> Address 0x10c040 is 0 bytes inside data symbol &quot;m1&quot;</span><br><span class="line"></span><br><span class="line">Lock at 0x10C080 was first observed</span><br><span class="line"> ...</span><br><span class="line"> Address 0x10c080 is 0 bytes inside data symbol &quot;m2&quot;</span><br></pre></td></tr></table></figure>
 
-<h2 id="26-1-Why-Use-Threads"><a href="#26-1-Why-Use-Threads" class="headerlink" title="26.1 Why Use Threads?"></a>26.1 Why Use Threads?</h2><p>使用线程至少有以下两点好处：</p>
-<ul>
-<li>提高并行度。在一个多核处理器上，我们可以让多个线程每个占据一个 CPU 核，分摊一部分工作，从而达到并行提速的效果。</li>
-<li>避免 I/O 操作阻塞程序。如果一个线程在等待 I/O 操作，CPU 可以通过线程切换让别的线程上 CPU 工作，这样就实现了等 I/O 和做其他事情同时进行。</li>
-</ul>
-<h2 id="26-2-An-Example-Thread-Creation"><a href="#26-2-An-Example-Thread-Creation" class="headerlink" title="26.2 An Example: Thread Creation"></a>26.2 An Example: Thread Creation</h2><p><a href="">t0.c</a> 中创建了两个进程并让它们打印不同的内容。在多线程程序中，各个线程执行的顺序是不确定的：先被创建的进程可能会后执行；一个线程被创建了之后可能在 wait 它时才执行，也可能会立即执行，然后 wait 时立即返回 etc.</p>
-<h2 id="26-3-Why-It-Gets-Worse-Shared-Data"><a href="#26-3-Why-It-Gets-Worse-Shared-Data" class="headerlink" title="26.3 Why It Gets Worse: Shared Data"></a>26.3 Why It Gets Worse: Shared Data</h2><p><a href="">t1.c</a> 中创建了两个线程，两个线程都对共享变量进行 N 次 +1，在 N 较大时可以观测到共享变量的结果小于 2N。</p>
+<p> 对于程序中的任意两个锁，所有获取锁的行为都一定要按照相同的顺序，否则就有可能引发死锁。helgrind 根据这个原理检测到了可能存在的死锁，并且给出了两次不同的顺序以及锁的名称。</p>
 <blockquote>
-<p><strong>Thread-local Variables</strong></p>
-<p>在线程调用的函数里定义的变量都会是 thread local 的变量。<code>t1.c</code> 中打印了局部变量 i 的地址，可以看到不同的线程打印出的地址不一样 (在各自的线程栈上)。</p>
-<p>在函数体外，用 <code>__thread</code> 修饰的变量也是 thread local 的。</p>
+<p><strong>为什么我无法使死锁暴露出来？</strong></p>
+<p>两个线程的创建是有时间差的，新创建的线程可以利用这个时间差把两个锁都得到，这样死锁就不会暴露出来。</p>
+<p>为了更好地观测死锁现象，我们可以在 worker() 函数的开头添加一句 <code>usleep(1)</code>，这会让线程在此处等待至少 1 微秒的时间。考虑到系统活动等因素，<code>usleep(1)</code> 其实会带来一段时长比较随机的 delay，这让两个线程被拉回“同一起跑线”的几率大大增加。此外，多次重复实验，即可比较容易地观察到死锁现象。</p>
 </blockquote>
-<blockquote>
-<p><strong>Valgrind</strong></p>
-<p>Valgrind 中的 memchecker 是强大的内存检测工具。编译好一个文件 <code>proc.c</code> 后用 <code>valgrind ./proc</code> 执行，可以检测 memory leak, use after free 等问题。</p>
-</blockquote>
-<h2 id="26-4-The-Heart-Of-The-Problem-Uncontrolled-Scheduling"><a href="#26-4-The-Heart-Of-The-Problem-Uncontrolled-Scheduling" class="headerlink" title="26.4 The Heart Of The Problem: Uncontrolled Scheduling"></a>26.4 The Heart Of The Problem: Uncontrolled Scheduling</h2><p><code>counter ++</code> 这条语句在汇编层面是三条指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov (addr), %eax</span><br><span class="line">add $0x1, %eax</span><br><span class="line">mov %eax, (addr)</span><br></pre></td></tr></table></figure>
-
-<p>其中 <code>addr</code> 是 counter 变量的内存地址。如果两个线程轮流执行汇编语句，那么它们各执行一次 +1 后，事实上 counter 只加了 1,并没有 +2。</p>
-<p>我们称这两个线程触发了竞争条件 (race condition)，准确说是一次数据竞争。导致这一竞争的代码称为临界区域 (critical section)。我们希望实现一种互斥机制，使得一个线程执行临界区域代码时不会被另一个线程打断。</p>
-<h2 id="26-5-The-Wish-For-Atomicity"><a href="#26-5-The-Wish-For-Atomicity" class="headerlink" title="26.5 The Wish For Atomicity"></a>26.5 The Wish For Atomicity</h2><p>我们希望有这样的一条原子指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">momory-add (addr), 0x1</span><br></pre></td></tr></table></figure>
-
-<p>可以一下子帮我们完成 +1 操作。这里的原子性指的是：操作在执行过程中不会被中途打断。这个操作是一个最小的单元，它要么被完全执行了，要么没有被执行  (all or none)，不会在某时刻处于执行了一半的状态。</p>
-<p>将若干个操作打包成一个原子指令的过程我们称为一个交易 (transaction)。但硬件不能允许我们无限制地添加原子指令。我们要实现的是一种同步机制，它可以保证多个线程以一种可控的方式进入临界区域，从而使得执行正确。</p>
-<h2 id="26-6-One-More-Problem-Waiting-For-Another"><a href="#26-6-One-More-Problem-Waiting-For-Another" class="headerlink" title="26.6 One More Problem: Waiting For Another"></a>26.6 One More Problem: Waiting For Another</h2><p>在某些情境下，一个线程需要等待某件事情做好了才能继续进行，比如等待 I/O 操作完成。操作系统不仅要支持线程之间的同步，还要支持在某些条件下挂起/唤醒线程，这会通过条件变量 (condition variables) 来实现。</p>
-<h2 id="26-7-Summary-Why-in-OS-Class"><a href="#26-7-Summary-Why-in-OS-Class" class="headerlink" title="26.7 Summary: Why in OS Class?"></a>26.7 Summary: Why in OS Class?</h2><p>操作系统本身也是一个并发程序。如果有多个程序使用 write() 系统调用，那么操作系统就必须非常小心地处理内核中和 write() 有关的并发数据结构。</p>
+</li>
+<li><p><code>main-deadlock-global.c</code> 中由于有一个外层的大锁保护，所以不会发生死锁。但使用 helgrind 检查仍然和会报告有非法的锁获得顺序问题。helgrind 只是记录访问锁的顺序并判断是否出现了环，并不能准确地判断死锁是否可能发生。</p>
+</li>
+<li><p>主线程在子线程打印的时候会轮询 done 变量，让 CPU 空转，所以这个方法是不高效的。</p>
+</li>
+<li><p>helgrind 报告该程序存在数据竞争。两个线程对 done 的读写没有用锁保护起来，存在 race condition。</p>
+</li>
+<li><p><code>main-signal-cv.c</code> 相较于前者有两个改进：一是两个进程对 done 变量的访问都用锁保护了起来，保证了不会发生 race condition；二是该程序使用了条件变量，如果主线程检查 done 结果为 0，会在条件变量上睡眠，睡眠的线程可以被 CPU 调度出去，从而不占据 CPU 时钟周期。等到子线程打印完了唤醒条件变量，主线程再来检查 done 变量并打印自己的内容。</p>
+</li>
+<li><p>helgrind 没有报告任何错误。</p>
+</li>
+</ol>
 
     </div>
 
@@ -322,13 +329,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/02/20/OSTEP/OSTEP%20Chapter%2002%20-%20Introduction%20to%20Operating%20Systems/" rel="prev" title="OSTEP Chapter 02: Introduction to Operating Systems">
-                  <i class="fa fa-chevron-left"></i> OSTEP Chapter 02: Introduction to Operating Systems
+                <a href="/2022/02/23/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/" rel="prev" title="NJU-OS Lecture 04: Understanding Concurrent Programs">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 04: Understanding Concurrent Programs
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/02/22/NJU-OS%20Lecture%2003%20-%20Multiprocessor%20Programming/" rel="next" title="NJU-OS Lecture 03: Multiprocessor Programming">
-                  NJU-OS Lecture 03: Multiprocessor Programming <i class="fa fa-chevron-right"></i>
+                <a href="/2022/02/25/OSTEP/OSTEP%20Chapter%2027%20-%20Interlude%20-%20Thread%20API/" rel="next" title="OSTEP Chapter 27: Interlude: Thread API">
+                  OSTEP Chapter 27: Interlude: Thread API <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>

@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://kristoff-starling.github.io/2022/02/25/OSTEP/OSTEP%20Chapter%2029%20-%20Lock-based%20Concurrent%20Data%20Structures/</loc>
+    <loc>https://kristoff-starling.github.io/2022/02/22/OSTEP/OSTEP%20Chapter%2030%20-%20Condition%20Variables/</loc>
     <lastmod>2022-03-31</lastmod>
   </url>
   <url>
-    <loc>https://kristoff-starling.github.io/2022/02/23/OSTEP/OSTEP%20Chapter%2027%20-%20Interlude%20-%20Thread%20API/</loc>
+    <loc>https://kristoff-starling.github.io/2022/02/25/OSTEP/OSTEP%20Homework%2027/</loc>
     <lastmod>2022-03-31</lastmod>
   </url>
   <url>
-    <loc>https://kristoff-starling.github.io/2022/02/20/OSTEP/OSTEP%20Chapter%2002%20-%20Introduction%20to%20Operating%20Systems/</loc>
+    <loc>https://kristoff-starling.github.io/2022/02/26/OSTEP/OSTEP%20Homework%2026/</loc>
     <lastmod>2022-03-31</lastmod>
   </url>
   <url>
-    <loc>https://kristoff-starling.github.io/2022/02/22/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/</loc>
+    <loc>https://kristoff-starling.github.io/2022/02/23/OSTEP/OSTEP%20Chapter%2029%20-%20Lock-based%20Concurrent%20Data%20Structures/</loc>
+    <lastmod>2022-03-31</lastmod>
+  </url>
+  <url>
+    <loc>https://kristoff-starling.github.io/2022/02/25/OSTEP/OSTEP%20Chapter%2027%20-%20Interlude%20-%20Thread%20API/</loc>
+    <lastmod>2022-03-31</lastmod>
+  </url>
+  <url>
+    <loc>https://kristoff-starling.github.io/2022/02/26/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/</loc>
+    <lastmod>2022-03-31</lastmod>
+  </url>
+  <url>
+    <loc>https://kristoff-starling.github.io/2022/03/22/OSTEP/OSTEP%20Chapter%2002%20-%20Introduction%20to%20Operating%20Systems/</loc>
     <lastmod>2022-03-31</lastmod>
   </url>
   <url>

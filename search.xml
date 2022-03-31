@@ -3831,7 +3831,7 @@ end</pre>
   </entry>
   <entry>
     <title>OSTEP Chapter 02: Introduction to Operating Systems</title>
-    <url>/2022/02/20/OSTEP/OSTEP%20Chapter%2002%20-%20Introduction%20to%20Operating%20Systems/</url>
+    <url>/2022/03/22/OSTEP/OSTEP%20Chapter%2002%20-%20Introduction%20to%20Operating%20Systems/</url>
     <content><![CDATA[<p>操作系统：为上层多个应用程序的正常运行提供支持。操作系统实现这一目的的重要方法是虚拟化：将硬件资源抽象成简单易用的虚拟资源。为了方便上层应用程序使用这些资源，操作系统会提供数百个系统调用。从这个角度来看，操作系统也很像一个标准库。</p>
 <span id="more"></span>
 
@@ -3882,7 +3882,7 @@ end</pre>
   </entry>
   <entry>
     <title>OSTEP Chapter 26: Concurrency: An Introduction</title>
-    <url>/2022/02/22/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/</url>
+    <url>/2022/02/26/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/</url>
     <content><![CDATA[<p>一个多线程程序会有多个执行流，即有好几个 PC 并发/并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。</p>
 <p>虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为 thread-local storage。</p>
 <span id="more"></span>
@@ -3923,7 +3923,7 @@ end</pre>
   </entry>
   <entry>
     <title>OSTEP Chapter 27: Interlude: Thread API</title>
-    <url>/2022/02/23/OSTEP/OSTEP%20Chapter%2027%20-%20Interlude%20-%20Thread%20API/</url>
+    <url>/2022/02/25/OSTEP/OSTEP%20Chapter%2027%20-%20Interlude%20-%20Thread%20API/</url>
     <content><![CDATA[<h2 id="27-1-Thread-Creation"><a href="#27-1-Thread-Creation" class="headerlink" title="27.1 Thread Creation"></a>27.1 Thread Creation</h2><p>创建线程的 API 为</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_create</span><span class="params">(      <span class="keyword">pthread_t</span>      *thread, </span></span></span><br><span class="line"><span class="params"><span class="function">                   <span class="keyword">const</span> <span class="keyword">pthread_attr_t</span> *attr,</span></span></span><br><span class="line"><span class="params"><span class="function">                         <span class="keyword">void</span> *         (*start_routine)(<span class="keyword">void</span>*),</span></span></span><br><span class="line"><span class="params"><span class="function">                         <span class="keyword">void</span> *         arg)</span></span>;</span><br></pre></td></tr></table></figure>
 
@@ -3992,7 +3992,7 @@ end</pre>
   </entry>
   <entry>
     <title>OSTEP Chapter 29: Lock-based Concurrent Data Structures</title>
-    <url>/2022/02/25/OSTEP/OSTEP%20Chapter%2029%20-%20Lock-based%20Concurrent%20Data%20Structures/</url>
+    <url>/2022/02/23/OSTEP/OSTEP%20Chapter%2029%20-%20Lock-based%20Concurrent%20Data%20Structures/</url>
     <content><![CDATA[<h2 id="29-1-Concurrent-Counters"><a href="#29-1-Concurrent-Counters" class="headerlink" title="29.1 Concurrent Counters"></a>29.1 Concurrent Counters</h2><p>一个最简单的 thread-safe 的计数器实现如下 (用锁保护每次读写)：</p>
 <span id="more"></span>
 
@@ -4021,6 +4021,187 @@ end</pre>
 <p>很多操作系统内核开发时，都是先使用一个大内核锁 (big kernel lock, BKL)，先保证正确性，再考虑如何把锁拆开提升效率。</p>
 </blockquote>
 <h2 id="29-5-Summary"><a href="#29-5-Summary" class="headerlink" title="29.5 Summary"></a>29.5 Summary</h2><p>略。</p>
+]]></content>
+      <categories>
+        <category>WISC-CS537 Introduction to Operating Systems</category>
+        <category>Book Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>OSTEP Chapter 26 - Homework</title>
+    <url>/2022/02/26/OSTEP/OSTEP%20Homework%2026/</url>
+    <content><![CDATA[<h2 id="Questions"><a href="#Questions" class="headerlink" title="Questions"></a>Questions</h2><ol>
+<li>Let’s examine a simple program, “loop.s”. First, just read and understand it. Then, run it with these arguments (<code>./x86.py -p loop.s -t 1 -i 100 -R dx</code>) This specifies a single thread, an interrupt every 100 instructions, and tracing of register %dx. What will %dx be during the run? Use the -c flag to check your answers; the answers, on the left, show the value of the register (or memory value) after the instruction on the right has run. <span id="more"></span></li>
+<li>Same code, different flags: (<code>./x86.py -p loop.s -t 2 -i 100 -a dx=3,dx=3 -R dx</code>) This specifies two threads, and initializes each %dx to 3. What values will %dx see? Run with -c to check. Does the presence of multiple threads affect your calculations? Is there a race in this code?</li>
+<li>Run this: <code>./x86.py -p loop.s -t 2 -i 3 -r -a dx=3,dx=3 -R dx</code> This makes the interrupt interval small/random; use different seeds (-s) to see different interleavings. Does the interrupt frequency change anything?</li>
+<li>Now, a different program, looping-race-nolock.s, which accesses a shared variable located at address 2000; we’ll call this variable value. Run it with a single thread to confirm your understanding: <code>./x86.py -p looping-race-nolock.s -t 1 -M 2000 </code> What is value (i.e., at memory address 2000) throughout the run? Use -c to check.</li>
+<li>Run with multiple iterations/threads: <code>./x86.py -p looping-race-nolock.s -t 2 -a bx=3 -M 2000</code> Why does each thread loop three times? What is final value of value?</li>
+<li>Run with random interrupt intervals: <code>./x86.py -p looping-race-nolock.s -t 2 -M 2000 -i 4 -r -s 0</code> with different seeds (-s 1, -s 2, etc.) Can you tell by looking at the thread interleaving what the final value of value will be? Does the timing of the interrupt matter? Where can it safely occur? Where not? In other words, where is the critical section exactly?</li>
+<li>Now examine fixed interrupt intervals: <code>./x86.py -p looping-race-nolock.s -a bx=1 -t 2 -M 2000 -i 1</code> What will the final value of the shared variable value be? What about when you change -i 2, -i 3, etc.? For which interrupt intervals does the program give the “correct” answer?</li>
+<li>Run the same for more loops (e.g., set -a bx=100). What interrupt intervals (-i) lead to a correct outcome? Which intervals are surprising?</li>
+<li>One last program: wait-for-me.s. Run: <code>./x86.py -p wait-for-me.s -a ax=1,ax=0 -R ax -M 2000</code> This sets the %ax register to 1 for thread 0, and 0 for thread 1, and watches %ax and memory location 2000. How should the code behave? How is the value at location 2000 being used by the threads? What will its final value be?</li>
+<li>Now switch the inputs: <code>./x86.py -p wait-for-me.s -a ax=0,ax=1 -R ax -M 2000</code> How do the threads behave? What is thread 0 doing? How would changing the interrupt interval (e.g., <code>-i 1000</code>, or perhaps to use random intervals) change the trace outcome? Is the program efficiently using the CPU?</li>
+</ol>
+<h2 id="Solutions"><a href="#Solutions" class="headerlink" title="Solutions"></a>Solutions</h2><ol>
+<li><p>%dx 寄存器初始值为 0，执行一次 sub 指令后变为 -1，随后跳出循环。</p>
+</li>
+<li><p>%dx 从 3 开始每做一次循环 -1,直到变为负数后退出。两个线程的行为是完全一样的。多线程没有影响计算，这里没有出现竞争条件。</p>
+</li>
+<li><p>中断的频率不会对线程行为产生任何影响。<code>loop.s</code> 中只有针对寄存器的行为，不同线程的寄存器之间是互相独立的。</p>
+</li>
+<li><p>循环只做了一次，地址 2000 处最终数值为 1。</p>
+</li>
+<li><p>%bx 寄存器的初始值为 3，所以每个线程做三次循环，最终地址 2000 处的值为 6。</p>
+</li>
+<li><p>使用 0 和 2 做种子可以得到正确的结果 2，因为两个线程临界区域的代码没有交叉：</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># seed = 0</span><br><span class="line"> 2000      bx          Thread 0                Thread 1         </span><br><span class="line">    0       0   </span><br><span class="line">    0       0   1000 mov 2000, %ax</span><br><span class="line">    0       0   1001 add $1, %ax</span><br><span class="line">    1       0   1002 mov %ax, 2000</span><br><span class="line">    1      -1   1003 sub  $1, %bx</span><br><span class="line">    1       0   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">    1       0                            1000 mov 2000, %ax</span><br><span class="line">    1       0                            1001 add $1, %ax</span><br><span class="line">    2       0                            1002 mov %ax, 2000</span><br><span class="line">    2      -1                            1003 sub  $1, %bx</span><br><span class="line">    2      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">    2      -1   1004 test $0, %bx</span><br><span class="line">    2      -1   1005 jgt .top</span><br><span class="line">    2      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">    2      -1                            1004 test $0, %bx</span><br><span class="line">    2      -1                            1005 jgt .top</span><br><span class="line">    2      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">    2      -1   1006 halt</span><br><span class="line">    2      -1   ----- Halt;Switch -----  ----- Halt;Switch -----  </span><br><span class="line">    2      -1                            1006 halt</span><br></pre></td></tr></table></figure>
+
+<p> 使用 1 做种子会得到错误的结果 1，因为两个线程的临界区域出现了交叉 (第一个线程做了第一条指令后切换到了第二个线程)。</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">2000      bx          Thread 0                Thread 1         </span><br><span class="line">   0       0   </span><br><span class="line">   0       0   1000 mov 2000, %ax</span><br><span class="line">   0       0   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">   0       0                            1000 mov 2000, %ax</span><br><span class="line">   0       0                            1001 add $1, %ax</span><br><span class="line">   1       0                            1002 mov %ax, 2000</span><br><span class="line">   1      -1                            1003 sub  $1, %bx</span><br><span class="line">   1       0   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">   1       0   1001 add $1, %ax</span><br><span class="line">   1       0   1002 mov %ax, 2000</span><br><span class="line">   1      -1   1003 sub  $1, %bx</span><br><span class="line">   1      -1   1004 test $0, %bx</span><br><span class="line">   1      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">   1      -1                            1004 test $0, %bx</span><br><span class="line">   1      -1                            1005 jgt .top</span><br><span class="line">   1      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">   1      -1   1005 jgt .top</span><br><span class="line">   1      -1   1006 halt</span><br><span class="line">   1      -1   ----- Halt;Switch -----  ----- Halt;Switch -----  </span><br><span class="line">   1      -1   ------ Interrupt ------  ------ Interrupt ------  </span><br><span class="line">   1      -1                            1006 halt</span><br></pre></td></tr></table></figure>
+
+<p> 只有两个线程在执行临界区域代码时保持原子性 (不被打断)，才能得到正确的结果。临界区域为：</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.main</span><br><span class="line">.top</span><br><span class="line"># &lt;-- critical section begin --&gt;</span><br><span class="line">mov 2000, %ax</span><br><span class="line">add $1, %ax</span><br><span class="line">mov %ax, 2000</span><br><span class="line"># &lt;--  critical section end  --&gt;</span><br><span class="line">sub $1, %bx</span><br><span class="line">test $0, %bx</span><br><span class="line">jgt .top</span><br><span class="line">halt</span><br></pre></td></tr></table></figure></li>
+<li><p>中断步长为 1 和 2 时无法获得正确的结果 (临界区域交织)。在只循环一次的情况下，中断步长大于等于 3 即可保证结果正确。</p>
+</li>
+<li><p>保证执行结果正确有以下几种思路：</p>
+<ul>
+<li>只要设置 <code>-i</code> 参数足够大以使得两个线程串行地执行，就可以保证结果正确。</li>
+<li>该汇编代码执行一个循环一共有 6 条语句，其中临界区域有 3 条语句。因此只要设置 <code>-i</code> 参数为 3 的倍数，就可以保证临界区域不会交叉。</li>
+</ul>
+<p> 对于那些不是 3 的倍数的参数，在参数较小时尚可预估 (比如如果设置 <code>-i 1/2</code>，则每个临界区域都会交织，最后答案为 N，<code>-i 4</code> 最后的结果会是 3N/2 上取整)，参数较大时得到的结果就难以理解了。</p>
+</li>
+<li><p><code>wait-for-me.s</code> 代码会根据 %ax 的值选择 waiter 或 signaller 身份。waiter 等待地址 2000 处值为 1结束，signaller 负责向 2000 处放一个 1。</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.main</span><br><span class="line">test $1, %ax     # ax should be 1 (signaller) or 0 (waiter)</span><br><span class="line">je .signaller</span><br><span class="line"></span><br><span class="line">.waiter	</span><br><span class="line">mov  2000, %cx</span><br><span class="line">test $1, %cx</span><br><span class="line">jne .waiter</span><br><span class="line">halt</span><br><span class="line"></span><br><span class="line">.signaller</span><br><span class="line">mov  $1, 2000</span><br><span class="line">halt</span><br></pre></td></tr></table></figure>
+
+<p> 运行指令后会看到第一个线程放 1 结束，第二个线程看到有 1 结束。</p>
+</li>
+<li><p>如果反过来，则会看到线程 1 在轮询地址 2000 处的值，直到发生线程切换，线程 2 向 2000 处填写了 1，线程 1 才得以退出。这是自旋锁的雏形。如果将 <code>-i</code> 调得很大，线程 1 将浪费 CPU cycle 进行大量轮询。</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>WISC-CS537 Introduction to Operating Systems</category>
+        <category>Homework</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>OSTEP Chapter 27 - Homework</title>
+    <url>/2022/02/25/OSTEP/OSTEP%20Homework%2027/</url>
+    <content><![CDATA[<h2 id="Questions"><a href="#Questions" class="headerlink" title="Questions"></a>Questions</h2><ol>
+<li>First build main-race.c. Examine the code so you can see the (hopefully obvious) data race in the code. Now run helgrind (by typing valgrind –tool=helgrind main-race) to see how it reports the race. Does it<br>point to the right lines of code? What other information does it give to you? <span id="more"></span></li>
+<li>What happens when you remove one of the offending lines of code? Now add a lock around one of the updates to the shared variable, and then around both. What does helgrind report in each of these cases?</li>
+<li>Now let’s look at main-deadlock.c. Examine the code. This code has a problem known as deadlock (which we discuss in much more depth in a forthcoming chapter). Can you see what problem it might have?</li>
+<li>Now run helgrind on this code. What does helgrind report?</li>
+<li>Now run helgrind on main-deadlock-global.c. Examine the code; does it have the same problem that main-deadlock.c has? Should helgrind be reporting the same error? What does this tell you about tools like helgrind?</li>
+<li>Let’s next look at main-signal.c. This code uses a variable (done) to signal that the child is done and that the parent can now continue. Why is this code inefficient? (what does the parent end up spending its time doing, particularly if the child thread takes a long time to complete?)</li>
+<li>Now run helgrind on this program. What does it report? Is the code correct?</li>
+<li>Now look at a slightly modified version of the code, which is found in main-signal-cv.c. This version uses a condition variable to do the signaling (and associated lock). Why is this code preferred to the previous<br>version? Is it correctness, or performance, or both?</li>
+<li>Once again run helgrind on main-signal-cv. Does it report any errors?</li>
+</ol>
+<h2 id="Solutions"><a href="#Solutions" class="headerlink" title="Solutions"></a>Solutions</h2><ol>
+<li><p>helgrind 工具可以准确地报告出 <code>main-race.c</code> 的第 15 行和第 8 行的操作存在 data race。此外，helgrind 可以报告出产生数据竞争的地址 (0 bytes inside data symbol “balance”)，还可以报告线程创建的过程：</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">---Thread-Announcement------------------------------------------</span><br><span class="line">Thread #2 was created</span><br><span class="line">   at 0x49A9D42: clone (clone.S:71)</span><br><span class="line">   by 0x4878281: create_thread (createthread.c:103)</span><br><span class="line">   by 0x4879C8B: pthread_create@@GLIBC_2.2.5 (pthread_create.c:821)</span><br><span class="line">   by 0x484D627: ??? (in /usr/libexec/valgrind/vgpreload_helgrind-amd64-linux.so)</span><br><span class="line">   by 0x109209: main (main-race.c:14)</span><br></pre></td></tr></table></figure></li>
+<li><p>如果删除掉任意一个对 balance 的操作，helgrind 就不会报告错误。如果只用锁保护一处操作，helgrind 仍然会报告 data race (且能报告处哪一处操作被锁保护了)。如果用锁将两处操作都保护了，helgrind 不会报告错误。</p>
+</li>
+<li><p><code>main-deadlock.c</code> 存在发生死锁的风险：如果 p1 线程获得了锁 m1，然后 p2 线程获得了锁 m2，这时 p1 线程试图获得锁 m2，p2 线程试图获得锁 m1，它们都得不到需要的锁，也不会释放自己已经得到的锁，从而陷入死锁。</p>
+</li>
+<li><p>helgrind 会报告形如下面所示的错误：</p>
+ <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Thread #3: lock order &quot;0x10C040 before 0x10C080&quot; violated</span><br><span class="line"></span><br><span class="line">Observed (incorrect) order is: acquisition of lock at 0x10C080</span><br><span class="line"> ...</span><br><span class="line"> followed by a later acquisition of lock at 0x10C040</span><br><span class="line">   ...</span><br><span class="line"></span><br><span class="line">Required order was established by acquisition of lock at 0x10C040</span><br><span class="line"> ...</span><br><span class="line"> followed by a later acquisition of lock at 0x10C080</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">Lock at 0x10C040 was first observed</span><br><span class="line"> ...</span><br><span class="line"> Address 0x10c040 is 0 bytes inside data symbol &quot;m1&quot;</span><br><span class="line"></span><br><span class="line">Lock at 0x10C080 was first observed</span><br><span class="line"> ...</span><br><span class="line"> Address 0x10c080 is 0 bytes inside data symbol &quot;m2&quot;</span><br></pre></td></tr></table></figure>
+
+<p> 对于程序中的任意两个锁，所有获取锁的行为都一定要按照相同的顺序，否则就有可能引发死锁。helgrind 根据这个原理检测到了可能存在的死锁，并且给出了两次不同的顺序以及锁的名称。</p>
+<blockquote>
+<p><strong>为什么我无法使死锁暴露出来？</strong></p>
+<p>两个线程的创建是有时间差的，新创建的线程可以利用这个时间差把两个锁都得到，这样死锁就不会暴露出来。</p>
+<p>为了更好地观测死锁现象，我们可以在 worker() 函数的开头添加一句 <code>usleep(1)</code>，这会让线程在此处等待至少 1 微秒的时间。考虑到系统活动等因素，<code>usleep(1)</code> 其实会带来一段时长比较随机的 delay，这让两个线程被拉回“同一起跑线”的几率大大增加。此外，多次重复实验，即可比较容易地观察到死锁现象。</p>
+</blockquote>
+</li>
+<li><p><code>main-deadlock-global.c</code> 中由于有一个外层的大锁保护，所以不会发生死锁。但使用 helgrind 检查仍然和会报告有非法的锁获得顺序问题。helgrind 只是记录访问锁的顺序并判断是否出现了环，并不能准确地判断死锁是否可能发生。</p>
+</li>
+<li><p>主线程在子线程打印的时候会轮询 done 变量，让 CPU 空转，所以这个方法是不高效的。</p>
+</li>
+<li><p>helgrind 报告该程序存在数据竞争。两个线程对 done 的读写没有用锁保护起来，存在 race condition。</p>
+</li>
+<li><p><code>main-signal-cv.c</code> 相较于前者有两个改进：一是两个进程对 done 变量的访问都用锁保护了起来，保证了不会发生 race condition；二是该程序使用了条件变量，如果主线程检查 done 结果为 0，会在条件变量上睡眠，睡眠的线程可以被 CPU 调度出去，从而不占据 CPU 时钟周期。等到子线程打印完了唤醒条件变量，主线程再来检查 done 变量并打印自己的内容。</p>
+</li>
+<li><p>helgrind 没有报告任何错误。</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>WISC-CS537 Introduction to Operating Systems</category>
+        <category>Homework</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>OSTEP Chapter 30: Condition Variables</title>
+    <url>/2022/02/22/OSTEP/OSTEP%20Chapter%2030%20-%20Condition%20Variables/</url>
+    <content><![CDATA[<p>很多时候，我们有一个任务等待另一个任务的需求，比如父线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：<span id="more"></span></p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">volatile</span> <span class="keyword">int</span> done = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">child</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    do_something();</span><br><span class="line">    done = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">pthread_t</span> c;</span><br><span class="line">    Pthread_create(&amp;c, <span class="literal">NULL</span>, child, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">while</span> (done == <span class="number">0</span>)</span><br><span class="line">        ;</span><br><span class="line">    do_something_else();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但这样做父线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。</p>
+<h2 id="30-1-Definition-and-Routines"><a href="#30-1-Definition-and-Routines" class="headerlink" title="30.1 Definition and Routines"></a>30.1 Definition and Routines</h2><p>为了让一个线程等待一个条件成立，我们通常使用条件变量 (condition variable)。条件变量可以理解为一个显式的队列，线程可以将自己加入到这个队列中挂起，当其他线程的操作使得条件变化时，它会唤醒这个“队列”中的线程。我们提供两个 API：<code>wait()</code> 可以让线程将自己加入到队列中等待；<code>signal()</code> 可以让别的线程改变了条件状态时向队列中的线程“发送信号”。</p>
+<p>POSIX 提供的条件变量 API 为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_wait</span><span class="params">(<span class="keyword">pthread_cont_t</span> *c, <span class="keyword">pthread_mutex_t</span> *m)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_signal</span><span class="params">(<span class="keyword">pthread_cond_t</span> *c)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>注意到 wait() 的参数中除了条件变量 c 还有一个自旋锁 m。wait() 的语义要求调用时线程必须拥有自旋锁 m，wait() 会负责释放这个自旋锁并使当前线程进入睡眠状态 (这两步是原子的)；当 signal() 使当前线程被唤醒后，wait() 会负责让线程重新获得自旋锁 m，然后返回。</p>
+<p>join.c 提供了一个父线程等待子线程结束的正确实现。事实上这个过程是很容易实现错的，比如如下一些写法：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">thr_exit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Pthread_mutex_lock(&amp;m);</span><br><span class="line">    Pthread_cond_signal(&amp;c);</span><br><span class="line">    Pthread_mutex_unlock(&amp;m);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">thr_join</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Pthread_mutex_lock(&amp;m);</span><br><span class="line">    Pthread_cond_wait(&amp;c, &amp;m);</span><br><span class="line">    Pthread_mutex_unlock(&amp;m);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个写法只有在 thr_join() 在 thr_exit() 之前执行的情况下才是正确的。如果颠倒了顺序，thr_join() 将永远不会被唤醒 (join_no_state_var.c 中，父线程里使用了 sleep() 以精确复现这一情形)。因此我们可以看到，使用条件变量时理应有一个条件状态的判断。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">thr_exit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    done = <span class="number">1</span>;</span><br><span class="line">    Pthread_cond_signal(&amp;c);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">thr_join</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (done == <span class="number">0</span>)</span><br><span class="line">        Pthread_cond_wait(&amp;c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个写法没有用锁保护状态变量 done 的读写，缺失了原子性。这里的原子性缺失指的是：虽然在 while 判断时 <code>done == 0</code>，但在 wait() 时 done 可能已经不等于 0 了。考虑这样一种执行流：thr_join() 做完 while 判断进入循环，还没来得及 wait() 时，执行流被打断，thr_exit() 执行并 signal()，但此时队列中并没有线程。接着 thr_join() 继续执行陷入睡眠，那么它将永远不会被唤醒 (join_no_lock() 中在父线程使用了比子线程时间更长的 sleep() 以精确复现这一情况)。</p>
+<blockquote>
+<p><strong>Tip: Always Hold The Lock While Signaling</strong></p>
+<p>POSIX 的 wait() 函数的语义已经要求了我们在调用 wait() 时必须要拥有自旋锁；虽然少数情况下我们可以无锁地调用 signal()，但为了安全和简单，我们应当在 signal() 时也用自旋锁保护。</p>
+</blockquote>
+<h2 id="30-2-The-Producer-Consumer-Bounded-Buffer-Problem"><a href="#30-2-The-Producer-Consumer-Bounded-Buffer-Problem" class="headerlink" title="30.2 The Producer/Consumer (Bounded Buffer) Problem"></a>30.2 The Producer/Consumer (Bounded Buffer) Problem</h2><p>生产者-消费者问题在系统中很常见，比如下面的例子：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">grep foo file.txt | wc -l</span><br></pre></td></tr></table></figure>
+
+<p>grep 找到的内容通过管道传送给 wc 统计个数。管道在内核中就是一个缓冲区，因此这里 grep 是一个生产者，wc 是一个消费者，wc 不能在 buffer 为空的时候从管道里读东西，grep 也不能在缓冲区满了的时候再往里填。</p>
+<h3 id="A-Broken-Solution"><a href="#A-Broken-Solution" class="headerlink" title="A Broken Solution"></a>A Broken Solution</h3><p>一个比较自然但却错误的实现如下所示：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">producer</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; LOOP; i++) &#123;</span><br><span class="line">        lock(&amp;lk);</span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">1</span>) wait(&amp;cond, &amp;lk);</span><br><span class="line">        put(i); <span class="comment">// count becomes 1</span></span><br><span class="line">        signal(&amp;cond);</span><br><span class="line">        unlock(&amp;lk);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">consumer</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        lock(&amp;lk);</span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">0</span>) wait(&amp;cond, &amp;lk);</span><br><span class="line">        <span class="keyword">int</span> rt = get(); <span class="comment">// count becomes 0</span></span><br><span class="line">        signal(&amp;cond);</span><br><span class="line">        unlock(&amp;lk);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, rt);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果只有一个生产者线程和一个消费者线程，这个实现是正确的。但如果有多个，比如一个生产者和两个消费者，就会有并发 bug。考虑如下执行过程：</p>
+<ul>
+<li>$T_{c_1}$ 运行，发现 <code>count == 0</code>，挂起；</li>
+<li>$T_p$ 运行，往 buffer 里放了一个数，然后通过 signal() 唤醒 $T_{c_1}$。</li>
+<li>$T_{c_1}$ 刚被唤醒，还没来得及获得自旋锁返回的时候，$T_{c_2}$ 运行，从 buffer 里取走了这个数打印；</li>
+<li>这时返回到 $T_{c_1}$，获得自旋锁返回后，由于之前的判断是 if 语句，它无法发现 count 此时又变成 0 了，于时再次从 buffer 中取数，触发 assertion fail。</li>
+</ul>
+<p>并发 bug 产生的原因是：从消费者线程被唤醒到消费者线程真正获得自旋锁开始工作这段时间内，buffer 的状态改变了。<strong>signal() 的语义只是通知一个正在等待的线程：世界的状态改变了，但它不保证世界的状态被改变成了调用 signal() 之前那一瞬的状态。</strong> 这种 signal() 的语义被称为 <strong>Mesa semantics</strong>。与之相对的是 <strong>Hoare Semantics</strong>，它保证调用 signal() 之后一个线程被唤醒并立即被执行 (原子性)。但后者难实现的多，现在绝大部分系统的 signal() 使用的都是 Mesa semantics。</p>
+<h3 id="Better-But-Still-Broken-While-Not-If"><a href="#Better-But-Still-Broken-While-Not-If" class="headerlink" title="Better, But Still Broken: While, Not If"></a>Better, But Still Broken: While, Not If</h3><p>Mesa semantics 是比较容易克服的：我们只要将上面程序中对状态变量做判断的 if 换成 while 即可。这样即使被唤醒后状态又被改变，线程获得自旋锁后会再次检查状态，发现不对后可以再次进入睡眠。</p>
+<blockquote>
+<p><strong>Always use while loops when working with condition variables!</strong></p>
+</blockquote>
+<p>但即使将 if 改成 while，我们的程序仍然有并发 bug。考虑如下执行过程：</p>
+<ul>
+<li>$T_{c_1}$ 运行，发现 <code>count == 0</code>，挂起；</li>
+<li>$T_{c_2}$ 运行，发现 <code>count == 0</code>，挂起；</li>
+<li>$T_p$ 运行，往 buffer 里添加了一个数字，然后通过 signal() 唤醒了 $T_{c_1}$。唤醒后 $T_{c_1}$ 并未立刻执行，而是 $T_p$ 继续运行，第二次循环时 $T_p$ 发现 <code>count == 1</code>，挂起；</li>
+<li>$T_{c_1}$ 运行，从 buffer 里读取了一个数字 (count 变为 0) 然后通过 signal() 唤醒一个线程。注意此时睡眠在条件变量上的线程有 $T_p$ 和 $T_{c_2}$ 两个。$T_{c_1}$ 选择唤醒 $T_{c_2}$。</li>
+<li>$T_{c_1}$ 和 $T_{c_2}$ 都发现没有数据可读，挂起。</li>
+</ul>
+<p>到这里，三个线程全部陷入睡眠，程序停滞。从这个例子中我们可以看出：消费者线程消费完后应该唤醒生产者线程；生产者线程生产完后应该唤醒消费者线程，我们应该有两个条件变量。</p>
+<h3 id="The-Correct-Producer-Consumer-Solution"><a href="#The-Correct-Producer-Consumer-Solution" class="headerlink" title="The Correct Producer/Consumer Solution"></a>The Correct Producer/Consumer Solution</h3><p>pc.c 提供了一个完整、正确的生产者-消费者实现，其中的要点如下：</p>
+<ul>
+<li>使用两个条件变量，保证消费者只能唤醒生产者，生产者只能唤醒消费者。</li>
+<li>判断状态变量使用 while 语句。</li>
+<li>使用一个循环数组作为 buffer，count 的上限不再是 1 而是一个指定的 max，这使得 buffer 有了一定的容量。</li>
+<li>这是一个单生产者-多消费者的程序，生产者最后为每个消费者准备了一个 -1，以保证消费者线程能够全部退出。</li>
+</ul>
+<blockquote>
+<p><strong>Tip: Use While (Not If) for Conditions</strong></p>
+<p>使用 while 总是对的，在少数场合下使用 if 也可以达到目的，但为了安全性最好通通使用 while。</p>
+<p>我们推荐使用 while 而不是 if 的另一个原因是：一些实现的有问题的 signal() 可能会唤醒不止一个等待的线程。这种情况下，while 仍然能帮我们保证正确。</p>
+</blockquote>
+<h2 id="30-3-Covering-Conditions"><a href="#30-3-Covering-Conditions" class="headerlink" title="30.3 Covering Conditions"></a>30.3 Covering Conditions</h2><p>假设我们希望用条件变量实现一个内存分配器，alloc() 时如果剩余内存不足则挂起，一段伪代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> bytesLeft = MAX_HEAP_SIZE;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">allocate</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">    lock(&amp;lk);</span><br><span class="line">    <span class="keyword">while</span> (bytesLeft &lt; size)</span><br><span class="line">        wait(&amp;cond, &amp;lk);</span><br><span class="line">    <span class="keyword">void</span> *ptr = GetMemoryFromHeap(size);</span><br><span class="line">    bytesLeft -= size;</span><br><span class="line">    unlock(&amp;lk);</span><br><span class="line">    <span class="keyword">return</span> ptr;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free</span><span class="params">(<span class="keyword">void</span> *ptr, <span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">    lock(&amp;lk);</span><br><span class="line">    bytesLeft += size;</span><br><span class="line">    FreeMemoryToHeap(ptr, size);</span><br><span class="line">    signal(&amp;cond);</span><br><span class="line">    unlock(&amp;lk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设我们有一个 <code>alloc(100)</code> 和 <code>alloc(10)</code> 处于睡眠状态，现在来了一个 <code>free(50)</code>，问题出现了：如果我们随意挑一个线程唤醒，假如挑了 <code>alloc(100)</code> 的那个，分配还是会失败，且我们错过了让 <code>alloc(10)</code> 成功的机会。一种解决方案是：用一个 broadcast() 函数替代 signal() 函数，它可以唤醒睡眠在条件变量上的所有线程。这种方式被称为 covering conditions。</p>
+<p>broadcast() 相较于 signal() 的坏处在于：并不是所有的线程都能在被唤醒后运行下去，比如现在 buffer 里只有一个字符，而 broadcast() 唤醒了 100 个消费者，那么只有一个消费者能得到字符。运行不下去的字符会释放锁并再次进入睡眠，这种无谓打搅了睡眠线程的方式对性能影响很大。</p>
+<p>正因如此，虽然我们在之前的生产者-消费者问题中可以使用一个条件变量+broadcast 的方式解决问题，但那时我们显然有很简单的 2-条件变量解决方案，所以不考虑这种效率较低的方式。不过在内存分配的场景中，broadcast() 几乎是唯一的选择。</p>
+<h2 id="30-4-Summary"><a href="#30-4-Summary" class="headerlink" title="30.4 Summary"></a>30.4 Summary</h2><p>略。</p>
 ]]></content>
       <categories>
         <category>WISC-CS537 Introduction to Operating Systems</category>
