@@ -3829,4 +3829,202 @@ end</pre>
         <category>Lecture Notes</category>
       </categories>
   </entry>
+  <entry>
+    <title>OSTEP Chapter 02: Introduction to Operating Systems</title>
+    <url>/2022/02/20/OSTEP/OSTEP%20Chapter%2002%20-%20Introduction%20to%20Operating%20Systems/</url>
+    <content><![CDATA[<p>操作系统：为上层多个应用程序的正常运行提供支持。操作系统实现这一目的的重要方法是虚拟化：将硬件资源抽象成简单易用的虚拟资源。为了方便上层应用程序使用这些资源，操作系统会提供数百个系统调用。从这个角度来看，操作系统也很像一个标准库。</p>
+<span id="more"></span>
+
+<h2 id="2-1-Virtualizing-The-CPU"><a href="#2-1-Virtualizing-The-CPU" class="headerlink" title="2.1 Virtualizing The CPU"></a>2.1 Virtualizing The CPU</h2><p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2002%20-%20intro/cpu.c">cpu.c</a> 的作用是每过一秒钟输出一次字符串。<code>Spin(1)</code> 表示等待一秒，其实现在 <a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2002%20-%20intro/common.h">common.h</a> 中，其中 GetTime() 是对系统调用 gettimeofday() 的进一步封装，返回系统启动以来的秒数。Spin() 会不断调用 GetTime()，直到间隔时间达到输入值 howlong。</p>
+<p>键入命令 <code>./cpu A &amp; ; ./cpu B &amp; ; ./cpu C &amp; ; ./cpu D &amp;</code>，可以看到A,B,C,D 交替输出，仿佛各自独占了 CPU。操作系统通过虚拟化 CPU 的方式，给上层应用程序一种系统中有很多很多个 CPU 的假象。至于多个进程谁在真正的物理 CPU 上运行，这取决于操作系统的调度策略。</p>
+<blockquote>
+<p><strong>为什么程序会不停输出，按 <code>Ctrl+C</code> 也无法停止？</strong></p>
+<p>上文中，用分号隔开各个命令表示这些命令都要执行。它和 <code>&amp;&amp;</code> 的区别在于：<code>&amp;&amp;</code> 要求第一个命令执行成功才会执行第二个命令，而 <code>;</code> 不论第一个命令是否成功都会执行第二个命令 (可以用 <code>gcc notexist.c ; ls</code> 和 <code>gcc notexist.c &amp;&amp; ls</code> 做实验验证)。</p>
+<p>在命令最后加上 <code>&amp;</code> 表示将这个进程放到后台执行， <code>Ctrl+C</code> 的意义是中断所有正在运行的前台进程，因此该组合键无法终止后台运行的进程。如果某个命令所需要的执行时间很长，可以用 <code>&amp;</code> 将其放在后台执行，从而终端界面仍然可以继续操作。在使用 <code>&amp;</code> 时，bash 会提示分配给该任务的进程号。如果想要结束后台任务，可以使用命令 <code>kill pid</code> 。</p>
+<p>这里我们使用 <code>&amp;</code> 的原因在于：用 <code>;</code> 分隔的若干命令总是会依次执行，即第一个执行结束才会执行第二个。而  cpu 程序中有一个死循环，为了观测“并发”，我们必须让四个任务同时运行起来。</p>
+</blockquote>
+<h2 id="2-2-Virtualizing-Memory"><a href="#2-2-Virtualizing-Memory" class="headerlink" title="2.2 Virtualizing Memory"></a>2.2 Virtualizing Memory</h2><p>物理内存本身没有任何特殊之处，就是一个大数组，每个位置有一个物理地址。</p>
+<p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2002%20-%20intro/mem.c">mem.c</a> 会调用 malloc() 分配一个地址，并不断向该地址写入内容。如果我们使用 <code>./mem 1 &amp; ; ./mem 1 &amp;</code>  命令，我们会发现两个进程分配的地址是一样的，然而两个进程都在完好地运行。这是因为每个进程都有自己的虚拟地址空间，输出的地址是进程的虚拟地址，不同进程的相同虚拟地址会指向不同的物理地址。操作系统负责虚拟化内存，保证每个进程只能访问自己的地址空间。</p>
+<blockquote>
+<p><strong>为什么我使用上述命令无法复现，两个地址不一样？</strong></p>
+<p>Linux 默认使用了地址空间随机化 (Address Space Layout Randomization, ASLR) 技术。ASLR 是一种针对缓冲区溢出攻击的安全保护技术，通过对堆、栈、共享库映射等布局的随机化增加攻击者预测目的地址的难度，关于利用固定地址进行攻击的方法可以见<a href="https://kristoff-starling.github.io/2022/02/28/Stack-smashing%20Attack%20-%20An%20Introduction/">这篇文章</a>。在 <code>/proc/sys/kernel/randomize_va_space</code> 文件中，我们可以查看当前 ASLR 是否打开：0 表示关闭，1 表示对于部分函数打开，2 表示完全打开。</p>
+<p>为了暂时关闭 ASLR 以复现上述情境，我们可以使用命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">setarch `uname -m` -R /bin/zsh</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>uname -m</code> 命令会输出机器架构，该参数可以省略；<code>-R</code> 参数 (对应长参数 <code>--addr-no-randomize</code>) 表示关闭 ASLR。执行该命令会暂时打开一个新的 shell (默认 <code>/bin/sh</code>，可以通过最后一个参数指定其他 shell)，该 shell 和其子进程会在关闭 ASLR 的情况下执行命令 (退出该 shell 后，一切恢复)。</p>
+<p>另外一种方法是使用命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sysctl -w kernel.randomize_va_space=0</span><br></pre></td></tr></table></figure>
+<p>机器重启后该改变会消失。如果想要永久性的关闭 ASLR，可以将 <code>kernel.randomize_va_space=0</code> 写到 <code>/etc/sysctl.conf</code> 中。</p>
+<p>如果使用 GDB 调试，可以通过命令 <code>set disable-randomization off</code> 关闭 ASLR。</p>
+</blockquote>
+<h2 id="2-3-Concurrency"><a href="#2-3-Concurrency" class="headerlink" title="2.3 Concurrency"></a>2.3 Concurrency</h2><p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2002%20-%20intro/threads.c">threads.c</a> 创建了两个线程，创建线程调用的函数是 Pthread_create()，它在 <code>common_threads.h</code> 中定义，是对 POSIX 线程库的简单封装：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Pthread_create(thread, attr, start_routine, arg) assert(pthread_create(thread, attr, start_routine, arg) == 0);</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Pthread_join(thread, value_ptr)                  assert(pthread_join(thread, value_ptr) == 0);</span></span><br></pre></td></tr></table></figure>
+
+<p>让两个线程各执行 N 次 +1 操作，可以观测到结果不是 2N。这主要是因为核心语句 <code>counter++</code> 会被编译成三条汇编语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mov &amp;counter, register</span><br><span class="line">add $1, register</span><br><span class="line">mov register, &amp;counter</span><br></pre></td></tr></table></figure>
+
+<p>由于原子性的丧失，可能出现 race condition。</p>
+<h2 id="2-4-Persistence"><a href="#2-4-Persistence" class="headerlink" title="2.4 Persistence"></a>2.4 Persistence</h2><p>数据的持久性是一个重要的话题。内存中存储的数据是不稳定的——机器一旦断点，DRAM 中的信息就会丢失。我们需要硬盘来存储长期数据，硬盘在现代系统中被看作 I/O 设备的一部分，管理硬盘信息的软件称为文件系统。</p>
+<p>操作系统对于硬盘的抽象和 CPU，内存不同。我们针对 CPU 抽象出了进程，对于内存抽象出了虚拟地址空间，其目的都是为了让某一个程序“独占”整个计算机资源。而硬盘上的数据理应让各个程序共享，比如编辑器创建了一个文件，然后编译器负责编译它，接着加载器负责加载、运行这个程序。操作系统通过系统调用来抽象硬盘：将复杂的硬件读写操作封装成简单的接口。</p>
+<p>在 <a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2002%20-%20intro/io.c">io.c</a> 中我们使用了 open() 和 write() 系统调用来创建，写入文件。这些系统调用底层的实现非常复杂 (比如为了性能的提升，读写都有缓冲区)，但上层使用这些 API 非常简便。OS 在这里充当了标准库的角色。</p>
+<h2 id="2-5-Design-Goals"><a href="#2-5-Design-Goals" class="headerlink" title="2.5 Design Goals"></a>2.5 Design Goals</h2><p>操作系统应当努力追求的目标：</p>
+<ul>
+<li>高性能；</li>
+<li>保护/隔离：应用程序之间不能互相“伤害“；</li>
+<li>可靠：操作系统一旦崩溃，在其上运行的所有应用程序都无法使用，因此操作系统必须是非常可靠的软件。</li>
+<li>……</li>
+</ul>
+]]></content>
+      <categories>
+        <category>WISC-CS537 Introduction to Operating Systems</category>
+        <category>Book Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>OSTEP Chapter 26: Concurrency: An Introduction</title>
+    <url>/2022/02/22/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/</url>
+    <content><![CDATA[<p>一个多线程程序会有多个执行流，即有好几个 PC 并发/并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。</p>
+<p>虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为 thread-local storage。</p>
+<span id="more"></span>
+
+<h2 id="26-1-Why-Use-Threads"><a href="#26-1-Why-Use-Threads" class="headerlink" title="26.1 Why Use Threads?"></a>26.1 Why Use Threads?</h2><p>使用线程至少有以下两点好处：</p>
+<ul>
+<li>提高并行度。在一个多核处理器上，我们可以让多个线程每个占据一个 CPU 核，分摊一部分工作，从而达到并行提速的效果。</li>
+<li>避免 I/O 操作阻塞程序。如果一个线程在等待 I/O 操作，CPU 可以通过线程切换让别的线程上 CPU 工作，这样就实现了等 I/O 和做其他事情同时进行。</li>
+</ul>
+<h2 id="26-2-An-Example-Thread-Creation"><a href="#26-2-An-Example-Thread-Creation" class="headerlink" title="26.2 An Example: Thread Creation"></a>26.2 An Example: Thread Creation</h2><p><a href="">t0.c</a> 中创建了两个进程并让它们打印不同的内容。在多线程程序中，各个线程执行的顺序是不确定的：先被创建的进程可能会后执行；一个线程被创建了之后可能在 wait 它时才执行，也可能会立即执行，然后 wait 时立即返回 etc.</p>
+<h2 id="26-3-Why-It-Gets-Worse-Shared-Data"><a href="#26-3-Why-It-Gets-Worse-Shared-Data" class="headerlink" title="26.3 Why It Gets Worse: Shared Data"></a>26.3 Why It Gets Worse: Shared Data</h2><p><a href="">t1.c</a> 中创建了两个线程，两个线程都对共享变量进行 N 次 +1，在 N 较大时可以观测到共享变量的结果小于 2N。</p>
+<blockquote>
+<p><strong>Thread-local Variables</strong></p>
+<p>在线程调用的函数里定义的变量都会是 thread local 的变量。<code>t1.c</code> 中打印了局部变量 i 的地址，可以看到不同的线程打印出的地址不一样 (在各自的线程栈上)。</p>
+<p>在函数体外，用 <code>__thread</code> 修饰的变量也是 thread local 的。</p>
+</blockquote>
+<blockquote>
+<p><strong>Valgrind</strong></p>
+<p>Valgrind 中的 memchecker 是强大的内存检测工具。编译好一个文件 <code>proc.c</code> 后用 <code>valgrind ./proc</code> 执行，可以检测 memory leak, use after free 等问题。</p>
+</blockquote>
+<h2 id="26-4-The-Heart-Of-The-Problem-Uncontrolled-Scheduling"><a href="#26-4-The-Heart-Of-The-Problem-Uncontrolled-Scheduling" class="headerlink" title="26.4 The Heart Of The Problem: Uncontrolled Scheduling"></a>26.4 The Heart Of The Problem: Uncontrolled Scheduling</h2><p><code>counter ++</code> 这条语句在汇编层面是三条指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mov (addr), %eax</span><br><span class="line">add $0x1, %eax</span><br><span class="line">mov %eax, (addr)</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>addr</code> 是 counter 变量的内存地址。如果两个线程轮流执行汇编语句，那么它们各执行一次 +1 后，事实上 counter 只加了 1,并没有 +2。</p>
+<p>我们称这两个线程触发了竞争条件 (race condition)，准确说是一次数据竞争。导致这一竞争的代码称为临界区域 (critical section)。我们希望实现一种互斥机制，使得一个线程执行临界区域代码时不会被另一个线程打断。</p>
+<h2 id="26-5-The-Wish-For-Atomicity"><a href="#26-5-The-Wish-For-Atomicity" class="headerlink" title="26.5 The Wish For Atomicity"></a>26.5 The Wish For Atomicity</h2><p>我们希望有这样的一条原子指令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">momory-add (addr), 0x1</span><br></pre></td></tr></table></figure>
+
+<p>可以一下子帮我们完成 +1 操作。这里的原子性指的是：操作在执行过程中不会被中途打断。这个操作是一个最小的单元，它要么被完全执行了，要么没有被执行  (all or none)，不会在某时刻处于执行了一半的状态。</p>
+<p>将若干个操作打包成一个原子指令的过程我们称为一个交易 (transaction)。但硬件不能允许我们无限制地添加原子指令。我们要实现的是一种同步机制，它可以保证多个线程以一种可控的方式进入临界区域，从而使得执行正确。</p>
+<h2 id="26-6-One-More-Problem-Waiting-For-Another"><a href="#26-6-One-More-Problem-Waiting-For-Another" class="headerlink" title="26.6 One More Problem: Waiting For Another"></a>26.6 One More Problem: Waiting For Another</h2><p>在某些情境下，一个线程需要等待某件事情做好了才能继续进行，比如等待 I/O 操作完成。操作系统不仅要支持线程之间的同步，还要支持在某些条件下挂起/唤醒线程，这会通过条件变量 (condition variables) 来实现。</p>
+<h2 id="26-7-Summary-Why-in-OS-Class"><a href="#26-7-Summary-Why-in-OS-Class" class="headerlink" title="26.7 Summary: Why in OS Class?"></a>26.7 Summary: Why in OS Class?</h2><p>操作系统本身也是一个并发程序。如果有多个程序使用 write() 系统调用，那么操作系统就必须非常小心地处理内核中和 write() 有关的并发数据结构。</p>
+]]></content>
+      <categories>
+        <category>WISC-CS537 Introduction to Operating Systems</category>
+        <category>Book Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>OSTEP Chapter 27: Interlude: Thread API</title>
+    <url>/2022/02/23/OSTEP/OSTEP%20Chapter%2027%20-%20Interlude%20-%20Thread%20API/</url>
+    <content><![CDATA[<h2 id="27-1-Thread-Creation"><a href="#27-1-Thread-Creation" class="headerlink" title="27.1 Thread Creation"></a>27.1 Thread Creation</h2><p>创建线程的 API 为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_create</span><span class="params">(      <span class="keyword">pthread_t</span>      *thread, </span></span></span><br><span class="line"><span class="params"><span class="function">                   <span class="keyword">const</span> <span class="keyword">pthread_attr_t</span> *attr,</span></span></span><br><span class="line"><span class="params"><span class="function">                         <span class="keyword">void</span> *         (*start_routine)(<span class="keyword">void</span>*),</span></span></span><br><span class="line"><span class="params"><span class="function">                         <span class="keyword">void</span> *         arg)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>thread 是指向 pthread_t 类型变量的指针，我们将来要通过这个结构体来控制这个线程，所以现在需要对其进行初始化。</li>
+<li>attr 表明了希望该线程拥有的属性，大多数情况下可以传 NULL，表示按照默认属性创建。</li>
+<li>start_routine 是一个指向函数的指针，新创建的线程会从这个函数开始执行。</li>
+<li>arg 是传给 start_routine() 的参数。</li>
+</ul>
+<span id="more"></span>
+
+<p>这里参数的类型和返回值类型都是 <code>void *</code> 类型的指针 (相当于只要求地址，不要求对地址类型的解读)，这是为了使得函数支持任意类型的参数和返回值。</p>
+<h2 id="27-2-Thread-Completion"><a href="#27-2-Thread-Completion" class="headerlink" title="27.2 Thread Completion"></a>27.2 Thread Completion</h2><p>等待线程完成的 API 为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_join</span><span class="params">(<span class="keyword">pthread_t</span> thread,</span></span></span><br><span class="line"><span class="params"><span class="function">                 <span class="keyword">void</span>      **value_ptr)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>thread 表示要等待运行完成的线程结构体。</li>
+<li>value_ptr 是一个指向 <code>void *</code> 类型指针的指针，pthread_join() 返回时， value_ptr 会指向线程创建时的 start_routine() 函数的返回值。如果我们不在乎这个返回值，可以直接传入 NULL。</li>
+</ul>
+<p>很多时候，我们需要的线程函数返回值只是一个数 (如 0 表示成功，1 表示失败)，这时我们有比较简单的写法：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">mythread</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">void</span> *)(arg + <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> r; <span class="keyword">pthread_t</span> p;</span><br><span class="line">    pthread_create(&amp;p, <span class="literal">NULL</span>, mythread, (<span class="keyword">void</span> *)<span class="number">100</span>);</span><br><span class="line">    pthread_join(p, (<span class="keyword">void</span> **)&amp;r);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在线程函数中将返回值转换成 <code>void *</code> 类型，在主函数中我们只要将整型变量 r 的地址转换成 <code>void **</code> 类型，就可以直接把返回值存到 r 里面。</p>
+<p>使用线程返回时要格外注意：返回值的实体不能在线程栈上，因为线程返回时线程栈会被释放。比如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">mythread</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">myret_t</span> r; r = &#123;<span class="number">10</span>, <span class="number">20</span>&#125;;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">void</span> *)&amp;r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个写法是不合理的，返回时 r 已经被释放，返回结果是 UB。将结构体定义在堆区可以避免这个问题：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">mythread</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">myret_t</span> *r = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">myret_t</span>));</span><br><span class="line">    *r = &#123;<span class="number">10</span>, <span class="number">20</span>&#125;;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">void</span> *)r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="27-3-Locks"><a href="#27-3-Locks" class="headerlink" title="27.3 Locks"></a>27.3 Locks</h2><p>用于获得互斥锁和释放互斥锁的 API 为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_lock</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_unlock</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>第一个函数会尝试获得锁，直到获得了之后返回 (互斥锁不会轮询锁的状态，在得不到时会进入睡眠状态)。第二个第二个函数用于释放锁。</p>
+<p>注：这两个函数是有返回值的。正常情况下它们应该返回 0。一个好的编程习惯是在调用这些 API 时随手检查返回值，比如封装成这样：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Pthread_mutex_lock</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> rc = pthread_mutex_lock(mutex);</span><br><span class="line">    assert(rc == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>互斥锁在使用之前需要先初始化。初始化有两种方式：</p>
+<ul>
+<li><p>在定义互斥锁变量时直接使用 INITIALIZER，它会按照默认属性初始化锁：</p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pthread_mutex_t</span> lock = PTHREAD_MUTEX_INITIALIZER;</span><br></pre></td></tr></table></figure></li>
+<li><p>在运行过程中初始化：</p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Pthread_mutex_init</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> rc = pthread_mutex_init(mutex, <span class="literal">NULL</span>);</span><br><span class="line">    assert(rc == <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">pthread_mutex_t</span> lock;</span><br><span class="line">    Pthread_mutex_init(&amp;lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  pthread_mutex_init() 的第二个参数用于指定初始化锁的属性，通常情况下使用 NULL 即可。</p>
+</li>
+</ul>
+<p>锁用完之后，应当使用和初始化函数相对应的 pthread_mutex_destroy() 函数来销毁一个锁。</p>
+<p>另有两个 API：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_trylock</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_mutex_timedlock</span><span class="params">(<span class="keyword">pthread_mutex_t</span> *mutex,</span></span></span><br><span class="line"><span class="params"><span class="function">                            struct timespec *abs_timeout)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>trylock() 会尝试获得锁，如果锁正在被占用则直接返回。timedlock() 会在一个指定的时间范围内尝试获得锁，如果这个时间段内未能获得锁就返回。trylock() 可以理解为 timedlock() 的 0 秒版本；之前的 lock() 可以理解为 timedlock() 的无限长时间版本。</p>
+<p>这两个 API 不常用，但在一些情境下可以用于避免死锁。</p>
+<h2 id="27-4-Condition-Variables"><a href="#27-4-Condition-Variables" class="headerlink" title="27.4 Condition Variables"></a>27.4 Condition Variables</h2><p>条件变量的两个主要 API 为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_wait</span><span class="params">(<span class="keyword">pthread_cond_t</span> *cond, <span class="keyword">pthread_mutex_t</span> *mutex)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pthread_cond_signal</span><span class="params">(<span class="keyword">pthread_cond_t</span> *cond)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>调用 cond_wait() 时，当前线程必须已经拥有互斥锁 mutex。cond_wait() 会释放 mutex 并将当前线程睡眠在条件变量 cond 上。当另外的某个线程调用 cond_signal() 唤醒了该线程时，该线程会重新尝试获得互斥锁 mutex，获得了之后从 cond_wait() 函数返回。</p>
+<p>使用条件变量之前要先对条件变量初始化，其方法和互斥锁是类似的：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">pthread_cond_t</span> cond = PTREAD_COND_INITALIZER;</span><br></pre></td></tr></table></figure>
+
+<h2 id="27-5-Compiling-and-Running"><a href="#27-5-Compiling-and-Running" class="headerlink" title="27.5 Compiling and Running"></a>27.5 Compiling and Running</h2><p>要使用上述的 POSIX 线程库中的函数，我们需要在源代码中 <code>#include &lt;pthread.h&gt;</code> ，并在编译时加入 <code>-lpthread</code> 选项。</p>
+]]></content>
+      <categories>
+        <category>WISC-CS537 Introduction to Operating Systems</category>
+        <category>Book Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>OSTEP Chapter 29: Lock-based Concurrent Data Structures</title>
+    <url>/2022/02/25/OSTEP/OSTEP%20Chapter%2029%20-%20Lock-based%20Concurrent%20Data%20Structures/</url>
+    <content><![CDATA[<h2 id="29-1-Concurrent-Counters"><a href="#29-1-Concurrent-Counters" class="headerlink" title="29.1 Concurrent Counters"></a>29.1 Concurrent Counters</h2><p>一个最简单的 thread-safe 的计数器实现如下 (用锁保护每次读写)：</p>
+<span id="more"></span>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">counter_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> value;</span><br><span class="line">    <span class="keyword">pthread_mutex_t</span> lock;</span><br><span class="line">&#125; <span class="keyword">counter_t</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="keyword">counter_t</span> *c)</span> </span>&#123;</span><br><span class="line">    c-&gt;value = <span class="number">0</span>;</span><br><span class="line">    Pthread_mutex_init(&amp;c-&gt;lock, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">increment</span><span class="params">(<span class="keyword">counter_t</span> *c)</span> </span>&#123;</span><br><span class="line">    Pthread_mutex_lock(&amp;c-&gt;lock);</span><br><span class="line">    c-&gt;value++;</span><br><span class="line">    Pthread_mutex_unlock(&amp;c-&gt;lock);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">decrement</span><span class="params">(<span class="keyword">counter_t</span> *c)</span> </span>&#123;</span><br><span class="line">    Pthread_mutex_lock(&amp;c-&gt;lock);</span><br><span class="line">    c-&gt;value--;</span><br><span class="line">    Pthread_mutex_unlock(&amp;c-&gt;lock);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">counter_t</span> *c)</span> </span>&#123;</span><br><span class="line">    Pthread_mutex_lock(&amp;c-&gt;lock);</span><br><span class="line">    <span class="keyword">int</span> rc = c-&gt;value;</span><br><span class="line">    Pthread_mutex_unlock(&amp;c-&gt;lock);</span><br><span class="line">    <span class="keyword">return</span> rc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但这种实现的 scalability 很差：如果给 $n$ 个核分配等量的任务，最终所消耗的时间几乎是单个任务时长的 $n$ 倍。大部分时间 CPU 核之间在互相等锁，我们没有利用多处理器达到并行的效率。</p>
+<p>如果愿意牺牲一部分精确性，我们可以设计一种 approximate counter 来提升效率。approximate counter 中，每个 CPU 核有一个单独的 counter，此外还有一个全局的 counter。全局和本地的 counter 都有锁保护。修改操作中 (假设只有 increment)，CPU 核直接修改本地的 counter，因此各个核可以并行。当本地 counter 的值达到一个阈值时，本地 counter 会和全局 counter 做一次同步，将本地值加到全局值上并将本地值清零。查询操作中直接返回全局 counter 的值即可。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">counter_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span>             global;</span><br><span class="line">    <span class="keyword">pthread_mutex_t</span> glock;</span><br><span class="line">    <span class="keyword">int</span>             local[NUMCPUS];</span><br><span class="line">    <span class="keyword">pthread_mutex_t</span> llock[NUMCPUS];</span><br><span class="line">    <span class="keyword">int</span>             threshold;</span><br><span class="line">&#125;<span class="keyword">counter_t</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">(<span class="keyword">counter_t</span> *c, <span class="keyword">int</span> threshold)</span> </span>&#123;</span><br><span class="line">    c-&gt;threshold = threshold;</span><br><span class="line">    c-&gt;global = <span class="number">0</span>;</span><br><span class="line">    Pthread_mutex_init(&amp;c-&gt;glock, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; NUMCPUS; ++i) &#123;</span><br><span class="line">        c-&gt;local[i] = <span class="number">0</span>;</span><br><span class="line">        Pthread_mutex_init(&amp;c-&gt;llock[i], <span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">counter_t</span> *c, <span class="keyword">int</span> threadID, <span class="keyword">int</span> amt)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cpu = threadID % NUMCPUS;</span><br><span class="line">    Pthread_mutex_lock(&amp;c-&gt;llock[cpu]);</span><br><span class="line">    c-&gt;local[cpu] += amt;</span><br><span class="line">    <span class="keyword">if</span> (c-&gt;local[cpu] &gt;= c-&gt;threshold) &#123;</span><br><span class="line">        Pthread_mutex_lock(&amp;c-&gt;glock);</span><br><span class="line">        c-&gt;glocal += c-&gt;local[cpu];</span><br><span class="line">        Pthread_mutex_unlock(&amp;c-&gt;glock);</span><br><span class="line">        c-&gt;local[cpu] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Pthread_mutex_unlock(&amp;c-&gt;llock[cpu]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">counter_t</span> *c)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Pthread_mutex_lock(&amp;c-&gt;glock);</span><br><span class="line">    <span class="keyword">int</span> rt = c-&gt;global;</span><br><span class="line">    Pthread_mutex_unlock(&amp;c-&gt;glock);</span><br><span class="line">    <span class="keyword">return</span> rt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在该实现版本中，每个线程并不会去确认自己所处的核，而是直接随机 (进程号取模) 分配一个核对应的本地计数器。这样做和之前描述的算法无异。</p>
+<p>上述算法中，如果阈值是 0 则与精确的计数器无异。随着阈值的提高，计数器的并行效率会越来越高 (大致呈反比例函数)，但返回的结果会越来越不精确。</p>
+<h2 id="29-2-Concurrent-Linked-List"><a href="#29-2-Concurrent-Linked-List" class="headerlink" title="29.2 Concurrent Linked List"></a>29.2 Concurrent Linked List</h2><p>一个朴素的做法是用一把大锁保护整个链表的修改和查询。一种很容易出错的情形是：如果函数中间有多处 return，则每处 return 前都要记得释放锁。为了避免这种 bug，书写代码时可以考虑多用 break 替代 return 减少 return 分支数，或者另写一个 wrapper 调用真正的函数，在 wrapper 中维护锁。</p>
+<p>一种增加链表访问并行度的方案是所谓的 hand-over-hand locking (lock coupling)。在查询链表中是否有某个元素时，我们平常的做法是用一个大锁保护整个链表，然后依次扫描链表节点。hand-over-hand locking 的思想是为每个链表节点创建一把锁，每次准备访问下一个节点时，先获得下一个节点的锁，再释放本节点的锁。这样多个线程就可以并行地查询链表。</p>
+<p>这个方案在理论上可行，但实际操作中，频繁地获得和释放锁会带来昂贵的代价。一个更可行的方案是每 $n$ 个节点用一把锁保护，准备进入下一个“区域”时做一次 overhead acquiring and releasing。</p>
+<h2 id="29-3-Concurrent-Queues"><a href="#29-3-Concurrent-Queues" class="headerlink" title="29.3 Concurrent Queues"></a>29.3 Concurrent Queues</h2><p>我们可以在队头和队尾分别维护一把锁，这样从队头取元素和向队尾添加元素的操作可以并行地执行：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">node_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span>              val;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> __<span class="title">node_t</span> *<span class="title">next</span>;</span></span><br><span class="line">&#125;<span class="keyword">node_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">queue_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">node_t</span>          *head;</span><br><span class="line">    <span class="keyword">node_t</span>          *tail;</span><br><span class="line">    <span class="keyword">pthread_mutex_t</span>  headlock;</span><br><span class="line">    <span class="keyword">pthread_mutex_t</span>  taillock;</span><br><span class="line">&#125;<span class="keyword">queue_t</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">queue_init</span><span class="params">(<span class="keyword">queue_t</span> *q)</span> </span>&#123;</span><br><span class="line">    node *tmp = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">node_t</span>));</span><br><span class="line">    tmp-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    q-&gt;head = q-&gt;tail = tmp;</span><br><span class="line">    pthread_mutex_init(&amp;q-&gt;headlock, <span class="literal">NULL</span>);</span><br><span class="line">    pthread_mutex_init(&amp;q-&gt;taillock, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">queue_enqueue</span><span class="params">(<span class="keyword">queue_t</span> *q, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    node *tmp = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">node_t</span>));</span><br><span class="line">    <span class="keyword">if</span> (tmp == <span class="literal">NULL</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    tmp-&gt;val = val; tmp-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    pthread_mutex_lock(&amp;q-&gt;taillock);</span><br><span class="line">    q-&gt;tail-&gt;next = tmp;</span><br><span class="line">    q-&gt;tail = tmp;</span><br><span class="line">    pthread_mutex_unlock(&amp;q-&gt;taillock);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">queue_dequeue</span><span class="params">(<span class="keyword">queue_t</span> *q, <span class="keyword">int</span> *val)</span> </span>&#123;</span><br><span class="line">    pthread_mutex_lock(&amp;q-&gt;headlock);</span><br><span class="line">    node *tmp = q-&gt;head;</span><br><span class="line">    node *newhead = tmp-&gt;next;</span><br><span class="line">    <span class="keyword">if</span> (newhead == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        pthread_mutex_unlock(&amp;q-&gt;headlock);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>; <span class="comment">// queue was empty</span></span><br><span class="line">    &#125;</span><br><span class="line">    *val = tmp-&gt;val;</span><br><span class="line">    q-&gt;head = newhead;</span><br><span class="line">    pthread_mutex_unlock(&amp;q-&gt;headlock);</span><br><span class="line">    <span class="built_in">free</span>(tmp);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的一个重要的技巧是：我们在初始化队列时创建了一个 dummy node，并让 <code>q-&gt;head</code> 和 <code>q-&gt;tail</code> 都指向它。这个 dummy node 是永远不会出队的。这样我们避免了队列在形状上完全为空的情况，从而保证 headlock 和 taillock 做的工作永远是没有交叉的。</p>
+<h2 id="29-4-Concurrent-Hash-Table"><a href="#29-4-Concurrent-Hash-Table" class="headerlink" title="29.4 Concurrent Hash Table"></a>29.4 Concurrent Hash Table</h2><p>一个支持并发访问的 Hash table 实现很简单：使用多个之前提到的链表即可：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BUCKETS (101)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">hash_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">list_t</span> lists[BUCKETS];</span><br><span class="line">&#125;<span class="keyword">hash_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Hash_Init</span><span class="params">(<span class="keyword">hash_t</span> *H)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; BUCKETS; i++)</span><br><span class="line">        List_Init(&amp;H-&gt;lists[i]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Hash_Insert</span><span class="params">(<span class="keyword">hash_t</span> *H, <span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> bucket = key % BUCKETS;</span><br><span class="line">    <span class="keyword">return</span> List_Insert(&amp;H-&gt;lists[bucket], key);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Hash_Lookup</span><span class="params">(<span class="keyword">hash_t</span> *H, <span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> bucket = key % BUCKETS;</span><br><span class="line">    <span class="keyword">return</span> List_Lookup(&amp;H-&gt;lists[bucket], key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个实现在实际中效率不低的原因是：我们并没有用一把大锁保护整个哈希表，而是对每个链表单独用一把所保护。多个线程同时访问哈希表的一个 bucket 的几率较低，这使得 lock contention 发生次数较少。</p>
+<blockquote>
+<p><strong>Tip: Avoid Premature Optimization</strong></p>
+<p>“Premature Optimization is the root of all evil.” - Knuth</p>
+<p>很多操作系统内核开发时，都是先使用一个大内核锁 (big kernel lock, BKL)，先保证正确性，再考虑如何把锁拆开提升效率。</p>
+</blockquote>
+<h2 id="29-5-Summary"><a href="#29-5-Summary" class="headerlink" title="29.5 Summary"></a>29.5 Summary</h2><p>略。</p>
+]]></content>
+      <categories>
+        <category>WISC-CS537 Introduction to Operating Systems</category>
+        <category>Book Notes</category>
+      </categories>
+  </entry>
 </search>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="操作系统：为上层多个应用程序的正常运行提供支持。操作系统实现这一目的的重要方法是虚拟化：将硬件资源抽象成简单易用的虚拟资源。为了方便上层应用程序使用这些资源，操作系统会提供数百个系统调用。从这个角度来看，操作系统也很像一个标准库。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSTEP Chapter 02: Introduction to Operating Systems">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/20/OSTEP/OSTEP%20Chapter%2002%20-%20Introduction%20to%20Operating%20Systems/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="操作系统：为上层多个应用程序的正常运行提供支持。操作系统实现这一目的的重要方法是虚拟化：将硬件资源抽象成简单易用的虚拟资源。为了方便上层应用程序使用这些资源，操作系统会提供数百个系统调用。从这个角度来看，操作系统也很像一个标准库。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-31T03:00:27.128Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/20/OSTEP/OSTEP%20Chapter%2002%20-%20Introduction%20to%20Operating%20Systems/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/20/OSTEP/OSTEP%20Chapter%2002%20-%20Introduction%20to%20Operating%20Systems/","path":"2022/02/20/OSTEP/OSTEP Chapter 02 - Introduction to Operating Systems/","title":"OSTEP Chapter 02: Introduction to Operating Systems"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OSTEP Chapter 02: Introduction to Operating Systems | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Virtualizing-The-CPU"><span class="nav-number">1.</span> <span class="nav-text">2.1 Virtualizing The CPU</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Virtualizing-Memory"><span class="nav-number">2.</span> <span class="nav-text">2.2 Virtualizing Memory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Concurrency"><span class="nav-number">3.</span> <span class="nav-text">2.3 Concurrency</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-Persistence"><span class="nav-number">4.</span> <span class="nav-text">2.4 Persistence</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-Design-Goals"><span class="nav-number">5.</span> <span class="nav-text">2.5 Design Goals</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/20/OSTEP/OSTEP%20Chapter%2002%20-%20Introduction%20to%20Operating%20Systems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OSTEP Chapter 02: Introduction to Operating Systems
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-20 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-20T00:00:00+08:00">2022-02-20</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-03-31 11:00:27" itemprop="dateModified" datetime="2022-03-31T11:00:27+08:00">2022-03-31</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">WISC-CS537 Introduction to Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/Book-Notes/" itemprop="url" rel="index"><span itemprop="name">Book Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>操作系统：为上层多个应用程序的正常运行提供支持。操作系统实现这一目的的重要方法是虚拟化：将硬件资源抽象成简单易用的虚拟资源。为了方便上层应用程序使用这些资源，操作系统会提供数百个系统调用。从这个角度来看，操作系统也很像一个标准库。</p>
+<span id="more"></span>
+
+<h2 id="2-1-Virtualizing-The-CPU"><a href="#2-1-Virtualizing-The-CPU" class="headerlink" title="2.1 Virtualizing The CPU"></a>2.1 Virtualizing The CPU</h2><p><a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2002%20-%20intro/cpu.c">cpu.c</a> 的作用是每过一秒钟输出一次字符串。<code>Spin(1)</code> 表示等待一秒，其实现在 <a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2002%20-%20intro/common.h">common.h</a> 中，其中 GetTime() 是对系统调用 gettimeofday() 的进一步封装，返回系统启动以来的秒数。Spin() 会不断调用 GetTime()，直到间隔时间达到输入值 howlong。</p>
+<p>键入命令 <code>./cpu A &amp; ; ./cpu B &amp; ; ./cpu C &amp; ; ./cpu D &amp;</code>，可以看到A,B,C,D 交替输出，仿佛各自独占了 CPU。操作系统通过虚拟化 CPU 的方式，给上层应用程序一种系统中有很多很多个 CPU 的假象。至于多个进程谁在真正的物理 CPU 上运行，这取决于操作系统的调度策略。</p>
+<blockquote>
+<p><strong>为什么程序会不停输出，按 <code>Ctrl+C</code> 也无法停止？</strong></p>
+<p>上文中，用分号隔开各个命令表示这些命令都要执行。它和 <code>&amp;&amp;</code> 的区别在于：<code>&amp;&amp;</code> 要求第一个命令执行成功才会执行第二个命令，而 <code>;</code> 不论第一个命令是否成功都会执行第二个命令 (可以用 <code>gcc notexist.c ; ls</code> 和 <code>gcc notexist.c &amp;&amp; ls</code> 做实验验证)。</p>
+<p>在命令最后加上 <code>&amp;</code> 表示将这个进程放到后台执行， <code>Ctrl+C</code> 的意义是中断所有正在运行的前台进程，因此该组合键无法终止后台运行的进程。如果某个命令所需要的执行时间很长，可以用 <code>&amp;</code> 将其放在后台执行，从而终端界面仍然可以继续操作。在使用 <code>&amp;</code> 时，bash 会提示分配给该任务的进程号。如果想要结束后台任务，可以使用命令 <code>kill pid</code> 。</p>
+<p>这里我们使用 <code>&amp;</code> 的原因在于：用 <code>;</code> 分隔的若干命令总是会依次执行，即第一个执行结束才会执行第二个。而  cpu 程序中有一个死循环，为了观测“并发”，我们必须让四个任务同时运行起来。</p>
+</blockquote>
+<h2 id="2-2-Virtualizing-Memory"><a href="#2-2-Virtualizing-Memory" class="headerlink" title="2.2 Virtualizing Memory"></a>2.2 Virtualizing Memory</h2><p>物理内存本身没有任何特殊之处，就是一个大数组，每个位置有一个物理地址。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2002%20-%20intro/mem.c">mem.c</a> 会调用 malloc() 分配一个地址，并不断向该地址写入内容。如果我们使用 <code>./mem 1 &amp; ; ./mem 1 &amp;</code>  命令，我们会发现两个进程分配的地址是一样的，然而两个进程都在完好地运行。这是因为每个进程都有自己的虚拟地址空间，输出的地址是进程的虚拟地址，不同进程的相同虚拟地址会指向不同的物理地址。操作系统负责虚拟化内存，保证每个进程只能访问自己的地址空间。</p>
+<blockquote>
+<p><strong>为什么我使用上述命令无法复现，两个地址不一样？</strong></p>
+<p>Linux 默认使用了地址空间随机化 (Address Space Layout Randomization, ASLR) 技术。ASLR 是一种针对缓冲区溢出攻击的安全保护技术，通过对堆、栈、共享库映射等布局的随机化增加攻击者预测目的地址的难度，关于利用固定地址进行攻击的方法可以见<a href="https://kristoff-starling.github.io/2022/02/28/Stack-smashing%20Attack%20-%20An%20Introduction/">这篇文章</a>。在 <code>/proc/sys/kernel/randomize_va_space</code> 文件中，我们可以查看当前 ASLR 是否打开：0 表示关闭，1 表示对于部分函数打开，2 表示完全打开。</p>
+<p>为了暂时关闭 ASLR 以复现上述情境，我们可以使用命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setarch `uname -m` -R /bin/zsh</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>uname -m</code> 命令会输出机器架构，该参数可以省略；<code>-R</code> 参数 (对应长参数 <code>--addr-no-randomize</code>) 表示关闭 ASLR。执行该命令会暂时打开一个新的 shell (默认 <code>/bin/sh</code>，可以通过最后一个参数指定其他 shell)，该 shell 和其子进程会在关闭 ASLR 的情况下执行命令 (退出该 shell 后，一切恢复)。</p>
+<p>另外一种方法是使用命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w kernel.randomize_va_space=0</span><br></pre></td></tr></table></figure>
+<p>机器重启后该改变会消失。如果想要永久性的关闭 ASLR，可以将 <code>kernel.randomize_va_space=0</code> 写到 <code>/etc/sysctl.conf</code> 中。</p>
+<p>如果使用 GDB 调试，可以通过命令 <code>set disable-randomization off</code> 关闭 ASLR。</p>
+</blockquote>
+<h2 id="2-3-Concurrency"><a href="#2-3-Concurrency" class="headerlink" title="2.3 Concurrency"></a>2.3 Concurrency</h2><p><a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2002%20-%20intro/threads.c">threads.c</a> 创建了两个线程，创建线程调用的函数是 Pthread_create()，它在 <code>common_threads.h</code> 中定义，是对 POSIX 线程库的简单封装：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Pthread_create(thread, attr, start_routine, arg) assert(pthread_create(thread, attr, start_routine, arg) == 0);</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> Pthread_join(thread, value_ptr)                  assert(pthread_join(thread, value_ptr) == 0);</span></span><br></pre></td></tr></table></figure>
+
+<p>让两个线程各执行 N 次 +1 操作，可以观测到结果不是 2N。这主要是因为核心语句 <code>counter++</code> 会被编译成三条汇编语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov &amp;counter, register</span><br><span class="line">add $1, register</span><br><span class="line">mov register, &amp;counter</span><br></pre></td></tr></table></figure>
+
+<p>由于原子性的丧失，可能出现 race condition。</p>
+<h2 id="2-4-Persistence"><a href="#2-4-Persistence" class="headerlink" title="2.4 Persistence"></a>2.4 Persistence</h2><p>数据的持久性是一个重要的话题。内存中存储的数据是不稳定的——机器一旦断点，DRAM 中的信息就会丢失。我们需要硬盘来存储长期数据，硬盘在现代系统中被看作 I/O 设备的一部分，管理硬盘信息的软件称为文件系统。</p>
+<p>操作系统对于硬盘的抽象和 CPU，内存不同。我们针对 CPU 抽象出了进程，对于内存抽象出了虚拟地址空间，其目的都是为了让某一个程序“独占”整个计算机资源。而硬盘上的数据理应让各个程序共享，比如编辑器创建了一个文件，然后编译器负责编译它，接着加载器负责加载、运行这个程序。操作系统通过系统调用来抽象硬盘：将复杂的硬件读写操作封装成简单的接口。</p>
+<p>在 <a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2002%20-%20intro/io.c">io.c</a> 中我们使用了 open() 和 write() 系统调用来创建，写入文件。这些系统调用底层的实现非常复杂 (比如为了性能的提升，读写都有缓冲区)，但上层使用这些 API 非常简便。OS 在这里充当了标准库的角色。</p>
+<h2 id="2-5-Design-Goals"><a href="#2-5-Design-Goals" class="headerlink" title="2.5 Design Goals"></a>2.5 Design Goals</h2><p>操作系统应当努力追求的目标：</p>
+<ul>
+<li>高性能；</li>
+<li>保护/隔离：应用程序之间不能互相“伤害“；</li>
+<li>可靠：操作系统一旦崩溃，在其上运行的所有应用程序都无法使用，因此操作系统必须是非常可靠的软件。</li>
+<li>……</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/18/ANSI%20Escape%20Code%20-%20Quick%20Manual/" rel="prev" title="ANSI Escape Code: Quick Tutorial">
+                  <i class="fa fa-chevron-left"></i> ANSI Escape Code: Quick Tutorial
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/02/22/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/" rel="next" title="OSTEP Chapter 26: Concurrency: An Introduction">
+                  OSTEP Chapter 26: Concurrency: An Introduction <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
