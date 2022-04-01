@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="信号量的概念最早由 Dijkstra 提出，它既可以作为锁使用也可以作为条件变量使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSTEP Chapter 31: Semaphores">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/21/OSTEP/OSTEP%20Chapter%2031%20-%20Semaphores/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="信号量的概念最早由 Dijkstra 提出，它既可以作为锁使用也可以作为条件变量使用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-01T05:18:09.031Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/21/OSTEP/OSTEP%20Chapter%2031%20-%20Semaphores/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/21/OSTEP/OSTEP%20Chapter%2031%20-%20Semaphores/","path":"2022/02/21/OSTEP/OSTEP Chapter 31 - Semaphores/","title":"OSTEP Chapter 31: Semaphores"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OSTEP Chapter 31: Semaphores | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#31-1-Semaphores-A-Definition"><span class="nav-number">1.</span> <span class="nav-text">31.1 Semaphores: A Definition</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#31-2-Binary-Semaphores-Locks"><span class="nav-number">2.</span> <span class="nav-text">31.2 Binary Semaphores (Locks)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#31-3-Semaphores-For-Ordering"><span class="nav-number">3.</span> <span class="nav-text">31.3 Semaphores For Ordering</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#31-4-The-Producer-Consumer-Bounded-Buffer-Problem"><span class="nav-number">4.</span> <span class="nav-text">31.4 The Producer&#x2F;Consumer (Bounded Buffer) Problem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#31-5-Reader-Writer-Locks"><span class="nav-number">5.</span> <span class="nav-text">31.5 Reader-Writer Locks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#31-6-The-Dining-Philosophers"><span class="nav-number">6.</span> <span class="nav-text">31.6 The Dining Philosophers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#31-7-How-To-Implement-Semaphores"><span class="nav-number">7.</span> <span class="nav-text">31.7 How To Implement Semaphores</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#31-8-Summary"><span class="nav-number">8.</span> <span class="nav-text">31.8 Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/21/OSTEP/OSTEP%20Chapter%2031%20-%20Semaphores/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OSTEP Chapter 31: Semaphores
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-21 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-21T00:00:00+08:00">2022-02-21</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-01 13:18:09" itemprop="dateModified" datetime="2022-04-01T13:18:09+08:00">2022-04-01</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">WISC-CS537 Introduction to Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/Book-Notes/" itemprop="url" rel="index"><span itemprop="name">Book Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>信号量的概念最早由 Dijkstra 提出，它既可以作为锁使用也可以作为条件变量使用。<span id="more"></span></p>
+<h2 id="31-1-Semaphores-A-Definition"><a href="#31-1-Semaphores-A-Definition" class="headerlink" title="31.1 Semaphores: A Definition"></a>31.1 Semaphores: A Definition</h2><p>使用一个信号量之前我们要定义其初始值：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;semaphore.h&gt;</span></span></span><br><span class="line"><span class="keyword">sem_t</span> s;</span><br><span class="line">sem_init(&amp;s, <span class="number">0</span>, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>sem_init() 的第一个参数是信号量，第三个参数是初始值，第二个参数为 0 表示该信号量在同进程下的所有线程之间共享 (如果想让信号量在不同进程之间共享，可以设置为其他数值)。</p>
+<p>POSIX 标准提供了信号量操作相关的 API：<code>sem_wait()</code> 和 <code>sem_post()</code>。相较于条件变量，信号量使用起来非常简单：我们不需要关注什么时候获得锁，用 while 还是 if 等问题，在用户层面我们可以认为这些 API 都是原子的。它们的语义可以用如下伪代码描述：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sem_wait</span><span class="params">(<span class="keyword">sem_t</span> *s)</span> </span>&#123;</span><br><span class="line">    decrement the value of s by one;</span><br><span class="line">    wait <span class="keyword">if</span> value of s is negative;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sem_post</span><span class="params">(<span class="keyword">sem_t</span> *s)</span> </span>&#123;</span><br><span class="line">    increment the value of s by one;</span><br><span class="line">    <span class="keyword">if</span> there are one <span class="keyword">or</span> more threads waiting, wake one;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当 s 的值为正时，其意义是剩余的资源量；当 s 的值为负时，其意义是当前正在等待的线程数量。</p>
+<p>(注：不同于锁，sem_post() 并不需要一个线程曾经调用过 sem_wait()，这相当于线程可以凭空“创造”一份资源。因此使用时一定要格外小心，注意 sem_wait() 和 sem_post() 的对应。)</p>
+<h2 id="31-2-Binary-Semaphores-Locks"><a href="#31-2-Binary-Semaphores-Locks" class="headerlink" title="31.2 Binary Semaphores (Locks)"></a>31.2 Binary Semaphores (Locks)</h2><p>信号量可以当作锁来使用，这种信号量被称为 binary semaphore。<a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2031%20-%20threads_sema/binary.c">binary.c</a> 展示了具体的实现。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sem_t</span> m;</span><br><span class="line">sem_init(&amp;m, <span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">sem_wait(&amp;m);</span><br><span class="line"><span class="comment">// critical section</span></span><br><span class="line">sem_post(&amp;m);</span><br></pre></td></tr></table></figure>
+
+<p>信号量的初始值设置为 1，我们可以把它想象成一个单位的资源 (任何时刻只能上一把锁)。考虑一个 lock contention 的情况：</p>
+<ul>
+<li>线程 1 调用 sem_wait()，m 的值变为 0，线程 1 成功进入临界区域。</li>
+<li>线程 2 调用 sem_wait()，m 的值变为 -1，该线程进入等待序列。</li>
+<li>线程 3 调用 sem_wait()，m 的值变为 -2，该线程进入等待序列。</li>
+<li>线程 1 离开临界区域，调用 sem_post()，m 的值变为 -1，线程 1 唤醒一个等待序列里的线程 (假设是线程 2) 继续执行。线程 2 成功进入临界区域。</li>
+<li>线程 2 离开临界区域，调用 sem_post()，m 的值变为 0，线程 2 唤醒线程 3，线程 3 成功进入临界区域。</li>
+<li>线程 3 离开临界区域，调用 sem_post()，m 的值恢复为 1 (锁当前空闲)，线程 3 没有唤醒任务。</li>
+</ul>
+<p>用信号量实现的锁是 sleep lock 而不是 spinlock。</p>
+<h2 id="31-3-Semaphores-For-Ordering"><a href="#31-3-Semaphores-For-Ordering" class="headerlink" title="31.3 Semaphores For Ordering"></a>31.3 Semaphores For Ordering</h2><p>信号量可以用来实现等待 (类似于 join() 的功能)。这时信号量的初始值应当被设为 0。在等待的线程中使用 sem_wait()，在被等待的线程结尾使用 sem_post()。<a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2031%20-%20threads_sema/join.c">join.c</a> 给出了具体的实现。</p>
+<p>我们分析两种可能的情况：</p>
+<ul>
+<li>主线程在子线程结束之前调用 sem_wait()，此时信号量的值变为 -1，主线程被挂起。待子进程执行结束后，调用 sem_post()，信号量的值恢复为 0，并唤醒等待的主线程继续执行。</li>
+<li>主线程在子线程结束之后调用 sem_wait()，那么子线程结束时调用 sem_post() 后，信号量的值变为 1。主线程调用 sem_wait()，信号量的值恢复为 0，因为非负，所以主线程可以直接继续执行。</li>
+</ul>
+<h2 id="31-4-The-Producer-Consumer-Bounded-Buffer-Problem"><a href="#31-4-The-Producer-Consumer-Bounded-Buffer-Problem" class="headerlink" title="31.4 The Producer/Consumer (Bounded Buffer) Problem"></a>31.4 The Producer/Consumer (Bounded Buffer) Problem</h2><p>最直接的想法是将之前双条件变量的生产者-消费者模型直接套用过来：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;buffer[fill] = val; fill = (fill + <span class="number">1</span>) % MAX;&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">get</span><span class="params">()</span> </span>&#123;<span class="keyword">int</span> rt = buffer[use]; use = (use + <span class="number">1</span>) % MAX; <span class="keyword">return</span> rt;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">producer</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; LOOP; i++) &#123;</span><br><span class="line">        sem_wait(&amp;empty);</span><br><span class="line">        put(i);</span><br><span class="line">        sem_post(&amp;full);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">consumer</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        sem_wait(&amp;full);</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, get());</span><br><span class="line">        sem_post(&amp;empty);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">sem_init(&amp;empty, <span class="number">0</span>, MAX);</span><br><span class="line">sem_init(&amp;full, <span class="number">0</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这个做法在 <code>MAX=1</code> 时是可以正确执行的，但 MAX 大于等于 2 时会出现并发 bug。考虑两个生产者线程并发执行的过程：T1 执行完 sem_wait() 之后进入函数 put()，刚将 val 放进 buffer，还没有来得及给 fill +1 时，T1 被打断，T2 开始执行，因为 MAX&gt;=2，这时 empty 不为 0，T2 可以顺利进入 put()，这时发生了问题：T1 放进 buffer 的内容被 T2 的内容覆盖了。</p>
+<p>可以看到出现并发 bug 的根本原因在于两个进程同时进入了临界区域，发生了数据竞争。联想条件变量的写法，线程在 wait() 中被唤醒后有一个尝试重新获得自旋锁的过程，而在这里的信号量实现中我们没有用锁把临界区域保护起来。因此我们只要加锁即可。</p>
+<blockquote>
+<p><strong>真的随便加一个锁就可以了吗？</strong></p>
+<p>考虑如下加锁后的实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">producer</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; LOOP; i++) &#123;</span><br><span class="line">     lock(&amp;lk);</span><br><span class="line">     sem_wait(&amp;empty);</span><br><span class="line">     put(i);</span><br><span class="line">     sem_post(&amp;full);</span><br><span class="line">     unlock(&amp;lk);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">consumer</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">     lock(&amp;lk);</span><br><span class="line">     sem_wait(&amp;full);</span><br><span class="line">     <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, get());</span><br><span class="line">     sem_post(&amp;empty);</span><br><span class="line">     unlock(&amp;lk);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设一个消费者线程先运行，它获得了锁之后，调用 sem_wait()，发现 <code>full == -1</code>，于是带着锁陷入了睡眠。这样别的线程再要尝试获得锁时就会陷入死锁：消费者线程拥有锁，在等待 full 信号；生产者线程可以 signal，但得先获得锁，这是一个标准的死锁。</p>
+<p>联想条件变量的实现，cond_wait() 和 sem_wait() 的不同在于，cond_wait() 接收一个锁的参数，会原子地完成线程睡眠和锁释放，而 sme_wait() 没有帮我们释放锁的功能。</p>
+<p>事实上，条件变量要把锁加在前面是因为我们要保证对全局的状态变量的访问 ( <code>while (!cond)</code> ) 是原子的。但信号量本身已经保证原子性了。我们只要把锁加在里面就是正确的实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">producer</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; LOOP; i++) &#123;</span><br><span class="line">     sem_wait(&amp;empty);</span><br><span class="line">     lock(&amp;lk);</span><br><span class="line">     put(i);</span><br><span class="line">     unlock(&amp;lk);</span><br><span class="line">     sem_post(&amp;full);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">consumer</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">     sem_wait(&amp;full);</span><br><span class="line">     lock(&amp;lk);</span><br><span class="line">     <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, get());</span><br><span class="line">     unlock(&amp;lk);</span><br><span class="line">     sem_post(&amp;empty);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2031%20-%20threads_sema/producer_consumer_works.c">produer_consumer_works.c</a> 提供了完整的实现。</p>
+</blockquote>
+<h2 id="31-5-Reader-Writer-Locks"><a href="#31-5-Reader-Writer-Locks" class="headerlink" title="31.5 Reader-Writer Locks"></a>31.5 Reader-Writer Locks</h2><p>动机：对于并发数据结构，我们会用锁保护与之相关的函数。我们用锁保护读函数是为了避免写的过程中读取函数执行导致奇怪的问题，但这也导致了如果当前只有很多个线程读取而没有写操作，我们的读取无法并行。Reader-Writer Locks 致力于解决这个问题 (事实上以下方法中的信号量都在模拟锁的行为，可以只使用自旋锁完成)。</p>
+<p>解决这个问题的基本思路是：写操作每次要获得一个写锁，完成任务后要释放写锁。读操作的行为有所不同：我们维护一个变量 reader 记录当前正在读的线程的个数，当 <code>reader == 1</code> 时，读线程要获得写锁，这样就屏蔽了写操作，后续更多的读操作可以加入进来。当 <code>reader == 0</code> 时，读线程要释放写锁。(当然，读线程修改 reader 变量的过程还需要一个锁保护)。大致的伪代码实现如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">rwlock_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">sem_t</span> reader_lock;</span><br><span class="line">    <span class="keyword">sem_t</span> writelock;</span><br><span class="line">    <span class="keyword">int</span> readers;</span><br><span class="line">&#125;<span class="keyword">rwlock_t</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rwlock_init</span><span class="params">(<span class="keyword">rwlock_t</span> *rw)</span> </span>&#123;</span><br><span class="line">    rw-&gt;readers = <span class="number">0</span>;</span><br><span class="line">    sem_init(&amp;rw-&gt;reader_lock, <span class="number">0</span>, <span class="number">1</span>); <span class="comment">// 信号量作为睡眠锁</span></span><br><span class="line">    sem_init(&amp;rw-&gt;writelock, <span class="number">0</span>, <span class="number">1</span>);   <span class="comment">// 信号量作为睡眠锁</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rwlock_acquire_readlock</span><span class="params">(<span class="keyword">rwlock_t</span> *rw)</span> </span>&#123;</span><br><span class="line">    sem_wait(&amp;rw-&gt;reader_lock);</span><br><span class="line">    reader++;</span><br><span class="line">    <span class="keyword">if</span> (reader == <span class="number">1</span>)</span><br><span class="line">        sem_wait(&amp;rw-&gt;writelock);</span><br><span class="line">    sem_post(&amp;rw-&gt;reader_lock);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rwlock_release_readlock</span><span class="params">(<span class="keyword">rwlock_t</span> *rw)</span> </span>&#123;</span><br><span class="line">    sem_wait(&amp;rw-&gt;reader_lock);</span><br><span class="line">    reader--;</span><br><span class="line">    <span class="keyword">if</span> (reader == <span class="number">0</span>)</span><br><span class="line">        sem_post(&amp;rw-&gt;writelock);</span><br><span class="line">    sem_post(&amp;rw-&gt;reader_lock);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rwlock_acquire_writelock</span><span class="params">(<span class="keyword">rwlock_t</span> *rw)</span> </span>&#123;sem_wait(&amp;rw-&gt;writelock);&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rwlock_release_writelock</span><span class="params">(<span class="keyword">rwlock_t</span> *rw)</span> </span>&#123;sem_post(&amp;rw-&gt;writelock);&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2031%20-%20threads_sema/rwlock.c">rwlock.c</a> 提供了完整的实现。</p>
+<p>该算法存在一定的公平性隐患：如果读线程比较多，源源不断地加入，写线程可能会一直调度不上。(一个可能的维护公平性的方法是为 reader 设置一个上限，如果 <code>reader == MAX_READER</code>，则把读线程挂起。)</p>
+<blockquote>
+<p><strong>Hill’s Law</strong></p>
+<p>Hill’s Law 大致的意思是在很多情况下，那些看上去简单笨拙的实现反而是好的。在这里，reader-writer lock  虽然看起来很 fancy，但实际使用时未必好过简单的自旋锁，这是因为维护精巧的结构总需要更多的开销。因此，抛开 workload 谈优化就是耍流氓。</p>
+</blockquote>
+<h2 id="31-6-The-Dining-Philosophers"><a href="#31-6-The-Dining-Philosophers" class="headerlink" title="31.6 The Dining Philosophers"></a>31.6 The Dining Philosophers</h2><p>一个哲学家的行为可以用如下函数描述：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> *<span class="title">philosopher</span><span class="params">(<span class="keyword">void</span> *arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        think();</span><br><span class="line">        getforks();</span><br><span class="line">        eat();</span><br><span class="line">        putforks();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果我们简单地为每把叉子建立一个信号量，然后这样构建 getforks() 和 putforks()：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">left</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;<span class="keyword">return</span> p;&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">right</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;<span class="keyword">return</span> (p + <span class="number">1</span>) % PHI_NUM;&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getforks</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    sem_wait(forks[left(p)]);</span><br><span class="line">    sem_wait(forks[right(p)]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">putforks</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    sem_post(forks[left(p)]);</span><br><span class="line">    sem_post(forks[right(p)]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>容易发现这个程序有死锁风险：如果每个哲学家都拿起了自己左手的叉子，那么所有人都会等待自己右手边的叉子，而又没有任何人会放下自己左手上的叉子——死锁。<a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2031%20-%20threads_sema/dining_philosophers_deadlock_print.c">dining_philosophers_deadlock_print.c</a> 打印出了死锁的局面。</p>
+<p>如果锁的需求链出现了环，就会发生死锁，Dijkstra 用一个简单的方法解决了这个问题：只要安排某一个哲学家先拿右手叉子再拿左手叉子，就可以破这个局：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getforks</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (p == PHI_NUM) &#123;</span><br><span class="line">        sem_wait(forks[right(p)]);</span><br><span class="line">        sem_wait(forks[left(p)]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        sem_wait(forks[left(p)]);</span><br><span class="line">        sem_wait(forks[right(p)]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2031%20-%20threads_sema/dining_philosophers_no_deadlock.c">dining_philosophers_no_deadlock.c</a> 提供了完整的实现。</p>
+<h2 id="31-7-How-To-Implement-Semaphores"><a href="#31-7-How-To-Implement-Semaphores" class="headerlink" title="31.7 How To Implement Semaphores"></a>31.7 How To Implement Semaphores</h2><p>我们在 31.1 已经建立了信号量的语义，因此用条件变量实现信号量 (不妨称之为 zemaphore) 非常简单：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">zem_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    <span class="keyword">pthread_cond_t</span> cond;</span><br><span class="line">    <span class="keyword">pthread_mutex_t</span> lock;</span><br><span class="line">&#125;<span class="keyword">zem_t</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zem_init</span><span class="params">(<span class="keyword">zem_t</span> *z, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">    z-&gt;val = val;</span><br><span class="line">    Cond_init(&amp;z-&gt;cond); <span class="comment">// 带返回值检查的 pthread_cond_init()</span></span><br><span class="line">    Mutex_init(&amp;z-&gt;lock);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zem_wait</span><span class="params">(<span class="keyword">zem_t</span> *z)</span> </span>&#123;</span><br><span class="line">    Mutex_lock(&amp;z-&gt;lock);</span><br><span class="line">    <span class="keyword">while</span> (z-&gt;val &lt;= <span class="number">0</span>)</span><br><span class="line">        Cond_wait(&amp;z-&gt;cond, &amp;z-&gt;lock);</span><br><span class="line">    z-&gt;val--;</span><br><span class="line">    Mutex_unlock(&amp;z-&gt;lock);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zem_post</span><span class="params">(<span class="keyword">zem_t</span> *z)</span> </span>&#123;</span><br><span class="line">    Mutex_lock(&amp;z-&gt;lock);</span><br><span class="line">    z-&gt;val++;</span><br><span class="line">    Cond_signal(&amp;z-&gt;cond);</span><br><span class="line">    Mutex_unlock(&amp;z-&gt;lock);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2031%20-%20threads_sema/zemaphore.h">zemaphore.h</a> 提供了完整的实现，<a target="_blank" rel="noopener" href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2031%20-%20threads_sema/zemaphore.c">zemaphore.c</a> 提供了一个使用 zemaphores 的例子。 </p>
+<h2 id="31-8-Summary"><a href="#31-8-Summary" class="headerlink" title="31.8 Summary"></a>31.8 Summary</h2><p>略。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/18/ANSI%20Escape%20Code%20-%20Quick%20Manual/" rel="prev" title="ANSI Escape Code: Quick Tutorial">
+                  <i class="fa fa-chevron-left"></i> ANSI Escape Code: Quick Tutorial
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/02/22/OSTEP/OSTEP%20Chapter%2030%20-%20Condition%20Variables/" rel="next" title="OSTEP Chapter 30: Condition Variables">
+                  OSTEP Chapter 30: Condition Variables <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
