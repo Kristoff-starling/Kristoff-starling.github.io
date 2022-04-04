@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Minilab%2001%20-%20pstree/</loc>
+    <lastmod>2022-04-04</lastmod>
+  </url>
+  <url>
+    <loc>https://kristoff-starling.github.io/2022/04/04/NJU-OS%20Lecture%2014%20-%20C%20Library/</loc>
+    <lastmod>2022-04-04</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/02/21/OSTEP/OSTEP%20Chapter%2031%20-%20Semaphores/</loc>
     <lastmod>2022-04-01</lastmod>
   </url>
@@ -38,10 +46,6 @@
   </url>
   <url>
     <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Lab%2000%20-%20amgame/</loc>
-    <lastmod>2022-03-28</lastmod>
-  </url>
-  <url>
-    <loc>https://kristoff-starling.github.io/2022/03/11/NJU-OS%20Minilab%2001%20-%20pstree/</loc>
     <lastmod>2022-03-28</lastmod>
   </url>
   <url>
