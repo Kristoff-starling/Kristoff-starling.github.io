@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Overview该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。在技术上有如下要点：  维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lab 1: Physical Memory Manager">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/04/06/NJU-OS%20Lab%201%20-%20pmm/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Overview该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。在技术上有如下要点：  维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-06T10:19:21.160Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/04/06/NJU-OS%20Lab%201%20-%20pmm/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/04/06/NJU-OS%20Lab%201%20-%20pmm/","path":"2022/04/06/NJU-OS Lab 1 - pmm/","title":"NJU-OS Lab 1: Physical Memory Manager"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lab 1: Physical Memory Manager | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Defensive-Programming"><span class="nav-number">2.</span> <span class="nav-text">Defensive Programming</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Performance-Tuning"><span class="nav-number">3.</span> <span class="nav-text">Performance Tuning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Fast-Path"><span class="nav-number">3.1.</span> <span class="nav-text">Fast Path</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Slow-Path"><span class="nav-number">3.2.</span> <span class="nav-text">Slow Path</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">59</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/04/06/NJU-OS%20Lab%201%20-%20pmm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lab 1: Physical Memory Manager
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-04-06 00:00:00 / 修改时间：18:19:21" itemprop="dateCreated datePublished" datetime="2022-04-06T00:00:00+08:00">2022-04-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lab-Reports/" itemprop="url" rel="index"><span itemprop="name">Lab Reports</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。在技术上有如下要点：</p>
+<ul>
+<li><p>维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。<span id="more"></span></p>
+</li>
+<li><p>由于 kfree() 只传入了要释放内存块的起始地址，而没有传入 size，所以我们应当在 kalloc() 的时候记录每个释放出去的内存块的大小。笔者最初的实现是维护了一个分配出去的内存块的链表，kfree() 到来时，在链表里查找给定的地址是否存在以及对应的大小。但这样效率太低，于是笔者使用了在地址前打魔数的方法。笔者定义了一个如下的 header：</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ALLOC_MAGIC 0x1234567;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">header_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">size_t</span> sz;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="keyword">uintptr_t</span> magic;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> __<span class="title">header_t</span> *<span class="title">next</span>;</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;<span class="keyword">header_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>  每个内存块前都有一个这样的 header。这个 header 的好处是：未分配内存和已分配内存可以共用这个 header，当内存块处于未分配状态时，内存块被放在链表中，union 字段存放的是下一个链表节点的地址；当内存块处于已分配状态时，union 字段存放魔数。一个 kfree() 地址来临时，只要查看其前一个 <code>uintptr_t</code> 中是不是 ALLOC_MAGIC，就能确定这个地址合不合法，再往前看就能获得内存块的 size。</p>
+<p>  (注：使用 header 的方法有一个弱点：原本在堆区中 1B 的内存加上 header 后变得很大。此外，由于对齐的原因，我们无法将多个大小相同的内存块“挨在一起”存放在堆区中，中间有很多“洞”。)</p>
+</li>
+<li><p>由于 pmm 会被并发地执行，所以访问共享数据结构要上锁。</p>
+</li>
+</ul>
+<h2 id="Defensive-Programming"><a href="#Defensive-Programming" class="headerlink" title="Defensive Programming"></a>Defensive Programming</h2><p>笔者认为以下的防御性编程是有意义的：</p>
+<ul>
+<li>在 kalloc(), kfree() 中加入足够的对地址性质，空间大小分析的 panic(), panic_on() 等，这有助于提前发现 failure。</li>
+<li>笔者实现的自旋锁中记录了当前拥有锁的 CPU 编号，这样在 acquire() 和 release() 前检查当前是否拥有锁，可以有效防御 AA-deadlock 和一些意料之外的情况。</li>
+<li>kalloc()/kfree() 结束时应该将对应内存区间 memset 成奇怪数值，这样后续使用时如果忘了清零/地址溢出，读到垃圾数据可以加快 failure 出现的速度，减少排查 bug 的时间。</li>
+</ul>
+<p>但以上防御性编程对效率有一定影响，因此笔者在提交 OJ 的版本中没有编译这些防御性编程。</p>
+<h2 id="Performance-Tuning"><a href="#Performance-Tuning" class="headerlink" title="Performance Tuning"></a>Performance Tuning</h2><p>该实验对效率有一定的要求，笔者主要使用 Linux perf 工具对代码的运行时间/并行度进行观测。本地 Workload 的信息为：$60%$ 的 128K 以内内存分配，$30%$ 的 pagesize 内存分配，$10%$ 的大内存分配。释放的频率和分配相仿。每个核做 400,000 次分配和回收。</p>
+<p>笔者做过如下优化：</p>
+<h3 id="Fast-Path"><a href="#Fast-Path" class="headerlink" title="Fast Path"></a>Fast Path</h3><ul>
+<li><p>将整个堆区分成 <code>cpu_count()</code> 份，每个 CPU 核只在自己的那一份的链表中 alloc() 和 free() (free 时根据地址还到相应的资源区中)，因为一个核的 kalloc() 可能在另一个核中 kfree()，所以即使分成了多份，访问数据结构依旧要上锁。如果本地资源不足，则从别的资源区偷资源。该做法有一定效率提升，但不明显。</p>
+</li>
+<li><p>slab。笔者对 1KB 以下内存分配的每种大小都开了一个单独的链表，对 pagesize (4KB) 也开了一个链表。slab 的核心做法是：没有资源时走 slow path，从全局资源中批发很多小块串成链表；有资源时直接从链表头取一个小块。这里每次走 slow path 批发多少个小块是一个需要调整的参数，不同的参数会对效率和失败率产生影响。</p>
+<p>  这里的一个细节是：笔者希望每个核从自己的 slab 中获取资源，释放时将资源释放到自己的 slab 中，这样 fast path 不需要上锁。但提交 OJ 发现 smp=2 时就会出现 low memory usage，这很可能是因为 OJ 上两个核的任务不对称，如一个核专门 kalloc()，一个核专门 lfree()，导致资源全部堆积在第二个核的 slab 里无法利用。因此笔者不得不对 slab 的访问上锁，本地 slab 没有资源时去偷别人的 slab 的资源。</p>
+</li>
+<li><p>为了减少 slab 上的锁拥堵，笔者尝试了以下两种“玄学”优化：</p>
+<ul>
+<li>每个核 kalloc() 时随机一个 slab 取资源，kfree() 时随机一个 slab 还资源 (其实两个都随机和只随机一个效果是一样的)。该策略只需要访问一个 slab，比之前的偷资源策略要高效一些，且打破了”不对称任务“约束，不会 low memory usage。该优化在本地 workload 中显著减少了锁的拥堵程度。</li>
+<li>为了进一步减少锁的拥堵 (毕竟两个核随机到一个 slab 的概率还是不小的)，笔者给每个核选定一个 target slab (这是一个 permutation)，每个核向 target slab 索取资源，释放时归还到 target slab 中。为了避免“不对称任务”约束，每进行一定次数的分配后，shuffle 一下 target slab 的 permutation。该优化在本地的 workload 中相较前一种方法确实进一步减少了锁的拥堵程度，但没有看到明显的效率提升。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Slow-Path"><a href="#Slow-Path" class="headerlink" title="Slow Path"></a>Slow Path</h3><ul>
+<li><p>为了防止 (可以避免的) 过于破碎的内存，链表中应当有合并机制，即插入一个节点后，将其与左右邻居比较，若端点重合则合并节点。</p>
+</li>
+<li><p>OSTEP 中提到过 best/first/next fit 等多种寻找可用节点的策略，如果使用 first fit，一段时间后堆区的前部就会出现较多破碎内存，后部相对完整，使搜索相对较慢。next fit 理论上会有更好的表现，但笔者没有在本地测试中观测到明显的效率提升。</p>
+</li>
+<li><p>为了进一步减少破碎内存，笔者使用如下策略：一个内存块如果被分配完后剩余空间过少 (小于一个阈值)，则不选择切分这个内存块，而是将整块给当前分配。这样可以减少链表中容量很小的内存块个数。该优化在本地 workload 中体现出了效果。</p>
+</li>
+<li><p>在一次 alloc() 失败后，记录这次的需求大小，在下一次 free() 来临之前，如果再出现大于之前失败最小值的 alloc()，可以不遍历链表直接返回 NULL。注意 free() 之后要将记录变量清空。该优化在失败率比较高的 workload 中体现出了效果。</p>
+</li>
+<li><p>笔者发现完全抛弃链表，只用一个全局指针维护堆区，对于一个分配寻找全局指针最近的下一个对齐点 (结合 slab，kfree() 直接放到 slab 中) 的方法不会在 OJ 中报 low memory usage。这样复杂的链表操作被大幅简化。该优化在本地 workload 中体现出巨大效果。</p>
+<p>  (注：如果很小的内存 alloc 和很大的内存 alloc 交替出现，该方法会浪费很多内存。该方法属于用失败率换效率的一个尝试。)</p>
+</li>
+</ul>
+<p>即使笔者结合 Fast Path 和 Slow Path 中能想到的最优的实现，也无法通过旧版 OJ 上 <code>smp=8</code> 的测试用例。在本地 workload 下笔者的最优实现可以在 1.5s 到 2s 完成 8 核的所有任务。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/04/NJU-OS%20Lecture%2014%20-%20C%20Library/" rel="prev" title="NJU-OS Lecture 14: C Library">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 14: C Library
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
