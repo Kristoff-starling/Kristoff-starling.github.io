@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="NJU-OS Midterm TutorialProblems简答题现有如下代码： 12345678910111213141516int volatile sum &#x3D; 0;void do_sum() &amp;#123;  int t;&#x2F;* 1 *&#x2F;  t &#x3D; sum;&#x2F;* 2 *&#x2F;  t +&#x3D; 1;&#x2F;* 3 *&#x2F;  sum &#x3D; t;&#x2F;* 4 *&#x2F;  t &#x3D; sum;&#x2F;* 5 *&#x2F;  t +&#x3D; 1;&#x2F;*">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Midterm Tutorial">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/04/07/NJU-OS%20Midterm%20Tutorial/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="NJU-OS Midterm TutorialProblems简答题现有如下代码： 12345678910111213141516int volatile sum &#x3D; 0;void do_sum() &amp;#123;  int t;&#x2F;* 1 *&#x2F;  t &#x3D; sum;&#x2F;* 2 *&#x2F;  t +&#x3D; 1;&#x2F;* 3 *&#x2F;  sum &#x3D; t;&#x2F;* 4 *&#x2F;  t &#x3D; sum;&#x2F;* 5 *&#x2F;  t +&#x3D; 1;&#x2F;*">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-08T13:43:18.966Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/04/07/NJU-OS%20Midterm%20Tutorial/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/04/07/NJU-OS%20Midterm%20Tutorial/","path":"2022/04/07/NJU-OS Midterm Tutorial/","title":"NJU-OS Midterm Tutorial"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Midterm Tutorial | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NJU-OS-Midterm-Tutorial"><span class="nav-number">1.</span> <span class="nav-text">NJU-OS Midterm Tutorial</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Problems"><span class="nav-number">1.1.</span> <span class="nav-text">Problems</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E7%AD%94%E9%A2%98"><span class="nav-number">1.1.1.</span> <span class="nav-text">简答题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E7%A8%8B%E9%A2%98"><span class="nav-number">1.1.2.</span> <span class="nav-text">编程题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Solutions"><span class="nav-number">1.2.</span> <span class="nav-text">Solutions</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E7%AD%94%E9%A2%98-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">简答题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E7%A8%8B%E9%A2%98-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">编程题</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/04/07/NJU-OS%20Midterm%20Tutorial/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Midterm Tutorial
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-07 00:00:00" itemprop="dateCreated datePublished" datetime="2022-04-07T00:00:00+08:00">2022-04-07</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-08 21:43:18" itemprop="dateModified" datetime="2022-04-08T21:43:18+08:00">2022-04-08</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Material/" itemprop="url" rel="index"><span itemprop="name">Material</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="NJU-OS-Midterm-Tutorial"><a href="#NJU-OS-Midterm-Tutorial" class="headerlink" title="NJU-OS Midterm Tutorial"></a>NJU-OS Midterm Tutorial</h1><h2 id="Problems"><a href="#Problems" class="headerlink" title="Problems"></a>Problems</h2><h3 id="简答题"><a href="#简答题" class="headerlink" title="简答题"></a>简答题</h3><p>现有如下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> sum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">do_sum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> t;</span><br><span class="line"><span class="comment">/* 1 */</span>  t = sum;</span><br><span class="line"><span class="comment">/* 2 */</span>  t += <span class="number">1</span>;</span><br><span class="line"><span class="comment">/* 3 */</span>  sum = t;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 4 */</span>  t = sum;</span><br><span class="line"><span class="comment">/* 5 */</span>  t += <span class="number">1</span>;</span><br><span class="line"><span class="comment">/* 6 */</span>  sum = t;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 7 */</span>  t = sum;</span><br><span class="line"><span class="comment">/* 8 */</span>  t += <span class="number">1</span>;</span><br><span class="line"><span class="comment">/* 9 */</span>  sum = t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>有两个线程 T1 和 T2 均执行 <code>do_sum</code> 代码 (共享 sum 变量)。假设线程每次按 1, 2, 3, … 9 顺序执行一条语句，且读/写会立即在共享内存中生效。例如，若两个线程以如下顺序执行语句，即相当于 T1 执行完后再执行 T2：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T1.1 T1.2 T1.3 T1.4 T1.5 T1.6 T1.7 T1.8 T1.9</span><br><span class="line">T2.1 T2.2 T2.3 T2.4 T2.5 T2.6 T2.7 T2.8 T2.9</span><br></pre></td></tr></table></figure>
+
+<p>将得到 <code>sum = 6</code> (但这显然不是最小值)。你需要给出使 sum 最小化的一个线程执行顺序 (T1 和 T2 可以交错执行)。</p>
+<h3 id="编程题"><a href="#编程题" class="headerlink" title="编程题"></a>编程题</h3><p>假设我们需要对很多 $x(x&gt;0)$ 计算 $f(x)$ 的和。每个 $f(x)$ 都可能会计算较长的时间。你需要在 <code>thread.h</code> 和 <code>thread-sync.h</code> (Online Judge 会使用此实现) 的基础上实现不少于 4 个 worker 线程的并行处理：</p>
+<ul>
+<li>所有待处理的  都是 int 类型，从标准输入 (stdin) 读入直到输入结束</li>
+<li>对每一个整数 ，都调用来自外部的 <code>long f(int x);</code> 计算，这个函数是线程安全的</li>
+<li>你的程序需要输出所有 $f(x)$ 的和 (保证和不超过 long 的范围)，并正常终止</li>
+<li>你需要尽快处理来自 stdin 的输入 (读入以后统一处理将导致 Time Limit Exceeded)</li>
+<li>个别的 $f(x)$ 可能会消耗较长的时间，请确保此时在有待计算的  时其他线程不会被闲置</li>
+</ul>
+<p>注意：编程时请自觉仅使用手册，不要参考已有的代码或教科书等材料。</p>
+<h2 id="Solutions"><a href="#Solutions" class="headerlink" title="Solutions"></a>Solutions</h2><h3 id="简答题-1"><a href="#简答题-1" class="headerlink" title="简答题"></a>简答题</h3><p>本题乍一眼会觉得两个程序完全交错运行会得到最小值 3，但实际上最小值可以达到 2。为了避免繁杂的思考，我们可以直接写一个小程序解决问题：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> seq[<span class="number">48</span>], ans = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printseq</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;ans: %d\n&quot;</span>, ans);</span><br><span class="line">	<span class="keyword">int</span> c1 = <span class="number">0</span>, c2 = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">18</span>; i++)</span><br><span class="line">		<span class="keyword">if</span> (seq[i] == <span class="number">0</span>) c1++, <span class="built_in">printf</span>(<span class="string">&quot;T1.%d &quot;</span>, c1);</span><br><span class="line">		<span class="keyword">else</span> c2++, <span class="built_in">printf</span>(<span class="string">&quot;T2.%d &quot;</span>, c2);</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">check</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> sum = <span class="number">0</span>, tid, t[<span class="number">2</span>] = &#123;<span class="number">0</span>, <span class="number">0</span>&#125;, c[<span class="number">2</span>] = &#123;<span class="number">0</span>, <span class="number">0</span>&#125;, type;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">18</span>; i++) &#123;</span><br><span class="line">		tid = seq[i]; c[tid]++; type = c[tid] % <span class="number">3</span>;</span><br><span class="line">		<span class="built_in"><span class="keyword">switch</span></span> (type) &#123;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">1</span>: t[tid] = sum; <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">2</span>: t[tid]++;     <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">0</span>: sum = t[tid]; <span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (sum &lt; ans) ans = sum, <span class="built_in">printseq</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> step,<span class="keyword">int</span> cnt)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (step == <span class="number">19</span>) &#123;<span class="keyword">if</span> (cnt == <span class="number">9</span>) <span class="built_in">check</span>(); <span class="keyword">return</span>;&#125;</span><br><span class="line">	seq[step] = <span class="number">0</span>; <span class="built_in">dfs</span>(step + <span class="number">1</span>, cnt);</span><br><span class="line">	seq[step] = <span class="number">1</span>; <span class="built_in">dfs</span>(step + <span class="number">1</span>, cnt + <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="built_in">dfs</span>(<span class="number">1</span>,<span class="number">0</span>); <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们只要为两个线程各开一个变量，就可以枚举所有可能的并发行为。一种可以使最后答案达到 2 的并发执行序列为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">T1.1 T1.2</span><br><span class="line">T2.1</span><br><span class="line">T1.3 T1.4 T1.5 T1.6</span><br><span class="line">T2.2 T2.3</span><br><span class="line">T1.7 T1.8</span><br><span class="line">T2.4 T2.5 T2.6 T2.7 T2.8 T2.9</span><br><span class="line">T1.9</span><br></pre></td></tr></table></figure>
+
+<p>事实上，对于 $k$ 个线程加 $n$ 次的程序，只要 $n,k\geq 2$，sum 的最小值都是 2。我们考虑这样一个调度：</p>
+<ul>
+<li>线程 1 执行第一次 <code>t = sum;</code> <code>t++</code> ，然后暂停。此时线程 1 的 t 为 1。</li>
+<li>线程 2 执行到最后一轮。</li>
+<li>线程 1 执行 <code>sum = t;</code>，然后暂停。此时 sum 变回 1。</li>
+<li>线程 2 执行最后一轮的 <code>t = sum;</code> <code>t++</code>，然后暂停。此时线程 2 的 t 为 2。</li>
+<li>让除了线程 2 以外的所有线程都跑完。</li>
+<li>线程 2 执行最后一轮的 <code>sum = t;</code>，所有线程执行完毕。sum 的最终结果为 2。</li>
+</ul>
+<p>这题旨在说明：仅仅是非常简单的并发程序，其运行过程也可能超出人类的理解范围。“反直觉“的来源是： Verifying Sequential Consistency (VSC) 问题是一个 NPC 问题。这里所说的 VSC 问题是这样一个问题：</p>
+<blockquote>
+<p>现在有若干个线程，每个线程中能看到若干个线程本地的顺序操作。操作分为两类：</p>
+<ul>
+<li><code>write(x, val)</code>：向全局变量 x 中写入数值 val。</li>
+<li><code>read(x) = val</code>：读全局变量 x 的值，得到的结果是 val。</li>
+</ul>
+<p>我们能否将各个线程的操作排出一个全序，使得所有 read() 操作的结果都是正确的？</p>
+</blockquote>
+<p>该问题是 NP 问题是显然的，我们考虑将 3-SAT 问题规约到它来证明 VSC 问题是 NP-hard 问题：不妨设一个 3-SAT 问题的实例中出现的变量为 $x_1,x_2,\cdots, x_n$，</p>
+<ul>
+<li>阶段1 (给变量赋值)：我们创建 $2n$ 个线程，它们的第一个操作分别是 <code>write(x1,0)</code> <code>write(x1,1)</code> <code>write(x2,0)</code> <code>write(x2,1)</code> … <code>write(xn,0)</code> <code>write(xn,1)</code>。</li>
+<li>阶段2 (确认变量的值并给从句赋值) 对于每个从句，这里以 $C_i=(x\or \lnot y)$ 举例，我们在某一个线程中做两步操作：<code>read(x)=1</code> <code>write(Si,1)</code>；在另一个线程中做两步操作：<code>read(y)=0</code> <code>write(Si,1)</code>。</li>
+<li>阶段3 (收答案)：在一个收答案线程中连做 <code>read(S1)=1</code> <code>read(S2)=1</code> … <code>read(Sn)=1</code> 。</li>
+<li>阶段4 (收尾)：阶段 1 的赋值可能会导致阶段 2 有的线程被阻塞注。为了保证每个线程可以结束，我们要在另外的一些线程中对于每个变量 $x_i$ 把 <code>write(xi,0)</code> 和 <code>write(xi,1)</code> 再做一遍。</li>
+</ul>
+<p>此外，我们需要一些同步机制，保证所有线程阶段 $i$ 的操作都做完了再进入阶段 $i+1$。我们可以额外设置一些标志变量表示阶段 $i$ 的某一个操作有没有完成。在下一个阶段开始之前 read 上一个阶段所有的标志变量，确定都是 1 了再开始做。</p>
+<p>以上的操作次数显然是多项式。一个 3-SAT 式如果有解，我们可以在阶段1通过线程的调度、覆盖让变量赋上正确的值，阶段2中可以使从句为真的线程继续执行并给所有 $S_i$ 赋值 1。阶段3收答案线程可以运行完毕，阶段4释放阶段2被阻塞的线程。如果线程调度有解，说明收答案线程看到了所有从句被满足，又因为我们有阶段同步机制，所以我们只要查看阶段1结束时各个变量的值，就知道什么样的赋值可以使所有从句满足。</p>
+<p>综上，VSC 是一个 NPC 问题。</p>
+<h3 id="编程题-1"><a href="#编程题-1" class="headerlink" title="编程题"></a>编程题</h3><p>该问题其实只要将所有的任务交给线程，线程读入时上锁即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;thread.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;thread-sync.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">long</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span> x)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> sum[<span class="number">5</span>] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line"><span class="keyword">mutex_t</span> lock = MUTEX_INIT();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">calc</span><span class="params">(<span class="keyword">int</span> tid)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">long</span> rt; <span class="keyword">int</span> x;</span><br><span class="line">	<span class="keyword">for</span> (;;)</span><br><span class="line">	&#123;</span><br><span class="line">		mutex_lock(&amp;lock);</span><br><span class="line">		<span class="keyword">if</span> (feof(<span class="built_in">stdin</span>) || (<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;x) != <span class="number">1</span>))</span><br><span class="line">		&#123;</span><br><span class="line">			mutex_unlock(&amp;lock);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		mutex_unlock(&amp;lock);</span><br><span class="line">		sum[tid] += f(x);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) create(calc);</span><br><span class="line">	join();</span><br><span class="line">	<span class="keyword">long</span> ans = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">4</span>; i++) ans += sum[i];</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%ld\n&quot;</span>, ans);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>事实上，C 标准库是线程安全的，因此读入根本不需要上锁。上面的实现中可以把锁去掉：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tworker</span><span class="params">(<span class="keyword">int</span> tid)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> x;</span><br><span class="line">    <span class="keyword">while</span> (!feof(<span class="built_in">stdin</span>) &amp;&amp; <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;x) == <span class="number">1</span>)</span><br><span class="line">        sum[tid] += f(x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们也可以用生产者-消费者模型，让 main() 函数负责所有的读入，将数据分发给各个线程。为了让各个线程能够结束，main() 函数读完数据后再向队列中放线程个数个 -1，线程读到负数就 break。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;thread.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAX 100</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">long</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span> x)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> sum[<span class="number">5</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">sync_t</span> &#123;</span></span><br><span class="line">	<span class="keyword">pthread_mutex_t</span> lock;</span><br><span class="line">	<span class="keyword">pthread_cond_t</span> cond;</span><br><span class="line">	<span class="keyword">int</span> buf[MAX], rp, wp;</span><br><span class="line">&#125;<span class="keyword">sync_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">sync_t</span> s;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init_sync</span><span class="params">(<span class="keyword">sync_t</span> *sync)</span> </span>&#123;</span><br><span class="line">	pthread_mutex_init(&amp;sync-&gt;lock, <span class="literal">NULL</span>);</span><br><span class="line">	pthread_cond_init(&amp;sync-&gt;cond, <span class="literal">NULL</span>);</span><br><span class="line">	sync-&gt;rp = sync-&gt;wp = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Tconsumer_wait</span><span class="params">(<span class="keyword">sync_t</span> *sync)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rt;</span><br><span class="line">	pthread_mutex_lock(&amp;sync-&gt;lock);</span><br><span class="line">	<span class="keyword">while</span> (sync-&gt;rp == sync-&gt;wp)</span><br><span class="line">		pthread_cond_wait(&amp;sync-&gt;cond, &amp;sync-&gt;lock);</span><br><span class="line">	rt = sync-&gt;buf[sync-&gt;rp % MAX];</span><br><span class="line">	sync-&gt;rp++;</span><br><span class="line">	pthread_cond_broadcast(&amp;sync-&gt;cond);</span><br><span class="line">	pthread_mutex_unlock(&amp;sync-&gt;lock);</span><br><span class="line">	<span class="keyword">return</span> rt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tproducer_wait</span><span class="params">(<span class="keyword">sync_t</span> *sync, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">	pthread_mutex_lock(&amp;sync-&gt;lock);</span><br><span class="line">	<span class="keyword">while</span> (sync-&gt;wp == sync-&gt;rp + MAX)</span><br><span class="line">		pthread_cond_wait(&amp;sync-&gt;cond, &amp;sync-&gt;lock);</span><br><span class="line">	sync-&gt;buf[sync-&gt;wp % MAX] = val;</span><br><span class="line">	sync-&gt;wp++;</span><br><span class="line">	pthread_cond_broadcast(&amp;sync-&gt;cond);</span><br><span class="line">	pthread_mutex_unlock(&amp;sync-&gt;lock);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tconsumer</span><span class="params">(<span class="keyword">int</span> tid)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> x;</span><br><span class="line">	<span class="keyword">while</span> ((x = Tconsumer_wait(&amp;s)) &gt; <span class="number">0</span>) sum[tid] += f(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> x;</span><br><span class="line">	init_sync(&amp;s);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">4</span>; i++)</span><br><span class="line">		create(Tconsumer);</span><br><span class="line">	<span class="keyword">while</span> (!feof(<span class="built_in">stdin</span>) &amp;&amp; <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;x) == <span class="number">1</span>) Tproducer_wait(&amp;s, x);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">4</span>; i++)</span><br><span class="line">		Tproducer_wait(&amp;s, <span class="number">-1</span>);</span><br><span class="line">	join();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">long</span> ans = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">4</span>; i++) ans += sum[i];</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;%ld\n&quot;</span>, ans); <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/06/NJU-OS%20Lab%201%20-%20pmm/" rel="prev" title="NJU-OS Lab 1: Physical Memory Manager">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lab 1: Physical Memory Manager
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
