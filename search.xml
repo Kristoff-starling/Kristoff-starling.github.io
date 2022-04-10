@@ -4623,4 +4623,75 @@ end</pre>
         <category>Book Notes</category>
       </categories>
   </entry>
+  <entry>
+    <title>OSTEP Chapter 04: The Abstraction: The Process</title>
+    <url>/2022/03/20/OSTEP/OSTEP%20Chapter%2004%20-%20The%20Abstraction%20-%20The%20Process/</url>
+    <content><![CDATA[<p>进程就是正在运行的程序。程序本身只是存储在硬盘上的指令和数据的集合，只有 OS 将其加载到内存中运行起来时程序才会发挥作用。</p>
+<p>通常操作系统上会运行多个程序 - 比 CPU 核个数更多的程序。但每个程序并不需要关心 CPU 当前是否可用，这是因为 OS 为进程虚拟化了 CPU。OS 的基本操作是运行一个进程，然后暂停它去运行一会儿另外一个进程，这是分是运行的基本思想。<span id="more"></span></p>
+<p>为了实现 CPU 的虚拟化，OS 既需要底层的机制，也需要上层的智慧。所谓<strong>机制 (mechanism)</strong> 指的是实现某个功能所需要的一些底层的方法或协议。比如操作系统为了实现进程的切换，必须要有上下文切换的机制。分时运行也是一种机制，被所有的现代操作系统采用。</p>
+<blockquote>
+<p><strong>Time Sharing 和 Space Sharing</strong></p>
+<p>Time Sharing 是 OS 共享资源的一种基本方式，即每个人用一会儿，然后把资源交给下一个人。Time sharing 不仅仅用在多个进程/线程共享 CPU 上，共享的资源都可以使用这种机制，比如网络连接。</p>
+<p>与 time sharing 互为补充的是 space sharing。磁盘就是一种 space sharing 的模型。</p>
+</blockquote>
+<p>在机制之上是策略。<strong>策略 (policy)</strong> 是操作系统做出决定的一些算法，比如如何调度各个进程就需要一个 scheduling policy，这里有多种可能性，比如根据优先级，根据历史运行时长等等 (如果说机制是 OS 必须的东西，那么策略影响的其实只是效率)。</p>
+<blockquote>
+<p><strong>区分机制和策略</strong></p>
+<p>我们可以这样区分机制和策略：机制回答的是一个 how question，比如“如何实现上下文切换？” 而策略回答的是一个 which question，比如“下一个用 CPU 的应该是哪个进程？”</p>
+<p>区分好机制和策略，我们在修改策略时就不必关注底层的机制，更利于模块化编程。</p>
+</blockquote>
+<h2 id="4-1-The-Abstraction-A-Process"><a href="#4-1-The-Abstraction-A-Process" class="headerlink" title="4.1 The Abstraction: A Process"></a>4.1 The Abstraction: A Process</h2><p>OS 为正在运行的程序提供的抽象是进程。进程中包括的内容当然是一个正在运行的程序所拥有的机器状态：</p>
+<ul>
+<li>Memory：每一个程序都有自己可以读写的内存区域，称为地址空间 (address space)。</li>
+<li>Regitsters：进程中应该有各个寄存器的信息，尤其是几个比较重要的寄存器：PC，stack pointer，frame pointer 等。</li>
+<li>I/O Information：程序要和可持久化存储设备打交道，因此进程会存储一些 I/O 相关信息，比如当前打开了哪些文件。</li>
+</ul>
+<h2 id="4-2-Process-API"><a href="#4-2-Process-API" class="headerlink" title="4.2 Process API"></a>4.2 Process API</h2><p>从抽象模型的角度，我们可以提出如下几类进程相关的 API：</p>
+<ul>
+<li>create：创建一个新的进程。</li>
+<li>destroy：虽然一个运行的程序结束时会自动退出，但我们仍然应该有 API 可以强制杀死一个进程。</li>
+<li>wait：等待一个进程结束。</li>
+<li>Miscellaneous Control：比如暂时挂起一个进程，或让一个进程继续运行。</li>
+<li>Status：访问一个进程的信息，比如总运行时长，现在处于什么状态 (running, suspended etc.) 等。</li>
+</ul>
+<h2 id="4-3-Process-Creation-A-Little-More-Detail"><a href="#4-3-Process-Creation-A-Little-More-Detail" class="headerlink" title="4.3 Process Creation: A Little More Detail"></a>4.3 Process Creation: A Little More Detail</h2><p>创建一个进程 (让一个程序跑起来) 通常要经过以下步骤：</p>
+<ul>
+<li><p>将程序的代码和静态数据 (比如初始化过的全局变量) 加载到内存中。程序本身是以某种可执行文件的格式存放在硬盘上的 (比如 Linux 中默认使用 ELF)，文件会告诉 OS 应该把哪些代码加载到内存的哪些位置。</p>
+<p>  早期的操作系统会 eagerly 地完成加载这个动作。但现代操作系统通常使用延迟加载：当程序真正要用到某一部分的代码/数据时再将数据从交换分区复制进来。</p>
+</li>
+<li><p>为该程序准备一个 run-time stack。以 C 程序为例，程序通常在栈上存储局部变量，此外传给 main() 的参数也保存在栈上。</p>
+</li>
+<li><p>OS 准备一些空间用作该程序的堆区。堆区负责为程序中的动态内存申请提供支持，即 malloc()/free()。</p>
+</li>
+<li><p>做一些和 I/O 相关的准备工作，比如 UNIX 系统中默认为程序打开 stdin, stdout, stderr 三个文件。</p>
+</li>
+<li><p>让 PC 跳转到该程序的入口地址，开始运行。</p>
+</li>
+</ul>
+<h2 id="4-4-Process-State"><a href="#4-4-Process-State" class="headerlink" title="4.4 Process State"></a>4.4 Process State</h2><p>进程的状态通常包括以下几种：</p>
+<ul>
+<li>Running：进程正在 CPU 上运行。</li>
+<li>Ready：程序可以运行，但当前不在 CPU 上。</li>
+<li>Blocked：程序因为做了某种操作使得当前还不能运行 (比如执行 I/O，正在等待数据返回)。</li>
+</ul>
+<p>下面的图很好地反映了三种状态的切换：</p>
+<pre class="mermaid">stateDiagram-v2
+Running --> Ready: Descheduled
+Ready --> Running: Scheduled
+Running --> Blocked: I/O Initiate
+Blocked --> Ready: I/O Done</pre>
+
+<p>OS 的调度器有很多事情要决定：比如 process 1 因为 I/O 操作被阻塞时，是否需要将其他进程 process 2切换上来？如果 process 2 运行时 I/O 操作完成，process 1 从 blocked 变成 ready，那么 OS 是将 process 1 立刻请回来还是先做 process 2？……</p>
+<h2 id="4-5-Data-Structure"><a href="#4-5-Data-Structure" class="headerlink" title="4.5 Data Structure"></a>4.5 Data Structure</h2><p>OS 中有很多维护信息的数据结构，比如对于进程我们应该有一个 process list，链表中的每个节点存储一个进程的相关信息，通常被称为 process control block (PCB)，再比如我们应该有上下文结构体用于 context switching。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// the registers xv6 will save and restore</span></span><br><span class="line"><span class="comment">// to stop and subsequently restart a process</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">context</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> eip;</span><br><span class="line">  <span class="keyword">int</span> esp;</span><br><span class="line">  <span class="keyword">int</span> ebx;</span><br><span class="line">  <span class="keyword">int</span> ecx;</span><br><span class="line">  <span class="keyword">int</span> edx;</span><br><span class="line">  <span class="keyword">int</span> esi;</span><br><span class="line">  <span class="keyword">int</span> edi;</span><br><span class="line">  <span class="keyword">int</span> ebp;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// the different states a process can be in</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">proc_state</span> &#123;</span> UNUSED, EMBRYO, SLEEPING,</span><br><span class="line">RUNNABLE, RUNNING, ZOMBIE &#125;;</span><br><span class="line"><span class="comment">// the information xv6 tracks about each process</span></span><br><span class="line"><span class="comment">// including its register context and state</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">proc</span> &#123;</span></span><br><span class="line">  <span class="keyword">char</span> *mem;                  <span class="comment">// Start of process memory</span></span><br><span class="line">  uint sz;                    <span class="comment">// Size of process memory</span></span><br><span class="line">  <span class="keyword">char</span> *kstack;               <span class="comment">// Bottom of kernel stack for this process</span></span><br><span class="line">  <span class="class"><span class="keyword">enum</span> <span class="title">proc_state</span> <span class="title">state</span>;</span>      <span class="comment">// Process state</span></span><br><span class="line">  <span class="keyword">int</span> pid;                    <span class="comment">// Process ID</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">proc</span> *<span class="title">parent</span>;</span>        <span class="comment">// Parent process</span></span><br><span class="line">  <span class="keyword">void</span> *chan;                 <span class="comment">// If non-zero, sleeping on chan</span></span><br><span class="line">  <span class="keyword">int</span> killed;                 <span class="comment">// If non-zero, have been killed</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">file</span> *<span class="title">ofile</span>[<span class="title">NOFILE</span>];</span> <span class="comment">// Open files</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">inode</span> *<span class="title">cwd</span>;</span>          <span class="comment">// Current directory</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">context</span> <span class="title">context</span>;</span>     <span class="comment">// Switch here to run process</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">trapframe</span> *<span class="title">tf</span>;</span>       <span class="comment">// Trap frame for the current interrupt</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这是 xv6-x86 中的上下文结构体和 PCB。可以看到它存储了比之前提到的更多的一些信息，比如每个进程的内核栈地址，父进程，如果睡眠睡在了哪个地址上，kernel trap 的页面地址等。</p>
+<p>进程的状态也比之间提到的 ready, running, blocked 要多。一些很有用的状态包括 zombie，它表示一个程序已经运行结束，但相关的信息还没有被清空。这种状态可以让调用 wait() 的父进程去检查子进程的返回值是否符合要求。</p>
+<h2 id="4-6-Summary"><a href="#4-6-Summary" class="headerlink" title="4.6 Summary"></a>4.6 Summary</h2><p>略。</p>
+]]></content>
+      <categories>
+        <category>WISC-CS537 Introduction to Operating Systems</category>
+        <category>Book Notes</category>
+      </categories>
+  </entry>
 </search>

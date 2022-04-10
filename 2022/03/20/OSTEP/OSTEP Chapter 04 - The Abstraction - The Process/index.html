@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="进程就是正在运行的程序。程序本身只是存储在硬盘上的指令和数据的集合，只有 OS 将其加载到内存中运行起来时程序才会发挥作用。 通常操作系统上会运行多个程序 - 比 CPU 核个数更多的程序。但每个程序并不需要关心 CPU 当前是否可用，这是因为 OS 为进程虚拟化了 CPU。OS 的基本操作是运行一个进程，然后暂停它去运行一会儿另外一个进程，这是分是运行的基本思想。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSTEP Chapter 04: The Abstraction: The Process">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/03/20/OSTEP/OSTEP%20Chapter%2004%20-%20The%20Abstraction%20-%20The%20Process/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="进程就是正在运行的程序。程序本身只是存储在硬盘上的指令和数据的集合，只有 OS 将其加载到内存中运行起来时程序才会发挥作用。 通常操作系统上会运行多个程序 - 比 CPU 核个数更多的程序。但每个程序并不需要关心 CPU 当前是否可用，这是因为 OS 为进程虚拟化了 CPU。OS 的基本操作是运行一个进程，然后暂停它去运行一会儿另外一个进程，这是分是运行的基本思想。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-10T06:57:50.463Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/03/20/OSTEP/OSTEP%20Chapter%2004%20-%20The%20Abstraction%20-%20The%20Process/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/03/20/OSTEP/OSTEP%20Chapter%2004%20-%20The%20Abstraction%20-%20The%20Process/","path":"2022/03/20/OSTEP/OSTEP Chapter 04 - The Abstraction - The Process/","title":"OSTEP Chapter 04: The Abstraction: The Process"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OSTEP Chapter 04: The Abstraction: The Process | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-The-Abstraction-A-Process"><span class="nav-number">1.</span> <span class="nav-text">4.1 The Abstraction: A Process</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-Process-API"><span class="nav-number">2.</span> <span class="nav-text">4.2 Process API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-Process-Creation-A-Little-More-Detail"><span class="nav-number">3.</span> <span class="nav-text">4.3 Process Creation: A Little More Detail</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4-Process-State"><span class="nav-number">4.</span> <span class="nav-text">4.4 Process State</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-5-Data-Structure"><span class="nav-number">5.</span> <span class="nav-text">4.5 Data Structure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-6-Summary"><span class="nav-number">6.</span> <span class="nav-text">4.6 Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/20/OSTEP/OSTEP%20Chapter%2004%20-%20The%20Abstraction%20-%20The%20Process/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OSTEP Chapter 04: The Abstraction: The Process
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-03-20 00:00:00" itemprop="dateCreated datePublished" datetime="2022-03-20T00:00:00+08:00">2022-03-20</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-10 14:57:50" itemprop="dateModified" datetime="2022-04-10T14:57:50+08:00">2022-04-10</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">WISC-CS537 Introduction to Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/Book-Notes/" itemprop="url" rel="index"><span itemprop="name">Book Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>进程就是正在运行的程序。程序本身只是存储在硬盘上的指令和数据的集合，只有 OS 将其加载到内存中运行起来时程序才会发挥作用。</p>
+<p>通常操作系统上会运行多个程序 - 比 CPU 核个数更多的程序。但每个程序并不需要关心 CPU 当前是否可用，这是因为 OS 为进程虚拟化了 CPU。OS 的基本操作是运行一个进程，然后暂停它去运行一会儿另外一个进程，这是分是运行的基本思想。<span id="more"></span></p>
+<p>为了实现 CPU 的虚拟化，OS 既需要底层的机制，也需要上层的智慧。所谓<strong>机制 (mechanism)</strong> 指的是实现某个功能所需要的一些底层的方法或协议。比如操作系统为了实现进程的切换，必须要有上下文切换的机制。分时运行也是一种机制，被所有的现代操作系统采用。</p>
+<blockquote>
+<p><strong>Time Sharing 和 Space Sharing</strong></p>
+<p>Time Sharing 是 OS 共享资源的一种基本方式，即每个人用一会儿，然后把资源交给下一个人。Time sharing 不仅仅用在多个进程/线程共享 CPU 上，共享的资源都可以使用这种机制，比如网络连接。</p>
+<p>与 time sharing 互为补充的是 space sharing。磁盘就是一种 space sharing 的模型。</p>
+</blockquote>
+<p>在机制之上是策略。<strong>策略 (policy)</strong> 是操作系统做出决定的一些算法，比如如何调度各个进程就需要一个 scheduling policy，这里有多种可能性，比如根据优先级，根据历史运行时长等等 (如果说机制是 OS 必须的东西，那么策略影响的其实只是效率)。</p>
+<blockquote>
+<p><strong>区分机制和策略</strong></p>
+<p>我们可以这样区分机制和策略：机制回答的是一个 how question，比如“如何实现上下文切换？” 而策略回答的是一个 which question，比如“下一个用 CPU 的应该是哪个进程？”</p>
+<p>区分好机制和策略，我们在修改策略时就不必关注底层的机制，更利于模块化编程。</p>
+</blockquote>
+<h2 id="4-1-The-Abstraction-A-Process"><a href="#4-1-The-Abstraction-A-Process" class="headerlink" title="4.1 The Abstraction: A Process"></a>4.1 The Abstraction: A Process</h2><p>OS 为正在运行的程序提供的抽象是进程。进程中包括的内容当然是一个正在运行的程序所拥有的机器状态：</p>
+<ul>
+<li>Memory：每一个程序都有自己可以读写的内存区域，称为地址空间 (address space)。</li>
+<li>Regitsters：进程中应该有各个寄存器的信息，尤其是几个比较重要的寄存器：PC，stack pointer，frame pointer 等。</li>
+<li>I/O Information：程序要和可持久化存储设备打交道，因此进程会存储一些 I/O 相关信息，比如当前打开了哪些文件。</li>
+</ul>
+<h2 id="4-2-Process-API"><a href="#4-2-Process-API" class="headerlink" title="4.2 Process API"></a>4.2 Process API</h2><p>从抽象模型的角度，我们可以提出如下几类进程相关的 API：</p>
+<ul>
+<li>create：创建一个新的进程。</li>
+<li>destroy：虽然一个运行的程序结束时会自动退出，但我们仍然应该有 API 可以强制杀死一个进程。</li>
+<li>wait：等待一个进程结束。</li>
+<li>Miscellaneous Control：比如暂时挂起一个进程，或让一个进程继续运行。</li>
+<li>Status：访问一个进程的信息，比如总运行时长，现在处于什么状态 (running, suspended etc.) 等。</li>
+</ul>
+<h2 id="4-3-Process-Creation-A-Little-More-Detail"><a href="#4-3-Process-Creation-A-Little-More-Detail" class="headerlink" title="4.3 Process Creation: A Little More Detail"></a>4.3 Process Creation: A Little More Detail</h2><p>创建一个进程 (让一个程序跑起来) 通常要经过以下步骤：</p>
+<ul>
+<li><p>将程序的代码和静态数据 (比如初始化过的全局变量) 加载到内存中。程序本身是以某种可执行文件的格式存放在硬盘上的 (比如 Linux 中默认使用 ELF)，文件会告诉 OS 应该把哪些代码加载到内存的哪些位置。</p>
+<p>  早期的操作系统会 eagerly 地完成加载这个动作。但现代操作系统通常使用延迟加载：当程序真正要用到某一部分的代码/数据时再将数据从交换分区复制进来。</p>
+</li>
+<li><p>为该程序准备一个 run-time stack。以 C 程序为例，程序通常在栈上存储局部变量，此外传给 main() 的参数也保存在栈上。</p>
+</li>
+<li><p>OS 准备一些空间用作该程序的堆区。堆区负责为程序中的动态内存申请提供支持，即 malloc()/free()。</p>
+</li>
+<li><p>做一些和 I/O 相关的准备工作，比如 UNIX 系统中默认为程序打开 stdin, stdout, stderr 三个文件。</p>
+</li>
+<li><p>让 PC 跳转到该程序的入口地址，开始运行。</p>
+</li>
+</ul>
+<h2 id="4-4-Process-State"><a href="#4-4-Process-State" class="headerlink" title="4.4 Process State"></a>4.4 Process State</h2><p>进程的状态通常包括以下几种：</p>
+<ul>
+<li>Running：进程正在 CPU 上运行。</li>
+<li>Ready：程序可以运行，但当前不在 CPU 上。</li>
+<li>Blocked：程序因为做了某种操作使得当前还不能运行 (比如执行 I/O，正在等待数据返回)。</li>
+</ul>
+<p>下面的图很好地反映了三种状态的切换：</p>
+<pre class="mermaid">stateDiagram-v2
+Running --> Ready: Descheduled
+Ready --> Running: Scheduled
+Running --> Blocked: I/O Initiate
+Blocked --> Ready: I/O Done</pre>
+
+<p>OS 的调度器有很多事情要决定：比如 process 1 因为 I/O 操作被阻塞时，是否需要将其他进程 process 2切换上来？如果 process 2 运行时 I/O 操作完成，process 1 从 blocked 变成 ready，那么 OS 是将 process 1 立刻请回来还是先做 process 2？……</p>
+<h2 id="4-5-Data-Structure"><a href="#4-5-Data-Structure" class="headerlink" title="4.5 Data Structure"></a>4.5 Data Structure</h2><p>OS 中有很多维护信息的数据结构，比如对于进程我们应该有一个 process list，链表中的每个节点存储一个进程的相关信息，通常被称为 process control block (PCB)，再比如我们应该有上下文结构体用于 context switching。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// the registers xv6 will save and restore</span></span><br><span class="line"><span class="comment">// to stop and subsequently restart a process</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">context</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> eip;</span><br><span class="line">  <span class="keyword">int</span> esp;</span><br><span class="line">  <span class="keyword">int</span> ebx;</span><br><span class="line">  <span class="keyword">int</span> ecx;</span><br><span class="line">  <span class="keyword">int</span> edx;</span><br><span class="line">  <span class="keyword">int</span> esi;</span><br><span class="line">  <span class="keyword">int</span> edi;</span><br><span class="line">  <span class="keyword">int</span> ebp;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// the different states a process can be in</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">proc_state</span> &#123;</span> UNUSED, EMBRYO, SLEEPING,</span><br><span class="line">RUNNABLE, RUNNING, ZOMBIE &#125;;</span><br><span class="line"><span class="comment">// the information xv6 tracks about each process</span></span><br><span class="line"><span class="comment">// including its register context and state</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">proc</span> &#123;</span></span><br><span class="line">  <span class="keyword">char</span> *mem;                  <span class="comment">// Start of process memory</span></span><br><span class="line">  uint sz;                    <span class="comment">// Size of process memory</span></span><br><span class="line">  <span class="keyword">char</span> *kstack;               <span class="comment">// Bottom of kernel stack for this process</span></span><br><span class="line">  <span class="class"><span class="keyword">enum</span> <span class="title">proc_state</span> <span class="title">state</span>;</span>      <span class="comment">// Process state</span></span><br><span class="line">  <span class="keyword">int</span> pid;                    <span class="comment">// Process ID</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">proc</span> *<span class="title">parent</span>;</span>        <span class="comment">// Parent process</span></span><br><span class="line">  <span class="keyword">void</span> *chan;                 <span class="comment">// If non-zero, sleeping on chan</span></span><br><span class="line">  <span class="keyword">int</span> killed;                 <span class="comment">// If non-zero, have been killed</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">file</span> *<span class="title">ofile</span>[<span class="title">NOFILE</span>];</span> <span class="comment">// Open files</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">inode</span> *<span class="title">cwd</span>;</span>          <span class="comment">// Current directory</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">context</span> <span class="title">context</span>;</span>     <span class="comment">// Switch here to run process</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">trapframe</span> *<span class="title">tf</span>;</span>       <span class="comment">// Trap frame for the current interrupt</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这是 xv6-x86 中的上下文结构体和 PCB。可以看到它存储了比之前提到的更多的一些信息，比如每个进程的内核栈地址，父进程，如果睡眠睡在了哪个地址上，kernel trap 的页面地址等。</p>
+<p>进程的状态也比之间提到的 ready, running, blocked 要多。一些很有用的状态包括 zombie，它表示一个程序已经运行结束，但相关的信息还没有被清空。这种状态可以让调用 wait() 的父进程去检查子进程的返回值是否符合要求。</p>
+<h2 id="4-6-Summary"><a href="#4-6-Summary" class="headerlink" title="4.6 Summary"></a>4.6 Summary</h2><p>略。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/17/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/" rel="prev" title="NJU-OS Lecture 09: State Machine of OS">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 09: State Machine of OS
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/20/NJU-OS%20Lecture%2010%20-%20Application%20of%20State%20Machine/" rel="next" title="NJU-OS Lecture 10: Application of State Machine">
+                  NJU-OS Lecture 10: Application of State Machine <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

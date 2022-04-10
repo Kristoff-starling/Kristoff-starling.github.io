@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-count">63</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -995,7 +995,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/17/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/20/OSTEP/OSTEP%20Chapter%2004%20-%20The%20Abstraction%20-%20The%20Process/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -1008,7 +1008,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/03/17/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/" class="post-title-link" itemprop="url">NJU-OS Lecture 09: State Machine of OS</a>
+          <a href="/2022/03/20/OSTEP/OSTEP%20Chapter%2004%20-%20The%20Abstraction%20-%20The%20Process/" class="post-title-link" itemprop="url">OSTEP Chapter 04: The Abstraction: The Process</a>
         </h2>
 
         <div class="post-meta-container">
@@ -1018,21 +1018,27 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2022-03-17 00:00:00 / 修改时间：18:00:34" itemprop="dateCreated datePublished" datetime="2022-03-17T00:00:00+08:00">2022-03-17</time>
+      <time title="创建时间：2022-03-20 00:00:00" itemprop="dateCreated datePublished" datetime="2022-03-20T00:00:00+08:00">2022-03-20</time>
     </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-10 14:57:50" itemprop="dateModified" datetime="2022-04-10T14:57:50+08:00">2022-04-10</time>
+      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">WISC-CS537 Introduction to Operating Systems</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/Book-Notes/" itemprop="url" rel="index"><span itemprop="name">Book Notes</span></a>
         </span>
     </span>
 
@@ -1046,10 +1052,11 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="Bare-metal-amp-Software"><a href="#Bare-metal-amp-Software" class="headerlink" title="Bare-metal &amp; Software"></a>Bare-metal &amp; Software</h2><p>数字电路本身就是一个巨大的状态机。硬件厂商会保证 CPU reset 后处理器处在一个确定的状态，各个单元的固定的值会写在手册中。以 x86 为例，手册规定了 CPU reset 后 rip 的值会是 0xfff0，EFLAGS 的值为 0x2，当前硬件运行在 16-bit 模式中，不响应中断。</p>
+          <p>进程就是正在运行的程序。程序本身只是存储在硬盘上的指令和数据的集合，只有 OS 将其加载到内存中运行起来时程序才会发挥作用。</p>
+<p>通常操作系统上会运行多个程序 - 比 CPU 核个数更多的程序。但每个程序并不需要关心 CPU 当前是否可用，这是因为 OS 为进程虚拟化了 CPU。OS 的基本操作是运行一个进程，然后暂停它去运行一会儿另外一个进程，这是分是运行的基本思想。
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/03/17/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/#more" rel="contents">
+              <a class="btn" href="/2022/03/20/OSTEP/OSTEP%20Chapter%2004%20-%20The%20Abstraction%20-%20The%20Process/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
