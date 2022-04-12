@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">65</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -198,6 +198,119 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/01/30/MIT-6.S081%20Lecture%2006%20-%20Traps/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/01/30/MIT-6.S081%20Lecture%2006%20-%20Traps/" class="post-title-link" itemprop="url">MIT-6.S081 Lecture 06: Traps</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-01-30 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-30T00:00:00+08:00">2022-01-30</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-02-17 16:47:50" itemprop="dateModified" datetime="2022-02-17T16:47:50+08:00">2022-02-17</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">MIT-6.S081 Introduction to Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/MIT-6-S081-Introduction-to-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>When going into traps, we need to carefully change the hardware state so that isolation will not be broken. The hardware state of RISC-V machine includes:</p>
+<ul>
+<li><p>32 general registers</p>
+<p>  We keep a copy of general registers because we want to resume the user code later transparently, particularly when it’s a unexpected device interrupt.</p>
+</li>
+<li><p>PC</p>
+</li>
+<li><p>Mode: we need to switch to supervisor mode.</p>
+<p>  Supervisor mode has the following privileges:</p>
+<ul>
+<li>read/write control registers</li>
+<li>use PTEs without PTE_U sign.</li>
+</ul>
+</li>
+<li><p>Page table (satp): page table currently points to the user page table, which only contains user’s code and data. To run kernel code, we need to switch to kernel page table.</p>
+</li>
+<li><p>stvec</p>
+</li>
+<li><p>sepc</p>
+</li>
+<li><p>sscratch</p>
+</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/01/30/MIT-6.S081%20Lecture%2006%20-%20Traps/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -1009,81 +1122,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/01/20/Xv6-book%20Chapter%2001%20-%20Operating%20System%20Interfaces/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2021/12/11/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2010%20%E9%A2%98%E8%A7%A3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2021/12/11/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2010%20%E9%A2%98%E8%A7%A3/" class="post-title-link" itemprop="url">问题求解 III - 10 题解</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2021-12-11 00:00:00 / 修改时间：21:45:43" itemprop="dateCreated datePublished" datetime="2021-12-11T00:00:00+08:00">2021-12-11</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="A-加密"><a href="#A-加密" class="headerlink" title="A. 加密"></a>A. 加密</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
-<li>使用题目中给定的一套类 RSA 算法加密，公钥 $E=2^{30}+3$。已知密文 $w^E\equiv C(mod\space n)$，给定 $n,C$，求原文 $w$。</li>
-<li>$T\leq 10^5,n\leq 10^{18}$。</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/12/11/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2010%20%E9%A2%98%E8%A7%A3/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
