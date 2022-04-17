@@ -1,3 +1,4 @@
+https://kristoff-starling.github.io/2022/04/17/NJU-OS%20Lecture%2016%20-%20Executable%20File/
 https://kristoff-starling.github.io/2022/04/15/MIT-6.S081%20Lecture%2011%20-%20Thread%20Switching/
 https://kristoff-starling.github.io/2022/04/12/AtCoder%20Beginner%20Contest%20247%20%E9%A2%98%E8%A7%A3/
 https://kristoff-starling.github.io/2022/04/09/NJU-OS%20Lecture%2015%20-%20More%20about%20fork()/
