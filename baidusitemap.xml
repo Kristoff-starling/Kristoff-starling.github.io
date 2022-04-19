@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/04/19/NJU-OS%20Lecture%2017%20-%20Linking%20and%20Loading/</loc>
+    <lastmod>2022-04-19</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/04/17/NJU-OS%20Lecture%2016%20-%20Executable%20File/</loc>
-    <lastmod>2022-04-17</lastmod>
+    <lastmod>2022-04-19</lastmod>
   </url>
   <url>
     <loc>https://kristoff-starling.github.io/2022/04/15/MIT-6.S081%20Lecture%2011%20-%20Thread%20Switching/</loc>
