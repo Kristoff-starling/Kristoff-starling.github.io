@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/04/25/NJU-OS%20Lecture%2019%20-%20Context%20Switching/</loc>
+    <lastmod>2022-04-24</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/04/24/NJU-OS%20Lecture%2018%20-%20Xv6%20Code%20Guide/</loc>
     <lastmod>2022-04-24</lastmod>
   </url>

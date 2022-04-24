@@ -22,23 +22,27 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta property="og:type" content="website">
-<meta property="og:title" content="starling的小屋">
-<meta property="og:url" content="https://kristoff-starling.github.io/tags/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/index.html">
+<meta name="description" content="如果我们的用户程序有死循环，计算机并不会被卡死——因为操作系统有进程调度；但操作系统有对整个计算机完全的掌控权，如果在操作系统代码中加一个死循环，那计算机就真的卡死了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="# NJU-OS Lecture 19: Context Switching">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/04/25/NJU-OS%20Lecture%2019%20-%20Context%20Switching/index.html">
 <meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="如果我们的用户程序有死循环，计算机并不会被卡死——因为操作系统有进程调度；但操作系统有对整个计算机完全的掌控权，如果在操作系统代码中加一个死循环，那计算机就真的卡死了。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-24T16:16:47.781Z">
 <meta property="article:author" content="starling">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://kristoff-starling.github.io/tags/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/">
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/04/25/NJU-OS%20Lecture%2019%20-%20Context%20Switching/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"tags/最小生成树/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/04/25/NJU-OS%20Lecture%2019%20-%20Context%20Switching/","path":"2022/04/25/NJU-OS Lecture 19 - Context Switching/","title":"# NJU-OS Lecture 19: Context Switching"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>标签: 最小生成树 | starling的小屋</title>
+<title># NJU-OS Lecture 19: Context Switching | starling的小屋</title>
   
 
 
@@ -131,7 +135,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -144,6 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Virtualization-of-CPUs"><span class="nav-number">1.</span> <span class="nav-text">Virtualization of CPUs</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Code-Xv6-trapframe-amp-Thread-Switching"><span class="nav-number">2.</span> <span class="nav-text">Code: Xv6 trapframe &amp; Thread Switching</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -197,50 +202,107 @@
 </noscript>
 
 
-    <div class="main-inner tag posts-collapse">
+    <div class="main-inner post posts-expand">
 
 
   
-  
-  
-  <div class="post-block">
-    <div class="post-content">
-      <div class="collection-title">
-        <h2 class="collection-header">最小生成树
-          <small>标签</small>
-        </h2>
-      </div>
 
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/04/25/NJU-OS%20Lecture%2019%20-%20Context%20Switching/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          # NJU-OS Lecture 19: Context Switching
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
       
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
+
+      <time title="创建时间：2022-04-25 00:00:00 / 修改时间：00:16:47" itemprop="dateCreated datePublished" datetime="2022-04-25T00:00:00+08:00">2022-04-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>如果我们的用户程序有死循环，计算机并不会被卡死——因为操作系统有进程调度；但操作系统有对整个计算机完全的掌控权，如果在操作系统代码中加一个死循环，那计算机就真的卡死了。<span id="more"></span></p>
+<h2 id="Virtualization-of-CPUs"><a href="#Virtualization-of-CPUs" class="headerlink" title="Virtualization of CPUs"></a>Virtualization of CPUs</h2><p>每一个进程都是一个状态机，其中有寄存器、内存，看内存的 “VR 眼镜” (页表) 等等。操作系统是一个状态机的管理者：它要维护各个进程的状态机，此外内核对应的状态机也归 OS 管理。正在运行的状态机的状态保存在硬件上 (CPU, DRAM)，其他未运行的进程的状态机以某种方式被暂存起来。</p>
+<p>现代操作系统通常借助时钟中断，使用抢占式多任务的方式来在状态机之间切换。中断相当于一个强行插入的 ecall，打断正在运行的执行流。操作系统负责将这个进程当前的状态机从硬件上复制下来，挑选下一个准备执行的进程，然后将其状态机搬上硬件。</p>
+<h2 id="Code-Xv6-trapframe-amp-Thread-Switching"><a href="#Code-Xv6-trapframe-amp-Thread-Switching" class="headerlink" title="Code: Xv6 trapframe &amp; Thread Switching"></a>Code: Xv6 trapframe &amp; Thread Switching</h2><p>该部分内容可以参考 MIT 6.S081 Lecture 6 和 Lecture 11。</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-      <div class="post-meta-container">
-        <time itemprop="dateCreated"
-              datetime="2021-08-18T00:00:00+08:00"
-              content="2021-08-18">
-          08-18
-        </time>
-      </div>
+    
+    
+    
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/08/18/%E7%89%9B%E5%AE%A22021%E5%A4%9A%E6%A0%A1%20Round3%20%E9%A2%98%E8%A7%A3/" itemprop="url">
-            <span itemprop="name">牛客2021多校 Round3 题解</span>
-          </a>
-      </div>
+    <footer class="post-footer">
 
-      
-    </header>
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/24/NJU-OS%20Lecture%2018%20-%20Xv6%20Code%20Guide/" rel="prev" title="NJU-OS Lecture 18: Xv6 Code Guide">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 18: Xv6 Code Guide
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
   </article>
+</div>
 
-    </div>
-  </div>
-  
-  
-  
+
+
+
+
 
 </div>
   </main>
