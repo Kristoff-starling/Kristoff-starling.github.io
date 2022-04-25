@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="从 high level 来看，我们希望实现如下的结构体和 API： 123456typdef struct&amp;#123;    ...&amp;#125;lock;void lock(lock *lk);void unlock(lock *lk);">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 05: Concurrent Programming: Mutex">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/03/01/NJU-OS/NJU-OS%20Lecture%2005%20-%20Concurrent%20Programming%20-%20Mutex/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="从 high level 来看，我们希望实现如下的结构体和 API： 123456typdef struct&amp;#123;    ...&amp;#125;lock;void lock(lock *lk);void unlock(lock *lk);">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-01T03:49:38.954Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/03/01/NJU-OS/NJU-OS%20Lecture%2005%20-%20Concurrent%20Programming%20-%20Mutex/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/03/01/NJU-OS/NJU-OS%20Lecture%2005%20-%20Concurrent%20Programming%20-%20Mutex/","path":"2022/03/01/NJU-OS/NJU-OS Lecture 05 - Concurrent Programming - Mutex/","title":"NJU-OS Lecture 05: Concurrent Programming: Mutex"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 05: Concurrent Programming: Mutex | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Spin-Lock"><span class="nav-number">1.</span> <span class="nav-text">Spin Lock</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#x86-Lock-Prefix"><span class="nav-number">1.1.</span> <span class="nav-text">x86: Lock Prefix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RISC-V-LR-SC"><span class="nav-number">1.2.</span> <span class="nav-text">RISC-V: LR&#x2F;SC</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sleep-Lock"><span class="nav-number">2.</span> <span class="nav-text">Sleep Lock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Futex"><span class="nav-number">3.</span> <span class="nav-text">Futex</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/01/NJU-OS/NJU-OS%20Lecture%2005%20-%20Concurrent%20Programming%20-%20Mutex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 05: Concurrent Programming: Mutex
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-01 00:00:00 / 修改时间：11:49:38" itemprop="dateCreated datePublished" datetime="2022-03-01T00:00:00+08:00">2022-03-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>从 high level 来看，我们希望实现如下的结构体和 API：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typdef <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    ...</span><br><span class="line">&#125;lock;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">(lock *lk)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">(lock *lk)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>若 lock() 函数返回，说明获得了这个锁，别的进程会停在 lock() 里直到获得锁的人调用了 unlock()。</p>
+<p>实现互斥的根本困难：不能同时读写共享内存。</p>
+<ul>
+<li>load 的时候不能 store，且看完之后眼睛立刻闭上，看到的都是过去的东西；</li>
+<li>store 的时候不能 load，贴字条的时候不知道覆盖了什么。</li>
+</ul>
+<h2 id="Spin-Lock"><a href="#Spin-Lock" class="headerlink" title="Spin Lock"></a>Spin Lock</h2><blockquote>
+<p>“解决一个问题有两种方法：一个是分析问题、提出算法、实现解决，一个是解决提出问题的人。“ —— jyy</p>
+</blockquote>
+<p>我们希望硬件支持一条“瞬间完成读和写”的指令：“请所有人闭眼，然后我睁开眼看一眼，并做一个操作”。</p>
+<h3 id="x86-Lock-Prefix"><a href="#x86-Lock-Prefix" class="headerlink" title="x86: Lock Prefix"></a>x86: Lock Prefix</h3><p>以 lock 为前缀的指令支持原子操作。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// sum-atomic.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;thread.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 100000000</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tsum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">    <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(<span class="string">&quot;lock addq $1, %0&quot;</span>: <span class="string">&quot;+m&quot;</span>(sum))</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  create(Tsum);</span><br><span class="line">  create(Tsum);</span><br><span class="line">  join();</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;sum = %ld\n&quot;</span>, sum);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于这里的 +1 操作使用了原子指令，所以程序总能得到 2N 的输出。</p>
+<p>此外，一条非常好用的原子指令是 xchg，它可以原子地将一个数值和一个内存地址上的值交换。用 C 语言封装后的形式可以是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">xchg</span><span class="params">(<span class="keyword">volatile</span> <span class="keyword">int</span> *addr, <span class="keyword">int</span> newval)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> result;</span><br><span class="line">  <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span> <span class="params">(<span class="string">&quot;lock xchg %0, %1&quot;</span></span></span></span><br><span class="line"><span class="params"><span class="function">    : <span class="string">&quot;+m&quot;</span>(*addr), <span class="string">&quot;=a&quot;</span>(result) : <span class="string">&quot;1&quot;</span>(newval))</span></span>; <span class="comment">//xchg默认原子，即使不加前缀lock也可以</span></span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>借助 <code>xchg</code> 指令，我们可以轻松地实现一个自旋锁：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> lock = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">()</span> </span>&#123;<span class="keyword">while</span> (xchg(&amp;lock, <span class="number">1</span>));&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">()</span> </span>&#123;xchg(&amp;lock, <span class="number">0</span>);&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在硬件层面，硬件可以保证所有的带 lock 的指令可以排出一个全序，且原子指令相关的内存都会被提前做好 (内存的可见性)。但这其中有很多技术细节，比如多核的 Cache 之间的一致性是 x86 的噩梦 (一旦某个 CPU 要获得所，其他所有 CPU 核的 L1 Cache 都要上锁)。</p>
+<h3 id="RISC-V-LR-SC"><a href="#RISC-V-LR-SC" class="headerlink" title="RISC-V: LR/SC"></a>RISC-V: LR/SC</h3><p>原子指令内部的本质是三个步骤：load(), exec(), store()。RISC-V 提供了 load-reserved/store-conditional (LR/SC) 机制：</p>
+<ul>
+<li>LR: 在共享内存上打一个标记，如果出现中断、别的线程写入等情况，这个标记会消失。</li>
+<li>exec()：在寄存器上做一些自己的事情</li>
+<li>SC：如果共享内存上的标记还在，则 store。</li>
+</ul>
+<p>这里给出一个用于自旋锁的 compare-and-swap (旧值等于某个值才将新值与其交换) 函数的实现，用这个函数实现自旋锁在轮询时可以比 xchg 少一次写入操作：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// C语言语义</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">cas</span><span class="params">(<span class="keyword">int</span> *addr, <span class="keyword">int</span> cmp_val, <span class="keyword">int</span> new_val)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> old_val = *addr;</span><br><span class="line">    <span class="keyword">if</span> (old_val == cmp_val) &#123;*addr = new_val;<span class="keyword">return</span> <span class="number">0</span>;&#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cas:</span><br><span class="line">	lr.w t0, (a0)		# 获得旧值，并对(a0)打标记</span><br><span class="line">	bne t0, a1, fail	# 如果 old_val != cmp_val 则跳转到 fail</span><br><span class="line">	sc.w t0, a2, (a0)	# 如果标记还在，将a2写入(a0)，t0存储标记存在情况</span><br><span class="line">	bnez t0, cas		# 如果标记被冲刷了，说明出现race condition，回到cas重做</span><br><span class="line">	jr ra</span><br><span class="line">fail</span><br><span class="line">	li a0, 1</span><br><span class="line">	jr ra</span><br></pre></td></tr></table></figure>
+
+<p>如果有两个线程同时希望获得锁，第一个线程执行完 sc.w 后，第二个线程的标记被冲刷，从而第二个线程执行 sc.w 后 t0=1，无法获得锁。</p>
+<p>LR/SC 机制不仅可以实现锁，还可以让每个线程知道锁的拥堵情况。</p>
+<h2 id="Sleep-Lock"><a href="#Sleep-Lock" class="headerlink" title="Sleep Lock"></a>Sleep Lock</h2><p>自旋锁的性能缺陷：</p>
+<ul>
+<li>如果多个线程同时争抢锁，并行/并发的程序会因为自旋锁变得串行。除了进入临界区域的线程，其他的线程都在空转。</li>
+<li>如果持有自旋锁的线程被调度走了，那么所有的线程都进不去了。</li>
+</ul>
+<p>自旋锁的理想使用场景：</p>
+<ul>
+<li>临界区几乎不拥堵。</li>
+<li>持有自旋锁时禁止执行流切换 - 这件事对于应用程序来说太危险了，因此自旋锁一般用于操作系统内核中的并发数据结构 (临界区很短)。</li>
+</ul>
+<hr>
+<p>如果锁被占用，待在原地等待锁被释放是一件不太聪明的事情 (尤其是要等很长时间的时候)，我们希望一个线程在等待锁的时候可以被暂时挂起，让出 CPU，等到锁被释放时再唤醒等锁进程。</p>
+<p>C 语言代码是做不到 ”让出 CPU 的”，因此我们需要两个系统调用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">syscall(SYSCALL_lock, &amp;lk);		<span class="comment">// 试图获得lk，如果失败则当前进程被挂起</span></span><br><span class="line">syscall(SYSCALL_unlock, &amp;lk);	<span class="comment">// 释放lk，并唤醒正在等待lk的进程</span></span><br></pre></td></tr></table></figure>
+
+<p>操作系统的工作是维护这个锁和等待锁的进程</p>
+<ul>
+<li>如果有线程尝试获得锁，且锁处于空闲状态，就把锁给他。</li>
+<li>如果有线程尝试获得锁但锁已经被取走了，则将当前线程加入等待锁的队列，并将其挂起。</li>
+<li>如果有线程释放了锁，就检查等待锁的队列中是否有线程，如果有则将锁交给下一位 (唤醒它)，如果没有则锁的状态为空闲。</li>
+<li>操作系统使用自旋锁保证自己对队列的操作是原子的。</li>
+</ul>
+<blockquote>
+<p><strong>Tip: GDB Usage</strong></p>
+<p>使用 GDB 调试多线程时，如果直接使用 next 命令，所有的线程都会向后走一步。为了更好地观测程序行为，我们可以使用 <code>set scheduler-lock on</code> 命令来打开线程锁，之后再使用 next 命令就只有当前线程会向前走一步。我们可以通过 <code>info threads</code> 来查看线程信息，通过 <code>thread id</code> 来切换当前调试的线程为 id。</p>
+</blockquote>
+<h2 id="Futex"><a href="#Futex" class="headerlink" title="Futex"></a>Futex</h2><ul>
+<li>自旋锁有更快的 fast path：如果获得锁成功，可以立刻进入临界区；但如果没有获得锁，则要浪费 CPU 时钟周期。</li>
+<li>睡眠锁有更快的 slow path: 如果没有获得锁，可以执行线程切换；但在能获得锁的情况下，也需要执行系统调用陷入内核。</li>
+</ul>
+<p>我们希望发明一种锁，对于 fast path，只需要一条原子指令就可以获得锁，对于 slow path，可以通过系统调用 yield。这就是 Futex = spin + mutex。</p>
+<p>我们可以利用 model checker 来确认 futex 的正确性：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Futex</span></span></span><br><span class="line"><span class="class">	<span class="title">locked</span>, <span class="title">waits</span> = &#x27;&#x27;, &#x27;&#x27;</span></span><br><span class="line"><span class="class"></span></span><br><span class="line"><span class="class">    <span class="title">def</span> <span class="title">tryacquire</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.locked:</span><br><span class="line">            <span class="comment"># Test-and-set (cmpxchg)</span></span><br><span class="line">            <span class="comment"># Same effect, but more efficient than xchg</span></span><br><span class="line">            self.locked = <span class="string">&#x27;🔒&#x27;</span></span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;🔒&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">release</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">if</span> self.waits:</span><br><span class="line">            self.waits = self.waits[<span class="number">1</span>:]		  <span class="comment"># 将队首元素踢出队列 &lt;=&gt; 将编号为队首元素的线程唤醒</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.locked = <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @thread</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">t1</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> self.tryacquire() == <span class="string">&#x27;🔒&#x27;</span>:     <span class="comment"># User</span></span><br><span class="line">                self.waits = self.waits + <span class="string">&#x27;1&#x27;</span> <span class="comment"># Kernel</span></span><br><span class="line">                <span class="keyword">while</span> <span class="string">&#x27;1&#x27;</span> <span class="keyword">in</span> self.waits:      <span class="comment"># Kernel</span></span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            cs = <span class="literal">True</span>                         <span class="comment"># User</span></span><br><span class="line">            <span class="keyword">del</span> cs                            <span class="comment"># User</span></span><br><span class="line">            self.release()                    <span class="comment"># Kernel</span></span><br><span class="line"></span><br><span class="line"><span class="meta">    @thread</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">t2</span>(<span class="params">self</span>):</span></span><br><span class="line">        <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">            <span class="keyword">if</span> self.tryacquire() == <span class="string">&#x27;🔒&#x27;</span>:</span><br><span class="line">                self.waits = self.waits + <span class="string">&#x27;2&#x27;</span></span><br><span class="line">                <span class="keyword">while</span> <span class="string">&#x27;2&#x27;</span> <span class="keyword">in</span> self.waits:</span><br><span class="line">                    <span class="keyword">pass</span></span><br><span class="line">            cs = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">del</span> cs</span><br><span class="line">            self.release()</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Tip: 强大的 model checker</strong></p>
+<ul>
+<li><p>我们的 model checker 的原理是：对于有装饰器 thread 修饰的函数，在每条语句后添加 yield。因此我们可以轻松地实现一个原子的操作：只要将操作写成一个函数，并在一行内调用这个函数即可。再例如，xchg 原子操作在我们的 model checker 中可以很简单地写为</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x, y = y, x</span><br></pre></td></tr></table></figure></li>
+<li><p>线程函数中的语句</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="string">&#x27;1&#x27;</span> <span class="keyword">in</span> self.waits:</span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>  并不是内核的真正行为：内核会切换走去执行别的线程。但从这个正在等待的线程的视角，内核在做和自己无关的事等价于内核在自己这里轮询。因此我们精巧地模拟出了内核的正确行为。</p>
+</li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/28/Stack-smashing%20Attack%20-%20An%20Introduction/" rel="prev" title="Stack-smashing Attack: An Introduction">
+                  <i class="fa fa-chevron-left"></i> Stack-smashing Attack: An Introduction
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/06/NJU-OS/NJU-OS%20Lecture%2006%20-%20Concurrent%20Programming%20-%20Synchronization/" rel="next" title="NJU-OS Lecture 06: Concurrent Programming: Synchronization">
+                  NJU-OS Lecture 06: Concurrent Programming: Synchronization <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

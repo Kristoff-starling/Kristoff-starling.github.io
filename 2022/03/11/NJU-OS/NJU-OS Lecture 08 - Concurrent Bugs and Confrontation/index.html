@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。 Defensive Programming一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。 assert() 虽然不一定能写得对，但如果 assert() 和代码出错的概率是独立的，那么写 assert() 就使得程序出错的概率降低了一个数量级。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 08: Concurrent Bugs &amp; Confrontation">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/03/11/NJU-OS/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。 Defensive Programming一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。 assert() 虽然不一定能写得对，但如果 assert() 和代码出错的概率是独立的，那么写 assert() 就使得程序出错的概率降低了一个数量级。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-11T09:40:04.913Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/03/11/NJU-OS/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/03/11/NJU-OS/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/","path":"2022/03/11/NJU-OS/NJU-OS Lecture 08 - Concurrent Bugs and Confrontation/","title":"NJU-OS Lecture 08: Concurrent Bugs & Confrontation"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 08: Concurrent Bugs & Confrontation | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Defensive-Programming"><span class="nav-number">1.</span> <span class="nav-text">Defensive Programming</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Concurrent-Bugs"><span class="nav-number">2.</span> <span class="nav-text">Concurrent Bugs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Deadlock"><span class="nav-number">2.1.</span> <span class="nav-text">Deadlock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-Race"><span class="nav-number">2.2.</span> <span class="nav-text">Data Race</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Atomicity-Violation-AV-amp-Order-Violation-OV"><span class="nav-number">2.3.</span> <span class="nav-text">Atomicity Violation (AV) &amp; Order Violation (OV)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Bugs-Confrontation"><span class="nav-number">3.</span> <span class="nav-text">Bugs Confrontation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lockdep"><span class="nav-number">3.1.</span> <span class="nav-text">Lockdep</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sanitizer"><span class="nav-number">3.2.</span> <span class="nav-text">Sanitizer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lightweight-Tools"><span class="nav-number">3.3.</span> <span class="nav-text">Lightweight Tools</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Stack-Canary"><span class="nav-number">3.3.1.</span> <span class="nav-text">Stack Canary</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lightweight-Lockdep"><span class="nav-number">3.3.2.</span> <span class="nav-text">Lightweight Lockdep</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/11/NJU-OS/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 08: Concurrent Bugs & Confrontation
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-11 00:00:00 / 修改时间：17:40:04" itemprop="dateCreated datePublished" datetime="2022-03-11T00:00:00+08:00">2022-03-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。</p>
+<h2 id="Defensive-Programming"><a href="#Defensive-Programming" class="headerlink" title="Defensive Programming"></a>Defensive Programming</h2><p>一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。</p>
+<p>assert() 虽然不一定能写得对，但如果 assert() 和代码出错的概率是独立的，那么写 assert() 就使得程序出错的概率降低了一个数量级。</p>
+<span id="more"></span>
+
+<h2 id="Concurrent-Bugs"><a href="#Concurrent-Bugs" class="headerlink" title="Concurrent Bugs"></a>Concurrent Bugs</h2><h3 id="Deadlock"><a href="#Deadlock" class="headerlink" title="Deadlock"></a>Deadlock</h3><blockquote>
+<p><strong>一个中断相关的死锁</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">os_run</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> spin_lock(&amp;lk);</span><br><span class="line"> spin_lock(&amp;xxx);</span><br><span class="line"> spin_unlock(&amp;xxx); <span class="comment">//------+</span></span><br><span class="line">&#125;					   <span class="comment">//  	   |</span></span><br><span class="line">					   <span class="comment">//	   | Interrupt</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">on_interrupt</span><span class="params">()</span>	   <span class="comment">//	   |</span></span></span><br><span class="line"><span class="function"></span>&#123;					   <span class="comment">//	   |</span></span><br><span class="line"> spin_lock(&amp;lk); <span class="comment">// &lt;-------+</span></span><br><span class="line"> ...</span><br><span class="line"> spin_unlock(&amp;lk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上锁的时候要关中断，且锁出现嵌套的时候，需要一个计数器来维护嵌套层数，只有完全无锁的时候才能开中断 (释放锁的时候不能莽开中断)。</p>
+</blockquote>
+<ul>
+<li><p>AA-deadlock：某个线程在试图获得自己已经获得的锁。这很容易检测出来。在编程的时候理应多使用如下的防御性编程：</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (holding(lk)) panic();</span><br></pre></td></tr></table></figure></li>
+<li><p>ABBA-deadlock：进程在互相等待别人的锁。lock-ordering 是一种好的防御方法：系统中所有的锁必须排出一个无环的拓扑序。</p>
+<blockquote>
+<p>model checker 可以可视化地帮我们检查是否有死锁。如果某个节点所有的出边都指向自己，这就是一个陷入死锁的状态。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Data-Race"><a href="#Data-Race" class="headerlink" title="Data Race"></a>Data Race</h3><p>两个线程在同一时间访问同一个地址，且至少有一个是写。之所以被称为“竞争”是因为运行的结果取决于“谁跑赢了”。</p>
+<h3 id="Atomicity-Violation-AV-amp-Order-Violation-OV"><a href="#Atomicity-Violation-AV-amp-Order-Violation-OV" class="headerlink" title="Atomicity Violation (AV) &amp; Order Violation (OV)"></a>Atomicity Violation (AV) &amp; Order Violation (OV)</h3><p>TOCTTOU (time of check to time of use)：某段代码通常会检查某个条件 (time to check)，然后在认为这个条件的成立是 invariant 的情况下对其进行某种操作 (time of use)，但如果其他程序在中间插入做了某个改变 invariant 的操作，就会产生 bug。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">					   TIME		</span><br><span class="line">/home/abc/mailbox		|</span><br><span class="line">a symbolic link?		|</span><br><span class="line">		|				|		Delete /home/abc/mailbox</span><br><span class="line">		| 				|</span><br><span class="line">		| No			|		Create symbolic link</span><br><span class="line">		|				|		~/mailbox, pointing to </span><br><span class="line">		|				|		/etc/passwd</span><br><span class="line">Append the new message	|</span><br><span class="line">to /home/abc/mailbox	|</span><br></pre></td></tr></table></figure>
+
+<p>在上述过程中，如果攻击者利用 TOC 和 TOU 之间的窗口期将 <code>/home/abc/mailbox</code> 指向某个非法的文件 (打破了 kernel 之前检查的条件)，kernel 就可能会给普通用户 root 权限。</p>
+<h2 id="Bugs-Confrontation"><a href="#Bugs-Confrontation" class="headerlink" title="Bugs Confrontation"></a>Bugs Confrontation</h2><h3 id="Lockdep"><a href="#Lockdep" class="headerlink" title="Lockdep"></a>Lockdep</h3><p>我们可以为每把锁一个全局唯一的 allocation site。在所有获得锁/释放锁的时间点记录一份日志，然后对日志进行分析 (观察上锁顺序)，如果对于某两把锁 $x,y$，我们能观测到 $x\rightsquigarrow y\and y\rightsquigarrow x$，则检测出了可能的死锁。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lock-site.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">lock</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> locked;</span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">char</span> *site;</span><br><span class="line">&#125; <span class="keyword">lock_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> STRINGIFY(s) #s</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> TOSTRING(s)  STRINGIFY(s)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK_INIT() \</span></span><br><span class="line"><span class="meta">  ( (lock_t) &#123; .locked = 0, .site = __FILE__ <span class="meta-string">&quot;:&quot;</span> TOSTRING(__LINE__), &#125; )</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">lock_t</span> lk1 = LOCK_INIT();</span><br><span class="line"><span class="keyword">lock_t</span> lk2 = LOCK_INIT();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lock</span><span class="params">(<span class="keyword">lock_t</span> *lk)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;LOCK   %s\n&quot;</span>, lk-&gt;site);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">unlock</span><span class="params">(<span class="keyword">lock_t</span> *lk)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;UNLOCK %s\n&quot;</span>, lk-&gt;site);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">some_object</span> &#123;</span></span><br><span class="line">  <span class="keyword">lock_t</span> lock;</span><br><span class="line">  <span class="keyword">int</span> data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">object_init</span><span class="params">(struct some_object *obj)</span> </span>&#123;</span><br><span class="line">  obj-&gt;lock = LOCK_INIT();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  lock(&amp;lk1);</span><br><span class="line">  lock(&amp;lk2);</span><br><span class="line">  unlock(&amp;lk1);</span><br><span class="line">  unlock(&amp;lk2);</span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">some_object</span> *<span class="title">obj</span> =</span> <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(struct some_object));</span><br><span class="line">  assert(obj);</span><br><span class="line">  object_init(obj);</span><br><span class="line">  lock(&amp;obj-&gt;lock);</span><br><span class="line"></span><br><span class="line">  lock(&amp;lk2);</span><br><span class="line">  lock(&amp;lk1);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的 <code>lock-site.c</code> 提供了一种简单的为每个锁提供唯一 allocation site 的方法，其中的一些宏定义值得学习。</p>
+<h3 id="Sanitizer"><a href="#Sanitizer" class="headerlink" title="Sanitizer"></a>Sanitizer</h3><p>运行时的动态检查。AddressSanitizer 可以检查内存访问的 bug (监控所有的内存访问)，ThreadSanitizer 可以检查数据竞争 (内存访问 + lock/unlock)，此外还有 UBSanitizer, MemorySanitizer 等。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// uaf.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">int</span> *ptr = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">  *ptr = <span class="number">1</span>;</span><br><span class="line">  <span class="built_in">free</span>(ptr);</span><br><span class="line">  *ptr = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述程序存在 use-after-free 问题。在编译时加入 <code>-fsanitize=address</code>，运行程序时，我们可以得到丰富的报错信息。</p>
+<h3 id="Lightweight-Tools"><a href="#Lightweight-Tools" class="headerlink" title="Lightweight Tools"></a>Lightweight Tools</h3><h4 id="Stack-Canary"><a href="#Stack-Canary" class="headerlink" title="Stack Canary"></a>Stack Canary</h4><p>在栈顶和栈底设置一些存储了特殊值的内存单元 (金丝雀) 并定期检查这些单元。如果这些单元被修改了，说明发生了栈溢出。我们只需很短的代码就可以完成 stack canary：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAGIC 0x55555555</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BOTTOM (STK_SZ / sizeof(u32) - 1)</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">stack</span> &#123;</span> <span class="keyword">char</span> data[STK_SZ]; &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">canary_init</span><span class="params">(struct <span class="built_in">stack</span> *s)</span> </span>&#123;</span><br><span class="line">  u32 *ptr = (u32 *)s;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CANARY_SZ; i++)</span><br><span class="line">    ptr[BOTTOM - i] = ptr[i] = MAGIC;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">canary_check</span><span class="params">(struct <span class="built_in">stack</span> *s)</span> </span>&#123;</span><br><span class="line">  u32 *ptr = (u32 *)s;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; CANARY_SZ; i++) &#123;</span><br><span class="line">    panic_on(ptr[BOTTOM - i] != MAGIC, <span class="string">&quot;underflow&quot;</span>);</span><br><span class="line">    panic_on(ptr[i] != MAGIC, <span class="string">&quot;overflow&quot;</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们有时在 windows 中会看到的 “烫烫烫” 等字，其实是 stack canary 在 GB2312 编码下的结果：</p>
+<ul>
+<li>未初始化栈: <code>0xcccccccc</code></li>
+<li>未初始化堆: <code>0xcdcdcdcd</code></li>
+<li>对象头尾: <code>0xfdfdfdfd</code></li>
+<li>已回收内存: <code>0xdddddddd</code></li>
+</ul>
+<p>我们可以用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="string">b&#x27;\xcc&#x27;</span> * <span class="number">80</span>).decode(<span class="string">&#x27;gb2312&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>查看使用未初始化栈时得到的内容 (烫烫烫)。</p>
+<h4 id="Lightweight-Lockdep"><a href="#Lightweight-Lockdep" class="headerlink" title="Lightweight Lockdep"></a>Lightweight Lockdep</h4><p>很多情况下，我们可以在自旋锁自旋次数过多的时候直接报警，然后利用 GDB 的 backtrace 功能观察是否真的发生了死锁。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> spin_cnt = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> (xchg(&amp;locked, <span class="number">1</span>)) &#123;</span><br><span class="line">  <span class="keyword">if</span> (spin_cnt++ &gt; SPIN_LIMIT) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Too many spin @ %s:%d\n&quot;</span>, __FILE__, __LINE__);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/03/11/NJU-OS/NJU-OS%20Minilab%201%20-%20pstree/" rel="prev" title="NJU-OS MiniLab 1: pstree">
+                  <i class="fa fa-chevron-left"></i> NJU-OS MiniLab 1: pstree
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/03/11/NJU-OS/NJU-OS%20Lab%200%20-%20amgame/" rel="next" title="NJU-OS Lab 0: amgame">
+                  NJU-OS Lab 0: amgame <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

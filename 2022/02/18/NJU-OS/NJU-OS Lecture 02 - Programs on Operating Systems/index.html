@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Digital Logic数字电路：  状态：寄存器中保存的值； 初始状态：RESET； 迁移：组合逻辑电路下计算寄存器下一个周期的值。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 02: Programs on Operating Systems">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/18/NJU-OS/NJU-OS%20Lecture%2002%20-%20Programs%20on%20Operating%20Systems/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="Digital Logic数字电路：  状态：寄存器中保存的值； 初始状态：RESET； 迁移：组合逻辑电路下计算寄存器下一个周期的值。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-02-18T10:51:11.564Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/18/NJU-OS/NJU-OS%20Lecture%2002%20-%20Programs%20on%20Operating%20Systems/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/18/NJU-OS/NJU-OS%20Lecture%2002%20-%20Programs%20on%20Operating%20Systems/","path":"2022/02/18/NJU-OS/NJU-OS Lecture 02 - Programs on Operating Systems/","title":"NJU-OS Lecture 02: Programs on Operating Systems"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 02: Programs on Operating Systems | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Digital-Logic"><span class="nav-number">1.</span> <span class="nav-text">Digital Logic</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example-Seven-seg"><span class="nav-number">1.1.</span> <span class="nav-text">Example: Seven-seg</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Programs-Code-Perspective"><span class="nav-number">2.</span> <span class="nav-text">Programs: Code Perspective</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example-Hanoi-nr"><span class="nav-number">2.1.</span> <span class="nav-text">Example: Hanoi-nr</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Programs-Binary-Perspective"><span class="nav-number">3.</span> <span class="nav-text">Programs: Binary Perspective</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example-A-smallest-%E2%80%9CHello-world%E2%80%9D"><span class="nav-number">3.1.</span> <span class="nav-text">Example: A smallest “Hello, world”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Switching-between-Perspectives"><span class="nav-number">4.</span> <span class="nav-text">Switching between Perspectives</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example-Compile-Optimization"><span class="nav-number">4.1.</span> <span class="nav-text">Example: Compile Optimization</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Programs-OS-Perspective"><span class="nav-number">5.</span> <span class="nav-text">Programs: OS Perspective</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example-Entering-a-Program"><span class="nav-number">5.1.</span> <span class="nav-text">Example: Entering a Program</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/18/NJU-OS/NJU-OS%20Lecture%2002%20-%20Programs%20on%20Operating%20Systems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 02: Programs on Operating Systems
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-02-18 00:00:00 / 修改时间：18:51:11" itemprop="dateCreated datePublished" datetime="2022-02-18T00:00:00+08:00">2022-02-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="Digital-Logic"><a href="#Digital-Logic" class="headerlink" title="Digital Logic"></a>Digital Logic</h2><p>数字电路：</p>
+<ul>
+<li>状态：寄存器中保存的值；</li>
+<li>初始状态：RESET；</li>
+<li>迁移：组合逻辑电路下计算寄存器下一个周期的值。</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="Example-Seven-seg"><a href="#Example-Seven-seg" class="headerlink" title="Example: Seven-seg"></a>Example: Seven-seg</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// logisim.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> REGS_FOREACH(_)  _(X) _(Y)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OUTS_FOREACH(_)  _(A) _(B) _(C) _(D) _(E) _(F) _(G)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> RUN_LOGIC        X1 = !X &amp;&amp; Y; \</span></span><br><span class="line"><span class="meta">                         Y1 = !X &amp;&amp; !Y; \</span></span><br><span class="line"><span class="meta">                         A  = (!X &amp;&amp; !Y) || (X &amp;&amp; !Y); \</span></span><br><span class="line"><span class="meta">                         B  = 1; \</span></span><br><span class="line"><span class="meta">                         C  = (!X &amp;&amp; !Y) || (!X &amp;&amp; Y); \</span></span><br><span class="line"><span class="meta">                         D  = (!X &amp;&amp; !Y) || (X &amp;&amp; !Y); \</span></span><br><span class="line"><span class="meta">                         E  = (!X &amp;&amp; !Y) || (X &amp;&amp; !Y); \</span></span><br><span class="line"><span class="meta">                         F  = (!X &amp;&amp; !Y); \</span></span><br><span class="line"><span class="meta">                         G  = (X &amp;&amp; !Y); </span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> DEFINE(X)   static int X, X##1;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> UPDATE(X)   X = X##1;</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> PRINT(X)    printf(#X <span class="meta-string">&quot; = %d; &quot;</span>, X);</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  REGS_FOREACH(DEFINE);</span><br><span class="line">  OUTS_FOREACH(DEFINE);</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123; <span class="comment">// clock</span></span><br><span class="line">    RUN_LOGIC;</span><br><span class="line">    OUTS_FOREACH(PRINT);</span><br><span class="line">    REGS_FOREACH(UPDATE);</span><br><span class="line">    <span class="built_in">putchar</span>(<span class="string">&#x27;\n&#x27;</span>);</span><br><span class="line">    fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>数字电路永远是根据当前状态机的状态确定次态，循环往复。上述程序用两个寄存器 X,Y 实现了七段数码管 0 $\rightarrow$ 1 $\rightarrow$ 2 循环更新的功能 (注：这段代码使用了一些 X-macros 技巧，使得我们无需对每个寄存器写相同的代码，值得学习。)</p>
+<p>搭配上一个简单的 python 程序，我们便可以在终端中打印这个七段数码管：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># seven-seg.py</span></span><br><span class="line"><span class="keyword">import</span> fileinput</span><br><span class="line"> </span><br><span class="line">TEMPLATE = <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">\033[2J\033[1;1f</span></span><br><span class="line"><span class="string">     AAAAAAAAA</span></span><br><span class="line"><span class="string">    FF       BB</span></span><br><span class="line"><span class="string">    FF       BB</span></span><br><span class="line"><span class="string">    FF       BB</span></span><br><span class="line"><span class="string">    FF       BB</span></span><br><span class="line"><span class="string">     GGGGGGGGG</span></span><br><span class="line"><span class="string">    EE       CC</span></span><br><span class="line"><span class="string">    EE       CC</span></span><br><span class="line"><span class="string">    EE       CC</span></span><br><span class="line"><span class="string">    EE       CC</span></span><br><span class="line"><span class="string">     DDDDDDDDD</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span> </span><br><span class="line">BLOCK = &#123;</span><br><span class="line">    <span class="number">0</span>: <span class="string">&#x27;\033[37m░\033[0m&#x27;</span>, <span class="comment"># STFW: ANSI Escape Code</span></span><br><span class="line">    <span class="number">1</span>: <span class="string">&#x27;\033[31m█\033[0m&#x27;</span>,</span><br><span class="line">&#125;</span><br><span class="line">VARS = <span class="string">&#x27;ABCDEFG&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> v <span class="keyword">in</span> VARS:</span><br><span class="line">    <span class="built_in">globals</span>()[v] = <span class="number">0</span></span><br><span class="line">stdin = fileinput.<span class="built_in">input</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="built_in">exec</span>(stdin.readline())</span><br><span class="line">    pic = TEMPLATE</span><br><span class="line">    <span class="keyword">for</span> v <span class="keyword">in</span> VARS:</span><br><span class="line">        pic = pic.replace(v, BLOCK[<span class="built_in">globals</span>()[v]]) <span class="comment"># &#x27;A&#x27; -&gt; BLOCK[A], ...</span></span><br><span class="line">    <span class="built_in">print</span>(pic)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>关于该 python 程序的一些注解：</p>
+<ul>
+<li><code>exec(stdin.readline())</code> 用于将读入的内容直接当作 python 语句执行。由于之前的 C 程序在一行中用 <code>;</code> 将多个变量赋值分开，符合 python 语法，因此可以直接作为 python 程序中的变量赋值语句。</li>
+<li>BLOCK[] 数组中存储了两种颜色：37 号是白色，31 号是红色。这里使用了 ANSI Escape Code，具体格式可以参考<a href="https://kristoff-starling.github.io/2022/02/18/ANSI%20Escape%20Code%20-%20Quick%20Manual/">这篇文章</a>。</li>
+</ul>
+</blockquote>
+<h2 id="Programs-Code-Perspective"><a href="#Programs-Code-Perspective" class="headerlink" title="Programs: Code Perspective"></a>Programs: Code Perspective</h2><p>C 程序也是状态机：</p>
+<ul>
+<li>状态：堆+栈；</li>
+<li>初始状态：main() 的第一条语句；</li>
+<li>迁移：执行一条简单语句。</li>
+</ul>
+<p>从更 low-level 的角度而言，C 程序的状态机描述如下：</p>
+<ul>
+<li><p>状态：全局变量+栈帧的列表 (每个栈帧里有一个 PC 表示当前执行到哪里)；</p>
+</li>
+<li><p>初始状态：<code>main(argc, argv)</code>；</p>
+</li>
+<li><p>迁移：执行 top stack frame 中 PC 处的语句，PC++。</p>
+<p>  函数的调用本质上就是新建一个栈帧放在栈帧列表的顶部，然后跳转到该栈帧中的第一条指令；函数的返回本质上就是将顶部的栈帧 pop 掉。</p>
+</li>
+</ul>
+<h3 id="Example-Hanoi-nr"><a href="#Example-Hanoi-nr" class="headerlink" title="Example: Hanoi-nr"></a>Example: Hanoi-nr</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hanoi-nr.c</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">  <span class="keyword">int</span> pc, n;</span><br><span class="line">  <span class="keyword">char</span> from, to, via;</span><br><span class="line">&#125; Frame;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> call(...) (&#123; *(++top) = (Frame) &#123; .pc = 0, __VA_ARGS__ &#125;; &#125;)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ret()     (&#123; top--; &#125;)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> goto(loc) (&#123; f-&gt;pc = (loc) - 1; &#125;)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hanoi</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> from, <span class="keyword">char</span> to, <span class="keyword">char</span> via)</span> </span>&#123;</span><br><span class="line">  Frame stk[<span class="number">64</span>], *top = stk - <span class="number">1</span>;</span><br><span class="line">  call(n, from, to, via);</span><br><span class="line">  <span class="keyword">for</span> (Frame *f; (f = top) &gt;= stk; f-&gt;pc++) &#123;</span><br><span class="line">    <span class="keyword">switch</span> (f-&gt;pc) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">0</span>: <span class="keyword">if</span> (f-&gt;n == <span class="number">1</span>) &#123; <span class="built_in">printf</span>(<span class="string">&quot;%c -&gt; %c\n&quot;</span>, f-&gt;from, f-&gt;to); <span class="keyword">goto</span>(<span class="number">4</span>); &#125; <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">1</span>: call(f-&gt;n - <span class="number">1</span>, f-&gt;from, f-&gt;via, f-&gt;to);   <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">2</span>: call(       <span class="number">1</span>, f-&gt;from, f-&gt;to,  f-&gt;via);  <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">3</span>: call(f-&gt;n - <span class="number">1</span>, f-&gt;via,  f-&gt;to,  f-&gt;from); <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> <span class="number">4</span>: ret();                                    <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">default</span>: assert(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>switch-case 结构相当于给递归代码编上了“行号”。每个栈帧中的 PC 表示当前层函数执行到了第几行。</p>
+<h2 id="Programs-Binary-Perspective"><a href="#Programs-Binary-Perspective" class="headerlink" title="Programs: Binary Perspective"></a>Programs: Binary Perspective</h2><p>从二进制的角度，程序仍然是状态机。</p>
+<ul>
+<li>状态：寄存器，内存……</li>
+<li>迁移：执行一条指令</li>
+</ul>
+<p>如果整个程序的行为是确定的，状态机应该长成一条直线：$(M_0,R_0)\rightarrow (M_1,R_1)\rightarrow\cdots$ 。如果引入了一些 non-deterministic 的元素，比如 <code>rdrand</code> 指令 (读取一个硬件随机数到寄存器中)，那么状态机会有分叉。但无论如何，这是一个有限状态机 (内存、寄存器数量是有限的)，如果只有计算指令，有限步之后我们必然会回到一个经历过的状态。我们无法实现输入输出，甚至是停止程序。</p>
+<p>因此，程序中有一条特殊的指令：<code>syscall</code>。程序将自己的状态机 $(M,R)$ 交给操作系统，任其修改，最终操作系统返回一个状态机 $(M’,R’)$，程序继续执行。因此程序=计算+syscall+计算+syscall+……</p>
+<h3 id="Example-A-smallest-“Hello-world”"><a href="#Example-A-smallest-“Hello-world”" class="headerlink" title="Example: A smallest “Hello, world”"></a>Example: A smallest “Hello, world”</h3><p>我们想象中的最小函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> _start() &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>直接运行会得到 SIGSEGV。使用 GDB 对汇编代码进行调试：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x401000</span> &lt;_start&gt;       endbr64                                            </span><br><span class="line"><span class="number">0x401004</span> &lt;_start+<span class="number">4</span>&gt;     push   %rbp                                        </span><br><span class="line"><span class="number">0x401005</span> &lt;_start+<span class="number">5</span>&gt;     mov    %rsp,%rbp                                   </span><br><span class="line"><span class="number">0x401008</span> &lt;_start+<span class="number">8</span>&gt;     nop                                                </span><br><span class="line"><span class="number">0x401009</span> &lt;_start+<span class="number">9</span>&gt;     pop    %rbp                                        </span><br><span class="line"><span class="number">0x40100a</span> &lt;_start+<span class="number">10</span>&gt;    ret  </span><br></pre></td></tr></table></figure>
+
+<p>执行 <code>ret</code> 指令时发生错误，因此 <code>ret</code> 的本质是将 %rax 的值赋给 PC，而此时 %rax 的值是一个非法的地址。</p>
+<hr>
+<p>用户程序只能解决“计算”的问题，因此我们甚至无法结束程序。我们必须借助系统调用才能使程序正常运行起来。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># minimal.S</span><br><span class="line">#include &lt;sys/syscall.h&gt;</span><br><span class="line"></span><br><span class="line">.globl _start</span><br><span class="line">_start:</span><br><span class="line">  movq $SYS_write, %rax   # write(</span><br><span class="line">  movq $1,         %rdi   #   fd=1,</span><br><span class="line">  movq $st,        %rsi   #   buf=st,</span><br><span class="line">  movq $(ed - st), %rdx   #   count=ed-st</span><br><span class="line">  syscall                 # );</span><br><span class="line"></span><br><span class="line">  movq $SYS_exit,  %rax   # exit(</span><br><span class="line">  movq $1,         %rdi   #   status=1</span><br><span class="line">  syscall                 # );</span><br><span class="line"></span><br><span class="line">st:</span><br><span class="line">  .ascii &quot;\033[01;31mHello, OS World\033[0m\n&quot;</span><br><span class="line">ed:</span><br></pre></td></tr></table></figure>
+
+<p>前半段程序负责打印：将系统调用号 SYS_write 和输出对象，输出内容等参数放到 x86-64 制定的寄存器中，然后使用 syscall 指令；后半段负责退出。</p>
+<p>使用 <code>gcc -c minimal.S &amp;&amp; ld minimal.S &amp;&amp; ./a.out</code> 命令，可以得到红色加粗的 “Hello, OS World”。</p>
+<h2 id="Switching-between-Perspectives"><a href="#Switching-between-Perspectives" class="headerlink" title="Switching between Perspectives"></a>Switching between Perspectives</h2><p>记源代码为 $S$，汇编代码为 $S$，则编译器就是一个函数：$S=compile(S)$。</p>
+<p>从状态机的视角来看，编译 (优化) 的正确性 (soundness) 的含义是：两个状态机的可观测行为完全一致。因此在保证整体语义不变的前提下，编译器可以自由地调整语句顺序，合并语句，删除无用语句等。</p>
+<h3 id="Example-Compile-Optimization"><a href="#Example-Compile-Optimization" class="headerlink" title="Example: Compile Optimization"></a>Example: Compile Optimization</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> g)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    g++;</span><br><span class="line">    g++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>开启 <code>-O1</code> 优化后，得到的汇编代码为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;foo&gt;:</span><br><span class="line">   0:	f3 0f 1e fa          	endbr64 </span><br><span class="line">   4:	c3                   	ret</span><br></pre></td></tr></table></figure>
+
+<p>编译器直接将 <code>g++</code> 删除了，因为没有返回，这两句话没有作用。</p>
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> g;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    g++;</span><br><span class="line">  	g++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>汇编代码为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;foo&gt;:</span><br><span class="line">   0:	f3 0f 1e fa          	endbr64 </span><br><span class="line">   4:	83 05 00 00 00 00 02 	addl   $0x2,0x0(%rip)        # b &lt;foo+0xb&gt;</span><br><span class="line">   b:	c3                   	ret </span><br></pre></td></tr></table></figure>
+
+<p>因为 g 是外部变量，所以这里对 g 的操作是有意义的，但连续的两次 +1 可以用一次 +2 来代替。</p>
+<hr>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> g;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    g++;</span><br><span class="line">	<span class="function"><span class="keyword">asm</span> <span class="title">volatile</span><span class="params">(<span class="string">&quot;nop&quot;</span> : : <span class="string">&quot;r&quot;</span>(x))</span></span>;</span><br><span class="line">  	g++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>汇编代码为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;foo&gt;:</span><br><span class="line">   0:	f3 0f 1e fa          	endbr64 </span><br><span class="line">   4:	90                   	nop</span><br><span class="line">   5:	83 05 00 00 00 00 02 	addl   $0x2,0x0(%rip)        # c &lt;foo+0xc&gt;</span><br><span class="line">   c:	c3                   	ret</span><br></pre></td></tr></table></figure>
+
+<p>这说明编译器可以调整语句的顺序，然后将两个 +1 合并成一个 +2。</p>
+<p>但我们有手段可以让编译器无法进行这个合并：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> g;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    g++;</span><br><span class="line">	<span class="function"><span class="keyword">asm</span> <span class="title">volatile</span> <span class="params">(<span class="string">&quot;nop&quot;</span> : : <span class="string">&quot;r&quot;</span>(x) : <span class="string">&quot;memory&quot;</span>)</span></span>;</span><br><span class="line">    g++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>汇编代码为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;foo&gt;:</span><br><span class="line">   0:	f3 0f 1e fa          	endbr64 </span><br><span class="line">   4:	83 05 00 00 00 00 01 	addl   $0x1,0x0(%rip)        # b &lt;foo+0xb&gt;</span><br><span class="line">   b:	90                   	nop</span><br><span class="line">   c:	83 05 00 00 00 00 01 	addl   $0x1,0x0(%rip)        # 13 &lt;foo+0x13&gt;</span><br><span class="line">  13:	c3                   	ret </span><br></pre></td></tr></table></figure>
+
+<p>中间插入的内联汇编语句使用了 memory clobber，其意思是告诉编译器这些内联汇编代码可能会任意读取、修改内存内容，因此编译器在调整语句顺序时，不能超过这个 asm block。这句话就像一堵墙一样挡在中间，使得两处 +1 无法被合并。</p>
+<p>该手法在操作系统的锁机制中有重要的应用 (避免编译器将 critical section 中的语句优化到外面，导致 race condition)。</p>
+<h2 id="Programs-OS-Perspective"><a href="#Programs-OS-Perspective" class="headerlink" title="Programs: OS Perspective"></a>Programs: OS Perspective</h2><p>操作系统眼中的程序：程序=计算+syscall+计算+syscall+…… 程序只能通过操作系统允许的方式来访问操作系统掌控的资源，从而操作系统掌握了计算机的“霸权”。</p>
+<h3 id="Example-Entering-a-Program"><a href="#Example-Entering-a-Program" class="headerlink" title="Example: Entering a Program"></a>Example: Entering a Program</h3><blockquote>
+<p>一个 C 程序执行的第一条指令在哪里？</p>
+</blockquote>
+<p>最合理的方法：用 gdb 打开可执行文件，然后用 <code>starti</code> 指令定位到第一条汇编指令，发现在 <code>/lib64/ld-linux-x86-64.so.2</code> 中。这是一个加载器，加载器负责跳转到 <code>__start()</code> 执行。</p>
+<blockquote>
+<p><strong>凭什么不能是 rtfm.so?</strong></p>
+<p>使用 readelf 工具，可以看到在可执行文件中说明了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]</span><br></pre></td></tr></table></figure>
+
+<p>如果我们直接对 a.out 进行修改，将 ld-linux-x86-64.so.2 字段改为 rtfm.so，再创建一个从 rtfm.so 到 ld-linux-x86-64.so.2 的链接，我们就真的可以实现用我们制定的 rtfm.so 来加载程序。</p>
+<p><u>计算机系统不存在玄学，一切都建立在确定的机制上。</u></p>
+</blockquote>
+<p>在执行 main() 函数之前，程序经历了很多的过程，使用了很多的系统调用，用 strace 工具可以查看这些系统调用(注：strace 会输出到标准错误，重定向时要注意)。 C 语言还支持在进入 main() 函数之前和之后做事情：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello-goodbye.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">__attribute__((constructor)) <span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Hello, World\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// See also: atexit(3)</span></span><br><span class="line">__attribute__((destructor)) <span class="function"><span class="keyword">void</span> <span class="title">goodbye</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Goodbye, Cruel OS World!\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Tip: 利用 Vim 来整理不易阅读的输入内容</strong></p>
+<p>strace 输出的内容杂乱难读，利用 vim 对其进行整理可以帮助我们阅读。常用的整理命令可以有：</p>
+<ul>
+<li><code>:%! grep [-v] word</code> 筛选出包含 word 的行 (-v 参数可以反向筛选)。</li>
+<li><code>:%s/, \r /g</code> 将所有的 <code>,</code> 替换为换行符。人类倾向于阅读行数多但每行都很短的内容。</li>
+<li>……</li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/17/NJU-OS/NJU-OS%20Lecture%2001%20-%20Introduction/" rel="prev" title="NJU-OS Lecture 01: Introduction">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 01: Introduction
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/02/18/ANSI%20Escape%20Code%20-%20Quick%20Manual/" rel="next" title="ANSI Escape Code: Quick Tutorial">
+                  ANSI Escape Code: Quick Tutorial <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>

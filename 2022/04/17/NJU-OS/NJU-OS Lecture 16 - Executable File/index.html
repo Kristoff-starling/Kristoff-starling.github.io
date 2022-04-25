@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="本节课默认只有静态链接。  Overview可执行文件的本质描述状态机初始状态 (数据) 和迁移 (指令) 的数据结构：可执行文件在 execve() 的时候使用，操作系统根据可执行文件的描述设置状态机并开始执行。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 16: Executable File">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/04/17/NJU-OS/NJU-OS%20Lecture%2016%20-%20Executable%20File/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="本节课默认只有静态链接。  Overview可执行文件的本质描述状态机初始状态 (数据) 和迁移 (指令) 的数据结构：可执行文件在 execve() 的时候使用，操作系统根据可执行文件的描述设置状态机并开始执行。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-19T09:41:31.293Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/04/17/NJU-OS/NJU-OS%20Lecture%2016%20-%20Executable%20File/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/04/17/NJU-OS/NJU-OS%20Lecture%2016%20-%20Executable%20File/","path":"2022/04/17/NJU-OS/NJU-OS Lecture 16 - Executable File/","title":"NJU-OS Lecture 16: Executable File"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 16: Executable File | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Overview"><span class="nav-number">1.</span> <span class="nav-text">Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Common-Executable-File-Formats"><span class="nav-number">1.1.</span> <span class="nav-text">Common Executable File Formats</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parsing-Executable-File"><span class="nav-number">2.</span> <span class="nav-text">Parsing Executable File</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Debugging-Information"><span class="nav-number">2.1.</span> <span class="nav-text">Debugging Information</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Example-Stack-Unwinding"><span class="nav-number">2.2.</span> <span class="nav-text">Example: Stack Unwinding</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linking-and-Relocation"><span class="nav-number">3.</span> <span class="nav-text">Linking and Relocation</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/04/17/NJU-OS/NJU-OS%20Lecture%2016%20-%20Executable%20File/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 16: Executable File
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-17 00:00:00" itemprop="dateCreated datePublished" datetime="2022-04-17T00:00:00+08:00">2022-04-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-19 17:41:31" itemprop="dateModified" datetime="2022-04-19T17:41:31+08:00">2022-04-19</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>本节课默认只有静态链接。</p>
+</blockquote>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>可执行文件的本质<strong>描述状态机初始状态 (数据) 和迁移 (指令) 的数据结构</strong>：可执行文件在 execve() 的时候使用，操作系统根据可执行文件的描述设置状态机并开始执行。<span id="more"></span></p>
+<p>更具体地说，可执行文件是一个描述了状态机初始状态的数据结构。状态机的初始状态一般包括以下几个方面：</p>
+<ul>
+<li>寄存器：大部分寄存器的值由 ABI 规定 (比如哪些寄存器应该清零)，由操作系统负责设置。但也有一些重要的寄存器的值是可执行文件指定的，比如 PC 的值。</li>
+<li>地址空间 (内存)：由二进制文件和 ABI 共同决定，比如某一段数据应该放到内存中的哪里，以及 argv, envp 的内容。</li>
+<li>其他有用的信息 (比如调试信息)</li>
+</ul>
+<blockquote>
+<p><strong>什么样的文件可以被执行？</strong></p>
+<p>一个文件需要满足若干条件才能被执行。假设我们有源代码 <code>a.c</code>，直接执行它 (<code>./a.c</code>) 会获得 Permission denied (bash)，即使我们用 <code>chmod +x a.c</code> 给其加上了执行权限，仍然不能正常执行。</p>
+<p>决定一个文件是否能执行的是 execve() 系统调用。我们可以用 strace 追踪加载 <code>a.c</code> 的过程。如果 <code>a.c</code> 没有被赋予可执行权限，我们得到的是 EACCES (Permission denied)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">execve(<span class="string">&quot;./a.c&quot;</span>, [<span class="string">&quot;./a.c&quot;</span>], 0x7fff24451760 /* 66 vars */) = -1 EACCES (Permission denied)</span><br><span class="line">strace: <span class="built_in">exec</span>: Permission denied</span><br><span class="line">+++ exited with 1 +++</span><br></pre></td></tr></table></figure>
+
+<p>如果我们给 <code>a.c</code> 赋予执行权限，得到的则是 ENOEXEC (目标文件的格式不是可识别的可执行文件格式)。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">execve(<span class="string">&quot;./a.c&quot;</span>, [<span class="string">&quot;./a.c&quot;</span>], 0x7ffe24eca680 /* 66 vars */) = -1 ENOEXEC (Exec format error)</span><br><span class="line">strace: <span class="built_in">exec</span>: Exec format error</span><br><span class="line">+++ exited with 1 +++</span><br></pre></td></tr></table></figure>
+
+<p>这时我们再阅读 execve() 的手册的 ERROR 部分，就会有更好的理解。手册告诉我们 EACCES 类型的错误不只是因为缺少执行权限，也可能是因为对象不是正常的文件类型，比如 <code>strace /dev/null</code> 也会得到 EACCES。除了 EACCES 和 ENOEXEC 还有更多的错误类型，比如 E2BIG 表示参数/环境变量列表太长，ENOMEM 表示内核的内存空间不足等。</p>
+</blockquote>
+<h3 id="Common-Executable-File-Formats"><a href="#Common-Executable-File-Formats" class="headerlink" title="Common Executable File Formats"></a>Common Executable File Formats</h3><p>Executable file 就是操作系统中的一个普通的对象。</p>
+<p>Windows 中使用的是 PE 格式 (Portable Executable)。</p>
+<p>UNIX/Linux 默认的可执行文件格式是 ELF (Executable Linkable Format)，但 UNIX/Linux 还支持 She-bang 格式的文件 (即文件开头有 <code>#!</code> 的文件)。比如我们可以在一个 <code>.c</code> 文件中书写</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/bin/python3</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&#x27;Hello&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>给它加上执行权限后它便可以用 python 解释器运行下面的代码并输出 Hello。更神奇的是 She-bang 后面还可以跟我们自己写的程序，例如我们书写下面的两个程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// args.c</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; argc; i++) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;argv[%d] = %s\n&quot;</span>, i, argv[i]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#!./args</span><br></pre></td></tr></table></figure>
+
+<p>第二个程序随便是什么类型 (不妨给其命名 <code>she-bang</code>)。将第一个 C 程序编译出可执行文件 args 后，给第二个文件加上可执行权限后，输入 <code>./she-bang</code> ，便可得到</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">argv[0] = ./args</span><br><span class="line">argv[1] = ./she-bang</span><br></pre></td></tr></table></figure>
+
+<p>其实 she-bang 的原理可以理解为一个偷换参数的 execve()：我们在输入命令 <code>./file</code> 的时候，本来传给 execve() 的参数是 “./file”，但如果 file 文件的开头是 she-bang：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#!intepreter [optional-args]</span><br></pre></td></tr></table></figure>
+
+<p>那么相当于给 execve() 传入了参数 “intepreter”,  “[optional-args]”, “file”。这部分在 execve() 的手册中也有叙述。</p>
+<blockquote>
+<p><strong>关于 optional args 的有趣现象</strong></p>
+<p>我们即使在 she-bang 后跟多个空格分开的单词，也只能传一个参数。这是一个 UNIX 的历史遗留问题。比如我们将刚才的 she-bang 修改为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#!./args Hello OS World</span><br></pre></td></tr></table></figure>
+
+<p>则输出结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">argv[0] = ./args</span><br><span class="line">argv[1] = Hello OS World</span><br><span class="line">argv[2] = ./she-bang</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p><strong>为什么我使用 <code>strace ./she-bang</code> 观测，但没有看到显式的 “偷梁换柱” 现象？</strong></p>
+<p>在 linux kernel 的源码中，execve() 会调用 <code>do_open_execat(&quot;./she-bang&quot;)</code>，里面有一个函数是 loadelf，有一个函数是 loadscript，在 load_script() 中，内核有权限打开一个文件并检查器开头是不是 <code>#!</code>，如果是就会把后面的解释器路径读出来，然后递归地调用 <code>do_open_execat(&quot;./args&quot;)</code>。因此这个“偷梁换柱”的过程是在 execve() 内部完成的。</p>
+</blockquote>
+<h2 id="Parsing-Executable-File"><a href="#Parsing-Executable-File" class="headerlink" title="Parsing Executable File"></a>Parsing Executable File</h2><p>GNU binutils 提供了一系列与二进制文件打交道的工具。这些工具的本质都是查看/修改数据结构中的内容。</p>
+<h3 id="Debugging-Information"><a href="#Debugging-Information" class="headerlink" title="Debugging Information"></a>Debugging Information</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// segfault.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stddef.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bar</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  *(<span class="keyword">int</span> *)<span class="literal">NULL</span> = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  bar();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  foo();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述程序对一个空指针解引用，显然会发生段错误。如果我们用 GDB 调试，我们可以抓到出错的行。使用 <code>backtrace</code> / <code>where</code> 还可以打印出完整的函数调用序列，以及每个函数对应到源代码的行数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(gdb) where</span><br><span class="line">#0  bar () at segfault.c:4</span><br><span class="line">#1  0x0000555555555151 in foo () at segfault.c:8</span><br><span class="line">#2  0x0000555555555166 in main () at segfault.c:12</span><br></pre></td></tr></table></figure>
+
+<p>我们还可以感受 addr2line 工具的威力：在可执行文件 segfault 中找到 foo() 函数对应的地址 ADDR，然后输入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addr2line ADDR segfault</span><br></pre></td></tr></table></figure>
+
+<p>便可以得到该地址对应到源代码 <code>segfault.c</code> 中的行号：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/os-demo/Lecture16/segfault.c:7</span><br></pre></td></tr></table></figure>
+
+<p>我们针对二进制文件操作，却可以得到源代码相关的信息，这是因为我们的二进制文件中保留了调试信息 (当然，如果我们编译的时候不带 <code>-g</code> 选项，使用 GDB backtrace 的时候就无法定位到源文件行号)。如果我们用 <code>readelf -S file</code> 查看可执行文件 file 的 section header table，可以看到有 debug info 等节，这就是调试信息。</p>
+<p>现在调试信息采用的标准是 DWARF debugging standard。调试信息可以理解为将 assembly (机器状态) 映射到 “C语言世界” 状态的函数。我们 C 语言的形式语义是状态机之间的转移 (high level 的状态机，比如栈帧，行号等)，编译器的工作是将其翻译成汇编指令，汇编指令描述了更底层的状态机的转移 (memory, register etc.)，调试信息的作用就是将一个底层的状态机状态映射到 C 语言世界的一个状态机状态。</p>
+<blockquote>
+<p><strong>编译器的“摆烂”</strong></p>
+<p>将机器状态映射到 C 语言状态是一件很困难的事情。比如我们可能有函数內联，这让 backtrace 变得困难；再比如比较激进的编译优化会在语义不变的前提下改写汇编程序而不是逐句翻译，这使得有些汇编状态其实根本找不到对应的 C 语言状态。因此，我们在调试时经常碰到各种各样不正确的调试信息，以及一些明明可以打印，却被摆烂的 <code>&lt;optimized out&gt;</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// popcount.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">__attribute__((noinline))</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">popcount</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line"><span class="keyword">int</span> s = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> b0 = (x &gt;&gt; <span class="number">0</span>) &amp; <span class="number">1</span>;</span><br><span class="line">s += b0;</span><br><span class="line"><span class="keyword">int</span> b1 = (x &gt;&gt; <span class="number">1</span>) &amp; <span class="number">1</span>;</span><br><span class="line">s += b1;</span><br><span class="line"><span class="keyword">int</span> b2 = (x &gt;&gt; <span class="number">2</span>) &amp; <span class="number">1</span>;</span><br><span class="line">s += b2;</span><br><span class="line"><span class="keyword">int</span> b3 = (x &gt;&gt; <span class="number">3</span>) &amp; <span class="number">1</span>;</span><br><span class="line">s += b3;</span><br><span class="line"><span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, popcount(<span class="number">0b1101</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>popcount.c</code> 可以正确地打印出一个数二进制表示中有多少个 1。但如果我们用 GDB 调试，在不开 O2 的情况下，我们刚进入 popcount() 时 <code>p x</code> 会发现 GDB 输出了不正确的值 0。在开 O2 的情况下，我们运行到 popcount() 的 ret 时，会发现变量 s 被 optimized out 了，但 %eax 的值 3 是正确的……这都是错误或不得当的调试信息。</p>
+</blockquote>
+<h3 id="Example-Stack-Unwinding"><a href="#Example-Stack-Unwinding" class="headerlink" title="Example: Stack Unwinding"></a>Example: Stack Unwinding</h3><p>这些功能其实并不神秘，利用 x86 架构的栈帧结构，我们也可以实现一个简易的 stack unwinding：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// unwind.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *binary;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">frame</span> &#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">frame</span> *<span class="title">next</span>;</span> <span class="comment">// push %rbp</span></span><br><span class="line">  <span class="keyword">void</span> *addr;         <span class="comment">// call f (pushed retaddr)</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">backtrace</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">frame</span> *<span class="title">f</span>;</span></span><br><span class="line">  <span class="keyword">char</span> cmd[<span class="number">1024</span>];</span><br><span class="line">  <span class="keyword">extern</span> <span class="keyword">char</span> end;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">asm</span> <span class="title">volatile</span> <span class="params">(<span class="string">&quot;movq %%rbp, %0&quot;</span> : <span class="string">&quot;=g&quot;</span>(f))</span></span>;</span><br><span class="line">  <span class="keyword">for</span> (; f-&gt;addr &lt; (<span class="keyword">void</span> *)&amp;end; f = f-&gt;next) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%016lx  &quot;</span>, (<span class="keyword">long</span>)f-&gt;addr); fflush(<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="built_in">sprintf</span>(cmd, <span class="string">&quot;addr2line -e %s %p&quot;</span>, binary, f-&gt;addr);</span><br><span class="line">    system(cmd);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bar</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  backtrace();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  bar();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span> </span>&#123;</span><br><span class="line">  binary = argv[<span class="number">0</span>];</span><br><span class="line">  foo();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行代码 (不开优化)，我们确实可以得到一个完整的函数调用链：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">000000000040199e  /home/starling/os-demo/Lecture16/unwind.c:26</span><br><span class="line">00000000004019b3  /home/starling/os-demo/Lecture16/unwind.c:30</span><br><span class="line">00000000004019e1  /home/starling/os-demo/Lecture16/unwind.c:34</span><br><span class="line">00000000004039b2  ??:?</span><br></pre></td></tr></table></figure>
+
+<p>backtrace() 函数的实现原理很简单：我们默认该程序运行在 x86 架构上，x86 架构在调用一个函数时总是使用 call 指令，call 指令会向栈中写入返回地址，然后 PC 跳转到目标函数的第一条指令。目标函数的前两条指令一定是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">push %rbp</span><br><span class="line">mov %rsp, %rbp</span><br></pre></td></tr></table></figure>
+
+<p>执行完了以后，栈上的内容为返回地址和旧 rbp 值，现在的 rbp 寄存器指向存储旧 rbp 值的地址。因此我们只要不断向前寻找 rbp 值，就可以实现栈帧的回溯，每次找 rbp 值上一个 8 字节区域的内容，就能找到返回地址，利用 addr2line 对这个返回地址定位，就能找到调用当前函数的 caller。</p>
+<p>上述示例代码使用一个 <code>struct frame</code> 结构比较精巧地完成了这件事，它刚开始用一句內联汇编把 %rbp 的值放到了 f 中，f 的结构为</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">frame</span> &#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">frame</span> *<span class="title">next</span>;</span></span><br><span class="line">    <span class="keyword">void</span> *addr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样 next 存储的正好是旧 rbp，addr 存储的正好是当前函数的返回地址 (栈是从上往下生长的)。<code>end</code> 变量记录了代码段的结束位置，回溯到 end 之上就可以结束了。</p>
+<blockquote>
+<p><strong>GDB 的强大</strong></p>
+<p>如果我们使用 O2 优化，示例代码将不能正常工作，因为这些函数都被內联了，我们只能看到一层调用。但如果用 GDB 的 backtrace，我们仍然可以看到完整的函数调用链——这个调用过程是 GDB 虚构出来的正确信息。</p>
+</blockquote>
+<h2 id="Linking-and-Relocation"><a href="#Linking-and-Relocation" class="headerlink" title="Linking and Relocation"></a>Linking and Relocation</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b)</span> </span>&#123;<span class="keyword">return</span> a + b;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    hello();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述两个文件分别编译成可重定位文件后，最后链接在一起就可以执行。我们关心 <code>main.c</code> 到底是如何找到外部的 hello() 函数的地址的。如果我们查看 <code>main.o</code> 的代码段信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">0000000000000000 &lt;f&gt;:</span><br><span class="line">   0:   f3 0f 1e fa             endbr64 </span><br><span class="line">   4:   8d 04 37                lea    (%rdi,%rsi,1),%eax</span><br><span class="line">   7:   c3                      ret</span><br><span class="line"></span><br><span class="line">0000000000000000 &lt;main&gt;:</span><br><span class="line">   0:   f3 0f 1e fa             endbr64 </span><br><span class="line">   4:   48 83 ec 08             sub    $0x8,%rsp</span><br><span class="line">   8:   31 c0                   xor    %eax,%eax</span><br><span class="line">   a:   e8 00 00 00 00          call   f &lt;main+0xf&gt;</span><br><span class="line">   f:   31 c0                   xor    %eax,%eax</span><br><span class="line">  11:   48 83 c4 08             add    $0x8,%rsp</span><br><span class="line">  15:   c3                      ret</span><br></pre></td></tr></table></figure>
+
+<p>会看到像 f() 这样完全确定的函数编译器已经完全生成好了代码，编译器还没有填的是 call 后面的地址偏移，因为链接之前它不知道 hello() 在哪里，因此只能暂时填 0 摆烂。</p>
+<p>链接结束后 main() 在 0xb 处填写的 offset 应该满足下面的 assertion：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// hello.c</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;assert.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">void</span> *p = (<span class="keyword">void</span> *)main + <span class="number">0xa</span> + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int32_t</span> offset = *((<span class="keyword">int32_t</span> *)p);</span><br><span class="line">    assert((<span class="keyword">char</span> *)main + <span class="number">0xf</span> + offset == (<span class="keyword">char</span> *)hello);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>(注：开始跳转的地址是 <code>main +0xf</code> 是因为 x86 的 call 指令是从下一条指令的地址开始跳转的。)</p>
+<p>为了满足这个 assertion，我们容易计算出要填写的 offset 应该满足 $S+A-P$ 的格式，其中 $S$ 是目标函数的地址 (在这里是 <code>(void *)hello</code>)，$A$ 是一个偏移量，(在这里是 $-4$)，$P$ 是下一条指令的地址 (在这里是 <code>(void *)main + 0xb</code>)。如果我们用 readelf 查看 <code>main.o</code> 的重定位表，可以看到</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">  Offset          Info           Type           Sym. Value    Sym. Name + Addend</span><br><span class="line">00000000000b  000c00000004 R_X86_64_PLT32    0000000000000000 hello - 4</span><br></pre></td></tr></table></figure>
+
+<p>这里的  “Offset” 就是 $P$，”Addend” 就是 $A$，”Sym” 就是 $S$。</p>
+<p>因此，通俗来说，</p>
+<ul>
+<li>编译器 (gcc) 就是将 high-level semantics (C 语言) 转换成 low-level semantics (汇编)。</li>
+<li>汇编器 (as) 就是将 low-level semantics 转换成 binary semantics (状态机容器)，这个部分几乎是一一对应地翻译，对于暂时没法填的要留下重定位信息，重定位信息本质上就是对填写内容的 assertion。</li>
+<li>链接器 (ld) 负责合并所有容器，得到一个完整的状态机，除了我们指定的 <code>.o</code> 文件外，链接器还会将一些 C Runtime Objects 链接进来。找不到符号/重复强符号的错误也是在链接阶段报出。</li>
+</ul>
+<p>在这种理解下，我们很容易设计一个自己的“简易二进制文件格式“：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">executable</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> entry;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">segment</span> *<span class="title">segments</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">reloc</span> *<span class="title">relocs</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">symbol</span> *<span class="title">symbols</span>;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">segment</span> &#123;</span><span class="keyword">uint32_t</span> flags, size; <span class="keyword">char</span> data[<span class="number">0</span>];&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">reloc</span> &#123;</span><span class="keyword">uint32_t</span> S, A, P; <span class="keyword">const</span> <span class="keyword">char</span> *name;&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">symbol</span> &#123;</span><span class="keyword">uint32_t</span> offset, <span class="keyword">const</span> <span class="keyword">char</span> *name;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>随着各种需求的加入，我们就会慢慢理解 ELF 中各种信息设置的含义。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/15/MIT-6.S081%20Lecture%2011%20-%20Thread%20Switching/" rel="prev" title="MIT-6.S081 Lecture 11: Thread Switching">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 11: Thread Switching
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/04/19/NJU-OS/NJU-OS%20Lecture%2017%20-%20Linking%20and%20Loading/" rel="next" title="NJU-OS Lecture 17: Linking and Loading">
+                  NJU-OS Lecture 17: Linking and Loading <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
