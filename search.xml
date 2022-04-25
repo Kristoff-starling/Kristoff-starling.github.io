@@ -4607,7 +4607,7 @@ end</pre>
       </categories>
   </entry>
   <entry>
-    <title>NJU-OS MiniLab 1: pstree</title>
+    <title>NJU-OS MiniLab 1: Process Tree</title>
     <url>/2022/03/11/NJU-OS/NJU-OS%20Minilab%201%20-%20pstree/</url>
     <content><![CDATA[<p>该实验主要目的是实现一个精简版的 Linux pstree 命令行工具，以较为优美的方式打印当前系统中的进程树。</p>
 <span id="more"></span>
