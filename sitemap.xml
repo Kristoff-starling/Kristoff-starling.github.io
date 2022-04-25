@@ -932,6 +932,13 @@
   </url>
   
   <url>
+    <loc>https://kristoff-starling.github.io/categories/MIT-6-S081-Introduction-to-Operating-Systems/Book-Notes/</loc>
+    <lastmod>2022-04-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://kristoff-starling.github.io/categories/NJU-22020230-Operating-Systems/Lab-Reports/</loc>
     <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
@@ -940,13 +947,6 @@
   
   <url>
     <loc>https://kristoff-starling.github.io/categories/NJU-22020230-Operating-Systems/Lecture-Notes/</loc>
-    <lastmod>2022-04-25</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://kristoff-starling.github.io/categories/MIT-6-S081-Introduction-to-Operating-Systems/Book-Notes/</loc>
     <lastmod>2022-04-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
