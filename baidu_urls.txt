@@ -1,3 +1,4 @@
+https://kristoff-starling.github.io/2022/04/28/NJU-OS/NJU-OS%20Lecture%2020%20-%20Scheduling/
 https://kristoff-starling.github.io/2022/04/25/NJU-OS/NJU-OS%20Lecture%2019%20-%20Context%20Switching/
 https://kristoff-starling.github.io/2022/04/25/NJU-OS/NJU-OS%20Minilab%203%20-%20sperf/
 https://kristoff-starling.github.io/2022/04/24/NJU-OS/NJU-OS%20Lecture%2018%20-%20Xv6%20Code%20Guide/
