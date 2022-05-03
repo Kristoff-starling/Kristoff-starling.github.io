@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="操作系统的设计：一组对象+访问对象的 API；操作系统的实现：一个 C 程序完成上面的设计 我们关心的问题是：操作系统到底应该提供什么样的对象和 API？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NJU-OS Lecture 21: OS Design">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="操作系统的设计：一组对象+访问对象的 API；操作系统的实现：一个 C 程序完成上面的设计 我们关心的问题是：操作系统到底应该提供什么样的对象和 API？">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-03T04:31:32.479Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/","path":"2022/05/03/NJU-OS/NJU-OS Lecture 21 - OS Design/","title":"NJU-OS Lecture 21: OS Design"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NJU-OS Lecture 21: OS Design | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Monolithic-Kernel"><span class="nav-number">1.</span> <span class="nav-text">Monolithic Kernel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Microkernel"><span class="nav-number">2.</span> <span class="nav-text">Microkernel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Minix"><span class="nav-number">2.1.</span> <span class="nav-text">Minix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#seL4"><span class="nav-number">2.2.</span> <span class="nav-text">seL4</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UniKernel"><span class="nav-number">3.</span> <span class="nav-text">UniKernel</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NJU-OS Lecture 21: OS Design
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-05-03 00:00:00 / 修改时间：12:31:32" itemprop="dateCreated datePublished" datetime="2022-05-03T00:00:00+08:00">2022-05-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>操作系统的设计：一组对象+访问对象的 API；操作系统的实现：一个 C 程序完成上面的设计</p>
+<p>我们关心的问题是：操作系统到底应该提供什么样的对象和 API？<span id="more"></span></p>
+<h2 id="Monolithic-Kernel"><a href="#Monolithic-Kernel" class="headerlink" title="Monolithic Kernel"></a>Monolithic Kernel</h2><p>Unix 系列：<a target="_blank" rel="noopener" href="https://pubs.opengroup.org/onlinepubs/9699919799/mindex.html">The Open Group Base Specifications Issue 7 (2018 Ed.)</a></p>
+<p>Windows 系列：<a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list">Windows API Index</a></p>
+<p>不同的 API 系列可以互相模拟，于是有了 WSL 和 WINE。</p>
+<blockquote>
+<p><strong>Real Operating Systems</strong></p>
+<p>真正的操作系统要考虑的事情总是比想象中的复杂。比如我们写一个简单的重命名函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rename_file</span><span class="params">(<span class="keyword">char</span> *oldname, <span class="keyword">char</span> *newname)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">char</span> buf[SIZE];</span><br><span class="line"> <span class="keyword">int</span> fd = open(oldname, O_RONLY);</span><br><span class="line"> fread(fd, buf);</span><br><span class="line"> close(fd); <span class="keyword">delete</span>(oldname);</span><br><span class="line"> <span class="comment">// &lt;------------------</span></span><br><span class="line"> fd = open(newname, O_CREAT | O_TRUNC | O_WONLY);</span><br><span class="line"> write(fd, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果在箭头指向的时刻操作系统突然掉电了，那么文件内容就全部丢失了！这显然是不合理的现象。阅读 rename() 系统调用的手册，可以看到手册保证了删除旧文件，创建新文件操作的原子性。</p>
+</blockquote>
+<h2 id="Microkernel"><a href="#Microkernel" class="headerlink" title="Microkernel"></a>Microkernel</h2><p>复杂系统的正确性难以保证。像 Linux 这样以 C 为主要语言的操作系统，C 的 undefined behavior 会给系统带来无穷的灾难：比如文件系统一旦出错，整个内核中的任何模块都可能受到损坏。</p>
+<p>微内核的想法是：将尽可能多的功能用普通进程实现，将问题隔离在进程级。比如文件操作，UNIX 的 write() 会陷入内核，但另一种想法是：调用一个 remote_write() 和一个 File server 交互，FS进程有访问磁盘的权限即可。</p>
+<p>一些好的想法：</p>
+<ul>
+<li>一些和状态机管理密切相关的系统调用没法被搬出内核：比如 fork(), mmap()。</li>
+<li>如果操作系统提供一个 mmio() 系统调用，让进程通过访问内存的方式来控制设备寄存器、磁盘 etc，那么设备驱动代码，文件系统代码都可以放在用户态。</li>
+</ul>
+<p>赋予进程最少的权限，就能降低错误带来的影响。</p>
+<h3 id="Minix"><a href="#Minix" class="headerlink" title="Minix"></a>Minix</h3><p>Minix 是一个具有跨时代意义的教学操作系统，它采取的是微内核设计。在 Minix 2.0 中，内核只提供了两个 API：send 和 receive。基于这两个系统调用，我们实现一些 RPC (remote procedure call) 来实现进程之间的通信。Kernel 里只有很少的状态机相关的机制：比如中断，异常，时钟驱动，内存映射 etc. 其他的功能，比如文件系统，设备驱动，网络 etc. 都在用户态。跨模块的调用会跨越进程边界 i.e. 地址空间的切换等，这样一个模块的错误就可以被隔离在本地，UB 不会波及到模块外部。</p>
+<h3 id="seL4"><a href="#seL4" class="headerlink" title="seL4"></a>seL4</h3><p>seL4 是第一个完成了正确性证明、运行时间上界证明的微内核。</p>
+<p>seL4 的证明思路大致如下：以 <code>thread-os.c</code> 的 round-robin 调度器为例，首先我们用适合描述行为的语言建立一个模型 (这里以 python 为例, seL4 在这里实际上有两层建模)：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rr_sched</span>(<span class="params">cpu</span>):</span></span><br><span class="line">    cpu.threads = cpu.threads[<span class="number">1</span>:] + cpu.threads[:<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">assert</span> anything_you_need</span><br><span class="line">    <span class="keyword">return</span> cpu.threads[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+<p>我们可以用 model checker 确认这个 high level 语言编写的程序的正确性，然后我们希望证明 <code>thread-os.c</code> 和 python 代码的行为等价性。除去访问硬件的部分 (AbstractMachine)，操作系统本质上是纯计算的程序 (数学模型)，因此我们只需要观测所有的 AM call 行为是否等价即可。如果我们使用被 verified 的编译器，我们还可以进一步证明 C 程序和汇编指令的等价性。</p>
+<h2 id="UniKernel"><a href="#UniKernel" class="headerlink" title="UniKernel"></a>UniKernel</h2><p>很早的时候就有了 exokernel (外核) 的概念，即操作系统不应该有任何的策略，只需要提供最小的硬件抽象。在有了虚拟机的时代，这催生了 unikernel：将操作系统的内核代码和应用程序直接链接起来跑，因为硬件都是虚拟机抽象出来的，所以没有安全问题。这时的 OS 类似于一个 libOS 的功能。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/04/28/NJU-OS/NJU-OS%20Lecture%2020%20-%20Scheduling/" rel="prev" title="NJU-OS Lecture 20: Scheduling">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 20: Scheduling
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
