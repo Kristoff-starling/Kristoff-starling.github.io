@@ -1044,6 +1044,35 @@
       </categories>
   </entry>
   <entry>
+    <title>MIT-6.S081 Lab 07: Multithreading</title>
+    <url>/2022/04/24/MIT-6.S081%20Lab%2007%20-%20Multithreading/</url>
+    <content><![CDATA[<h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> Uthread: switching between threads (moderate)</li>
+<li><input checked="" disabled="" type="checkbox"> Using threads (moderate)</li>
+<li><input checked="" disabled="" type="checkbox"> Barrier (moderate)</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Uthread-Switching-Between-Threads-moderate"><a href="#Uthread-Switching-Between-Threads-moderate" class="headerlink" title="Uthread: Switching Between Threads (moderate)"></a>Uthread: Switching Between Threads (moderate)</h2><p>该实验要实现一个“用户态协程库”，每个协程通过 yield() 函数主动让出 CPU 来让其他协程运行。笔者定义了如下的结构体：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread</span> &#123;</span></span><br><span class="line">  <span class="keyword">char</span>            <span class="built_in">stack</span>[STACK_SIZE]; <span class="comment">/* the thread&#x27;s stack */</span></span><br><span class="line">  <span class="keyword">int</span>             state;             <span class="comment">/* FREE, RUNNING, RUNNABLE */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">context</span> *<span class="title">context</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>其中 context 指针指向的地方用于存储和恢复寄存器现场，笔者的代码会利用堆栈低地址处的 <code>sizeof(struct context)</code> 的空间来存放这个 context。</p>
+<h3 id="thread-create"><a href="#thread-create" class="headerlink" title="thread_create()"></a>thread_create()</h3><p>类似于 xv6 中的设计，创建线程时我们要在 context 中伪造一个用于返回的寄存器现场：设置 ra 为目标函数地址，sp 为改线程的栈的地址即可。</p>
+<p>笔者曾经遇到一个非常难以理解的 bug：某函数的代码在运行过程中被修改，导致段错误。经过排查发现：笔者忘了为 main() 函数对应的线程设置 context 指针，context 指针默认初始值为 0，从而在第一次上下文切换时，main() 的上下文覆盖了代码段。我们应该在 thread_init() 中为 main() 的线程做好初始化。</p>
+<p>xv6 的用户进程中代码段是从 0 地址开始保存的，查看 <code>/kernel/exec.c</code> 可知 xv6 通过 uvmalloc() 申请页面并将代码放入，uvmalloc() 也是 sbrk() 系统调用底层的函数，申请的页面默认是 R/W/X/U 的，所以用户进程有修改的权利 (加载时将代码段设置为不可写或许更容易暴露 bug)。</p>
+<h3 id="thread-switch"><a href="#thread-switch" class="headerlink" title="thread_switch()"></a>thread_switch()</h3><p>这部分代码用汇编实现，可以完全参考 <code>/kernel/swtch.S</code> 的实现。类似地，因为 thread_switch() 在 C 代码中被当作一个普通函数调用，编译器会帮我们保证 caller-saved registers 的封存 (栈上)，我们只需要保存 callee-saved registers 即可。</p>
+<h3 id="thread-schedue"><a href="#thread-schedue" class="headerlink" title="thread_schedue()"></a>thread_schedue()</h3><p>该函数负责挑选一个 RUNNABLE 的线程，然后通过 thread_switch() 跳过去。</p>
+<h3 id="thread-yield"><a href="#thread-yield" class="headerlink" title="thread_yield()"></a>thread_yield()</h3><p>该函数只需要将当前线程的状态改为 RUNNABLE，然后调用 thread_schedule() 即可。</p>
+<h2 id="Using-Threads-moderate"><a href="#Using-Threads-moderate" class="headerlink" title="Using Threads (moderate)"></a>Using Threads (moderate)</h2><p>该实验使用 Linux 的 pthread 线程库，是非常基础的带锁并发编程实验。为哈希表的每个 bucket 上一把锁就可以既保证正确性又通过速度测试。</p>
+<h2 id="Barrier-moderate"><a href="#Barrier-moderate" class="headerlink" title="Barrier (moderate)"></a>Barrier (moderate)</h2><p>该实验使用 Linux 的 pthread 线程库，是非常基础的条件变量编程实验。我们甚至不需要生产者-消费者模型——我们只要让先来的线程在条件变量上睡眠，最后一个到来的线程 broadcast 一下即可。</p>
+<p>一个小细节是我们要在 barrier() 中修改 round，但 round 只能被修改一次。我们可以让每个线程上来先保存一个旧的 round 值，然后被唤醒后每个线程上锁检查 round，只有看到 <code>old == new</code> 的线程可以 +1。</p>
+]]></content>
+      <categories>
+        <category>MIT-6.S081 Introduction to Operating Systems</category>
+        <category>Lab Reports</category>
+      </categories>
+  </entry>
+  <entry>
     <title>MIT-6.S081 Lecture 01: Introduction and Examples</title>
     <url>/2022/01/25/MIT-6.S081%20Lecture%2001%20-%20Introduction%20and%20Examples/</url>
     <content><![CDATA[<h2 id="Purposes-of-O-S"><a href="#Purposes-of-O-S" class="headerlink" title="Purposes of O/S"></a>Purposes of O/S</h2><ul>
@@ -2589,61 +2618,130 @@
       </categories>
   </entry>
   <entry>
-    <title>NJU-OS Lab 1: Physical Memory Manager</title>
-    <url>/2022/04/06/NJU-OS/NJU-OS%20Lab%201%20-%20pmm/</url>
-    <content><![CDATA[<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。在技术上有如下要点：</p>
-<ul>
-<li><p>维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。<span id="more"></span></p>
-</li>
-<li><p>由于 kfree() 只传入了要释放内存块的起始地址，而没有传入 size，所以我们应当在 kalloc() 的时候记录每个释放出去的内存块的大小。笔者最初的实现是维护了一个分配出去的内存块的链表，kfree() 到来时，在链表里查找给定的地址是否存在以及对应的大小。但这样效率太低，于是笔者使用了在地址前打魔数的方法。笔者定义了一个如下的 header：</p>
-  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ALLOC_MAGIC 0x1234567;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">header_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">size_t</span> sz;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="keyword">uintptr_t</span> magic;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> __<span class="title">header_t</span> *<span class="title">next</span>;</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;<span class="keyword">header_t</span>;</span><br></pre></td></tr></table></figure>
+    <title>NJU-OS Lecture 04: Understanding Concurrent Programs</title>
+    <url>/2022/02/23/NJU-OS/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/</url>
+    <content><![CDATA[<p>互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。</p>
+<p>对于 <code>sum.c</code> ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">void Tsum()</span><br><span class="line">&#123;</span><br><span class="line">	for (int i = 0; i &lt; N; i++)</span><br><span class="line">	&#123;</span><br><span class="line"><span class="addition">+		lock();</span></span><br><span class="line">		sum++;</span><br><span class="line"><span class="addition">+		unlock();</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>  每个内存块前都有一个这样的 header。这个 header 的好处是：未分配内存和已分配内存可以共用这个 header，当内存块处于未分配状态时，内存块被放在链表中，union 字段存放的是下一个链表节点的地址；当内存块处于已分配状态时，union 字段存放魔数。一个 kfree() 地址来临时，只要查看其前一个 <code>uintptr_t</code> 中是不是 ALLOC_MAGIC，就能确定这个地址合不合法，再往前看就能获得内存块的 size。</p>
-<p>  (注：使用 header 的方法有一个弱点：原本在堆区中 1B 的内存加上 header 后变得很大。此外，由于对齐的原因，我们无法将多个大小相同的内存块“挨在一起”存放在堆区中，中间有很多“洞”。)</p>
-</li>
-<li><p>由于 pmm 会被并发地执行，所以访问共享数据结构要上锁。</p>
-</li>
-</ul>
-<h2 id="Defensive-Programming"><a href="#Defensive-Programming" class="headerlink" title="Defensive Programming"></a>Defensive Programming</h2><p>笔者认为以下的防御性编程是有意义的：</p>
+<span id="more"></span>
+
+<p>一个失败的尝试：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK   1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> UNLOCK 0</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">retry:</span><br><span class="line">    <span class="keyword">if</span> (locked != UNLOCK)   <span class="comment">//*</span></span><br><span class="line">        <span class="keyword">goto</span> entry;</span><br><span class="line">    locked = LOCK;          <span class="comment">//**</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// critical section</span></span><br><span class="line">    </span><br><span class="line">    locked = UNLOCK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从状态机的角度：</p>
+<pre class="mermaid">stateDiagram-v2
+    state1: T1-L*, T2-L*
+    state1 --> state2: 线程T1执行
+    state1 --> state3: 线程T2执行
+    state3: ……
+    state2: T1-L**, T2-L*
+    state2 --> state4: 线程T1执行
+    state2 --> state5: 线程T2执行
+    state4: ……
+    state5: T1-L**, T2-L**</pre>
+
+<p>可以看到存在一个状态，T1 和 T2 同时获得了锁。该方法失败的根本原因是：我们读锁状态的操作和写锁状态的操作无法原子地执行。</p>
+<h2 id="Peterson-Algorithm"><a href="#Peterson-Algorithm" class="headerlink" title="Peterson Algorithm"></a>Peterson Algorithm</h2><p>理解并发的最好方法就是用物理世界中的东西作类比：</p>
 <ul>
-<li>在 kalloc(), kfree() 中加入足够的对地址性质，空间大小分析的 panic(), panic_on() 等，这有助于提前发现 failure。</li>
-<li>笔者实现的自旋锁中记录了当前拥有锁的 CPU 编号，这样在 acquire() 和 release() 前检查当前是否拥有锁，可以有效防御 AA-deadlock 和一些意料之外的情况。</li>
-<li>kalloc()/kfree() 结束时应该将对应内存区间 memset 成奇怪数值，这样后续使用时如果忘了清零/地址溢出，读到垃圾数据可以加快 failure 出现的速度，减少排查 bug 的时间。</li>
+<li>对共享内存的写：往黑板上贴便签条</li>
+<li>对共享内存的读：看黑板 (其实不同于人类，计算机的“读”只能看到一个“历史状态”)</li>
 </ul>
-<p>但以上防御性编程对效率有一定影响，因此笔者在提交 OJ 的版本中没有编译这些防御性编程。</p>
-<h2 id="Performance-Tuning"><a href="#Performance-Tuning" class="headerlink" title="Performance Tuning"></a>Performance Tuning</h2><p>该实验对效率有一定的要求，笔者主要使用 Linux perf 工具对代码的运行时间/并行度进行观测。本地 Workload 的信息为：$60%$ 的 128K 以内内存分配，$30%$ 的 pagesize 内存分配，$10%$ 的大内存分配。释放的频率和分配相仿。每个核做 400,000 次分配和回收。</p>
-<p>笔者做过如下优化：</p>
-<h3 id="Fast-Path"><a href="#Fast-Path" class="headerlink" title="Fast Path"></a>Fast Path</h3><ul>
-<li><p>将整个堆区分成 <code>cpu_count()</code> 份，每个 CPU 核只在自己的那一份的链表中 alloc() 和 free() (free 时根据地址还到相应的资源区中)，因为一个核的 kalloc() 可能在另一个核中 kfree()，所以即使分成了多份，访问数据结构依旧要上锁。如果本地资源不足，则从别的资源区偷资源。该做法有一定效率提升，但不明显。</p>
-</li>
-<li><p>slab。笔者对 1KB 以下内存分配的每种大小都开了一个单独的链表，对 pagesize (4KB) 也开了一个链表。slab 的核心做法是：没有资源时走 slow path，从全局资源中批发很多小块串成链表；有资源时直接从链表头取一个小块。这里每次走 slow path 批发多少个小块是一个需要调整的参数，不同的参数会对效率和失败率产生影响。</p>
-<p>  这里的一个细节是：笔者希望每个核从自己的 slab 中获取资源，释放时将资源释放到自己的 slab 中，这样 fast path 不需要上锁。但提交 OJ 发现 smp=2 时就会出现 low memory usage，这很可能是因为 OJ 上两个核的任务不对称，如一个核专门 kalloc()，一个核专门 kfree()，导致资源全部堆积在第二个核的 slab 里无法利用。因此笔者不得不对 slab 的访问上锁，本地 slab 没有资源时去偷别人的 slab 的资源。</p>
-</li>
-<li><p>为了减少 slab 上的锁拥堵，笔者尝试了以下两种“玄学”优化：</p>
+<hr>
+<p>假设 Alice 和 Bob 想上厕所，为了不一起进入厕所，他们制定了如下协议：</p>
 <ul>
-<li>每个核 kalloc() 时随机一个 slab 取资源，kfree() 时随机一个 slab 还资源 (其实两个都随机和只随机一个效果是一样的)。该策略只需要访问一个 slab，比之前的偷资源策略要高效一些，且打破了”不对称任务“约束，不会 low memory usage。该优化在本地 workload 中显著减少了锁的拥堵程度。</li>
-<li>为了进一步减少锁的拥堵 (毕竟两个核随机到一个 slab 的概率还是不小的)，笔者给每个核选定一个 target slab (这是一个 permutation)，每个核向 target slab 索取资源，释放时归还到 target slab 中。为了避免“不对称任务”约束，每进行一定次数的分配后，shuffle 一下 target slab 的 permutation。该优化在本地的 workload 中相较前一种方法确实进一步减少了锁的拥堵程度，但没有看到明显的效率提升。</li>
+<li>Alice 想上厕所，于是举起了自己的旗子 (step1，相当于 STORE 一个共享的变量)，然后将 Bob (对方) 的名字写在厕所门上 (step2，也相当于 STORE 一个共享变量)；如果 Bob 想上厕所也是同理。注意厕所门上的名字是可以覆盖的。</li>
+<li>Alice 检查门上的名字和厕所 (step3)，Alice 可以进入厕所当且仅当 Bob 没有举旗子，或者门上的名字是自己的。</li>
+<li>Alice 上完厕所后，把自己的旗子放下来 (step4)。</li>
 </ul>
+<p>我们讨论几种情况：</p>
+<ul>
+<li>Alice 检查的时候，如果 Bob 没举旗子，说明 Bob 还不想上厕所，那 Alice 可以上厕所。</li>
+<li>如果 Bob 也举旗子了，那结果是：先举旗子的人可以先进入厕所，因为后举旗子的人会把先举旗子的人的名字贴在门上，覆盖了先贴的人的内容。</li>
+<li>……</li>
+</ul>
+<p>一个完备的证明方法是画状态机。我们设置状态机 $(PC_1, PC_2, x, y, turn,status)$，六个状态分别表示 T1/T2 执行到第几行，T1/T2 的旗子有没有举起来，当前厕所门上写的是谁的名字，以及当前厕所状态。</p>
+<pre class="mermaid">stateDiagram-v2
+    s1: (1, 1, 0, 0, A, e)
+    s1 --> s2: T1
+    s2: (2, 1, 1, 0, A, e)
+    s1 --> s3: T2
+    s3: (1, 2, 0, 1, A, e)
+    note left of s3
+        T1先执行与T2先执行完全等价
+        该分支省略
+    end note
+    s2 --> s4: T1
+    s4: (3, 1, 1, 0, B, e)
+    s2 --> s5: T2
+    s5: (2, 2, 1, 1, A, e) 
+    s4 --> s6: T1
+    s6: (3, 1, 1, 0, B, A)
+    s4 --> s7: T2
+    s7: (3, 2, 1, 1, B, e)
+    s7 --> s7: T1
+    s7 --> s20: T2
+    s20: (3, 3, 1, 1, A, e)
+    s20 --> s14: T1
+    s20 --> s20: T2
+    s5 --> s7: T1
+    s5 --> s9: T2
+    s9: (2, 3, 1, 1, A, e)
+    note right of s9
+        与左孩子完全等价
+        该分支省略
+    end note
+    s6 --> s10: T1
+    s6 --> s11: T2
+    s11: (3, 2, 1, 1, B, A)
+    s10: (4, 1, 1, 0, B, e)
+    s10 --> s12: T1
+    s10 --> s15: T2
+    s12: (1, 1, 0, 0, B, e)
+    s15: (4, 2, 1, 1, B, e)
+    s11 --> s15: T1
+    s11 --> s14: T2
+    s14: (3, 3, 1, 1, A, A)
+    s14 --> s17: T1
+    s14 --> s14: T2
+    s15 --> s16: T1
+    s15 --> s17: T2
+    s16: (1, 2, 0, 1, B, e)
+    s17: (4, 3, 1, 1, A, e)
+    s17 --> s18: T1
+    s17 --> s17: T2
+    s18: (1, 3, 0, 1, A, e)</pre>
+
+<p>我们还可以写一个小程序验证 Peterson：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BARRIER __sync_synchronize()	</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">long</span> cnt = atomic_fetch_add(&amp;count, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">int</span> i = atomic_fetch_add(&amp;nested, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (i != <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d threads in the critical section @ count=%ld\n&quot;</span>, i, cnt);</span><br><span class="line">    assert(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  atomic_fetch_add(&amp;nested, <span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> x = <span class="number">0</span>, y = <span class="number">0</span>, turn;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    x = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = B;                BARRIER; <span class="comment">// &lt;- this is critcal for x86</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!y) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != B) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    x = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    y = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = A;                BARRIER;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!x) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != A) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    y = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 critical_section() 中，代码主要做的事情是操作一个共享变量，如果某个时刻 <code>nested == 2</code>，说明两个线程同时进入了临界区域，则报错。</p>
+<p>由于现代编译器和多处理器会调整语句顺序/乱序执行……所以我们在每条语句后面添加一条 <code>__sync_synchronize()</code> 来保证编译按照顺序进行，且多处理器之间具有可见性。事实证明，如果去掉 BARRIER 会发生错误。</p>
+<h2 id="Model-Checker"><a href="#Model-Checker" class="headerlink" title="Model Checker"></a>Model Checker</h2><p>我们希望用程序自动画出状态机。<a href="https://kristoff-starling.github.io/files/model-checker.py">model-checker.py</a> 帮助我们完成了这项工作，其中用到的 python 语言机制较多，暂时留坑。我们可以用 <code>model-checker.py</code> 中编写的装饰器来编写多个线程，<a href="https://kristoff-starling.github.io/files/peterson-flag.py">peterson-flag.py</a> 是一个示例。使用命令 <code>python3 model-checker.py xxx.py</code> 可以输出状态机的所有节点和转移关系。</p>
+<p><code>model-checker.py</code> 主要利用了 python generator 的机制来快速获得进程的状态机。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numbers</span>(<span class="params">init=<span class="number">0</span>, step=<span class="number">1</span></span>):</span></span><br><span class="line">    n = init</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        n += step</span><br><span class="line">        <span class="keyword">yield</span> n</span><br><span class="line"></span><br><span class="line">g = numbers()</span><br><span class="line">h = numbers(<span class="number">100</span>, <span class="number">200</span>)</span><br><span class="line"><span class="built_in">print</span>(g, h)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br></pre></td></tr></table></figure>
+
+<p>该程序输出结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;generator object numbers at 0x7f0a75b4fcf0&gt; &lt;generator object numbers at 0x7f0a759f9ba0&gt;</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">300</span><br><span class="line">3</span><br><span class="line">500</span><br></pre></td></tr></table></figure>
+
+<p>虽然 numbers() 里面是一个死循环，但执行 numbers() 还是可以退出，这得益于 <code>yield</code> 语句，yield 的功能类似于操作系统的调度，它会主动让出执行流。<code>g.__next__()</code> 语句可以从被打断处重新进入，继续执行函数直到遇到下一次 yield。如果我们在每一条语句后面都加上一个 yield，让 yield 后面返回所有的线程局部变量，我们就获得了函数每执行一步之后的状态机。</p>
+<p>Model checker 将验证程序正确性的问题转化成了一个图论问题：</p>
+<ul>
+<li><p>Safety (线程是否互斥)：从初始状态出发，是否存在到红色 (互斥失败) 节点的路径？</p>
+<blockquote>
+<p>图搜索</p>
+</blockquote>
+</li>
+<li><p>Liveness：是否从任意黑色 (没有人执行临界区域代码) 状态出发，总能在有限步内到达蓝色/绿色 (有一个线程执行临界区域代码) 节点？</p>
+<blockquote>
+<p>这等价于只考虑图中的黑色节点，是否存在环。只要对黑色节点的导出子图求 SCC 即可。</p>
+</blockquote>
 </li>
 </ul>
-<h3 id="Slow-Path"><a href="#Slow-Path" class="headerlink" title="Slow Path"></a>Slow Path</h3><ul>
-<li><p>为了防止 (可以避免的) 过于破碎的内存，链表中应当有合并机制，即插入一个节点后，将其与左右邻居比较，若端点重合则合并节点。</p>
-</li>
-<li><p>OSTEP 中提到过 best/first/next fit 等多种寻找可用节点的策略，如果使用 first fit，一段时间后堆区的前部就会出现较多破碎内存，后部相对完整，使搜索相对较慢。next fit 理论上会有更好的表现，但笔者没有在本地测试中观测到明显的效率提升。</p>
-</li>
-<li><p>为了进一步减少破碎内存，笔者使用如下策略：一个内存块如果被分配完后剩余空间过少 (小于一个阈值)，则不选择切分这个内存块，而是将整块给当前分配。这样可以减少链表中容量很小的内存块个数。该优化在本地 workload 中体现出了效果。</p>
-</li>
-<li><p>在一次 alloc() 失败后，记录这次的需求大小，在下一次 free() 来临之前，如果再出现大于之前失败最小值的 alloc()，可以不遍历链表直接返回 NULL。注意 free() 之后要将记录变量清空。该优化在失败率比较高的 workload 中体现出了效果。</p>
-</li>
-<li><p>笔者发现完全抛弃链表，只用一个全局指针维护堆区，对于一个分配寻找全局指针最近的下一个对齐点 (结合 slab，kfree() 直接放到 slab 中) 的方法不会在 OJ 中报 low memory usage。这样复杂的链表操作被大幅简化。该优化在本地 workload 中体现出巨大效果。</p>
-<p>  (注：如果很小的内存 alloc 和很大的内存 alloc 交替出现，该方法会浪费很多内存。该方法属于用失败率换效率的一个尝试。)</p>
-</li>
-</ul>
-<p>即使笔者结合 Fast Path 和 Slow Path 中能想到的最优的实现，也无法通过旧版 OJ 上 <code>smp=8</code> 的测试用例。在本地 workload 下笔者的最优实现可以在 1.5s 到 2s 完成 8 核的所有任务。</p>
 ]]></content>
       <categories>
         <category>NJU-22020230 Operating Systems</category>
-        <category>Lab Reports</category>
+        <category>Lecture Notes</category>
       </categories>
   </entry>
   <entry>
@@ -2830,130 +2928,61 @@
       </categories>
   </entry>
   <entry>
-    <title>NJU-OS Lecture 04: Understanding Concurrent Programs</title>
-    <url>/2022/02/23/NJU-OS/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/</url>
-    <content><![CDATA[<p>互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。</p>
-<p>对于 <code>sum.c</code> ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性：</p>
-<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">void Tsum()</span><br><span class="line">&#123;</span><br><span class="line">	for (int i = 0; i &lt; N; i++)</span><br><span class="line">	&#123;</span><br><span class="line"><span class="addition">+		lock();</span></span><br><span class="line">		sum++;</span><br><span class="line"><span class="addition">+		unlock();</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<p>一个失败的尝试：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK   1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> UNLOCK 0</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">retry:</span><br><span class="line">    <span class="keyword">if</span> (locked != UNLOCK)   <span class="comment">//*</span></span><br><span class="line">        <span class="keyword">goto</span> entry;</span><br><span class="line">    locked = LOCK;          <span class="comment">//**</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// critical section</span></span><br><span class="line">    </span><br><span class="line">    locked = UNLOCK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>从状态机的角度：</p>
-<pre class="mermaid">stateDiagram-v2
-    state1: T1-L*, T2-L*
-    state1 --> state2: 线程T1执行
-    state1 --> state3: 线程T2执行
-    state3: ……
-    state2: T1-L**, T2-L*
-    state2 --> state4: 线程T1执行
-    state2 --> state5: 线程T2执行
-    state4: ……
-    state5: T1-L**, T2-L**</pre>
-
-<p>可以看到存在一个状态，T1 和 T2 同时获得了锁。该方法失败的根本原因是：我们读锁状态的操作和写锁状态的操作无法原子地执行。</p>
-<h2 id="Peterson-Algorithm"><a href="#Peterson-Algorithm" class="headerlink" title="Peterson Algorithm"></a>Peterson Algorithm</h2><p>理解并发的最好方法就是用物理世界中的东西作类比：</p>
+    <title>NJU-OS Lab 1: Physical Memory Manager</title>
+    <url>/2022/04/06/NJU-OS/NJU-OS%20Lab%201%20-%20pmm/</url>
+    <content><![CDATA[<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。在技术上有如下要点：</p>
 <ul>
-<li>对共享内存的写：往黑板上贴便签条</li>
-<li>对共享内存的读：看黑板 (其实不同于人类，计算机的“读”只能看到一个“历史状态”)</li>
-</ul>
-<hr>
-<p>假设 Alice 和 Bob 想上厕所，为了不一起进入厕所，他们制定了如下协议：</p>
-<ul>
-<li>Alice 想上厕所，于是举起了自己的旗子 (step1，相当于 STORE 一个共享的变量)，然后将 Bob (对方) 的名字写在厕所门上 (step2，也相当于 STORE 一个共享变量)；如果 Bob 想上厕所也是同理。注意厕所门上的名字是可以覆盖的。</li>
-<li>Alice 检查门上的名字和厕所 (step3)，Alice 可以进入厕所当且仅当 Bob 没有举旗子，或者门上的名字是自己的。</li>
-<li>Alice 上完厕所后，把自己的旗子放下来 (step4)。</li>
-</ul>
-<p>我们讨论几种情况：</p>
-<ul>
-<li>Alice 检查的时候，如果 Bob 没举旗子，说明 Bob 还不想上厕所，那 Alice 可以上厕所。</li>
-<li>如果 Bob 也举旗子了，那结果是：先举旗子的人可以先进入厕所，因为后举旗子的人会把先举旗子的人的名字贴在门上，覆盖了先贴的人的内容。</li>
-<li>……</li>
-</ul>
-<p>一个完备的证明方法是画状态机。我们设置状态机 $(PC_1, PC_2, x, y, turn,status)$，六个状态分别表示 T1/T2 执行到第几行，T1/T2 的旗子有没有举起来，当前厕所门上写的是谁的名字，以及当前厕所状态。</p>
-<pre class="mermaid">stateDiagram-v2
-    s1: (1, 1, 0, 0, A, e)
-    s1 --> s2: T1
-    s2: (2, 1, 1, 0, A, e)
-    s1 --> s3: T2
-    s3: (1, 2, 0, 1, A, e)
-    note left of s3
-        T1先执行与T2先执行完全等价
-        该分支省略
-    end note
-    s2 --> s4: T1
-    s4: (3, 1, 1, 0, B, e)
-    s2 --> s5: T2
-    s5: (2, 2, 1, 1, A, e) 
-    s4 --> s6: T1
-    s6: (3, 1, 1, 0, B, A)
-    s4 --> s7: T2
-    s7: (3, 2, 1, 1, B, e)
-    s7 --> s7: T1
-    s7 --> s20: T2
-    s20: (3, 3, 1, 1, A, e)
-    s20 --> s14: T1
-    s20 --> s20: T2
-    s5 --> s7: T1
-    s5 --> s9: T2
-    s9: (2, 3, 1, 1, A, e)
-    note right of s9
-        与左孩子完全等价
-        该分支省略
-    end note
-    s6 --> s10: T1
-    s6 --> s11: T2
-    s11: (3, 2, 1, 1, B, A)
-    s10: (4, 1, 1, 0, B, e)
-    s10 --> s12: T1
-    s10 --> s15: T2
-    s12: (1, 1, 0, 0, B, e)
-    s15: (4, 2, 1, 1, B, e)
-    s11 --> s15: T1
-    s11 --> s14: T2
-    s14: (3, 3, 1, 1, A, A)
-    s14 --> s17: T1
-    s14 --> s14: T2
-    s15 --> s16: T1
-    s15 --> s17: T2
-    s16: (1, 2, 0, 1, B, e)
-    s17: (4, 3, 1, 1, A, e)
-    s17 --> s18: T1
-    s17 --> s17: T2
-    s18: (1, 3, 0, 1, A, e)</pre>
-
-<p>我们还可以写一个小程序验证 Peterson：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BARRIER __sync_synchronize()	</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">long</span> cnt = atomic_fetch_add(&amp;count, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">int</span> i = atomic_fetch_add(&amp;nested, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (i != <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d threads in the critical section @ count=%ld\n&quot;</span>, i, cnt);</span><br><span class="line">    assert(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  atomic_fetch_add(&amp;nested, <span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> x = <span class="number">0</span>, y = <span class="number">0</span>, turn;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    x = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = B;                BARRIER; <span class="comment">// &lt;- this is critcal for x86</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!y) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != B) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    x = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    y = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = A;                BARRIER;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!x) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != A) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    y = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在 critical_section() 中，代码主要做的事情是操作一个共享变量，如果某个时刻 <code>nested == 2</code>，说明两个线程同时进入了临界区域，则报错。</p>
-<p>由于现代编译器和多处理器会调整语句顺序/乱序执行……所以我们在每条语句后面添加一条 <code>__sync_synchronize()</code> 来保证编译按照顺序进行，且多处理器之间具有可见性。事实证明，如果去掉 BARRIER 会发生错误。</p>
-<h2 id="Model-Checker"><a href="#Model-Checker" class="headerlink" title="Model Checker"></a>Model Checker</h2><p>我们希望用程序自动画出状态机。<a href="https://kristoff-starling.github.io/files/model-checker.py">model-checker.py</a> 帮助我们完成了这项工作，其中用到的 python 语言机制较多，暂时留坑。我们可以用 <code>model-checker.py</code> 中编写的装饰器来编写多个线程，<a href="https://kristoff-starling.github.io/files/peterson-flag.py">peterson-flag.py</a> 是一个示例。使用命令 <code>python3 model-checker.py xxx.py</code> 可以输出状态机的所有节点和转移关系。</p>
-<p><code>model-checker.py</code> 主要利用了 python generator 的机制来快速获得进程的状态机。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numbers</span>(<span class="params">init=<span class="number">0</span>, step=<span class="number">1</span></span>):</span></span><br><span class="line">    n = init</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        n += step</span><br><span class="line">        <span class="keyword">yield</span> n</span><br><span class="line"></span><br><span class="line">g = numbers()</span><br><span class="line">h = numbers(<span class="number">100</span>, <span class="number">200</span>)</span><br><span class="line"><span class="built_in">print</span>(g, h)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br></pre></td></tr></table></figure>
-
-<p>该程序输出结果为</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;generator object numbers at 0x7f0a75b4fcf0&gt; &lt;generator object numbers at 0x7f0a759f9ba0&gt;</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">300</span><br><span class="line">3</span><br><span class="line">500</span><br></pre></td></tr></table></figure>
-
-<p>虽然 numbers() 里面是一个死循环，但执行 numbers() 还是可以退出，这得益于 <code>yield</code> 语句，yield 的功能类似于操作系统的调度，它会主动让出执行流。<code>g.__next__()</code> 语句可以从被打断处重新进入，继续执行函数直到遇到下一次 yield。如果我们在每一条语句后面都加上一个 yield，让 yield 后面返回所有的线程局部变量，我们就获得了函数每执行一步之后的状态机。</p>
-<p>Model checker 将验证程序正确性的问题转化成了一个图论问题：</p>
-<ul>
-<li><p>Safety (线程是否互斥)：从初始状态出发，是否存在到红色 (互斥失败) 节点的路径？</p>
-<blockquote>
-<p>图搜索</p>
-</blockquote>
+<li><p>维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。<span id="more"></span></p>
 </li>
-<li><p>Liveness：是否从任意黑色 (没有人执行临界区域代码) 状态出发，总能在有限步内到达蓝色/绿色 (有一个线程执行临界区域代码) 节点？</p>
-<blockquote>
-<p>这等价于只考虑图中的黑色节点，是否存在环。只要对黑色节点的导出子图求 SCC 即可。</p>
-</blockquote>
+<li><p>由于 kfree() 只传入了要释放内存块的起始地址，而没有传入 size，所以我们应当在 kalloc() 的时候记录每个释放出去的内存块的大小。笔者最初的实现是维护了一个分配出去的内存块的链表，kfree() 到来时，在链表里查找给定的地址是否存在以及对应的大小。但这样效率太低，于是笔者使用了在地址前打魔数的方法。笔者定义了一个如下的 header：</p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ALLOC_MAGIC 0x1234567;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">header_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">size_t</span> sz;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="keyword">uintptr_t</span> magic;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> __<span class="title">header_t</span> *<span class="title">next</span>;</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;<span class="keyword">header_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>  每个内存块前都有一个这样的 header。这个 header 的好处是：未分配内存和已分配内存可以共用这个 header，当内存块处于未分配状态时，内存块被放在链表中，union 字段存放的是下一个链表节点的地址；当内存块处于已分配状态时，union 字段存放魔数。一个 kfree() 地址来临时，只要查看其前一个 <code>uintptr_t</code> 中是不是 ALLOC_MAGIC，就能确定这个地址合不合法，再往前看就能获得内存块的 size。</p>
+<p>  (注：使用 header 的方法有一个弱点：原本在堆区中 1B 的内存加上 header 后变得很大。此外，由于对齐的原因，我们无法将多个大小相同的内存块“挨在一起”存放在堆区中，中间有很多“洞”。)</p>
+</li>
+<li><p>由于 pmm 会被并发地执行，所以访问共享数据结构要上锁。</p>
 </li>
 </ul>
+<h2 id="Defensive-Programming"><a href="#Defensive-Programming" class="headerlink" title="Defensive Programming"></a>Defensive Programming</h2><p>笔者认为以下的防御性编程是有意义的：</p>
+<ul>
+<li>在 kalloc(), kfree() 中加入足够的对地址性质，空间大小分析的 panic(), panic_on() 等，这有助于提前发现 failure。</li>
+<li>笔者实现的自旋锁中记录了当前拥有锁的 CPU 编号，这样在 acquire() 和 release() 前检查当前是否拥有锁，可以有效防御 AA-deadlock 和一些意料之外的情况。</li>
+<li>kalloc()/kfree() 结束时应该将对应内存区间 memset 成奇怪数值，这样后续使用时如果忘了清零/地址溢出，读到垃圾数据可以加快 failure 出现的速度，减少排查 bug 的时间。</li>
+</ul>
+<p>但以上防御性编程对效率有一定影响，因此笔者在提交 OJ 的版本中没有编译这些防御性编程。</p>
+<h2 id="Performance-Tuning"><a href="#Performance-Tuning" class="headerlink" title="Performance Tuning"></a>Performance Tuning</h2><p>该实验对效率有一定的要求，笔者主要使用 Linux perf 工具对代码的运行时间/并行度进行观测。本地 Workload 的信息为：$60%$ 的 128K 以内内存分配，$30%$ 的 pagesize 内存分配，$10%$ 的大内存分配。释放的频率和分配相仿。每个核做 400,000 次分配和回收。</p>
+<p>笔者做过如下优化：</p>
+<h3 id="Fast-Path"><a href="#Fast-Path" class="headerlink" title="Fast Path"></a>Fast Path</h3><ul>
+<li><p>将整个堆区分成 <code>cpu_count()</code> 份，每个 CPU 核只在自己的那一份的链表中 alloc() 和 free() (free 时根据地址还到相应的资源区中)，因为一个核的 kalloc() 可能在另一个核中 kfree()，所以即使分成了多份，访问数据结构依旧要上锁。如果本地资源不足，则从别的资源区偷资源。该做法有一定效率提升，但不明显。</p>
+</li>
+<li><p>slab。笔者对 1KB 以下内存分配的每种大小都开了一个单独的链表，对 pagesize (4KB) 也开了一个链表。slab 的核心做法是：没有资源时走 slow path，从全局资源中批发很多小块串成链表；有资源时直接从链表头取一个小块。这里每次走 slow path 批发多少个小块是一个需要调整的参数，不同的参数会对效率和失败率产生影响。</p>
+<p>  这里的一个细节是：笔者希望每个核从自己的 slab 中获取资源，释放时将资源释放到自己的 slab 中，这样 fast path 不需要上锁。但提交 OJ 发现 smp=2 时就会出现 low memory usage，这很可能是因为 OJ 上两个核的任务不对称，如一个核专门 kalloc()，一个核专门 kfree()，导致资源全部堆积在第二个核的 slab 里无法利用。因此笔者不得不对 slab 的访问上锁，本地 slab 没有资源时去偷别人的 slab 的资源。</p>
+</li>
+<li><p>为了减少 slab 上的锁拥堵，笔者尝试了以下两种“玄学”优化：</p>
+<ul>
+<li>每个核 kalloc() 时随机一个 slab 取资源，kfree() 时随机一个 slab 还资源 (其实两个都随机和只随机一个效果是一样的)。该策略只需要访问一个 slab，比之前的偷资源策略要高效一些，且打破了”不对称任务“约束，不会 low memory usage。该优化在本地 workload 中显著减少了锁的拥堵程度。</li>
+<li>为了进一步减少锁的拥堵 (毕竟两个核随机到一个 slab 的概率还是不小的)，笔者给每个核选定一个 target slab (这是一个 permutation)，每个核向 target slab 索取资源，释放时归还到 target slab 中。为了避免“不对称任务”约束，每进行一定次数的分配后，shuffle 一下 target slab 的 permutation。该优化在本地的 workload 中相较前一种方法确实进一步减少了锁的拥堵程度，但没有看到明显的效率提升。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Slow-Path"><a href="#Slow-Path" class="headerlink" title="Slow Path"></a>Slow Path</h3><ul>
+<li><p>为了防止 (可以避免的) 过于破碎的内存，链表中应当有合并机制，即插入一个节点后，将其与左右邻居比较，若端点重合则合并节点。</p>
+</li>
+<li><p>OSTEP 中提到过 best/first/next fit 等多种寻找可用节点的策略，如果使用 first fit，一段时间后堆区的前部就会出现较多破碎内存，后部相对完整，使搜索相对较慢。next fit 理论上会有更好的表现，但笔者没有在本地测试中观测到明显的效率提升。</p>
+</li>
+<li><p>为了进一步减少破碎内存，笔者使用如下策略：一个内存块如果被分配完后剩余空间过少 (小于一个阈值)，则不选择切分这个内存块，而是将整块给当前分配。这样可以减少链表中容量很小的内存块个数。该优化在本地 workload 中体现出了效果。</p>
+</li>
+<li><p>在一次 alloc() 失败后，记录这次的需求大小，在下一次 free() 来临之前，如果再出现大于之前失败最小值的 alloc()，可以不遍历链表直接返回 NULL。注意 free() 之后要将记录变量清空。该优化在失败率比较高的 workload 中体现出了效果。</p>
+</li>
+<li><p>笔者发现完全抛弃链表，只用一个全局指针维护堆区，对于一个分配寻找全局指针最近的下一个对齐点 (结合 slab，kfree() 直接放到 slab 中) 的方法不会在 OJ 中报 low memory usage。这样复杂的链表操作被大幅简化。该优化在本地 workload 中体现出巨大效果。</p>
+<p>  (注：如果很小的内存 alloc 和很大的内存 alloc 交替出现，该方法会浪费很多内存。该方法属于用失败率换效率的一个尝试。)</p>
+</li>
+</ul>
+<p>即使笔者结合 Fast Path 和 Slow Path 中能想到的最优的实现，也无法通过旧版 OJ 上 <code>smp=8</code> 的测试用例。在本地 workload 下笔者的最优实现可以在 1.5s 到 2s 完成 8 核的所有任务。</p>
 ]]></content>
       <categories>
         <category>NJU-22020230 Operating Systems</category>
-        <category>Lecture Notes</category>
+        <category>Lab Reports</category>
       </categories>
   </entry>
   <entry>
@@ -3904,6 +3933,115 @@ end</pre>
       </categories>
   </entry>
   <entry>
+    <title>NJU-OS Lecture 21: OS Design</title>
+    <url>/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/</url>
+    <content><![CDATA[<p>操作系统的设计：一组对象+访问对象的 API；操作系统的实现：一个 C 程序完成上面的设计</p>
+<p>我们关心的问题是：操作系统到底应该提供什么样的对象和 API？<span id="more"></span></p>
+<h2 id="Monolithic-Kernel"><a href="#Monolithic-Kernel" class="headerlink" title="Monolithic Kernel"></a>Monolithic Kernel</h2><p>Unix 系列：<a href="https://pubs.opengroup.org/onlinepubs/9699919799/mindex.html">The Open Group Base Specifications Issue 7 (2018 Ed.)</a></p>
+<p>Windows 系列：<a href="https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list">Windows API Index</a></p>
+<p>不同的 API 系列可以互相模拟，于是有了 WSL 和 WINE。</p>
+<blockquote>
+<p><strong>Real Operating Systems</strong></p>
+<p>真正的操作系统要考虑的事情总是比想象中的复杂。比如我们写一个简单的重命名函数：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rename_file</span><span class="params">(<span class="keyword">char</span> *oldname, <span class="keyword">char</span> *newname)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">char</span> buf[SIZE];</span><br><span class="line"> <span class="keyword">int</span> fd = open(oldname, O_RONLY);</span><br><span class="line"> fread(fd, buf);</span><br><span class="line"> close(fd); <span class="keyword">delete</span>(oldname);</span><br><span class="line"> <span class="comment">// &lt;------------------</span></span><br><span class="line"> fd = open(newname, O_CREAT | O_TRUNC | O_WONLY);</span><br><span class="line"> write(fd, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果在箭头指向的时刻操作系统突然掉电了，那么文件内容就全部丢失了！这显然是不合理的现象。阅读 rename() 系统调用的手册，可以看到手册保证了删除旧文件，创建新文件操作的原子性。</p>
+</blockquote>
+<h2 id="Microkernel"><a href="#Microkernel" class="headerlink" title="Microkernel"></a>Microkernel</h2><p>复杂系统的正确性难以保证。像 Linux 这样以 C 为主要语言的操作系统，C 的 undefined behavior 会给系统带来无穷的灾难：比如文件系统一旦出错，整个内核中的任何模块都可能受到损坏。</p>
+<p>微内核的想法是：将尽可能多的功能用普通进程实现，将问题隔离在进程级。比如文件操作，UNIX 的 write() 会陷入内核，但另一种想法是：调用一个 remote_write() 和一个 File server 交互，FS进程有访问磁盘的权限即可。</p>
+<p>一些好的想法：</p>
+<ul>
+<li>一些和状态机管理密切相关的系统调用没法被搬出内核：比如 fork(), mmap()。</li>
+<li>如果操作系统提供一个 mmio() 系统调用，让进程通过访问内存的方式来控制设备寄存器、磁盘 etc，那么设备驱动代码，文件系统代码都可以放在用户态。</li>
+</ul>
+<p>赋予进程最少的权限，就能降低错误带来的影响。</p>
+<h3 id="Minix"><a href="#Minix" class="headerlink" title="Minix"></a>Minix</h3><p>Minix 是一个具有跨时代意义的教学操作系统，它采取的是微内核设计。在 Minix 2.0 中，内核只提供了两个 API：send 和 receive。基于这两个系统调用，我们实现一些 RPC (remote procedure call) 来实现进程之间的通信。Kernel 里只有很少的状态机相关的机制：比如中断，异常，时钟驱动，内存映射 etc. 其他的功能，比如文件系统，设备驱动，网络 etc. 都在用户态。跨模块的调用会跨越进程边界 i.e. 地址空间的切换等，这样一个模块的错误就可以被隔离在本地，UB 不会波及到模块外部。</p>
+<h3 id="seL4"><a href="#seL4" class="headerlink" title="seL4"></a>seL4</h3><p>seL4 是第一个完成了正确性证明、运行时间上界证明的微内核。</p>
+<p>seL4 的证明思路大致如下：以 <code>thread-os.c</code> 的 round-robin 调度器为例，首先我们用适合描述行为的语言建立一个模型 (这里以 python 为例, seL4 在这里实际上有两层建模)：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rr_sched</span>(<span class="params">cpu</span>):</span></span><br><span class="line">    cpu.threads = cpu.threads[<span class="number">1</span>:] + cpu.threads[:<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">assert</span> anything_you_need</span><br><span class="line">    <span class="keyword">return</span> cpu.threads[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+<p>我们可以用 model checker 确认这个 high level 语言编写的程序的正确性，然后我们希望证明 <code>thread-os.c</code> 和 python 代码的行为等价性。除去访问硬件的部分 (AbstractMachine)，操作系统本质上是纯计算的程序 (数学模型)，因此我们只需要观测所有的 AM call 行为是否等价即可。如果我们使用被 verified 的编译器，我们还可以进一步证明 C 程序和汇编指令的等价性。</p>
+<h2 id="UniKernel"><a href="#UniKernel" class="headerlink" title="UniKernel"></a>UniKernel</h2><p>很早的时候就有了 exokernel (外核) 的概念，即操作系统不应该有任何的策略，只需要提供最小的硬件抽象。在有了虚拟机的时代，这催生了 unikernel：将操作系统的内核代码和应用程序直接链接起来跑，因为硬件都是虚拟机抽象出来的，所以没有安全问题。这时的 OS 类似于一个 libOS 的功能。</p>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Lecture 23: Storage Devices</title>
+    <url>/2022/05/11/NJU-OS/NJU-OS%20Lecture%2023%20-%20Storage%20Devices/</url>
+    <content><![CDATA[<p>机器指令模型只有两种当前状态：寄存器和物理内存。这些状态在物理世界中应当有真实的对应。我们的需求是：</p>
+<ul>
+<li>可以寻址：比如可以根据编号访问某个单元格。</li>
+<li>访问速度尽可能快 (甚至不惜掉电后丢失状态)。<span id="more"></span></li>
+</ul>
+<p>“当前状态”的存储</p>
+<ul>
+<li><p>延迟线 (delay line)：像一根存储了数据的绳子不断地转，信号会随着时间衰减，因此数据会不断通过放大器来保持不丢失。</p>
+</li>
+<li><p>磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。</p>
+<blockquote>
+<p><strong>“Segmentation fault (core dumped)”</strong></p>
+<p>这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 <code>ulimit -a</code> 查看)，可以通过 <code>ulimit -c size</code> 来修改。</p>
+<p>此外，在 Ubuntu 系统中，我们还需要在 root 权限下通过</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> core &gt; /proc/sys/kernel/core_pattern</span><br></pre></td></tr></table></figure>
+
+<p>修改对应文件。这样发生段错误后，系统将在程序当前目录下生成一个 core 文件。我们可以用 <code>segfault.c</code> 做一个实验。段错误后，使用 <code>gdb segfault core</code> 再次运行，就可以恢复 crash 的现场。</p>
+</blockquote>
+</li>
+<li><p>SRAM/DRAM：flip-flop</p>
+</li>
+</ul>
+<h2 id="Magnetism"><a href="#Magnetism" class="headerlink" title="Magnetism"></a>Magnetism</h2><p>用小磁铁的方向来表示 0 和 1，不同方向的小磁铁会有不同方向的磁场，从而可以感应出不同方向的电流。此外，电流产生的磁场也可以用来修改小磁铁的方向。</p>
+<h3 id="Magnetic-Tape-1928"><a href="#Magnetic-Tape-1928" class="headerlink" title="Magnetic Tape (1928)"></a>Magnetic Tape (1928)</h3><p>磁带本质上是一个 1D 的存储设备，但我们可以通过把磁带卷起来使其变成一个近似 2D 的存储设备。因此可以在小空间内存放大量的 bit。在中间位置放一个读写头，然后通过机械转轮来定位当前读写的位置。</p>
+<ul>
+<li>优点：便宜，容量大，存储时间相对较长</li>
+<li>缺点：完全无法随机读取 (只能靠机械转轮移动)</li>
+</ul>
+<p>因此磁带主要用于大量冷数据的长时间存储。</p>
+<h3 id="Magnetic-Drum-1932"><a href="#Magnetic-Drum-1932" class="headerlink" title="Magnetic Drum (1932)"></a>Magnetic Drum (1932)</h3><p>磁鼓一定程度解决了磁带无法随机读取的问题：将磁带一圈一圈绕在一个金属棒上，然后在棒子的侧面放很多读写头，这样读取一个 bit 的时间控制在棒子转一圈的时间之内。磁鼓的缺点是：占用的空间太大了</p>
+<h3 id="Hard-Disk-1956"><a href="#Hard-Disk-1956" class="headerlink" title="Hard Disk (1956)"></a>Hard Disk (1956)</h3><p>将磁带内卷在一个二维平面上，中间是转轴。磁盘中只有一个读写头，但读写头上有一个电动机，读写头的移动可以使其快速定位磁带的某个圈，磁带的旋转可以使圈上某个位置的信息到达读写头的位置。这样不仅速度快，而且占用体积大幅下降。</p>
+<p>工程上对磁盘还有一些优化，比如在 z 轴上排列若干个圆盘，放置多个读写头等等。此外磁盘中的每个盘实际上不是用磁带绕出来的，而是使用了更先进的生产工艺。</p>
+<ul>
+<li>优点：便宜，容量大，有勉强可用的随机读取能力</li>
+<li>缺点：可靠性低，存在机械部件，磁头划伤盘片可能导致数据丢失。</li>
+</ul>
+<p>磁盘是当今计算机系统的主力数据存储。</p>
+<p>磁盘当中有很多事情是可以调度的，从前这个调度由操作系统负责，但现在的磁盘越做越复杂，很多内部参数已经超出了操作系统的控制，因此现代的磁盘通常会有一个片上系统 (system on chip, SoC)，这种写死的固件负责磁盘中的调度算法。</p>
+<h3 id="Floppy-Disk-1971"><a href="#Floppy-Disk-1971" class="headerlink" title="Floppy Disk (1971)"></a>Floppy Disk (1971)</h3><p>能不能将盘片和读写头分开，从而实现数据移动？这就有了软盘。刚开始软盘真的是软的，后来的 3.5 英寸软盘为了可靠性已经是硬的了。</p>
+<ul>
+<li>优点：价格低，数据可移动</li>
+<li>缺点：由于是暴露的存储介质，所以可靠性低，且数据密度不能太大。</li>
+</ul>
+<h2 id="Pits"><a href="#Pits" class="headerlink" title="Pits"></a>Pits</h2><p>在一个平整的平面上挖一些坑，这样光照在平整的地方可以很好地反射，照在坑上就不能很好地反射，从而实现 0 和 1。</p>
+<h3 id="Compact-Disk-CD-1980"><a href="#Compact-Disk-CD-1980" class="headerlink" title="Compact Disk (CD, 1980)"></a>Compact Disk (CD, 1980)</h3><p>在反射平面 (1) 上挖上粗糙的坑 (0)，激光扫过表面，就可以读出信息。CD 的一大问题在于只读性——挖坑容易填坑难。有一些例如 PCM (phase-change material) 的材料可以做出 rewritable disk。</p>
+<ul>
+<li><p>优点：价格低，容量大，可靠性很高</p>
+<p>  光盘的一个很有意思的优点是它很容易通过“压盘”来复制：我们可以制作一个母盘，在该挖坑的地方凸起，然后一张平整盘往上一压就是一张盘。</p>
+</li>
+<li><p>缺点：随机读取能力不高，改写困难。</p>
+</li>
+</ul>
+<h2 id="Electricity"><a href="#Electricity" class="headerlink" title="Electricity"></a>Electricity</h2><p>之前的持久存储介质都有一个致命的缺陷：存在一些机械部件，机械部件可靠性不高且速度跟不上，要跟上电路的速度，我们必须用电来做存储介质。</p>
+<h3 id="Solid-State-Drive-SSD-1991"><a href="#Solid-State-Drive-SSD-1991" class="headerlink" title="Solid State Drive (SSD, 1991)"></a>Solid State Drive (SSD, 1991)</h3><p>Flash memory 的 floating gate 的充电放电实现了 0-1。</p>
+<ul>
+<li><p>优点：大规模集成电路价格低，容量很大；flash memory 的最大优势在于读写速度，而且它有一个不讲道理的特性：容量越大速度越快 (电路级并行)；可靠性非常高：没有机械部件，所以可以随便摔。</p>
+</li>
+<li><p>缺点：几乎无。</p>
+</li>
+</ul>
+<h3 id="USB-Flash-Disk-1999"><a href="#USB-Flash-Disk-1999" class="headerlink" title="USB Flash Disk (1999)"></a>USB Flash Disk (1999)</h3><p>迅速击败软盘，成为人手 $n$ 个的移动存储设备。</p>
+<hr>
+<p>Flash memory 有一个关键的问题：放电会放不干净，一个 cell 经过了成千上万次读写操作后，剩余的电子就会多到好像是 1 的状态，这个 cell 成为了一个 dead cell。</p>
+<p>该问题的解决方法类似于虚拟内存：在 OS 眼中不论是 SSD 还是 HDD 都类似于一个大数组，但事实上 SSD 里面有一个小型的计算机系统：系统会根据每个 cell 的读写次数，将所谓的 “100号cell” 映射到一个其他的 cell，就像一个 MMU 一样。这样可以保证每个 cell 使用次数差不多，也可以绕开一些 dead cell。</p>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
     <title>NJU-OS Lecture 18: Xv6 Code Guide</title>
     <url>/2022/04/24/NJU-OS/NJU-OS%20Lecture%2018%20-%20Xv6%20Code%20Guide/</url>
     <content><![CDATA[<blockquote>
@@ -3943,6 +4081,89 @@ end</pre>
 <h2 id="Virtualization-of-CPUs"><a href="#Virtualization-of-CPUs" class="headerlink" title="Virtualization of CPUs"></a>Virtualization of CPUs</h2><p>每一个进程都是一个状态机，其中有寄存器、内存，看内存的 “VR 眼镜” (页表) 等等。操作系统是一个状态机的管理者：它要维护各个进程的状态机，此外内核对应的状态机也归 OS 管理。正在运行的状态机的状态保存在硬件上 (CPU, DRAM)，其他未运行的进程的状态机以某种方式被暂存起来。</p>
 <p>现代操作系统通常借助时钟中断，使用抢占式多任务的方式来在状态机之间切换。中断相当于一个强行插入的 ecall，打断正在运行的执行流。操作系统负责将这个进程当前的状态机从硬件上复制下来，挑选下一个准备执行的进程，然后将其状态机搬上硬件。</p>
 <h2 id="Code-Xv6-trapframe-amp-Thread-Switching"><a href="#Code-Xv6-trapframe-amp-Thread-Switching" class="headerlink" title="Code: Xv6 trapframe &amp; Thread Switching"></a>Code: Xv6 trapframe &amp; Thread Switching</h2><p>该部分内容可以参考 MIT 6.S081 Lecture 6 和 Lecture 11。</p>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Lecture 20: Scheduling</title>
+    <url>/2022/04/28/NJU-OS/NJU-OS%20Lecture%2020%20-%20Scheduling/</url>
+    <content><![CDATA[<p>处理器调度问题的简单假设 (1960s)：</p>
+<ul>
+<li>系统中有一个处理器</li>
+<li>系统中有多个进程/线程共享 CPU<ul>
+<li>包括系统调用 (进程/线程的一部分在内核代码中)</li>
+<li>偶尔会等待 I/O 返回，不使用 CPU。</li>
+</ul>
+</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Policy"><a href="#Policy" class="headerlink" title="Policy"></a>Policy</h2><h3 id="Round-Robin"><a href="#Round-Robin" class="headerlink" title="Round-Robin"></a>Round-Robin</h3><p>按照时间片轮转，轮流运行所有的进程/线程。</p>
+<p>问题：假设当前有一个前台的 vim 进程和很多计算型的后台进程，如果使用 round robin，很容易出现前台 vim 进程很卡的现象 (vim 进程一旦被切出去了，就要等一整轮才能获得一个时间片)。</p>
+<p>我们希望引入某种“优先级”，使得和用户交互比较频繁的前台进程可以获得更高的调度优先级，优化用户的使用体验。</p>
+<h3 id="UNIX-Niceness"><a href="#UNIX-Niceness" class="headerlink" title="UNIX Niceness"></a>UNIX Niceness</h3><p>UNIX 的 niceness 是一个 <code>-20 ... 19</code> 的整数，nice 值越高的进程越”和善“，越容易让出 CPU。</p>
+<p>基于优先级的调度策略：</p>
+<ul>
+<li><p>在一些实时的操作系统中 (尤其是物理相关，比如火箭/机械手 etc.)，CPU 会完全根据优先级，每次选择 niceness 最低的进程执行。这样的做法是有道理的：比如火箭要运行应急程序，我们自然不希望时钟中断后收集火箭运行数据的进程插入进来执行。</p>
+</li>
+<li><p>在桌面操作系统中，让“坏人”霸占 CPU 的做法不太可取。在 Linux 中，niceness 相差 10，CPU 资源获得率相差大约 10 倍。</p>
+<blockquote>
+<p>我们可以做一个实验来验证这一点：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">taskset -c 0 nice -n 19 yes &gt; /dev/null &amp;</span><br><span class="line">taskset -c 0 nice -n  9 yes &gt; /dev/null &amp;</span><br></pre></td></tr></table></figure>
+
+<p>其中 taskset 命令可以指定让一个进程在某个 CPU 核上执行。创建这两个后台进程后，我们可以通过 top 来观测它们的 CPU 占用情况。</p>
+<p>// office hour: 为什么我使用这两个指令创建出的进程 nice 值是 14 和 19？…</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="MLFQ-Multi-level-Feedback-Queue"><a href="#MLFQ-Multi-level-Feedback-Queue" class="headerlink" title="MLFQ (Multi-level Feedback Queue)"></a>MLFQ (Multi-level Feedback Queue)</h3><p>仍然考虑 round-robin 在遇到一堆计算密集型线程和一个交互型线程时的问题。我们现在考虑：能否让操作系统观测进程的行为，然后动态地调整进程的优先级？这就是 MLFQ 的基本思想。</p>
+<p>操作系统观测每个进程对时间片的使用情况：如果一个进程每次都用满整个时间片，那么它是一个“坏进程”，我们就适当降低它的优先级；如果一个进程经常 sleep()，等待 I/O etc. CPU 占用比较小，那么它是一个“好进程”，我们就适当增加它的优先级。我们动态调整进程的优先级，为每种优先级创建一个 round robin 的队列。</p>
+<p>当然，一个纯粹的”坏进程”可以通过如下的方式来欺骗这样的策略：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    compute();</span><br><span class="line">    <span class="keyword">if</span> (时间片快用完了) usleep(<span class="number">1</span>);	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此外，如果像 Vim 这样的高优先级进程过多，后台的计算进程可能就会几乎卡死；进程的“好坏”其实是动态变化的，不能“一棍子打死”等等。操作系统的设计者会试图补救这些问题，比如 priority boost 策略会每隔一段时间把所有进程的优先级拉平，使得进程有“重新做人”的机会。</p>
+<p>如果我们考虑进程之间的通信，这个问题就会变得更加复杂：假设进程中有 producer/consumer，以及其他的 <code>while(1)</code> 线程，在 round-robin 中 producer/consumer 会频繁让出 CPU，这导致 <code>while(1)</code> 获得了过多的运行时间；在 MLFQ 中，producer/consumer 因为频繁让出 CPU 会获得高优先级，但这种让出并不是出于人机交互的目的——producer/consumer 组合起来仍然是一个纯计算任务，因此它获得高优先级也是不合理的。</p>
+<h3 id="CFS-Complete-Fair-Scheduling"><a href="#CFS-Complete-Fair-Scheduling" class="headerlink" title="CFS (Complete Fair Scheduling)"></a>CFS (Complete Fair Scheduling)</h3><p>完全公平调度的指导思想很简单：让每个进程公平地享用 CPU。因此操作系统内核会记录每个进程运行的时间，每次调度器选择当前执行时间最少的进程执行。</p>
+<p>为了避免落入 round robin 的结局，CFS 通过类似于“变速齿轮”的方法实现优先级：每个进程实际上享用的是相同的虚拟运行时间 (vruntime)，但不同进程的虚拟运行时间和物理运行时间的比例不同：优先级高的进程一个单位的 vruntime 对应更长的物理时间，反之亦然。这种方式类似于变速齿轮是因为它实际上“欺骗”了进程：进程能直接感受到的物理时间是虚拟的。进程其实可以通过其他方式感知到“不对劲”：比如 “我 1s 怎么只执行了 1M 的指令？” 但现在的进程还没有这样的能力。</p>
+<h4 id="CFS-Complexity-New-Process-Thread"><a href="#CFS-Complexity-New-Process-Thread" class="headerlink" title="CFS Complexity: New Process/Thread"></a>CFS Complexity: New Process/Thread</h4><p>考虑如下一段代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    setbuf(<span class="built_in">stdout</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">int</span> pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid &lt; <span class="number">0</span>) perror(<span class="string">&quot;fork&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">char</span> *s = <span class="string">&quot;child&quot;</span>; *s; s++) <span class="built_in">putchar</span>(*s);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">char</span> *s = <span class="string">&quot;parent&quot;</span>; *s; s++) <span class="built_in">putchar</span>(*s);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在较新版本的 linux 内核中，多次运行上述程序会看到几乎总是 parent 先被打印。这是因为现在的内核是 parent first 的，曾经的内核版本是 child first，这其中存在一个权衡问题：绝大部分情况下 fork() 执行完会紧接着执行 execve()，我们的 fork() 是 copy-on-write 的，如果先执行子进程，有很大概率 execve() 会销毁原先的页表，这样父进程执行时就不需要额外的复制操作；但先执行子进程意味着当前 CPU 的 cache, TLB 等需要被全部刷新，这又会有一个立即可见的额外代价。</p>
+<p>除了 parent/child first 问题，另一个问题是：我们的 CFS 应该为这个新进程创建怎样的 vruntime? 早期的版本会给子进程较少的 vruntime，也就是让它有机会稍微多执行一点。但这个策略导致恶意程序可以疯狂 fork 子进程来占据 CPU，因此现在的内核代码中子进程继承父进程的 vruntime。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// linux kernel</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">task_fork_fair</span><span class="params">(struct task_struct *p)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (curr) &#123;</span><br><span class="line">        update_curr(cfs_rq);</span><br><span class="line">        se-&gt;vruntime = curr-&gt;vruntime; <span class="comment">// &lt;------------ here</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="CFS-Complexity-I-O"><a href="#CFS-Complexity-I-O" class="headerlink" title="CFS Complexity: I/O"></a>CFS Complexity: I/O</h4><p>考虑如下场景：有一个进程等待了 1min 的 I/O 操作，这段时间内它一直处于 blocked 的状态，不会被调度上 CPU。那么 I/O 操作结束后，该进程的 vruntime 会显著低于别的进程。从而未来的相当长时间内 CPU 会被这个 I/O 进程独占，这显然不是我们想看到的情况。</p>
+<p>操作系统理应在 I/O 进程结束等待后将其 vruntime 补齐到一个基准点，这个基准点到地设置在哪里又是很有讲究的事。</p>
+<h4 id="CFS-Complexity-Integer-Overflow"><a href="#CFS-Complexity-Integer-Overflow" class="headerlink" title="CFS Complexity: Integer Overflow"></a>CFS Complexity: Integer Overflow</h4><p>在一个需要长时间运行的系统中，我们即使用 <code>uint64_t</code> 来存储 vruntime 也要面临溢出的问题。这意味着我们不能用 vruntime 的绝对大小来比较两个进程的优先级。</p>
+<p>Linux 中采取的解决方案是：保证任意时刻系统中最大的 vruntime 和 最小的 vruntime 之差不超过数轴的一半 (i.e. <code>UINT64_MAX / 2</code> )。这样我们可以用比较相对大小的方式来解决问题：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// linux kernel</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">less</span><span class="params">(<span class="keyword">uint64_t</span> a, <span class="keyword">uint64_t</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">int64_t</span>)(a - b) &lt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以考虑一下 a 是很小的正数 (溢出了一轮)，b 是很大的正数 (还没溢出) 的情况，此时应有 $a&gt;b$。$a-b$ 的结果是小于 0 的，但由于这个值大于 <code>INT64_MAX</code>，所以强制转换成 <code>int64_t</code> 后会下溢出变成正的，从而正确实现功能 (非常 tricky 的代码)。</p>
+<h4 id="CFS-Complexity-Implementation"><a href="#CFS-Complexity-Implementation" class="headerlink" title="CFS Complexity: Implementation"></a>CFS Complexity: Implementation</h4><p>我们要实现一个数据结构，支持高效的插入、删除、找最小值等。Linux 采取了主流的红黑树设计，但我们的数据结构要保证并行状态下的正确性，为了效率还不能上大锁……</p>
+<h2 id="The-First-Bug-on-Mars"><a href="#The-First-Bug-on-Mars" class="headerlink" title="The First Bug on Mars"></a>The First Bug on Mars</h2><p>在实时操作系统中，高优先级意味着必须先被调度。简单的调度处理可能会出现优先级反转的情况：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">high</span><span class="params">()</span>   </span>&#123;sleep(<span class="number">1</span>); mutex_lock();&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">medium</span><span class="params">()</span> </span>&#123;<span class="keyword">while</span> (<span class="number">1</span>);&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">low</span><span class="params">()</span>    </span>&#123;mutex_lock();&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设低优先级进程先执行，获得了锁；然后 medium() 到来，将 low() 踢出 CPU，low() 带着锁进入了睡眠；这时 high() 来了但发现无法获得锁——因为锁在 low() 手里。high() 因为锁的语义等待 low() 是可以接受的 (锁可能很快就被释放)，但 low() 在等待 medium()，这导致 high() 间接等待了一个与自己毫无关系的进程 medium()，这是不可接受的。</p>
+<p>这个 bug 在第一辆火星车上真实地发生过，这导致了火星车系统的重启。解决优先级反转地方法通常有优先级继承 (priority inheritance)/优先级提升 (priority ceiling)，简单来说，当 high() 因为锁资源等待时，low() 的优先级可以暂时提升到和 high() 一样高，这样很快 low() 就可以把 medium() 踢下 CPU 运行，释放了锁 high() 就可以正常执行了，low() 的优先级也恢复最低。</p>
+<h2 id="Multi-core-Scheduling"><a href="#Multi-core-Scheduling" class="headerlink" title="Multi-core Scheduling"></a>Multi-core Scheduling</h2><p>多核处理器上的调度处于一个两难的境地：</p>
+<ul>
+<li>如果简单地将线程分配到处理器，那么容易出现“一核有难他核围观”的局面。</li>
+<li>如果简单地将线程安排到一个空闲处理器上，那么之前的 cache/TLB 就全部白给了。</li>
+</ul>
+<h3 id="Complexity-Multi-user"><a href="#Complexity-Multi-user" class="headerlink" title="Complexity: Multi-user"></a>Complexity: Multi-user</h3><p>假设用户 A 和 B 共用一台服务器，A 的程序只能单线程，而 B 的程序可以 1000 个线程，那就会出现 A 只获得了很少的资源的情况。糟糕的是，A 不能通过提高自己线程的优先级的方法来解决这个问题：在 Linux 中，非特权用户只能提升自己的 nice 值，不能降低。</p>
+<p>Linux 采用的解决方案是 namespaces control groups，大致思想是创建了“操作系统中的操作系统”，将属于一个用户的进程归成一组管理。</p>
+<h3 id="Complexity-Big-LITTLE-and-Energy-Consumption"><a href="#Complexity-Big-LITTLE-and-Energy-Consumption" class="headerlink" title="Complexity: Big.LITTLE and Energy Consumption"></a>Complexity: Big.LITTLE and Energy Consumption</h3><p>现在的 CPU 有大小核的概念：大核频率高，小核频率小，我们在调度的时候不得不将这些因素考虑进来。此外，现在的软件可以配置 CPU 的工作模式：CPU 的频率越低，它的延迟越高，但能耗越小，吞吐量越高。那么如何根据不同类型的任务调整 CPU 工作模式以及调度也是非常复杂的问题。</p>
+<h3 id="Complexity-Non-Uniform-Memory-Access"><a href="#Complexity-Non-Uniform-Memory-Access" class="headerlink" title="Complexity: Non-Uniform Memory Access"></a>Complexity: Non-Uniform Memory Access</h3><p>共享内存在某种程度上只是一个假象。L1 Cache 花了巨大的代价才让各个 CPU 看到了共享的内存。多个线程在同一个/不同的核上跑，效率可能有很大的区别。</p>
+<p>在实际情况下，连”核心越多，速度越快”的假设都可能是错的。以 <code>sum-atomic.c</code> 为例，如果我们用命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tastset -c 0 ./sum-atomic</span><br></pre></td></tr></table></figure>
+
+<p>来让 <code>sum-atomic.c</code> 的所有线程只工作在一个核上，会发现运行时间竟小于多个核！调度器把程序当作黑盒的假设可能是不对的。</p>
+<h3 id="Complexity-CPU-Hot-plug"><a href="#Complexity-CPU-Hot-plug" class="headerlink" title="Complexity: CPU Hot-plug"></a>Complexity: CPU Hot-plug</h3><p>现在的 CPU 支持热插拔，可能运行一会儿会发现多了一个或者少了一个……</p>
+<hr>
+<p>调度是一个非常复杂的问题，将这个任务完全丢给操作系统的调度器是不合理的。一种可能的想法是：让程序提供一些 scheduling hints 来指导调度行为。</p>
 ]]></content>
       <categories>
         <category>NJU-22020230 Operating Systems</category>
@@ -5276,154 +5497,6 @@ Blocked --> Ready: I/O Done</pre>
 <p>  这里存储各个 symbol 地址，在加载时填写的东西就叫 global offset table (GOT)，用于间接跳转的东西就叫 procedure linkage table (PLT)。我们独立发明了 PLT 和 GOT 的概念！</p>
 </li>
 </ul>
-]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Lecture Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>MIT-6.S081 Lab 07: Multithreading</title>
-    <url>/2022/04/24/MIT-6.S081%20Lab%2007%20-%20Multithreading/</url>
-    <content><![CDATA[<h2 id="Progress"><a href="#Progress" class="headerlink" title="Progress"></a>Progress</h2><ul>
-<li><input checked="" disabled="" type="checkbox"> Uthread: switching between threads (moderate)</li>
-<li><input checked="" disabled="" type="checkbox"> Using threads (moderate)</li>
-<li><input checked="" disabled="" type="checkbox"> Barrier (moderate)</li>
-</ul>
-<span id="more"></span>
-
-<h2 id="Uthread-Switching-Between-Threads-moderate"><a href="#Uthread-Switching-Between-Threads-moderate" class="headerlink" title="Uthread: Switching Between Threads (moderate)"></a>Uthread: Switching Between Threads (moderate)</h2><p>该实验要实现一个“用户态协程库”，每个协程通过 yield() 函数主动让出 CPU 来让其他协程运行。笔者定义了如下的结构体：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">thread</span> &#123;</span></span><br><span class="line">  <span class="keyword">char</span>            <span class="built_in">stack</span>[STACK_SIZE]; <span class="comment">/* the thread&#x27;s stack */</span></span><br><span class="line">  <span class="keyword">int</span>             state;             <span class="comment">/* FREE, RUNNING, RUNNABLE */</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">context</span> *<span class="title">context</span>;</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>其中 context 指针指向的地方用于存储和恢复寄存器现场，笔者的代码会利用堆栈低地址处的 <code>sizeof(struct context)</code> 的空间来存放这个 context。</p>
-<h3 id="thread-create"><a href="#thread-create" class="headerlink" title="thread_create()"></a>thread_create()</h3><p>类似于 xv6 中的设计，创建线程时我们要在 context 中伪造一个用于返回的寄存器现场：设置 ra 为目标函数地址，sp 为改线程的栈的地址即可。</p>
-<p>笔者曾经遇到一个非常难以理解的 bug：某函数的代码在运行过程中被修改，导致段错误。经过排查发现：笔者忘了为 main() 函数对应的线程设置 context 指针，context 指针默认初始值为 0，从而在第一次上下文切换时，main() 的上下文覆盖了代码段。我们应该在 thread_init() 中为 main() 的线程做好初始化。</p>
-<p>xv6 的用户进程中代码段是从 0 地址开始保存的，查看 <code>/kernel/exec.c</code> 可知 xv6 通过 uvmalloc() 申请页面并将代码放入，uvmalloc() 也是 sbrk() 系统调用底层的函数，申请的页面默认是 R/W/X/U 的，所以用户进程有修改的权利 (加载时将代码段设置为不可写或许更容易暴露 bug)。</p>
-<h3 id="thread-switch"><a href="#thread-switch" class="headerlink" title="thread_switch()"></a>thread_switch()</h3><p>这部分代码用汇编实现，可以完全参考 <code>/kernel/swtch.S</code> 的实现。类似地，因为 thread_switch() 在 C 代码中被当作一个普通函数调用，编译器会帮我们保证 caller-saved registers 的封存 (栈上)，我们只需要保存 callee-saved registers 即可。</p>
-<h3 id="thread-schedue"><a href="#thread-schedue" class="headerlink" title="thread_schedue()"></a>thread_schedue()</h3><p>该函数负责挑选一个 RUNNABLE 的线程，然后通过 thread_switch() 跳过去。</p>
-<h3 id="thread-yield"><a href="#thread-yield" class="headerlink" title="thread_yield()"></a>thread_yield()</h3><p>该函数只需要将当前线程的状态改为 RUNNABLE，然后调用 thread_schedule() 即可。</p>
-<h2 id="Using-Threads-moderate"><a href="#Using-Threads-moderate" class="headerlink" title="Using Threads (moderate)"></a>Using Threads (moderate)</h2><p>该实验使用 Linux 的 pthread 线程库，是非常基础的带锁并发编程实验。为哈希表的每个 bucket 上一把锁就可以既保证正确性又通过速度测试。</p>
-<h2 id="Barrier-moderate"><a href="#Barrier-moderate" class="headerlink" title="Barrier (moderate)"></a>Barrier (moderate)</h2><p>该实验使用 Linux 的 pthread 线程库，是非常基础的条件变量编程实验。我们甚至不需要生产者-消费者模型——我们只要让先来的线程在条件变量上睡眠，最后一个到来的线程 broadcast 一下即可。</p>
-<p>一个小细节是我们要在 barrier() 中修改 round，但 round 只能被修改一次。我们可以让每个线程上来先保存一个旧的 round 值，然后被唤醒后每个线程上锁检查 round，只有看到 <code>old == new</code> 的线程可以 +1。</p>
-]]></content>
-      <categories>
-        <category>MIT-6.S081 Introduction to Operating Systems</category>
-        <category>Lab Reports</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>NJU-OS Lecture 20: Scheduling</title>
-    <url>/2022/04/28/NJU-OS/NJU-OS%20Lecture%2020%20-%20Scheduling/</url>
-    <content><![CDATA[<p>处理器调度问题的简单假设 (1960s)：</p>
-<ul>
-<li>系统中有一个处理器</li>
-<li>系统中有多个进程/线程共享 CPU<ul>
-<li>包括系统调用 (进程/线程的一部分在内核代码中)</li>
-<li>偶尔会等待 I/O 返回，不使用 CPU。</li>
-</ul>
-</li>
-</ul>
-<span id="more"></span>
-
-<h2 id="Policy"><a href="#Policy" class="headerlink" title="Policy"></a>Policy</h2><h3 id="Round-Robin"><a href="#Round-Robin" class="headerlink" title="Round-Robin"></a>Round-Robin</h3><p>按照时间片轮转，轮流运行所有的进程/线程。</p>
-<p>问题：假设当前有一个前台的 vim 进程和很多计算型的后台进程，如果使用 round robin，很容易出现前台 vim 进程很卡的现象 (vim 进程一旦被切出去了，就要等一整轮才能获得一个时间片)。</p>
-<p>我们希望引入某种“优先级”，使得和用户交互比较频繁的前台进程可以获得更高的调度优先级，优化用户的使用体验。</p>
-<h3 id="UNIX-Niceness"><a href="#UNIX-Niceness" class="headerlink" title="UNIX Niceness"></a>UNIX Niceness</h3><p>UNIX 的 niceness 是一个 <code>-20 ... 19</code> 的整数，nice 值越高的进程越”和善“，越容易让出 CPU。</p>
-<p>基于优先级的调度策略：</p>
-<ul>
-<li><p>在一些实时的操作系统中 (尤其是物理相关，比如火箭/机械手 etc.)，CPU 会完全根据优先级，每次选择 niceness 最低的进程执行。这样的做法是有道理的：比如火箭要运行应急程序，我们自然不希望时钟中断后收集火箭运行数据的进程插入进来执行。</p>
-</li>
-<li><p>在桌面操作系统中，让“坏人”霸占 CPU 的做法不太可取。在 Linux 中，niceness 相差 10，CPU 资源获得率相差大约 10 倍。</p>
-<blockquote>
-<p>我们可以做一个实验来验证这一点：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">taskset -c 0 nice -n 19 yes &gt; /dev/null &amp;</span><br><span class="line">taskset -c 0 nice -n  9 yes &gt; /dev/null &amp;</span><br></pre></td></tr></table></figure>
-
-<p>其中 taskset 命令可以指定让一个进程在某个 CPU 核上执行。创建这两个后台进程后，我们可以通过 top 来观测它们的 CPU 占用情况。</p>
-<p>// office hour: 为什么我使用这两个指令创建出的进程 nice 值是 14 和 19？…</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="MLFQ-Multi-level-Feedback-Queue"><a href="#MLFQ-Multi-level-Feedback-Queue" class="headerlink" title="MLFQ (Multi-level Feedback Queue)"></a>MLFQ (Multi-level Feedback Queue)</h3><p>仍然考虑 round-robin 在遇到一堆计算密集型线程和一个交互型线程时的问题。我们现在考虑：能否让操作系统观测进程的行为，然后动态地调整进程的优先级？这就是 MLFQ 的基本思想。</p>
-<p>操作系统观测每个进程对时间片的使用情况：如果一个进程每次都用满整个时间片，那么它是一个“坏进程”，我们就适当降低它的优先级；如果一个进程经常 sleep()，等待 I/O etc. CPU 占用比较小，那么它是一个“好进程”，我们就适当增加它的优先级。我们动态调整进程的优先级，为每种优先级创建一个 round robin 的队列。</p>
-<p>当然，一个纯粹的”坏进程”可以通过如下的方式来欺骗这样的策略：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    compute();</span><br><span class="line">    <span class="keyword">if</span> (时间片快用完了) usleep(<span class="number">1</span>);	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>此外，如果像 Vim 这样的高优先级进程过多，后台的计算进程可能就会几乎卡死；进程的“好坏”其实是动态变化的，不能“一棍子打死”等等。操作系统的设计者会试图补救这些问题，比如 priority boost 策略会每隔一段时间把所有进程的优先级拉平，使得进程有“重新做人”的机会。</p>
-<p>如果我们考虑进程之间的通信，这个问题就会变得更加复杂：假设进程中有 producer/consumer，以及其他的 <code>while(1)</code> 线程，在 round-robin 中 producer/consumer 会频繁让出 CPU，这导致 <code>while(1)</code> 获得了过多的运行时间；在 MLFQ 中，producer/consumer 因为频繁让出 CPU 会获得高优先级，但这种让出并不是出于人机交互的目的——producer/consumer 组合起来仍然是一个纯计算任务，因此它获得高优先级也是不合理的。</p>
-<h3 id="CFS-Complete-Fair-Scheduling"><a href="#CFS-Complete-Fair-Scheduling" class="headerlink" title="CFS (Complete Fair Scheduling)"></a>CFS (Complete Fair Scheduling)</h3><p>完全公平调度的指导思想很简单：让每个进程公平地享用 CPU。因此操作系统内核会记录每个进程运行的时间，每次调度器选择当前执行时间最少的进程执行。</p>
-<p>为了避免落入 round robin 的结局，CFS 通过类似于“变速齿轮”的方法实现优先级：每个进程实际上享用的是相同的虚拟运行时间 (vruntime)，但不同进程的虚拟运行时间和物理运行时间的比例不同：优先级高的进程一个单位的 vruntime 对应更长的物理时间，反之亦然。这种方式类似于变速齿轮是因为它实际上“欺骗”了进程：进程能直接感受到的物理时间是虚拟的。进程其实可以通过其他方式感知到“不对劲”：比如 “我 1s 怎么只执行了 1M 的指令？” 但现在的进程还没有这样的能力。</p>
-<h4 id="CFS-Complexity-New-Process-Thread"><a href="#CFS-Complexity-New-Process-Thread" class="headerlink" title="CFS Complexity: New Process/Thread"></a>CFS Complexity: New Process/Thread</h4><p>考虑如下一段代码：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">    setbuf(<span class="built_in">stdout</span>, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">int</span> pid = fork();</span><br><span class="line">    <span class="keyword">if</span> (pid &lt; <span class="number">0</span>) perror(<span class="string">&quot;fork&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">char</span> *s = <span class="string">&quot;child&quot;</span>; *s; s++) <span class="built_in">putchar</span>(*s);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">char</span> *s = <span class="string">&quot;parent&quot;</span>; *s; s++) <span class="built_in">putchar</span>(*s);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在较新版本的 linux 内核中，多次运行上述程序会看到几乎总是 parent 先被打印。这是因为现在的内核是 parent first 的，曾经的内核版本是 child first，这其中存在一个权衡问题：绝大部分情况下 fork() 执行完会紧接着执行 execve()，我们的 fork() 是 copy-on-write 的，如果先执行子进程，有很大概率 execve() 会销毁原先的页表，这样父进程执行时就不需要额外的复制操作；但先执行子进程意味着当前 CPU 的 cache, TLB 等需要被全部刷新，这又会有一个立即可见的额外代价。</p>
-<p>除了 parent/child first 问题，另一个问题是：我们的 CFS 应该为这个新进程创建怎样的 vruntime? 早期的版本会给子进程较少的 vruntime，也就是让它有机会稍微多执行一点。但这个策略导致恶意程序可以疯狂 fork 子进程来占据 CPU，因此现在的内核代码中子进程继承父进程的 vruntime。</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// linux kernel</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">task_fork_fair</span><span class="params">(struct task_struct *p)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (curr) &#123;</span><br><span class="line">        update_curr(cfs_rq);</span><br><span class="line">        se-&gt;vruntime = curr-&gt;vruntime; <span class="comment">// &lt;------------ here</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="CFS-Complexity-I-O"><a href="#CFS-Complexity-I-O" class="headerlink" title="CFS Complexity: I/O"></a>CFS Complexity: I/O</h4><p>考虑如下场景：有一个进程等待了 1min 的 I/O 操作，这段时间内它一直处于 blocked 的状态，不会被调度上 CPU。那么 I/O 操作结束后，该进程的 vruntime 会显著低于别的进程。从而未来的相当长时间内 CPU 会被这个 I/O 进程独占，这显然不是我们想看到的情况。</p>
-<p>操作系统理应在 I/O 进程结束等待后将其 vruntime 补齐到一个基准点，这个基准点到地设置在哪里又是很有讲究的事。</p>
-<h4 id="CFS-Complexity-Integer-Overflow"><a href="#CFS-Complexity-Integer-Overflow" class="headerlink" title="CFS Complexity: Integer Overflow"></a>CFS Complexity: Integer Overflow</h4><p>在一个需要长时间运行的系统中，我们即使用 <code>uint64_t</code> 来存储 vruntime 也要面临溢出的问题。这意味着我们不能用 vruntime 的绝对大小来比较两个进程的优先级。</p>
-<p>Linux 中采取的解决方案是：保证任意时刻系统中最大的 vruntime 和 最小的 vruntime 之差不超过数轴的一半 (i.e. <code>UINT64_MAX / 2</code> )。这样我们可以用比较相对大小的方式来解决问题：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// linux kernel</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">less</span><span class="params">(<span class="keyword">uint64_t</span> a, <span class="keyword">uint64_t</span> b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (<span class="keyword">int64_t</span>)(a - b) &lt; <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们可以考虑一下 a 是很小的正数 (溢出了一轮)，b 是很大的正数 (还没溢出) 的情况，此时应有 $a&gt;b$。$a-b$ 的结果是小于 0 的，但由于这个值大于 <code>INT64_MAX</code>，所以强制转换成 <code>int64_t</code> 后会下溢出变成正的，从而正确实现功能 (非常 tricky 的代码)。</p>
-<h4 id="CFS-Complexity-Implementation"><a href="#CFS-Complexity-Implementation" class="headerlink" title="CFS Complexity: Implementation"></a>CFS Complexity: Implementation</h4><p>我们要实现一个数据结构，支持高效的插入、删除、找最小值等。Linux 采取了主流的红黑树设计，但我们的数据结构要保证并行状态下的正确性，为了效率还不能上大锁……</p>
-<h2 id="The-First-Bug-on-Mars"><a href="#The-First-Bug-on-Mars" class="headerlink" title="The First Bug on Mars"></a>The First Bug on Mars</h2><p>在实时操作系统中，高优先级意味着必须先被调度。简单的调度处理可能会出现优先级反转的情况：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">high</span><span class="params">()</span>   </span>&#123;sleep(<span class="number">1</span>); mutex_lock();&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">medium</span><span class="params">()</span> </span>&#123;<span class="keyword">while</span> (<span class="number">1</span>);&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">low</span><span class="params">()</span>    </span>&#123;mutex_lock();&#125;</span><br></pre></td></tr></table></figure>
-
-<p>假设低优先级进程先执行，获得了锁；然后 medium() 到来，将 low() 踢出 CPU，low() 带着锁进入了睡眠；这时 high() 来了但发现无法获得锁——因为锁在 low() 手里。high() 因为锁的语义等待 low() 是可以接受的 (锁可能很快就被释放)，但 low() 在等待 medium()，这导致 high() 间接等待了一个与自己毫无关系的进程 medium()，这是不可接受的。</p>
-<p>这个 bug 在第一辆火星车上真实地发生过，这导致了火星车系统的重启。解决优先级反转地方法通常有优先级继承 (priority inheritance)/优先级提升 (priority ceiling)，简单来说，当 high() 因为锁资源等待时，low() 的优先级可以暂时提升到和 high() 一样高，这样很快 low() 就可以把 medium() 踢下 CPU 运行，释放了锁 high() 就可以正常执行了，low() 的优先级也恢复最低。</p>
-<h2 id="Multi-core-Scheduling"><a href="#Multi-core-Scheduling" class="headerlink" title="Multi-core Scheduling"></a>Multi-core Scheduling</h2><p>多核处理器上的调度处于一个两难的境地：</p>
-<ul>
-<li>如果简单地将线程分配到处理器，那么容易出现“一核有难他核围观”的局面。</li>
-<li>如果简单地将线程安排到一个空闲处理器上，那么之前的 cache/TLB 就全部白给了。</li>
-</ul>
-<h3 id="Complexity-Multi-user"><a href="#Complexity-Multi-user" class="headerlink" title="Complexity: Multi-user"></a>Complexity: Multi-user</h3><p>假设用户 A 和 B 共用一台服务器，A 的程序只能单线程，而 B 的程序可以 1000 个线程，那就会出现 A 只获得了很少的资源的情况。糟糕的是，A 不能通过提高自己线程的优先级的方法来解决这个问题：在 Linux 中，非特权用户只能提升自己的 nice 值，不能降低。</p>
-<p>Linux 采用的解决方案是 namespaces control groups，大致思想是创建了“操作系统中的操作系统”，将属于一个用户的进程归成一组管理。</p>
-<h3 id="Complexity-Big-LITTLE-and-Energy-Consumption"><a href="#Complexity-Big-LITTLE-and-Energy-Consumption" class="headerlink" title="Complexity: Big.LITTLE and Energy Consumption"></a>Complexity: Big.LITTLE and Energy Consumption</h3><p>现在的 CPU 有大小核的概念：大核频率高，小核频率小，我们在调度的时候不得不将这些因素考虑进来。此外，现在的软件可以配置 CPU 的工作模式：CPU 的频率越低，它的延迟越高，但能耗越小，吞吐量越高。那么如何根据不同类型的任务调整 CPU 工作模式以及调度也是非常复杂的问题。</p>
-<h3 id="Complexity-Non-Uniform-Memory-Access"><a href="#Complexity-Non-Uniform-Memory-Access" class="headerlink" title="Complexity: Non-Uniform Memory Access"></a>Complexity: Non-Uniform Memory Access</h3><p>共享内存在某种程度上只是一个假象。L1 Cache 花了巨大的代价才让各个 CPU 看到了共享的内存。多个线程在同一个/不同的核上跑，效率可能有很大的区别。</p>
-<p>在实际情况下，连”核心越多，速度越快”的假设都可能是错的。以 <code>sum-atomic.c</code> 为例，如果我们用命令</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">tastset -c 0 ./sum-atomic</span><br></pre></td></tr></table></figure>
-
-<p>来让 <code>sum-atomic.c</code> 的所有线程只工作在一个核上，会发现运行时间竟小于多个核！调度器把程序当作黑盒的假设可能是不对的。</p>
-<h3 id="Complexity-CPU-Hot-plug"><a href="#Complexity-CPU-Hot-plug" class="headerlink" title="Complexity: CPU Hot-plug"></a>Complexity: CPU Hot-plug</h3><p>现在的 CPU 支持热插拔，可能运行一会儿会发现多了一个或者少了一个……</p>
-<hr>
-<p>调度是一个非常复杂的问题，将这个任务完全丢给操作系统的调度器是不合理的。一种可能的想法是：让程序提供一些 scheduling hints 来指导调度行为。</p>
-]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Lecture Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>NJU-OS Lecture 21: OS Design</title>
-    <url>/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/</url>
-    <content><![CDATA[<p>操作系统的设计：一组对象+访问对象的 API；操作系统的实现：一个 C 程序完成上面的设计</p>
-<p>我们关心的问题是：操作系统到底应该提供什么样的对象和 API？<span id="more"></span></p>
-<h2 id="Monolithic-Kernel"><a href="#Monolithic-Kernel" class="headerlink" title="Monolithic Kernel"></a>Monolithic Kernel</h2><p>Unix 系列：<a href="https://pubs.opengroup.org/onlinepubs/9699919799/mindex.html">The Open Group Base Specifications Issue 7 (2018 Ed.)</a></p>
-<p>Windows 系列：<a href="https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list">Windows API Index</a></p>
-<p>不同的 API 系列可以互相模拟，于是有了 WSL 和 WINE。</p>
-<blockquote>
-<p><strong>Real Operating Systems</strong></p>
-<p>真正的操作系统要考虑的事情总是比想象中的复杂。比如我们写一个简单的重命名函数：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rename_file</span><span class="params">(<span class="keyword">char</span> *oldname, <span class="keyword">char</span> *newname)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">char</span> buf[SIZE];</span><br><span class="line"> <span class="keyword">int</span> fd = open(oldname, O_RONLY);</span><br><span class="line"> fread(fd, buf);</span><br><span class="line"> close(fd); <span class="keyword">delete</span>(oldname);</span><br><span class="line"> <span class="comment">// &lt;------------------</span></span><br><span class="line"> fd = open(newname, O_CREAT | O_TRUNC | O_WONLY);</span><br><span class="line"> write(fd, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果在箭头指向的时刻操作系统突然掉电了，那么文件内容就全部丢失了！这显然是不合理的现象。阅读 rename() 系统调用的手册，可以看到手册保证了删除旧文件，创建新文件操作的原子性。</p>
-</blockquote>
-<h2 id="Microkernel"><a href="#Microkernel" class="headerlink" title="Microkernel"></a>Microkernel</h2><p>复杂系统的正确性难以保证。像 Linux 这样以 C 为主要语言的操作系统，C 的 undefined behavior 会给系统带来无穷的灾难：比如文件系统一旦出错，整个内核中的任何模块都可能受到损坏。</p>
-<p>微内核的想法是：将尽可能多的功能用普通进程实现，将问题隔离在进程级。比如文件操作，UNIX 的 write() 会陷入内核，但另一种想法是：调用一个 remote_write() 和一个 File server 交互，FS进程有访问磁盘的权限即可。</p>
-<p>一些好的想法：</p>
-<ul>
-<li>一些和状态机管理密切相关的系统调用没法被搬出内核：比如 fork(), mmap()。</li>
-<li>如果操作系统提供一个 mmio() 系统调用，让进程通过访问内存的方式来控制设备寄存器、磁盘 etc，那么设备驱动代码，文件系统代码都可以放在用户态。</li>
-</ul>
-<p>赋予进程最少的权限，就能降低错误带来的影响。</p>
-<h3 id="Minix"><a href="#Minix" class="headerlink" title="Minix"></a>Minix</h3><p>Minix 是一个具有跨时代意义的教学操作系统，它采取的是微内核设计。在 Minix 2.0 中，内核只提供了两个 API：send 和 receive。基于这两个系统调用，我们实现一些 RPC (remote procedure call) 来实现进程之间的通信。Kernel 里只有很少的状态机相关的机制：比如中断，异常，时钟驱动，内存映射 etc. 其他的功能，比如文件系统，设备驱动，网络 etc. 都在用户态。跨模块的调用会跨越进程边界 i.e. 地址空间的切换等，这样一个模块的错误就可以被隔离在本地，UB 不会波及到模块外部。</p>
-<h3 id="seL4"><a href="#seL4" class="headerlink" title="seL4"></a>seL4</h3><p>seL4 是第一个完成了正确性证明、运行时间上界证明的微内核。</p>
-<p>seL4 的证明思路大致如下：以 <code>thread-os.c</code> 的 round-robin 调度器为例，首先我们用适合描述行为的语言建立一个模型 (这里以 python 为例, seL4 在这里实际上有两层建模)：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rr_sched</span>(<span class="params">cpu</span>):</span></span><br><span class="line">    cpu.threads = cpu.threads[<span class="number">1</span>:] + cpu.threads[:<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">assert</span> anything_you_need</span><br><span class="line">    <span class="keyword">return</span> cpu.threads[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
-
-<p>我们可以用 model checker 确认这个 high level 语言编写的程序的正确性，然后我们希望证明 <code>thread-os.c</code> 和 python 代码的行为等价性。除去访问硬件的部分 (AbstractMachine)，操作系统本质上是纯计算的程序 (数学模型)，因此我们只需要观测所有的 AM call 行为是否等价即可。如果我们使用被 verified 的编译器，我们还可以进一步证明 C 程序和汇编指令的等价性。</p>
-<h2 id="UniKernel"><a href="#UniKernel" class="headerlink" title="UniKernel"></a>UniKernel</h2><p>很早的时候就有了 exokernel (外核) 的概念，即操作系统不应该有任何的策略，只需要提供最小的硬件抽象。在有了虚拟机的时代，这催生了 unikernel：将操作系统的内核代码和应用程序直接链接起来跑，因为硬件都是虚拟机抽象出来的，所以没有安全问题。这时的 OS 类似于一个 libOS 的功能。</p>
 ]]></content>
       <categories>
         <category>NJU-22020230 Operating Systems</category>
