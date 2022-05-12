@@ -1920,86 +1920,6 @@
       </categories>
   </entry>
   <entry>
-    <title>Xv6-book Chapter 01: Operating System Interfaces</title>
-    <url>/2022/01/20/Xv6-book%20Chapter%2001%20-%20Operating%20System%20Interfaces/</url>
-    <content><![CDATA[<h2 id="1-1-Processes-and-memory"><a href="#1-1-Processes-and-memory" class="headerlink" title="1.1 Processes and memory"></a>1.1 Processes and memory</h2><p><code>fork()</code> 系统调用可以创建一个和当前进程存储内容完全相同的子进程（原进程称为父进程）。<code>fork()</code> 在父进程和子进程中都会返回，在父进程中返回创建的子进程的进程号，在子进程中返回 0。如果返回 -1 说明发生错误。</p>
-<span id="more"></span>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> pid = fork();</span><br><span class="line"><span class="keyword">if</span> (pid &gt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;parent: child=%d\n&quot;</span>, pid);</span><br><span class="line">    pid = wait((<span class="keyword">int</span> *)<span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;child %d is done\n&quot;</span>, pid);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;child: existing\n&quot;</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;fork error\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>fork()</code> 系统调用使用后，父进程和子进程会同时运行（不过两个进程中的 pid 变量的值不同）。</p>
-<ul>
-<li>父进程进入 if 的第一个分支，打印信息后使用 <code>wait()</code> 系统调用。<code>wait(int *status)</code> 系统调用会返回退出的/被杀死的子进程的进程号，并将该子进程的状态写到 status 中。如果当前进程没有子进程 <code>wait()</code> 直接返回 -1；如果当前进程的子进程都没有退出/被杀死，<code>wait()</code> 会等待直到这件事发生。</li>
-<li>子进程进入 if 的第二个分支，打印信息后使用 <code>exit(int status)</code> 系统调用返回。status 为 0 说明正常退出，status 为 1 说明非正常退出。</li>
-</ul>
-<p>该程序的输出结果为</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">parent: child=<span class="number">1234</span></span><br><span class="line">child: existing			<span class="comment">// 这两行的先后顺序不确定，取决于哪个进程的 printf 先被执行</span></span><br><span class="line">child <span class="number">1234</span> is done		<span class="comment">// 子进程结束后，父进程会输出这句话</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>Xv6 的 shell 使用 <code>exec()</code> 系统调用来加载程序。如果成功加载，<code>exec()</code> 调用不会返回。<code>sh.c</code> 的关键代码如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (getcmd(buf, <span class="keyword">sizeof</span>(buf)) &gt;= <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (fork1() == <span class="number">0</span>)			<span class="comment">// fork1()是对fork()系统调用的进一步封装，检查了返回值</span></span><br><span class="line">        runcmd(parsecmd(buf));</span><br><span class="line">   	wait(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>一旦有新的输入内容到来，shell 进程会 fork 出一个子进程，在子进程中运行程序，父进程 wait 直到子进程运行完成。<code>parsecmd()</code> 负责解析输入内容并打包成一个 cmd 结构体，<code>runcmd()</code> 负责运行一个 cmd 结构体，正常情况下不会返回：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">runcmd</span><span class="params">(struct cmd *cmd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">	<span class="keyword">switch</span>(cmd-&gt;type)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">default</span>: panic(<span class="string">&quot;runcmd&quot;</span>);	<span class="comment">// panic()会向标准错误流输出信息，并exit(1)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> EXEC:</span><br><span class="line">            ecmd = (struct execcmd*)cmd;</span><br><span class="line">            <span class="keyword">if</span> (ecmd-&gt;argv[<span class="number">0</span>] == <span class="number">0</span>) <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">            exec(ecmd-&gt;argv[<span class="number">0</span>], ecmd-&gt;argv);</span><br><span class="line">            <span class="built_in">fprintf</span>(<span class="number">2</span>, <span class="string">&quot;exec %s faile\n&quot;</span>, ecmd-&gt;argv[<span class="number">0</span>]);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>通常来说 argv[0] 默认为文件名。如果 <code>exec()</code> 系统调用返回了，说明发生了错误，于是向标准错误流输出错误信息。(注：<code>exec()</code> 系统调用不会创建新进程，只会清空当前进程的 memory。)</p>
-<h2 id="1-2-I-O-and-File-descriptors"><a href="#1-2-I-O-and-File-descriptors" class="headerlink" title="1.2 I/O and File descriptors"></a>1.2 I/O and File descriptors</h2><p>内核为每个进程都记录了一张表格，表格维护了每一个文件描述符对应的文件名。默认情况下，应用程序从 0 号文件读入（标准输入），1 号文件输出（标准输出），并将错误信息输出到 2 号文件（标准错误）。使用 <code>open()</code> 系统调用打开文件时，内核总是会把当前进程中的第一个未被分配的文件描述符索引到这个文件上。</p>
-<p>将 <code>fork()</code> 和 <code>open()</code> 系统调用配合使用可以实现输入和输出的重定向，以 <code>cat &lt; input.txt</code> 为例：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> *argv[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">argv[<span class="number">0</span>] = <span class="string">&quot;cat&quot;</span>;</span><br><span class="line">argv[<span class="number">1</span>] = <span class="literal">NULL</span>;</span><br><span class="line"><span class="keyword">if</span> (fork() == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    close(<span class="number">0</span>);</span><br><span class="line">    open(<span class="string">&quot;input.txt&quot;</span>, O_RDONLY); 、</span><br><span class="line">        <span class="comment">// 第二个参数描述文件的权限，有O_RDONLY,O_WRONLY,O_RDWR,O_CREATE,O_TRUNC等</span></span><br><span class="line">    exec(<span class="string">&quot;cat&quot;</span>, argv);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>使用 <code>fork()</code> 创建子进程时子进程复制了父进程的所有文件描述符，在子进程中关闭控制台输入，并将 0 号文件重新绑定到 input.txt 上，从而完成了输入重定向。子进程中进行的这些操作是不会影响父进程的。</p>
-<p>虽然 <code>fork()</code> 克隆的子进程是复制了一遍父进程的文件描述符，但子进程和父进程的文件共享文件偏移。比如</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (fork() == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    write(<span class="number">1</span>, <span class="string">&quot;Hello &quot;</span>, <span class="number">6</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    wait(<span class="number">0</span>);</span><br><span class="line">    write(<span class="number">1</span>, <span class="string">&quot;World\n&quot;</span>, <span class="number">6</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>将会输出 “Hello World\n”，这是父进程和子进程共享 1 号文件的偏移的结果。</p>
-<p>使用 <code>dup()</code> 系统调用可以复制一个文件描述符，它会返回一个新的文件描述符，新的文件描述符和被复制的指向同一个文件，且共享文件偏移。比如</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> fd = dup(<span class="number">1</span>);</span><br><span class="line">write(<span class="number">1</span>, <span class="string">&quot;Hello &quot;</span>, <span class="number">6</span>);</span><br><span class="line">write(fd, <span class="string">&quot;World\n&quot;</span>, <span class="number">6</span>);</span><br></pre></td></tr></table></figure>
-
-<p>将会输出 “Hello World\n”。**<code>fork()</code> 和 <code>dup()</code> 是唯二可以使得两个文件描述符共享文件偏移的系统调用。**我们平时在命令行中使用的 <code>2&gt;&amp;1</code>，其原理就是 <code>dup()</code> 系统调用。它的功能类似于</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">close(<span class="number">2</span>);</span><br><span class="line"><span class="keyword">int</span> fd = dup(<span class="number">1</span>);	<span class="comment">// 这时2号是第一个未被分配的文件描述符</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="1-3-Pipes"><a href="#1-3-Pipes" class="headerlink" title="1.3 Pipes"></a>1.3 Pipes</h2><p><code>pipe()</code> 的声明为</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pipe</span><span class="params">(<span class="keyword">int</span> pipefd[<span class="number">2</span>])</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p><code>pipe()</code> 创建一个管道，在传进去的数组中填写两个文件描述符，pipefd[0] 是管道的输入端，pipefd[1] 是管道的输出端。<code>pipe()</code> 的返回值用于检验管道创建是否成功。</p>
-<p>下面是 xv6 的 <code>sh.c</code> 中使用管道的方法：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">runcmd</span><span class="params">(struct cmd* cmd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">switch</span>(cmd-&gt;type)</span><br><span class="line">    &#123;</span><br><span class="line">    	...</span><br><span class="line">        <span class="keyword">case</span> PIPE:</span><br><span class="line">            <span class="keyword">int</span> p[<span class="number">2</span>];</span><br><span class="line">    		pcmd = (struct pipecmd*)cmd;</span><br><span class="line">            <span class="keyword">if</span> (pipe(p) &lt; <span class="number">0</span>) panic(<span class="string">&quot;pipe&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (fork1() == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                close(<span class="number">1</span>);</span><br><span class="line">                dup(p[<span class="number">1</span>]);</span><br><span class="line">                close(p[<span class="number">0</span>]);</span><br><span class="line">                close&#123;p[<span class="number">1</span>]);</span><br><span class="line">                runcmd(pcmd-&gt;left);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (fork1() == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                close(<span class="number">0</span>);</span><br><span class="line">                dup(p[<span class="number">0</span>]);</span><br><span class="line">                close(p[<span class="number">0</span>]);</span><br><span class="line">                close(p[<span class="number">1</span>]);</span><br><span class="line">                runcmd(pcmd-&gt;right);</span><br><span class="line">            &#125;</span><br><span class="line">            close(p[<span class="number">0</span>]);</span><br><span class="line">            close(p[<span class="number">1</span>]);</span><br><span class="line">            wait(<span class="number">0</span>);</span><br><span class="line">            wait(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>进入 <code>runcmd()</code> 的是执行当前命令的 shell 进程的子进程。该子进程在创建管道之后又创建了两个子进程，一个子进程将标准输出重定向到管道的输出端，并执行 “|” 左边的命令；另一个子进程将标准输入重定向到管道的输入端，并执行 “|” 右边的指令（注：这两个子进程互不影响）。考虑到命令可能会有多级管道（如 <code>a | b | c</code> 的形式），进程之间会形成一个树形结构，树的叶子节点在真正地执行指令，其他节点都在负责创建管道和子进程。</p>
-<p>该代码有几个值得注意的细节：</p>
-<ul>
-<li><p><strong>通过管道读取的 <code>read()</code> 系统调用在没有数据输入的时候会被阻塞，直到新的数据到来或者和管道输出端相连的所有文件描述符均被关闭</strong>（在管道输出端已经没有打开的文件描述符时，<code>read()</code> 会返回 0）。因此父进程必须在两个 if 块后面将和管道输出绑定的 p[1] 关闭，第二个 if 块克隆的用于输入的子进程也必须将和管道输出绑定的 p[1] 关闭，否则 <code>read()</code> 将陷入死循环。下面的例子展示了忽略某些管道输出的关闭会造成死循环的后果：</p>
-  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> p[<span class="number">2</span>];</span><br><span class="line">pipe(p);</span><br><span class="line"><span class="keyword">if</span> (fork() == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    close(<span class="number">0</span>);</span><br><span class="line">    dup(p[<span class="number">0</span>]);      <span class="comment">// 将标准输入重定向到管道输入</span></span><br><span class="line">    close(p[<span class="number">0</span>]);</span><br><span class="line">    close(p[<span class="number">1</span>]);    <span class="comment">// ***</span></span><br><span class="line">    <span class="keyword">int</span> buf[<span class="number">64</span>];</span><br><span class="line">    <span class="keyword">while</span> (n = read(<span class="number">0</span>, buf, <span class="keyword">sizeof</span>(buf)) &gt; <span class="number">0</span>) write(<span class="number">1</span>, buf, n);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (fork() == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    close(<span class="number">1</span>);</span><br><span class="line">    dup(p[<span class="number">1</span>]);       <span class="comment">// 将标准输出重定向到管道输出</span></span><br><span class="line">    close(p[<span class="number">0</span>]);</span><br><span class="line">    close(p[<span class="number">1</span>]);</span><br><span class="line">    write(<span class="number">1</span>, <span class="string">&quot;Hello\n&quot;</span>, <span class="number">6</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line">close(p[<span class="number">0</span>]);</span><br><span class="line">close(p[<span class="number">1</span>]);         <span class="comment">// ***</span></span><br><span class="line">wait(<span class="number">0</span>);</span><br><span class="line">wait(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
-
-<p>  标有 <code>***</code> 的两处管道输出关闭，去掉任何一个都会导致第一个子进程中的 <code>read()</code> 系统调用无法正确识别输入的结束，陷入死循环。</p>
-</li>
-<li><p>每使用一次 <code>wait()</code> 系统调用，父进程都会等待直到某一个子进程终止。该程序中父进程 fork 了两个子进程，因此需要连续执行两次 <code>wait()</code> 系统调用。</p>
-</li>
-</ul>
-<h2 id="1-4-File-systems"><a href="#1-4-File-systems" class="headerlink" title="1.4 File systems"></a>1.4 File systems</h2><p>以 <code>/</code> 开头的路径是绝对路径，否则是相对路径。相对路径会在当前工作目录下寻找文件。<code>chdir()</code> 系统调用可以修改当前的工作目录。下面的例子中，两种操作做的事情等价：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">chdir(<span class="string">&quot;/a&quot;</span>);</span><br><span class="line">chdir(<span class="string">&quot;b&quot;</span>);</span><br><span class="line">open(<span class="string">&quot;c&quot;</span>, O_RDONLY);</span><br><span class="line"></span><br><span class="line">open(<span class="string">&quot;/a/b/c&quot;</span>, O_RDONLY);</span><br></pre></td></tr></table></figure>
-
-<p><code>cd</code> 命令是一个特殊的命令，它的作用是切换当前的工作目录，其特殊之处在于我们不能 fork 一个子进程并执行这个程序，否则只有子进程的工作目录被修改，子进程退出之后父进程的工作目录没有变。<code>cd</code> 命令直接在原进程中使用。</p>
-<p>创建文件和文件夹的系统调用有 <code>open()</code> <code>mkdir()</code> <code>mknod()</code> 等。<code>open()</code> 的第二个参数中或上 O_CREATE 可以在文件不存在时创建它；<code>mkdir()</code> 用于创建文件夹；<code>mknod()</code> 可以创建一个设备文件。</p>
-<hr>
-<p>文件名和其对应的文件是两个概念。每个文件有一个唯一的文件索引号 (inode)，文件可以有若干个文件名，这些文件名都指向该文件的 inode。使用 <code>fstat()</code> 系统调用可以查看一个文件的 inode 信息。<code>fstat()</code> 的声明为：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fstat</span><span class="params">(<span class="keyword">int</span> fd, struct stat* stat)</span></span>;</span><br></pre></td></tr></table></figure>
-
-<p>stat 结构体的格式如下：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> T_DIR		1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> T_FILE		2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> T_DEVICE	3</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">stat</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> dev;        <span class="comment">// 文件系统的磁盘设备</span></span><br><span class="line">    uint ino;       <span class="comment">// inode号</span></span><br><span class="line">    <span class="keyword">short</span> type;     <span class="comment">// 文件类型，上方三个宏中的一个</span></span><br><span class="line">    <span class="keyword">short</span> nlink;    <span class="comment">// 指向该inode的文件名的个数</span></span><br><span class="line">    uint64 size;    <span class="comment">// 文件大小</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><code>link()</code> 系统调用可以将一个新的文件名指向某一个老的文件名指向的 inode，<code>unlink()</code> 系统调用可以将文件名和 inode 的关联删除。例如</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">link(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>);</span><br><span class="line">unlink(<span class="string">&quot;a&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>第一条语句过后，使用文件名 “a” 和 “b” 将访问到同一个文件。第二条语句过后，只能使用文件名 “b” 访问该文件</p>
-<h2 id="1-5-Real-world"><a href="#1-5-Real-world" class="headerlink" title="1.5 Real world"></a>1.5 Real world</h2><p>略。</p>
-]]></content>
-      <categories>
-        <category>MIT-6.S081 Introduction to Operating Systems</category>
-        <category>Book Notes</category>
-      </categories>
-  </entry>
-  <entry>
     <title>几种求解最大流算法的通俗解释</title>
     <url>/2021/10/07/%E5%87%A0%E7%A7%8D%E6%9C%80%E5%A4%A7%E6%B5%81%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%9A%E4%BF%97%E8%A7%A3%E9%87%8A/</url>
     <content><![CDATA[<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>流：一个函数 $f: V\times V\rightarrow \mathbb{R}$，满足</p>
@@ -2511,6 +2431,86 @@
       </tags>
   </entry>
   <entry>
+    <title>Xv6-book Chapter 01: Operating System Interfaces</title>
+    <url>/2022/01/20/Xv6-book%20Chapter%2001%20-%20Operating%20System%20Interfaces/</url>
+    <content><![CDATA[<h2 id="1-1-Processes-and-memory"><a href="#1-1-Processes-and-memory" class="headerlink" title="1.1 Processes and memory"></a>1.1 Processes and memory</h2><p><code>fork()</code> 系统调用可以创建一个和当前进程存储内容完全相同的子进程（原进程称为父进程）。<code>fork()</code> 在父进程和子进程中都会返回，在父进程中返回创建的子进程的进程号，在子进程中返回 0。如果返回 -1 说明发生错误。</p>
+<span id="more"></span>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> pid = fork();</span><br><span class="line"><span class="keyword">if</span> (pid &gt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;parent: child=%d\n&quot;</span>, pid);</span><br><span class="line">    pid = wait((<span class="keyword">int</span> *)<span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;child %d is done\n&quot;</span>, pid);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span> (pid == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;child: existing\n&quot;</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;fork error\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>fork()</code> 系统调用使用后，父进程和子进程会同时运行（不过两个进程中的 pid 变量的值不同）。</p>
+<ul>
+<li>父进程进入 if 的第一个分支，打印信息后使用 <code>wait()</code> 系统调用。<code>wait(int *status)</code> 系统调用会返回退出的/被杀死的子进程的进程号，并将该子进程的状态写到 status 中。如果当前进程没有子进程 <code>wait()</code> 直接返回 -1；如果当前进程的子进程都没有退出/被杀死，<code>wait()</code> 会等待直到这件事发生。</li>
+<li>子进程进入 if 的第二个分支，打印信息后使用 <code>exit(int status)</code> 系统调用返回。status 为 0 说明正常退出，status 为 1 说明非正常退出。</li>
+</ul>
+<p>该程序的输出结果为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">parent: child=<span class="number">1234</span></span><br><span class="line">child: existing			<span class="comment">// 这两行的先后顺序不确定，取决于哪个进程的 printf 先被执行</span></span><br><span class="line">child <span class="number">1234</span> is done		<span class="comment">// 子进程结束后，父进程会输出这句话</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>Xv6 的 shell 使用 <code>exec()</code> 系统调用来加载程序。如果成功加载，<code>exec()</code> 调用不会返回。<code>sh.c</code> 的关键代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (getcmd(buf, <span class="keyword">sizeof</span>(buf)) &gt;= <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (fork1() == <span class="number">0</span>)			<span class="comment">// fork1()是对fork()系统调用的进一步封装，检查了返回值</span></span><br><span class="line">        runcmd(parsecmd(buf));</span><br><span class="line">   	wait(<span class="number">0</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一旦有新的输入内容到来，shell 进程会 fork 出一个子进程，在子进程中运行程序，父进程 wait 直到子进程运行完成。<code>parsecmd()</code> 负责解析输入内容并打包成一个 cmd 结构体，<code>runcmd()</code> 负责运行一个 cmd 结构体，正常情况下不会返回：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">runcmd</span><span class="params">(struct cmd *cmd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">	<span class="keyword">switch</span>(cmd-&gt;type)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">default</span>: panic(<span class="string">&quot;runcmd&quot;</span>);	<span class="comment">// panic()会向标准错误流输出信息，并exit(1)</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> EXEC:</span><br><span class="line">            ecmd = (struct execcmd*)cmd;</span><br><span class="line">            <span class="keyword">if</span> (ecmd-&gt;argv[<span class="number">0</span>] == <span class="number">0</span>) <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">            exec(ecmd-&gt;argv[<span class="number">0</span>], ecmd-&gt;argv);</span><br><span class="line">            <span class="built_in">fprintf</span>(<span class="number">2</span>, <span class="string">&quot;exec %s faile\n&quot;</span>, ecmd-&gt;argv[<span class="number">0</span>]);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通常来说 argv[0] 默认为文件名。如果 <code>exec()</code> 系统调用返回了，说明发生了错误，于是向标准错误流输出错误信息。(注：<code>exec()</code> 系统调用不会创建新进程，只会清空当前进程的 memory。)</p>
+<h2 id="1-2-I-O-and-File-descriptors"><a href="#1-2-I-O-and-File-descriptors" class="headerlink" title="1.2 I/O and File descriptors"></a>1.2 I/O and File descriptors</h2><p>内核为每个进程都记录了一张表格，表格维护了每一个文件描述符对应的文件名。默认情况下，应用程序从 0 号文件读入（标准输入），1 号文件输出（标准输出），并将错误信息输出到 2 号文件（标准错误）。使用 <code>open()</code> 系统调用打开文件时，内核总是会把当前进程中的第一个未被分配的文件描述符索引到这个文件上。</p>
+<p>将 <code>fork()</code> 和 <code>open()</code> 系统调用配合使用可以实现输入和输出的重定向，以 <code>cat &lt; input.txt</code> 为例：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">char</span> *argv[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line">argv[<span class="number">0</span>] = <span class="string">&quot;cat&quot;</span>;</span><br><span class="line">argv[<span class="number">1</span>] = <span class="literal">NULL</span>;</span><br><span class="line"><span class="keyword">if</span> (fork() == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    close(<span class="number">0</span>);</span><br><span class="line">    open(<span class="string">&quot;input.txt&quot;</span>, O_RDONLY); 、</span><br><span class="line">        <span class="comment">// 第二个参数描述文件的权限，有O_RDONLY,O_WRONLY,O_RDWR,O_CREATE,O_TRUNC等</span></span><br><span class="line">    exec(<span class="string">&quot;cat&quot;</span>, argv);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>fork()</code> 创建子进程时子进程复制了父进程的所有文件描述符，在子进程中关闭控制台输入，并将 0 号文件重新绑定到 input.txt 上，从而完成了输入重定向。子进程中进行的这些操作是不会影响父进程的。</p>
+<p>虽然 <code>fork()</code> 克隆的子进程是复制了一遍父进程的文件描述符，但子进程和父进程的文件共享文件偏移。比如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (fork() == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    write(<span class="number">1</span>, <span class="string">&quot;Hello &quot;</span>, <span class="number">6</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    wait(<span class="number">0</span>);</span><br><span class="line">    write(<span class="number">1</span>, <span class="string">&quot;World\n&quot;</span>, <span class="number">6</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将会输出 “Hello World\n”，这是父进程和子进程共享 1 号文件的偏移的结果。</p>
+<p>使用 <code>dup()</code> 系统调用可以复制一个文件描述符，它会返回一个新的文件描述符，新的文件描述符和被复制的指向同一个文件，且共享文件偏移。比如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> fd = dup(<span class="number">1</span>);</span><br><span class="line">write(<span class="number">1</span>, <span class="string">&quot;Hello &quot;</span>, <span class="number">6</span>);</span><br><span class="line">write(fd, <span class="string">&quot;World\n&quot;</span>, <span class="number">6</span>);</span><br></pre></td></tr></table></figure>
+
+<p>将会输出 “Hello World\n”。**<code>fork()</code> 和 <code>dup()</code> 是唯二可以使得两个文件描述符共享文件偏移的系统调用。**我们平时在命令行中使用的 <code>2&gt;&amp;1</code>，其原理就是 <code>dup()</code> 系统调用。它的功能类似于</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">close(<span class="number">2</span>);</span><br><span class="line"><span class="keyword">int</span> fd = dup(<span class="number">1</span>);	<span class="comment">// 这时2号是第一个未被分配的文件描述符</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="1-3-Pipes"><a href="#1-3-Pipes" class="headerlink" title="1.3 Pipes"></a>1.3 Pipes</h2><p><code>pipe()</code> 的声明为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">pipe</span><span class="params">(<span class="keyword">int</span> pipefd[<span class="number">2</span>])</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>pipe()</code> 创建一个管道，在传进去的数组中填写两个文件描述符，pipefd[0] 是管道的输入端，pipefd[1] 是管道的输出端。<code>pipe()</code> 的返回值用于检验管道创建是否成功。</p>
+<p>下面是 xv6 的 <code>sh.c</code> 中使用管道的方法：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">runcmd</span><span class="params">(struct cmd* cmd)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">switch</span>(cmd-&gt;type)</span><br><span class="line">    &#123;</span><br><span class="line">    	...</span><br><span class="line">        <span class="keyword">case</span> PIPE:</span><br><span class="line">            <span class="keyword">int</span> p[<span class="number">2</span>];</span><br><span class="line">    		pcmd = (struct pipecmd*)cmd;</span><br><span class="line">            <span class="keyword">if</span> (pipe(p) &lt; <span class="number">0</span>) panic(<span class="string">&quot;pipe&quot;</span>);</span><br><span class="line">            <span class="keyword">if</span> (fork1() == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                close(<span class="number">1</span>);</span><br><span class="line">                dup(p[<span class="number">1</span>]);</span><br><span class="line">                close(p[<span class="number">0</span>]);</span><br><span class="line">                close&#123;p[<span class="number">1</span>]);</span><br><span class="line">                runcmd(pcmd-&gt;left);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (fork1() == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                close(<span class="number">0</span>);</span><br><span class="line">                dup(p[<span class="number">0</span>]);</span><br><span class="line">                close(p[<span class="number">0</span>]);</span><br><span class="line">                close(p[<span class="number">1</span>]);</span><br><span class="line">                runcmd(pcmd-&gt;right);</span><br><span class="line">            &#125;</span><br><span class="line">            close(p[<span class="number">0</span>]);</span><br><span class="line">            close(p[<span class="number">1</span>]);</span><br><span class="line">            wait(<span class="number">0</span>);</span><br><span class="line">            wait(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>进入 <code>runcmd()</code> 的是执行当前命令的 shell 进程的子进程。该子进程在创建管道之后又创建了两个子进程，一个子进程将标准输出重定向到管道的输出端，并执行 “|” 左边的命令；另一个子进程将标准输入重定向到管道的输入端，并执行 “|” 右边的指令（注：这两个子进程互不影响）。考虑到命令可能会有多级管道（如 <code>a | b | c</code> 的形式），进程之间会形成一个树形结构，树的叶子节点在真正地执行指令，其他节点都在负责创建管道和子进程。</p>
+<p>该代码有几个值得注意的细节：</p>
+<ul>
+<li><p><strong>通过管道读取的 <code>read()</code> 系统调用在没有数据输入的时候会被阻塞，直到新的数据到来或者和管道输出端相连的所有文件描述符均被关闭</strong>（在管道输出端已经没有打开的文件描述符时，<code>read()</code> 会返回 0）。因此父进程必须在两个 if 块后面将和管道输出绑定的 p[1] 关闭，第二个 if 块克隆的用于输入的子进程也必须将和管道输出绑定的 p[1] 关闭，否则 <code>read()</code> 将陷入死循环。下面的例子展示了忽略某些管道输出的关闭会造成死循环的后果：</p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">int</span> p[<span class="number">2</span>];</span><br><span class="line">pipe(p);</span><br><span class="line"><span class="keyword">if</span> (fork() == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    close(<span class="number">0</span>);</span><br><span class="line">    dup(p[<span class="number">0</span>]);      <span class="comment">// 将标准输入重定向到管道输入</span></span><br><span class="line">    close(p[<span class="number">0</span>]);</span><br><span class="line">    close(p[<span class="number">1</span>]);    <span class="comment">// ***</span></span><br><span class="line">    <span class="keyword">int</span> buf[<span class="number">64</span>];</span><br><span class="line">    <span class="keyword">while</span> (n = read(<span class="number">0</span>, buf, <span class="keyword">sizeof</span>(buf)) &gt; <span class="number">0</span>) write(<span class="number">1</span>, buf, n);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (fork() == <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    close(<span class="number">1</span>);</span><br><span class="line">    dup(p[<span class="number">1</span>]);       <span class="comment">// 将标准输出重定向到管道输出</span></span><br><span class="line">    close(p[<span class="number">0</span>]);</span><br><span class="line">    close(p[<span class="number">1</span>]);</span><br><span class="line">    write(<span class="number">1</span>, <span class="string">&quot;Hello\n&quot;</span>, <span class="number">6</span>);</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line">close(p[<span class="number">0</span>]);</span><br><span class="line">close(p[<span class="number">1</span>]);         <span class="comment">// ***</span></span><br><span class="line">wait(<span class="number">0</span>);</span><br><span class="line">wait(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>  标有 <code>***</code> 的两处管道输出关闭，去掉任何一个都会导致第一个子进程中的 <code>read()</code> 系统调用无法正确识别输入的结束，陷入死循环。</p>
+</li>
+<li><p>每使用一次 <code>wait()</code> 系统调用，父进程都会等待直到某一个子进程终止。该程序中父进程 fork 了两个子进程，因此需要连续执行两次 <code>wait()</code> 系统调用。</p>
+</li>
+</ul>
+<h2 id="1-4-File-systems"><a href="#1-4-File-systems" class="headerlink" title="1.4 File systems"></a>1.4 File systems</h2><p>以 <code>/</code> 开头的路径是绝对路径，否则是相对路径。相对路径会在当前工作目录下寻找文件。<code>chdir()</code> 系统调用可以修改当前的工作目录。下面的例子中，两种操作做的事情等价：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">chdir(<span class="string">&quot;/a&quot;</span>);</span><br><span class="line">chdir(<span class="string">&quot;b&quot;</span>);</span><br><span class="line">open(<span class="string">&quot;c&quot;</span>, O_RDONLY);</span><br><span class="line"></span><br><span class="line">open(<span class="string">&quot;/a/b/c&quot;</span>, O_RDONLY);</span><br></pre></td></tr></table></figure>
+
+<p><code>cd</code> 命令是一个特殊的命令，它的作用是切换当前的工作目录，其特殊之处在于我们不能 fork 一个子进程并执行这个程序，否则只有子进程的工作目录被修改，子进程退出之后父进程的工作目录没有变。<code>cd</code> 命令直接在原进程中使用。</p>
+<p>创建文件和文件夹的系统调用有 <code>open()</code> <code>mkdir()</code> <code>mknod()</code> 等。<code>open()</code> 的第二个参数中或上 O_CREATE 可以在文件不存在时创建它；<code>mkdir()</code> 用于创建文件夹；<code>mknod()</code> 可以创建一个设备文件。</p>
+<hr>
+<p>文件名和其对应的文件是两个概念。每个文件有一个唯一的文件索引号 (inode)，文件可以有若干个文件名，这些文件名都指向该文件的 inode。使用 <code>fstat()</code> 系统调用可以查看一个文件的 inode 信息。<code>fstat()</code> 的声明为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">fstat</span><span class="params">(<span class="keyword">int</span> fd, struct stat* stat)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>stat 结构体的格式如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> T_DIR		1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> T_FILE		2</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> T_DEVICE	3</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">stat</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> dev;        <span class="comment">// 文件系统的磁盘设备</span></span><br><span class="line">    uint ino;       <span class="comment">// inode号</span></span><br><span class="line">    <span class="keyword">short</span> type;     <span class="comment">// 文件类型，上方三个宏中的一个</span></span><br><span class="line">    <span class="keyword">short</span> nlink;    <span class="comment">// 指向该inode的文件名的个数</span></span><br><span class="line">    uint64 size;    <span class="comment">// 文件大小</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>link()</code> 系统调用可以将一个新的文件名指向某一个老的文件名指向的 inode，<code>unlink()</code> 系统调用可以将文件名和 inode 的关联删除。例如</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">link(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>);</span><br><span class="line">unlink(<span class="string">&quot;a&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>第一条语句过后，使用文件名 “a” 和 “b” 将访问到同一个文件。第二条语句过后，只能使用文件名 “b” 访问该文件</p>
+<h2 id="1-5-Real-world"><a href="#1-5-Real-world" class="headerlink" title="1.5 Real world"></a>1.5 Real world</h2><p>略。</p>
+]]></content>
+      <categories>
+        <category>MIT-6.S081 Introduction to Operating Systems</category>
+        <category>Book Notes</category>
+      </categories>
+  </entry>
+  <entry>
     <title>问题求解 III - 07 题解</title>
     <url>/2021/11/02/%E9%97%AE%E9%A2%98%E6%B1%82%E8%A7%A3%20III%20-%2007%20%E9%A2%98%E8%A7%A3/</url>
     <content><![CDATA[<h2 id="A-多项式乘法模板"><a href="#A-多项式乘法模板" class="headerlink" title="A. 多项式乘法模板"></a>A. 多项式乘法模板</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
@@ -2618,130 +2618,61 @@
       </categories>
   </entry>
   <entry>
-    <title>NJU-OS Lecture 04: Understanding Concurrent Programs</title>
-    <url>/2022/02/23/NJU-OS/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/</url>
-    <content><![CDATA[<p>互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。</p>
-<p>对于 <code>sum.c</code> ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性：</p>
-<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">void Tsum()</span><br><span class="line">&#123;</span><br><span class="line">	for (int i = 0; i &lt; N; i++)</span><br><span class="line">	&#123;</span><br><span class="line"><span class="addition">+		lock();</span></span><br><span class="line">		sum++;</span><br><span class="line"><span class="addition">+		unlock();</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<span id="more"></span>
-
-<p>一个失败的尝试：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK   1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> UNLOCK 0</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">retry:</span><br><span class="line">    <span class="keyword">if</span> (locked != UNLOCK)   <span class="comment">//*</span></span><br><span class="line">        <span class="keyword">goto</span> entry;</span><br><span class="line">    locked = LOCK;          <span class="comment">//**</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// critical section</span></span><br><span class="line">    </span><br><span class="line">    locked = UNLOCK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>从状态机的角度：</p>
-<pre class="mermaid">stateDiagram-v2
-    state1: T1-L*, T2-L*
-    state1 --> state2: 线程T1执行
-    state1 --> state3: 线程T2执行
-    state3: ……
-    state2: T1-L**, T2-L*
-    state2 --> state4: 线程T1执行
-    state2 --> state5: 线程T2执行
-    state4: ……
-    state5: T1-L**, T2-L**</pre>
-
-<p>可以看到存在一个状态，T1 和 T2 同时获得了锁。该方法失败的根本原因是：我们读锁状态的操作和写锁状态的操作无法原子地执行。</p>
-<h2 id="Peterson-Algorithm"><a href="#Peterson-Algorithm" class="headerlink" title="Peterson Algorithm"></a>Peterson Algorithm</h2><p>理解并发的最好方法就是用物理世界中的东西作类比：</p>
+    <title>NJU-OS Lab 1: Physical Memory Manager</title>
+    <url>/2022/04/06/NJU-OS/NJU-OS%20Lab%201%20-%20pmm/</url>
+    <content><![CDATA[<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。在技术上有如下要点：</p>
 <ul>
-<li>对共享内存的写：往黑板上贴便签条</li>
-<li>对共享内存的读：看黑板 (其实不同于人类，计算机的“读”只能看到一个“历史状态”)</li>
-</ul>
-<hr>
-<p>假设 Alice 和 Bob 想上厕所，为了不一起进入厕所，他们制定了如下协议：</p>
-<ul>
-<li>Alice 想上厕所，于是举起了自己的旗子 (step1，相当于 STORE 一个共享的变量)，然后将 Bob (对方) 的名字写在厕所门上 (step2，也相当于 STORE 一个共享变量)；如果 Bob 想上厕所也是同理。注意厕所门上的名字是可以覆盖的。</li>
-<li>Alice 检查门上的名字和厕所 (step3)，Alice 可以进入厕所当且仅当 Bob 没有举旗子，或者门上的名字是自己的。</li>
-<li>Alice 上完厕所后，把自己的旗子放下来 (step4)。</li>
-</ul>
-<p>我们讨论几种情况：</p>
-<ul>
-<li>Alice 检查的时候，如果 Bob 没举旗子，说明 Bob 还不想上厕所，那 Alice 可以上厕所。</li>
-<li>如果 Bob 也举旗子了，那结果是：先举旗子的人可以先进入厕所，因为后举旗子的人会把先举旗子的人的名字贴在门上，覆盖了先贴的人的内容。</li>
-<li>……</li>
-</ul>
-<p>一个完备的证明方法是画状态机。我们设置状态机 $(PC_1, PC_2, x, y, turn,status)$，六个状态分别表示 T1/T2 执行到第几行，T1/T2 的旗子有没有举起来，当前厕所门上写的是谁的名字，以及当前厕所状态。</p>
-<pre class="mermaid">stateDiagram-v2
-    s1: (1, 1, 0, 0, A, e)
-    s1 --> s2: T1
-    s2: (2, 1, 1, 0, A, e)
-    s1 --> s3: T2
-    s3: (1, 2, 0, 1, A, e)
-    note left of s3
-        T1先执行与T2先执行完全等价
-        该分支省略
-    end note
-    s2 --> s4: T1
-    s4: (3, 1, 1, 0, B, e)
-    s2 --> s5: T2
-    s5: (2, 2, 1, 1, A, e) 
-    s4 --> s6: T1
-    s6: (3, 1, 1, 0, B, A)
-    s4 --> s7: T2
-    s7: (3, 2, 1, 1, B, e)
-    s7 --> s7: T1
-    s7 --> s20: T2
-    s20: (3, 3, 1, 1, A, e)
-    s20 --> s14: T1
-    s20 --> s20: T2
-    s5 --> s7: T1
-    s5 --> s9: T2
-    s9: (2, 3, 1, 1, A, e)
-    note right of s9
-        与左孩子完全等价
-        该分支省略
-    end note
-    s6 --> s10: T1
-    s6 --> s11: T2
-    s11: (3, 2, 1, 1, B, A)
-    s10: (4, 1, 1, 0, B, e)
-    s10 --> s12: T1
-    s10 --> s15: T2
-    s12: (1, 1, 0, 0, B, e)
-    s15: (4, 2, 1, 1, B, e)
-    s11 --> s15: T1
-    s11 --> s14: T2
-    s14: (3, 3, 1, 1, A, A)
-    s14 --> s17: T1
-    s14 --> s14: T2
-    s15 --> s16: T1
-    s15 --> s17: T2
-    s16: (1, 2, 0, 1, B, e)
-    s17: (4, 3, 1, 1, A, e)
-    s17 --> s18: T1
-    s17 --> s17: T2
-    s18: (1, 3, 0, 1, A, e)</pre>
-
-<p>我们还可以写一个小程序验证 Peterson：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BARRIER __sync_synchronize()	</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">long</span> cnt = atomic_fetch_add(&amp;count, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">int</span> i = atomic_fetch_add(&amp;nested, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (i != <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d threads in the critical section @ count=%ld\n&quot;</span>, i, cnt);</span><br><span class="line">    assert(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  atomic_fetch_add(&amp;nested, <span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> x = <span class="number">0</span>, y = <span class="number">0</span>, turn;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    x = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = B;                BARRIER; <span class="comment">// &lt;- this is critcal for x86</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!y) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != B) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    x = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    y = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = A;                BARRIER;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!x) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != A) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    y = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在 critical_section() 中，代码主要做的事情是操作一个共享变量，如果某个时刻 <code>nested == 2</code>，说明两个线程同时进入了临界区域，则报错。</p>
-<p>由于现代编译器和多处理器会调整语句顺序/乱序执行……所以我们在每条语句后面添加一条 <code>__sync_synchronize()</code> 来保证编译按照顺序进行，且多处理器之间具有可见性。事实证明，如果去掉 BARRIER 会发生错误。</p>
-<h2 id="Model-Checker"><a href="#Model-Checker" class="headerlink" title="Model Checker"></a>Model Checker</h2><p>我们希望用程序自动画出状态机。<a href="https://kristoff-starling.github.io/files/model-checker.py">model-checker.py</a> 帮助我们完成了这项工作，其中用到的 python 语言机制较多，暂时留坑。我们可以用 <code>model-checker.py</code> 中编写的装饰器来编写多个线程，<a href="https://kristoff-starling.github.io/files/peterson-flag.py">peterson-flag.py</a> 是一个示例。使用命令 <code>python3 model-checker.py xxx.py</code> 可以输出状态机的所有节点和转移关系。</p>
-<p><code>model-checker.py</code> 主要利用了 python generator 的机制来快速获得进程的状态机。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numbers</span>(<span class="params">init=<span class="number">0</span>, step=<span class="number">1</span></span>):</span></span><br><span class="line">    n = init</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        n += step</span><br><span class="line">        <span class="keyword">yield</span> n</span><br><span class="line"></span><br><span class="line">g = numbers()</span><br><span class="line">h = numbers(<span class="number">100</span>, <span class="number">200</span>)</span><br><span class="line"><span class="built_in">print</span>(g, h)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br></pre></td></tr></table></figure>
-
-<p>该程序输出结果为</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;generator object numbers at 0x7f0a75b4fcf0&gt; &lt;generator object numbers at 0x7f0a759f9ba0&gt;</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">300</span><br><span class="line">3</span><br><span class="line">500</span><br></pre></td></tr></table></figure>
-
-<p>虽然 numbers() 里面是一个死循环，但执行 numbers() 还是可以退出，这得益于 <code>yield</code> 语句，yield 的功能类似于操作系统的调度，它会主动让出执行流。<code>g.__next__()</code> 语句可以从被打断处重新进入，继续执行函数直到遇到下一次 yield。如果我们在每一条语句后面都加上一个 yield，让 yield 后面返回所有的线程局部变量，我们就获得了函数每执行一步之后的状态机。</p>
-<p>Model checker 将验证程序正确性的问题转化成了一个图论问题：</p>
-<ul>
-<li><p>Safety (线程是否互斥)：从初始状态出发，是否存在到红色 (互斥失败) 节点的路径？</p>
-<blockquote>
-<p>图搜索</p>
-</blockquote>
+<li><p>维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。<span id="more"></span></p>
 </li>
-<li><p>Liveness：是否从任意黑色 (没有人执行临界区域代码) 状态出发，总能在有限步内到达蓝色/绿色 (有一个线程执行临界区域代码) 节点？</p>
-<blockquote>
-<p>这等价于只考虑图中的黑色节点，是否存在环。只要对黑色节点的导出子图求 SCC 即可。</p>
-</blockquote>
+<li><p>由于 kfree() 只传入了要释放内存块的起始地址，而没有传入 size，所以我们应当在 kalloc() 的时候记录每个释放出去的内存块的大小。笔者最初的实现是维护了一个分配出去的内存块的链表，kfree() 到来时，在链表里查找给定的地址是否存在以及对应的大小。但这样效率太低，于是笔者使用了在地址前打魔数的方法。笔者定义了一个如下的 header：</p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ALLOC_MAGIC 0x1234567;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">header_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">size_t</span> sz;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="keyword">uintptr_t</span> magic;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> __<span class="title">header_t</span> *<span class="title">next</span>;</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;<span class="keyword">header_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>  每个内存块前都有一个这样的 header。这个 header 的好处是：未分配内存和已分配内存可以共用这个 header，当内存块处于未分配状态时，内存块被放在链表中，union 字段存放的是下一个链表节点的地址；当内存块处于已分配状态时，union 字段存放魔数。一个 kfree() 地址来临时，只要查看其前一个 <code>uintptr_t</code> 中是不是 ALLOC_MAGIC，就能确定这个地址合不合法，再往前看就能获得内存块的 size。</p>
+<p>  (注：使用 header 的方法有一个弱点：原本在堆区中 1B 的内存加上 header 后变得很大。此外，由于对齐的原因，我们无法将多个大小相同的内存块“挨在一起”存放在堆区中，中间有很多“洞”。)</p>
+</li>
+<li><p>由于 pmm 会被并发地执行，所以访问共享数据结构要上锁。</p>
 </li>
 </ul>
+<h2 id="Defensive-Programming"><a href="#Defensive-Programming" class="headerlink" title="Defensive Programming"></a>Defensive Programming</h2><p>笔者认为以下的防御性编程是有意义的：</p>
+<ul>
+<li>在 kalloc(), kfree() 中加入足够的对地址性质，空间大小分析的 panic(), panic_on() 等，这有助于提前发现 failure。</li>
+<li>笔者实现的自旋锁中记录了当前拥有锁的 CPU 编号，这样在 acquire() 和 release() 前检查当前是否拥有锁，可以有效防御 AA-deadlock 和一些意料之外的情况。</li>
+<li>kalloc()/kfree() 结束时应该将对应内存区间 memset 成奇怪数值，这样后续使用时如果忘了清零/地址溢出，读到垃圾数据可以加快 failure 出现的速度，减少排查 bug 的时间。</li>
+</ul>
+<p>但以上防御性编程对效率有一定影响，因此笔者在提交 OJ 的版本中没有编译这些防御性编程。</p>
+<h2 id="Performance-Tuning"><a href="#Performance-Tuning" class="headerlink" title="Performance Tuning"></a>Performance Tuning</h2><p>该实验对效率有一定的要求，笔者主要使用 Linux perf 工具对代码的运行时间/并行度进行观测。本地 Workload 的信息为：$60%$ 的 128K 以内内存分配，$30%$ 的 pagesize 内存分配，$10%$ 的大内存分配。释放的频率和分配相仿。每个核做 400,000 次分配和回收。</p>
+<p>笔者做过如下优化：</p>
+<h3 id="Fast-Path"><a href="#Fast-Path" class="headerlink" title="Fast Path"></a>Fast Path</h3><ul>
+<li><p>将整个堆区分成 <code>cpu_count()</code> 份，每个 CPU 核只在自己的那一份的链表中 alloc() 和 free() (free 时根据地址还到相应的资源区中)，因为一个核的 kalloc() 可能在另一个核中 kfree()，所以即使分成了多份，访问数据结构依旧要上锁。如果本地资源不足，则从别的资源区偷资源。该做法有一定效率提升，但不明显。</p>
+</li>
+<li><p>slab。笔者对 1KB 以下内存分配的每种大小都开了一个单独的链表，对 pagesize (4KB) 也开了一个链表。slab 的核心做法是：没有资源时走 slow path，从全局资源中批发很多小块串成链表；有资源时直接从链表头取一个小块。这里每次走 slow path 批发多少个小块是一个需要调整的参数，不同的参数会对效率和失败率产生影响。</p>
+<p>  这里的一个细节是：笔者希望每个核从自己的 slab 中获取资源，释放时将资源释放到自己的 slab 中，这样 fast path 不需要上锁。但提交 OJ 发现 smp=2 时就会出现 low memory usage，这很可能是因为 OJ 上两个核的任务不对称，如一个核专门 kalloc()，一个核专门 kfree()，导致资源全部堆积在第二个核的 slab 里无法利用。因此笔者不得不对 slab 的访问上锁，本地 slab 没有资源时去偷别人的 slab 的资源。</p>
+</li>
+<li><p>为了减少 slab 上的锁拥堵，笔者尝试了以下两种“玄学”优化：</p>
+<ul>
+<li>每个核 kalloc() 时随机一个 slab 取资源，kfree() 时随机一个 slab 还资源 (其实两个都随机和只随机一个效果是一样的)。该策略只需要访问一个 slab，比之前的偷资源策略要高效一些，且打破了”不对称任务“约束，不会 low memory usage。该优化在本地 workload 中显著减少了锁的拥堵程度。</li>
+<li>为了进一步减少锁的拥堵 (毕竟两个核随机到一个 slab 的概率还是不小的)，笔者给每个核选定一个 target slab (这是一个 permutation)，每个核向 target slab 索取资源，释放时归还到 target slab 中。为了避免“不对称任务”约束，每进行一定次数的分配后，shuffle 一下 target slab 的 permutation。该优化在本地的 workload 中相较前一种方法确实进一步减少了锁的拥堵程度，但没有看到明显的效率提升。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Slow-Path"><a href="#Slow-Path" class="headerlink" title="Slow Path"></a>Slow Path</h3><ul>
+<li><p>为了防止 (可以避免的) 过于破碎的内存，链表中应当有合并机制，即插入一个节点后，将其与左右邻居比较，若端点重合则合并节点。</p>
+</li>
+<li><p>OSTEP 中提到过 best/first/next fit 等多种寻找可用节点的策略，如果使用 first fit，一段时间后堆区的前部就会出现较多破碎内存，后部相对完整，使搜索相对较慢。next fit 理论上会有更好的表现，但笔者没有在本地测试中观测到明显的效率提升。</p>
+</li>
+<li><p>为了进一步减少破碎内存，笔者使用如下策略：一个内存块如果被分配完后剩余空间过少 (小于一个阈值)，则不选择切分这个内存块，而是将整块给当前分配。这样可以减少链表中容量很小的内存块个数。该优化在本地 workload 中体现出了效果。</p>
+</li>
+<li><p>在一次 alloc() 失败后，记录这次的需求大小，在下一次 free() 来临之前，如果再出现大于之前失败最小值的 alloc()，可以不遍历链表直接返回 NULL。注意 free() 之后要将记录变量清空。该优化在失败率比较高的 workload 中体现出了效果。</p>
+</li>
+<li><p>笔者发现完全抛弃链表，只用一个全局指针维护堆区，对于一个分配寻找全局指针最近的下一个对齐点 (结合 slab，kfree() 直接放到 slab 中) 的方法不会在 OJ 中报 low memory usage。这样复杂的链表操作被大幅简化。该优化在本地 workload 中体现出巨大效果。</p>
+<p>  (注：如果很小的内存 alloc 和很大的内存 alloc 交替出现，该方法会浪费很多内存。该方法属于用失败率换效率的一个尝试。)</p>
+</li>
+</ul>
+<p>即使笔者结合 Fast Path 和 Slow Path 中能想到的最优的实现，也无法通过旧版 OJ 上 <code>smp=8</code> 的测试用例。在本地 workload 下笔者的最优实现可以在 1.5s 到 2s 完成 8 核的所有任务。</p>
 ]]></content>
       <categories>
         <category>NJU-22020230 Operating Systems</category>
-        <category>Lecture Notes</category>
+        <category>Lab Reports</category>
       </categories>
   </entry>
   <entry>
@@ -2928,61 +2859,130 @@
       </categories>
   </entry>
   <entry>
-    <title>NJU-OS Lab 1: Physical Memory Manager</title>
-    <url>/2022/04/06/NJU-OS/NJU-OS%20Lab%201%20-%20pmm/</url>
-    <content><![CDATA[<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。在技术上有如下要点：</p>
-<ul>
-<li><p>维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。<span id="more"></span></p>
-</li>
-<li><p>由于 kfree() 只传入了要释放内存块的起始地址，而没有传入 size，所以我们应当在 kalloc() 的时候记录每个释放出去的内存块的大小。笔者最初的实现是维护了一个分配出去的内存块的链表，kfree() 到来时，在链表里查找给定的地址是否存在以及对应的大小。但这样效率太低，于是笔者使用了在地址前打魔数的方法。笔者定义了一个如下的 header：</p>
-  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ALLOC_MAGIC 0x1234567;</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> __<span class="title">header_t</span> &#123;</span></span><br><span class="line">    <span class="keyword">size_t</span> sz;</span><br><span class="line">    <span class="class"><span class="keyword">union</span> &#123;</span></span><br><span class="line">        <span class="keyword">uintptr_t</span> magic;</span><br><span class="line">        <span class="class"><span class="keyword">struct</span> __<span class="title">header_t</span> *<span class="title">next</span>;</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;<span class="keyword">header_t</span>;</span><br></pre></td></tr></table></figure>
+    <title>NJU-OS Lecture 04: Understanding Concurrent Programs</title>
+    <url>/2022/02/23/NJU-OS/NJU-OS%20Lecture%2004%20-%20Understanding%20Concurrent%20Programs/</url>
+    <content><![CDATA[<p>互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。</p>
+<p>对于 <code>sum.c</code> ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性：</p>
+<figure class="highlight diff"><table><tr><td class="code"><pre><span class="line">void Tsum()</span><br><span class="line">&#123;</span><br><span class="line">	for (int i = 0; i &lt; N; i++)</span><br><span class="line">	&#123;</span><br><span class="line"><span class="addition">+		lock();</span></span><br><span class="line">		sum++;</span><br><span class="line"><span class="addition">+		unlock();</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>  每个内存块前都有一个这样的 header。这个 header 的好处是：未分配内存和已分配内存可以共用这个 header，当内存块处于未分配状态时，内存块被放在链表中，union 字段存放的是下一个链表节点的地址；当内存块处于已分配状态时，union 字段存放魔数。一个 kfree() 地址来临时，只要查看其前一个 <code>uintptr_t</code> 中是不是 ALLOC_MAGIC，就能确定这个地址合不合法，再往前看就能获得内存块的 size。</p>
-<p>  (注：使用 header 的方法有一个弱点：原本在堆区中 1B 的内存加上 header 后变得很大。此外，由于对齐的原因，我们无法将多个大小相同的内存块“挨在一起”存放在堆区中，中间有很多“洞”。)</p>
-</li>
-<li><p>由于 pmm 会被并发地执行，所以访问共享数据结构要上锁。</p>
-</li>
-</ul>
-<h2 id="Defensive-Programming"><a href="#Defensive-Programming" class="headerlink" title="Defensive Programming"></a>Defensive Programming</h2><p>笔者认为以下的防御性编程是有意义的：</p>
+<span id="more"></span>
+
+<p>一个失败的尝试：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOCK   1</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> UNLOCK 0</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">retry:</span><br><span class="line">    <span class="keyword">if</span> (locked != UNLOCK)   <span class="comment">//*</span></span><br><span class="line">        <span class="keyword">goto</span> entry;</span><br><span class="line">    locked = LOCK;          <span class="comment">//**</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// critical section</span></span><br><span class="line">    </span><br><span class="line">    locked = UNLOCK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从状态机的角度：</p>
+<pre class="mermaid">stateDiagram-v2
+    state1: T1-L*, T2-L*
+    state1 --> state2: 线程T1执行
+    state1 --> state3: 线程T2执行
+    state3: ……
+    state2: T1-L**, T2-L*
+    state2 --> state4: 线程T1执行
+    state2 --> state5: 线程T2执行
+    state4: ……
+    state5: T1-L**, T2-L**</pre>
+
+<p>可以看到存在一个状态，T1 和 T2 同时获得了锁。该方法失败的根本原因是：我们读锁状态的操作和写锁状态的操作无法原子地执行。</p>
+<h2 id="Peterson-Algorithm"><a href="#Peterson-Algorithm" class="headerlink" title="Peterson Algorithm"></a>Peterson Algorithm</h2><p>理解并发的最好方法就是用物理世界中的东西作类比：</p>
 <ul>
-<li>在 kalloc(), kfree() 中加入足够的对地址性质，空间大小分析的 panic(), panic_on() 等，这有助于提前发现 failure。</li>
-<li>笔者实现的自旋锁中记录了当前拥有锁的 CPU 编号，这样在 acquire() 和 release() 前检查当前是否拥有锁，可以有效防御 AA-deadlock 和一些意料之外的情况。</li>
-<li>kalloc()/kfree() 结束时应该将对应内存区间 memset 成奇怪数值，这样后续使用时如果忘了清零/地址溢出，读到垃圾数据可以加快 failure 出现的速度，减少排查 bug 的时间。</li>
+<li>对共享内存的写：往黑板上贴便签条</li>
+<li>对共享内存的读：看黑板 (其实不同于人类，计算机的“读”只能看到一个“历史状态”)</li>
 </ul>
-<p>但以上防御性编程对效率有一定影响，因此笔者在提交 OJ 的版本中没有编译这些防御性编程。</p>
-<h2 id="Performance-Tuning"><a href="#Performance-Tuning" class="headerlink" title="Performance Tuning"></a>Performance Tuning</h2><p>该实验对效率有一定的要求，笔者主要使用 Linux perf 工具对代码的运行时间/并行度进行观测。本地 Workload 的信息为：$60%$ 的 128K 以内内存分配，$30%$ 的 pagesize 内存分配，$10%$ 的大内存分配。释放的频率和分配相仿。每个核做 400,000 次分配和回收。</p>
-<p>笔者做过如下优化：</p>
-<h3 id="Fast-Path"><a href="#Fast-Path" class="headerlink" title="Fast Path"></a>Fast Path</h3><ul>
-<li><p>将整个堆区分成 <code>cpu_count()</code> 份，每个 CPU 核只在自己的那一份的链表中 alloc() 和 free() (free 时根据地址还到相应的资源区中)，因为一个核的 kalloc() 可能在另一个核中 kfree()，所以即使分成了多份，访问数据结构依旧要上锁。如果本地资源不足，则从别的资源区偷资源。该做法有一定效率提升，但不明显。</p>
-</li>
-<li><p>slab。笔者对 1KB 以下内存分配的每种大小都开了一个单独的链表，对 pagesize (4KB) 也开了一个链表。slab 的核心做法是：没有资源时走 slow path，从全局资源中批发很多小块串成链表；有资源时直接从链表头取一个小块。这里每次走 slow path 批发多少个小块是一个需要调整的参数，不同的参数会对效率和失败率产生影响。</p>
-<p>  这里的一个细节是：笔者希望每个核从自己的 slab 中获取资源，释放时将资源释放到自己的 slab 中，这样 fast path 不需要上锁。但提交 OJ 发现 smp=2 时就会出现 low memory usage，这很可能是因为 OJ 上两个核的任务不对称，如一个核专门 kalloc()，一个核专门 kfree()，导致资源全部堆积在第二个核的 slab 里无法利用。因此笔者不得不对 slab 的访问上锁，本地 slab 没有资源时去偷别人的 slab 的资源。</p>
-</li>
-<li><p>为了减少 slab 上的锁拥堵，笔者尝试了以下两种“玄学”优化：</p>
+<hr>
+<p>假设 Alice 和 Bob 想上厕所，为了不一起进入厕所，他们制定了如下协议：</p>
 <ul>
-<li>每个核 kalloc() 时随机一个 slab 取资源，kfree() 时随机一个 slab 还资源 (其实两个都随机和只随机一个效果是一样的)。该策略只需要访问一个 slab，比之前的偷资源策略要高效一些，且打破了”不对称任务“约束，不会 low memory usage。该优化在本地 workload 中显著减少了锁的拥堵程度。</li>
-<li>为了进一步减少锁的拥堵 (毕竟两个核随机到一个 slab 的概率还是不小的)，笔者给每个核选定一个 target slab (这是一个 permutation)，每个核向 target slab 索取资源，释放时归还到 target slab 中。为了避免“不对称任务”约束，每进行一定次数的分配后，shuffle 一下 target slab 的 permutation。该优化在本地的 workload 中相较前一种方法确实进一步减少了锁的拥堵程度，但没有看到明显的效率提升。</li>
+<li>Alice 想上厕所，于是举起了自己的旗子 (step1，相当于 STORE 一个共享的变量)，然后将 Bob (对方) 的名字写在厕所门上 (step2，也相当于 STORE 一个共享变量)；如果 Bob 想上厕所也是同理。注意厕所门上的名字是可以覆盖的。</li>
+<li>Alice 检查门上的名字和厕所 (step3)，Alice 可以进入厕所当且仅当 Bob 没有举旗子，或者门上的名字是自己的。</li>
+<li>Alice 上完厕所后，把自己的旗子放下来 (step4)。</li>
 </ul>
+<p>我们讨论几种情况：</p>
+<ul>
+<li>Alice 检查的时候，如果 Bob 没举旗子，说明 Bob 还不想上厕所，那 Alice 可以上厕所。</li>
+<li>如果 Bob 也举旗子了，那结果是：先举旗子的人可以先进入厕所，因为后举旗子的人会把先举旗子的人的名字贴在门上，覆盖了先贴的人的内容。</li>
+<li>……</li>
+</ul>
+<p>一个完备的证明方法是画状态机。我们设置状态机 $(PC_1, PC_2, x, y, turn,status)$，六个状态分别表示 T1/T2 执行到第几行，T1/T2 的旗子有没有举起来，当前厕所门上写的是谁的名字，以及当前厕所状态。</p>
+<pre class="mermaid">stateDiagram-v2
+    s1: (1, 1, 0, 0, A, e)
+    s1 --> s2: T1
+    s2: (2, 1, 1, 0, A, e)
+    s1 --> s3: T2
+    s3: (1, 2, 0, 1, A, e)
+    note left of s3
+        T1先执行与T2先执行完全等价
+        该分支省略
+    end note
+    s2 --> s4: T1
+    s4: (3, 1, 1, 0, B, e)
+    s2 --> s5: T2
+    s5: (2, 2, 1, 1, A, e) 
+    s4 --> s6: T1
+    s6: (3, 1, 1, 0, B, A)
+    s4 --> s7: T2
+    s7: (3, 2, 1, 1, B, e)
+    s7 --> s7: T1
+    s7 --> s20: T2
+    s20: (3, 3, 1, 1, A, e)
+    s20 --> s14: T1
+    s20 --> s20: T2
+    s5 --> s7: T1
+    s5 --> s9: T2
+    s9: (2, 3, 1, 1, A, e)
+    note right of s9
+        与左孩子完全等价
+        该分支省略
+    end note
+    s6 --> s10: T1
+    s6 --> s11: T2
+    s11: (3, 2, 1, 1, B, A)
+    s10: (4, 1, 1, 0, B, e)
+    s10 --> s12: T1
+    s10 --> s15: T2
+    s12: (1, 1, 0, 0, B, e)
+    s15: (4, 2, 1, 1, B, e)
+    s11 --> s15: T1
+    s11 --> s14: T2
+    s14: (3, 3, 1, 1, A, A)
+    s14 --> s17: T1
+    s14 --> s14: T2
+    s15 --> s16: T1
+    s15 --> s17: T2
+    s16: (1, 2, 0, 1, B, e)
+    s17: (4, 3, 1, 1, A, e)
+    s17 --> s18: T1
+    s17 --> s17: T2
+    s18: (1, 3, 0, 1, A, e)</pre>
+
+<p>我们还可以写一个小程序验证 Peterson：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> BARRIER __sync_synchronize()	</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">critical_section</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">long</span> cnt = atomic_fetch_add(&amp;count, <span class="number">1</span>);</span><br><span class="line">  <span class="keyword">int</span> i = atomic_fetch_add(&amp;nested, <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">if</span> (i != <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d threads in the critical section @ count=%ld\n&quot;</span>, i, cnt);</span><br><span class="line">    assert(<span class="number">0</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  atomic_fetch_add(&amp;nested, <span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="keyword">volatile</span> x = <span class="number">0</span>, y = <span class="number">0</span>, turn;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TA</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    x = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = B;                BARRIER; <span class="comment">// &lt;- this is critcal for x86</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!y) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != B) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    x = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TB</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    y = <span class="number">1</span>;                   BARRIER;</span><br><span class="line">    turn = A;                BARRIER;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!x) <span class="keyword">break</span>;         BARRIER;</span><br><span class="line">      <span class="keyword">if</span> (turn != A) <span class="keyword">break</span>;  BARRIER;</span><br><span class="line">    &#125;</span><br><span class="line">    critical_section();</span><br><span class="line">    y = <span class="number">0</span>;                   BARRIER;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 critical_section() 中，代码主要做的事情是操作一个共享变量，如果某个时刻 <code>nested == 2</code>，说明两个线程同时进入了临界区域，则报错。</p>
+<p>由于现代编译器和多处理器会调整语句顺序/乱序执行……所以我们在每条语句后面添加一条 <code>__sync_synchronize()</code> 来保证编译按照顺序进行，且多处理器之间具有可见性。事实证明，如果去掉 BARRIER 会发生错误。</p>
+<h2 id="Model-Checker"><a href="#Model-Checker" class="headerlink" title="Model Checker"></a>Model Checker</h2><p>我们希望用程序自动画出状态机。<a href="https://kristoff-starling.github.io/files/model-checker.py">model-checker.py</a> 帮助我们完成了这项工作，其中用到的 python 语言机制较多，暂时留坑。我们可以用 <code>model-checker.py</code> 中编写的装饰器来编写多个线程，<a href="https://kristoff-starling.github.io/files/peterson-flag.py">peterson-flag.py</a> 是一个示例。使用命令 <code>python3 model-checker.py xxx.py</code> 可以输出状态机的所有节点和转移关系。</p>
+<p><code>model-checker.py</code> 主要利用了 python generator 的机制来快速获得进程的状态机。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">numbers</span>(<span class="params">init=<span class="number">0</span>, step=<span class="number">1</span></span>):</span></span><br><span class="line">    n = init</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        n += step</span><br><span class="line">        <span class="keyword">yield</span> n</span><br><span class="line"></span><br><span class="line">g = numbers()</span><br><span class="line">h = numbers(<span class="number">100</span>, <span class="number">200</span>)</span><br><span class="line"><span class="built_in">print</span>(g, h)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br><span class="line"><span class="built_in">print</span>(g.__next__())</span><br><span class="line"><span class="built_in">print</span>(h.__next__())</span><br></pre></td></tr></table></figure>
+
+<p>该程序输出结果为</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;generator object numbers at 0x7f0a75b4fcf0&gt; &lt;generator object numbers at 0x7f0a759f9ba0&gt;</span><br><span class="line">1</span><br><span class="line">2</span><br><span class="line">300</span><br><span class="line">3</span><br><span class="line">500</span><br></pre></td></tr></table></figure>
+
+<p>虽然 numbers() 里面是一个死循环，但执行 numbers() 还是可以退出，这得益于 <code>yield</code> 语句，yield 的功能类似于操作系统的调度，它会主动让出执行流。<code>g.__next__()</code> 语句可以从被打断处重新进入，继续执行函数直到遇到下一次 yield。如果我们在每一条语句后面都加上一个 yield，让 yield 后面返回所有的线程局部变量，我们就获得了函数每执行一步之后的状态机。</p>
+<p>Model checker 将验证程序正确性的问题转化成了一个图论问题：</p>
+<ul>
+<li><p>Safety (线程是否互斥)：从初始状态出发，是否存在到红色 (互斥失败) 节点的路径？</p>
+<blockquote>
+<p>图搜索</p>
+</blockquote>
+</li>
+<li><p>Liveness：是否从任意黑色 (没有人执行临界区域代码) 状态出发，总能在有限步内到达蓝色/绿色 (有一个线程执行临界区域代码) 节点？</p>
+<blockquote>
+<p>这等价于只考虑图中的黑色节点，是否存在环。只要对黑色节点的导出子图求 SCC 即可。</p>
+</blockquote>
 </li>
 </ul>
-<h3 id="Slow-Path"><a href="#Slow-Path" class="headerlink" title="Slow Path"></a>Slow Path</h3><ul>
-<li><p>为了防止 (可以避免的) 过于破碎的内存，链表中应当有合并机制，即插入一个节点后，将其与左右邻居比较，若端点重合则合并节点。</p>
-</li>
-<li><p>OSTEP 中提到过 best/first/next fit 等多种寻找可用节点的策略，如果使用 first fit，一段时间后堆区的前部就会出现较多破碎内存，后部相对完整，使搜索相对较慢。next fit 理论上会有更好的表现，但笔者没有在本地测试中观测到明显的效率提升。</p>
-</li>
-<li><p>为了进一步减少破碎内存，笔者使用如下策略：一个内存块如果被分配完后剩余空间过少 (小于一个阈值)，则不选择切分这个内存块，而是将整块给当前分配。这样可以减少链表中容量很小的内存块个数。该优化在本地 workload 中体现出了效果。</p>
-</li>
-<li><p>在一次 alloc() 失败后，记录这次的需求大小，在下一次 free() 来临之前，如果再出现大于之前失败最小值的 alloc()，可以不遍历链表直接返回 NULL。注意 free() 之后要将记录变量清空。该优化在失败率比较高的 workload 中体现出了效果。</p>
-</li>
-<li><p>笔者发现完全抛弃链表，只用一个全局指针维护堆区，对于一个分配寻找全局指针最近的下一个对齐点 (结合 slab，kfree() 直接放到 slab 中) 的方法不会在 OJ 中报 low memory usage。这样复杂的链表操作被大幅简化。该优化在本地 workload 中体现出巨大效果。</p>
-<p>  (注：如果很小的内存 alloc 和很大的内存 alloc 交替出现，该方法会浪费很多内存。该方法属于用失败率换效率的一个尝试。)</p>
-</li>
-</ul>
-<p>即使笔者结合 Fast Path 和 Slow Path 中能想到的最优的实现，也无法通过旧版 OJ 上 <code>smp=8</code> 的测试用例。在本地 workload 下笔者的最优实现可以在 1.5s 到 2s 完成 8 核的所有任务。</p>
 ]]></content>
       <categories>
         <category>NJU-22020230 Operating Systems</category>
-        <category>Lab Reports</category>
+        <category>Lecture Notes</category>
       </categories>
   </entry>
   <entry>
@@ -3933,115 +3933,6 @@ end</pre>
       </categories>
   </entry>
   <entry>
-    <title>NJU-OS Lecture 21: OS Design</title>
-    <url>/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/</url>
-    <content><![CDATA[<p>操作系统的设计：一组对象+访问对象的 API；操作系统的实现：一个 C 程序完成上面的设计</p>
-<p>我们关心的问题是：操作系统到底应该提供什么样的对象和 API？<span id="more"></span></p>
-<h2 id="Monolithic-Kernel"><a href="#Monolithic-Kernel" class="headerlink" title="Monolithic Kernel"></a>Monolithic Kernel</h2><p>Unix 系列：<a href="https://pubs.opengroup.org/onlinepubs/9699919799/mindex.html">The Open Group Base Specifications Issue 7 (2018 Ed.)</a></p>
-<p>Windows 系列：<a href="https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list">Windows API Index</a></p>
-<p>不同的 API 系列可以互相模拟，于是有了 WSL 和 WINE。</p>
-<blockquote>
-<p><strong>Real Operating Systems</strong></p>
-<p>真正的操作系统要考虑的事情总是比想象中的复杂。比如我们写一个简单的重命名函数：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rename_file</span><span class="params">(<span class="keyword">char</span> *oldname, <span class="keyword">char</span> *newname)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">char</span> buf[SIZE];</span><br><span class="line"> <span class="keyword">int</span> fd = open(oldname, O_RONLY);</span><br><span class="line"> fread(fd, buf);</span><br><span class="line"> close(fd); <span class="keyword">delete</span>(oldname);</span><br><span class="line"> <span class="comment">// &lt;------------------</span></span><br><span class="line"> fd = open(newname, O_CREAT | O_TRUNC | O_WONLY);</span><br><span class="line"> write(fd, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>如果在箭头指向的时刻操作系统突然掉电了，那么文件内容就全部丢失了！这显然是不合理的现象。阅读 rename() 系统调用的手册，可以看到手册保证了删除旧文件，创建新文件操作的原子性。</p>
-</blockquote>
-<h2 id="Microkernel"><a href="#Microkernel" class="headerlink" title="Microkernel"></a>Microkernel</h2><p>复杂系统的正确性难以保证。像 Linux 这样以 C 为主要语言的操作系统，C 的 undefined behavior 会给系统带来无穷的灾难：比如文件系统一旦出错，整个内核中的任何模块都可能受到损坏。</p>
-<p>微内核的想法是：将尽可能多的功能用普通进程实现，将问题隔离在进程级。比如文件操作，UNIX 的 write() 会陷入内核，但另一种想法是：调用一个 remote_write() 和一个 File server 交互，FS进程有访问磁盘的权限即可。</p>
-<p>一些好的想法：</p>
-<ul>
-<li>一些和状态机管理密切相关的系统调用没法被搬出内核：比如 fork(), mmap()。</li>
-<li>如果操作系统提供一个 mmio() 系统调用，让进程通过访问内存的方式来控制设备寄存器、磁盘 etc，那么设备驱动代码，文件系统代码都可以放在用户态。</li>
-</ul>
-<p>赋予进程最少的权限，就能降低错误带来的影响。</p>
-<h3 id="Minix"><a href="#Minix" class="headerlink" title="Minix"></a>Minix</h3><p>Minix 是一个具有跨时代意义的教学操作系统，它采取的是微内核设计。在 Minix 2.0 中，内核只提供了两个 API：send 和 receive。基于这两个系统调用，我们实现一些 RPC (remote procedure call) 来实现进程之间的通信。Kernel 里只有很少的状态机相关的机制：比如中断，异常，时钟驱动，内存映射 etc. 其他的功能，比如文件系统，设备驱动，网络 etc. 都在用户态。跨模块的调用会跨越进程边界 i.e. 地址空间的切换等，这样一个模块的错误就可以被隔离在本地，UB 不会波及到模块外部。</p>
-<h3 id="seL4"><a href="#seL4" class="headerlink" title="seL4"></a>seL4</h3><p>seL4 是第一个完成了正确性证明、运行时间上界证明的微内核。</p>
-<p>seL4 的证明思路大致如下：以 <code>thread-os.c</code> 的 round-robin 调度器为例，首先我们用适合描述行为的语言建立一个模型 (这里以 python 为例, seL4 在这里实际上有两层建模)：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rr_sched</span>(<span class="params">cpu</span>):</span></span><br><span class="line">    cpu.threads = cpu.threads[<span class="number">1</span>:] + cpu.threads[:<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">assert</span> anything_you_need</span><br><span class="line">    <span class="keyword">return</span> cpu.threads[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
-
-<p>我们可以用 model checker 确认这个 high level 语言编写的程序的正确性，然后我们希望证明 <code>thread-os.c</code> 和 python 代码的行为等价性。除去访问硬件的部分 (AbstractMachine)，操作系统本质上是纯计算的程序 (数学模型)，因此我们只需要观测所有的 AM call 行为是否等价即可。如果我们使用被 verified 的编译器，我们还可以进一步证明 C 程序和汇编指令的等价性。</p>
-<h2 id="UniKernel"><a href="#UniKernel" class="headerlink" title="UniKernel"></a>UniKernel</h2><p>很早的时候就有了 exokernel (外核) 的概念，即操作系统不应该有任何的策略，只需要提供最小的硬件抽象。在有了虚拟机的时代，这催生了 unikernel：将操作系统的内核代码和应用程序直接链接起来跑，因为硬件都是虚拟机抽象出来的，所以没有安全问题。这时的 OS 类似于一个 libOS 的功能。</p>
-]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Lecture Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>NJU-OS Lecture 23: Storage Devices</title>
-    <url>/2022/05/11/NJU-OS/NJU-OS%20Lecture%2023%20-%20Storage%20Devices/</url>
-    <content><![CDATA[<p>机器指令模型只有两种当前状态：寄存器和物理内存。这些状态在物理世界中应当有真实的对应。我们的需求是：</p>
-<ul>
-<li>可以寻址：比如可以根据编号访问某个单元格。</li>
-<li>访问速度尽可能快 (甚至不惜掉电后丢失状态)。<span id="more"></span></li>
-</ul>
-<p>“当前状态”的存储</p>
-<ul>
-<li><p>延迟线 (delay line)：像一根存储了数据的绳子不断地转，信号会随着时间衰减，因此数据会不断通过放大器来保持不丢失。</p>
-</li>
-<li><p>磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。</p>
-<blockquote>
-<p><strong>“Segmentation fault (core dumped)”</strong></p>
-<p>这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 <code>ulimit -a</code> 查看)，可以通过 <code>ulimit -c size</code> 来修改。</p>
-<p>此外，在 Ubuntu 系统中，我们还需要在 root 权限下通过</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> core &gt; /proc/sys/kernel/core_pattern</span><br></pre></td></tr></table></figure>
-
-<p>修改对应文件。这样发生段错误后，系统将在程序当前目录下生成一个 core 文件。我们可以用 <code>segfault.c</code> 做一个实验。段错误后，使用 <code>gdb segfault core</code> 再次运行，就可以恢复 crash 的现场。</p>
-</blockquote>
-</li>
-<li><p>SRAM/DRAM：flip-flop</p>
-</li>
-</ul>
-<h2 id="Magnetism"><a href="#Magnetism" class="headerlink" title="Magnetism"></a>Magnetism</h2><p>用小磁铁的方向来表示 0 和 1，不同方向的小磁铁会有不同方向的磁场，从而可以感应出不同方向的电流。此外，电流产生的磁场也可以用来修改小磁铁的方向。</p>
-<h3 id="Magnetic-Tape-1928"><a href="#Magnetic-Tape-1928" class="headerlink" title="Magnetic Tape (1928)"></a>Magnetic Tape (1928)</h3><p>磁带本质上是一个 1D 的存储设备，但我们可以通过把磁带卷起来使其变成一个近似 2D 的存储设备。因此可以在小空间内存放大量的 bit。在中间位置放一个读写头，然后通过机械转轮来定位当前读写的位置。</p>
-<ul>
-<li>优点：便宜，容量大，存储时间相对较长</li>
-<li>缺点：完全无法随机读取 (只能靠机械转轮移动)</li>
-</ul>
-<p>因此磁带主要用于大量冷数据的长时间存储。</p>
-<h3 id="Magnetic-Drum-1932"><a href="#Magnetic-Drum-1932" class="headerlink" title="Magnetic Drum (1932)"></a>Magnetic Drum (1932)</h3><p>磁鼓一定程度解决了磁带无法随机读取的问题：将磁带一圈一圈绕在一个金属棒上，然后在棒子的侧面放很多读写头，这样读取一个 bit 的时间控制在棒子转一圈的时间之内。磁鼓的缺点是：占用的空间太大了</p>
-<h3 id="Hard-Disk-1956"><a href="#Hard-Disk-1956" class="headerlink" title="Hard Disk (1956)"></a>Hard Disk (1956)</h3><p>将磁带内卷在一个二维平面上，中间是转轴。磁盘中只有一个读写头，但读写头上有一个电动机，读写头的移动可以使其快速定位磁带的某个圈，磁带的旋转可以使圈上某个位置的信息到达读写头的位置。这样不仅速度快，而且占用体积大幅下降。</p>
-<p>工程上对磁盘还有一些优化，比如在 z 轴上排列若干个圆盘，放置多个读写头等等。此外磁盘中的每个盘实际上不是用磁带绕出来的，而是使用了更先进的生产工艺。</p>
-<ul>
-<li>优点：便宜，容量大，有勉强可用的随机读取能力</li>
-<li>缺点：可靠性低，存在机械部件，磁头划伤盘片可能导致数据丢失。</li>
-</ul>
-<p>磁盘是当今计算机系统的主力数据存储。</p>
-<p>磁盘当中有很多事情是可以调度的，从前这个调度由操作系统负责，但现在的磁盘越做越复杂，很多内部参数已经超出了操作系统的控制，因此现代的磁盘通常会有一个片上系统 (system on chip, SoC)，这种写死的固件负责磁盘中的调度算法。</p>
-<h3 id="Floppy-Disk-1971"><a href="#Floppy-Disk-1971" class="headerlink" title="Floppy Disk (1971)"></a>Floppy Disk (1971)</h3><p>能不能将盘片和读写头分开，从而实现数据移动？这就有了软盘。刚开始软盘真的是软的，后来的 3.5 英寸软盘为了可靠性已经是硬的了。</p>
-<ul>
-<li>优点：价格低，数据可移动</li>
-<li>缺点：由于是暴露的存储介质，所以可靠性低，且数据密度不能太大。</li>
-</ul>
-<h2 id="Pits"><a href="#Pits" class="headerlink" title="Pits"></a>Pits</h2><p>在一个平整的平面上挖一些坑，这样光照在平整的地方可以很好地反射，照在坑上就不能很好地反射，从而实现 0 和 1。</p>
-<h3 id="Compact-Disk-CD-1980"><a href="#Compact-Disk-CD-1980" class="headerlink" title="Compact Disk (CD, 1980)"></a>Compact Disk (CD, 1980)</h3><p>在反射平面 (1) 上挖上粗糙的坑 (0)，激光扫过表面，就可以读出信息。CD 的一大问题在于只读性——挖坑容易填坑难。有一些例如 PCM (phase-change material) 的材料可以做出 rewritable disk。</p>
-<ul>
-<li><p>优点：价格低，容量大，可靠性很高</p>
-<p>  光盘的一个很有意思的优点是它很容易通过“压盘”来复制：我们可以制作一个母盘，在该挖坑的地方凸起，然后一张平整盘往上一压就是一张盘。</p>
-</li>
-<li><p>缺点：随机读取能力不高，改写困难。</p>
-</li>
-</ul>
-<h2 id="Electricity"><a href="#Electricity" class="headerlink" title="Electricity"></a>Electricity</h2><p>之前的持久存储介质都有一个致命的缺陷：存在一些机械部件，机械部件可靠性不高且速度跟不上，要跟上电路的速度，我们必须用电来做存储介质。</p>
-<h3 id="Solid-State-Drive-SSD-1991"><a href="#Solid-State-Drive-SSD-1991" class="headerlink" title="Solid State Drive (SSD, 1991)"></a>Solid State Drive (SSD, 1991)</h3><p>Flash memory 的 floating gate 的充电放电实现了 0-1。</p>
-<ul>
-<li><p>优点：大规模集成电路价格低，容量很大；flash memory 的最大优势在于读写速度，而且它有一个不讲道理的特性：容量越大速度越快 (电路级并行)；可靠性非常高：没有机械部件，所以可以随便摔。</p>
-</li>
-<li><p>缺点：几乎无。</p>
-</li>
-</ul>
-<h3 id="USB-Flash-Disk-1999"><a href="#USB-Flash-Disk-1999" class="headerlink" title="USB Flash Disk (1999)"></a>USB Flash Disk (1999)</h3><p>迅速击败软盘，成为人手 $n$ 个的移动存储设备。</p>
-<hr>
-<p>Flash memory 有一个关键的问题：放电会放不干净，一个 cell 经过了成千上万次读写操作后，剩余的电子就会多到好像是 1 的状态，这个 cell 成为了一个 dead cell。</p>
-<p>该问题的解决方法类似于虚拟内存：在 OS 眼中不论是 SSD 还是 HDD 都类似于一个大数组，但事实上 SSD 里面有一个小型的计算机系统：系统会根据每个 cell 的读写次数，将所谓的 “100号cell” 映射到一个其他的 cell，就像一个 MMU 一样。这样可以保证每个 cell 使用次数差不多，也可以绕开一些 dead cell。</p>
-]]></content>
-      <categories>
-        <category>NJU-22020230 Operating Systems</category>
-        <category>Lecture Notes</category>
-      </categories>
-  </entry>
-  <entry>
     <title>NJU-OS Lecture 18: Xv6 Code Guide</title>
     <url>/2022/04/24/NJU-OS/NJU-OS%20Lecture%2018%20-%20Xv6%20Code%20Guide/</url>
     <content><![CDATA[<blockquote>
@@ -4164,6 +4055,115 @@ end</pre>
 <h3 id="Complexity-CPU-Hot-plug"><a href="#Complexity-CPU-Hot-plug" class="headerlink" title="Complexity: CPU Hot-plug"></a>Complexity: CPU Hot-plug</h3><p>现在的 CPU 支持热插拔，可能运行一会儿会发现多了一个或者少了一个……</p>
 <hr>
 <p>调度是一个非常复杂的问题，将这个任务完全丢给操作系统的调度器是不合理的。一种可能的想法是：让程序提供一些 scheduling hints 来指导调度行为。</p>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Lecture 21: OS Design</title>
+    <url>/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/</url>
+    <content><![CDATA[<p>操作系统的设计：一组对象+访问对象的 API；操作系统的实现：一个 C 程序完成上面的设计</p>
+<p>我们关心的问题是：操作系统到底应该提供什么样的对象和 API？<span id="more"></span></p>
+<h2 id="Monolithic-Kernel"><a href="#Monolithic-Kernel" class="headerlink" title="Monolithic Kernel"></a>Monolithic Kernel</h2><p>Unix 系列：<a href="https://pubs.opengroup.org/onlinepubs/9699919799/mindex.html">The Open Group Base Specifications Issue 7 (2018 Ed.)</a></p>
+<p>Windows 系列：<a href="https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list">Windows API Index</a></p>
+<p>不同的 API 系列可以互相模拟，于是有了 WSL 和 WINE。</p>
+<blockquote>
+<p><strong>Real Operating Systems</strong></p>
+<p>真正的操作系统要考虑的事情总是比想象中的复杂。比如我们写一个简单的重命名函数：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rename_file</span><span class="params">(<span class="keyword">char</span> *oldname, <span class="keyword">char</span> *newname)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">char</span> buf[SIZE];</span><br><span class="line"> <span class="keyword">int</span> fd = open(oldname, O_RONLY);</span><br><span class="line"> fread(fd, buf);</span><br><span class="line"> close(fd); <span class="keyword">delete</span>(oldname);</span><br><span class="line"> <span class="comment">// &lt;------------------</span></span><br><span class="line"> fd = open(newname, O_CREAT | O_TRUNC | O_WONLY);</span><br><span class="line"> write(fd, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果在箭头指向的时刻操作系统突然掉电了，那么文件内容就全部丢失了！这显然是不合理的现象。阅读 rename() 系统调用的手册，可以看到手册保证了删除旧文件，创建新文件操作的原子性。</p>
+</blockquote>
+<h2 id="Microkernel"><a href="#Microkernel" class="headerlink" title="Microkernel"></a>Microkernel</h2><p>复杂系统的正确性难以保证。像 Linux 这样以 C 为主要语言的操作系统，C 的 undefined behavior 会给系统带来无穷的灾难：比如文件系统一旦出错，整个内核中的任何模块都可能受到损坏。</p>
+<p>微内核的想法是：将尽可能多的功能用普通进程实现，将问题隔离在进程级。比如文件操作，UNIX 的 write() 会陷入内核，但另一种想法是：调用一个 remote_write() 和一个 File server 交互，FS进程有访问磁盘的权限即可。</p>
+<p>一些好的想法：</p>
+<ul>
+<li>一些和状态机管理密切相关的系统调用没法被搬出内核：比如 fork(), mmap()。</li>
+<li>如果操作系统提供一个 mmio() 系统调用，让进程通过访问内存的方式来控制设备寄存器、磁盘 etc，那么设备驱动代码，文件系统代码都可以放在用户态。</li>
+</ul>
+<p>赋予进程最少的权限，就能降低错误带来的影响。</p>
+<h3 id="Minix"><a href="#Minix" class="headerlink" title="Minix"></a>Minix</h3><p>Minix 是一个具有跨时代意义的教学操作系统，它采取的是微内核设计。在 Minix 2.0 中，内核只提供了两个 API：send 和 receive。基于这两个系统调用，我们实现一些 RPC (remote procedure call) 来实现进程之间的通信。Kernel 里只有很少的状态机相关的机制：比如中断，异常，时钟驱动，内存映射 etc. 其他的功能，比如文件系统，设备驱动，网络 etc. 都在用户态。跨模块的调用会跨越进程边界 i.e. 地址空间的切换等，这样一个模块的错误就可以被隔离在本地，UB 不会波及到模块外部。</p>
+<h3 id="seL4"><a href="#seL4" class="headerlink" title="seL4"></a>seL4</h3><p>seL4 是第一个完成了正确性证明、运行时间上界证明的微内核。</p>
+<p>seL4 的证明思路大致如下：以 <code>thread-os.c</code> 的 round-robin 调度器为例，首先我们用适合描述行为的语言建立一个模型 (这里以 python 为例, seL4 在这里实际上有两层建模)：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rr_sched</span>(<span class="params">cpu</span>):</span></span><br><span class="line">    cpu.threads = cpu.threads[<span class="number">1</span>:] + cpu.threads[:<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">assert</span> anything_you_need</span><br><span class="line">    <span class="keyword">return</span> cpu.threads[<span class="number">0</span>]</span><br></pre></td></tr></table></figure>
+
+<p>我们可以用 model checker 确认这个 high level 语言编写的程序的正确性，然后我们希望证明 <code>thread-os.c</code> 和 python 代码的行为等价性。除去访问硬件的部分 (AbstractMachine)，操作系统本质上是纯计算的程序 (数学模型)，因此我们只需要观测所有的 AM call 行为是否等价即可。如果我们使用被 verified 的编译器，我们还可以进一步证明 C 程序和汇编指令的等价性。</p>
+<h2 id="UniKernel"><a href="#UniKernel" class="headerlink" title="UniKernel"></a>UniKernel</h2><p>很早的时候就有了 exokernel (外核) 的概念，即操作系统不应该有任何的策略，只需要提供最小的硬件抽象。在有了虚拟机的时代，这催生了 unikernel：将操作系统的内核代码和应用程序直接链接起来跑，因为硬件都是虚拟机抽象出来的，所以没有安全问题。这时的 OS 类似于一个 libOS 的功能。</p>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>NJU-OS Lecture 23: Storage Devices</title>
+    <url>/2022/05/11/NJU-OS/NJU-OS%20Lecture%2023%20-%20Storage%20Devices/</url>
+    <content><![CDATA[<p>机器指令模型只有两种当前状态：寄存器和物理内存。这些状态在物理世界中应当有真实的对应。我们的需求是：</p>
+<ul>
+<li>可以寻址：比如可以根据编号访问某个单元格。</li>
+<li>访问速度尽可能快 (甚至不惜掉电后丢失状态)。<span id="more"></span></li>
+</ul>
+<p>“当前状态”的存储</p>
+<ul>
+<li><p>延迟线 (delay line)：像一根存储了数据的绳子不断地转，信号会随着时间衰减，因此数据会不断通过放大器来保持不丢失。</p>
+</li>
+<li><p>磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。</p>
+<blockquote>
+<p><strong>“Segmentation fault (core dumped)”</strong></p>
+<p>这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 <code>ulimit -a</code> 查看)，可以通过 <code>ulimit -c size</code> 来修改。</p>
+<p>此外，在 Ubuntu 系统中，我们还需要在 root 权限下通过</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> core &gt; /proc/sys/kernel/core_pattern</span><br></pre></td></tr></table></figure>
+
+<p>修改对应文件。这样发生段错误后，系统将在程序当前目录下生成一个 core 文件。我们可以用 <code>segfault.c</code> 做一个实验。段错误后，使用 <code>gdb segfault core</code> 再次运行，就可以恢复 crash 的现场。</p>
+</blockquote>
+</li>
+<li><p>SRAM/DRAM：flip-flop</p>
+</li>
+</ul>
+<h2 id="Magnetism"><a href="#Magnetism" class="headerlink" title="Magnetism"></a>Magnetism</h2><p>用小磁铁的方向来表示 0 和 1，不同方向的小磁铁会有不同方向的磁场，从而可以感应出不同方向的电流。此外，电流产生的磁场也可以用来修改小磁铁的方向。</p>
+<h3 id="Magnetic-Tape-1928"><a href="#Magnetic-Tape-1928" class="headerlink" title="Magnetic Tape (1928)"></a>Magnetic Tape (1928)</h3><p>磁带本质上是一个 1D 的存储设备，但我们可以通过把磁带卷起来使其变成一个近似 2D 的存储设备。因此可以在小空间内存放大量的 bit。在中间位置放一个读写头，然后通过机械转轮来定位当前读写的位置。</p>
+<ul>
+<li>优点：便宜，容量大，存储时间相对较长</li>
+<li>缺点：完全无法随机读取 (只能靠机械转轮移动)</li>
+</ul>
+<p>因此磁带主要用于大量冷数据的长时间存储。</p>
+<h3 id="Magnetic-Drum-1932"><a href="#Magnetic-Drum-1932" class="headerlink" title="Magnetic Drum (1932)"></a>Magnetic Drum (1932)</h3><p>磁鼓一定程度解决了磁带无法随机读取的问题：将磁带一圈一圈绕在一个金属棒上，然后在棒子的侧面放很多读写头，这样读取一个 bit 的时间控制在棒子转一圈的时间之内。磁鼓的缺点是：占用的空间太大了</p>
+<h3 id="Hard-Disk-1956"><a href="#Hard-Disk-1956" class="headerlink" title="Hard Disk (1956)"></a>Hard Disk (1956)</h3><p>将磁带内卷在一个二维平面上，中间是转轴。磁盘中只有一个读写头，但读写头上有一个电动机，读写头的移动可以使其快速定位磁带的某个圈，磁带的旋转可以使圈上某个位置的信息到达读写头的位置。这样不仅速度快，而且占用体积大幅下降。</p>
+<p>工程上对磁盘还有一些优化，比如在 z 轴上排列若干个圆盘，放置多个读写头等等。此外磁盘中的每个盘实际上不是用磁带绕出来的，而是使用了更先进的生产工艺。</p>
+<ul>
+<li>优点：便宜，容量大，有勉强可用的随机读取能力</li>
+<li>缺点：可靠性低，存在机械部件，磁头划伤盘片可能导致数据丢失。</li>
+</ul>
+<p>磁盘是当今计算机系统的主力数据存储。</p>
+<p>磁盘当中有很多事情是可以调度的，从前这个调度由操作系统负责，但现在的磁盘越做越复杂，很多内部参数已经超出了操作系统的控制，因此现代的磁盘通常会有一个片上系统 (system on chip, SoC)，这种写死的固件负责磁盘中的调度算法。</p>
+<h3 id="Floppy-Disk-1971"><a href="#Floppy-Disk-1971" class="headerlink" title="Floppy Disk (1971)"></a>Floppy Disk (1971)</h3><p>能不能将盘片和读写头分开，从而实现数据移动？这就有了软盘。刚开始软盘真的是软的，后来的 3.5 英寸软盘为了可靠性已经是硬的了。</p>
+<ul>
+<li>优点：价格低，数据可移动</li>
+<li>缺点：由于是暴露的存储介质，所以可靠性低，且数据密度不能太大。</li>
+</ul>
+<h2 id="Pits"><a href="#Pits" class="headerlink" title="Pits"></a>Pits</h2><p>在一个平整的平面上挖一些坑，这样光照在平整的地方可以很好地反射，照在坑上就不能很好地反射，从而实现 0 和 1。</p>
+<h3 id="Compact-Disk-CD-1980"><a href="#Compact-Disk-CD-1980" class="headerlink" title="Compact Disk (CD, 1980)"></a>Compact Disk (CD, 1980)</h3><p>在反射平面 (1) 上挖上粗糙的坑 (0)，激光扫过表面，就可以读出信息。CD 的一大问题在于只读性——挖坑容易填坑难。有一些例如 PCM (phase-change material) 的材料可以做出 rewritable disk。</p>
+<ul>
+<li><p>优点：价格低，容量大，可靠性很高</p>
+<p>  光盘的一个很有意思的优点是它很容易通过“压盘”来复制：我们可以制作一个母盘，在该挖坑的地方凸起，然后一张平整盘往上一压就是一张盘。</p>
+</li>
+<li><p>缺点：随机读取能力不高，改写困难。</p>
+</li>
+</ul>
+<h2 id="Electricity"><a href="#Electricity" class="headerlink" title="Electricity"></a>Electricity</h2><p>之前的持久存储介质都有一个致命的缺陷：存在一些机械部件，机械部件可靠性不高且速度跟不上，要跟上电路的速度，我们必须用电来做存储介质。</p>
+<h3 id="Solid-State-Drive-SSD-1991"><a href="#Solid-State-Drive-SSD-1991" class="headerlink" title="Solid State Drive (SSD, 1991)"></a>Solid State Drive (SSD, 1991)</h3><p>Flash memory 的 floating gate 的充电放电实现了 0-1。</p>
+<ul>
+<li><p>优点：大规模集成电路价格低，容量很大；flash memory 的最大优势在于读写速度，而且它有一个不讲道理的特性：容量越大速度越快 (电路级并行)；可靠性非常高：没有机械部件，所以可以随便摔。</p>
+</li>
+<li><p>缺点：几乎无。</p>
+</li>
+</ul>
+<h3 id="USB-Flash-Disk-1999"><a href="#USB-Flash-Disk-1999" class="headerlink" title="USB Flash Disk (1999)"></a>USB Flash Disk (1999)</h3><p>迅速击败软盘，成为人手 $n$ 个的移动存储设备。</p>
+<hr>
+<p>Flash memory 有一个关键的问题：放电会放不干净，一个 cell 经过了成千上万次读写操作后，剩余的电子就会多到好像是 1 的状态，这个 cell 成为了一个 dead cell。</p>
+<p>该问题的解决方法类似于虚拟内存：在 OS 眼中不论是 SSD 还是 HDD 都类似于一个大数组，但事实上 SSD 里面有一个小型的计算机系统：系统会根据每个 cell 的读写次数，将所谓的 “100号cell” 映射到一个其他的 cell，就像一个 MMU 一样。这样可以保证每个 cell 使用次数差不多，也可以绕开一些 dead cell。</p>
 ]]></content>
       <categories>
         <category>NJU-22020230 Operating Systems</category>
@@ -4484,30 +4484,6 @@ Blocked --> Ready: I/O Done</pre>
 <p>这是 xv6-x86 中的上下文结构体和 PCB。可以看到它存储了比之前提到的更多的一些信息，比如每个进程的内核栈地址，父进程，如果睡眠睡在了哪个地址上，kernel trap 的页面地址等。</p>
 <p>进程的状态也比之间提到的 ready, running, blocked 要多。一些很有用的状态包括 zombie，它表示一个程序已经运行结束，但相关的信息还没有被清空。这种状态可以让调用 wait() 的父进程去检查子进程的返回值是否符合要求。</p>
 <h2 id="4-6-Summary"><a href="#4-6-Summary" class="headerlink" title="4.6 Summary"></a>4.6 Summary</h2><p>略。</p>
-]]></content>
-      <categories>
-        <category>WISC-CS537 Introduction to Operating Systems</category>
-        <category>Book Notes</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>OSTEP Chapter 05: Interlude: Process API</title>
-    <url>/2022/03/19/OSTEP/OSTEP%20Chapter%2005%20-%20Interlude%20-%20Process%20API/</url>
-    <content><![CDATA[<h2 id="5-1-The-fork-System-Call"><a href="#5-1-The-fork-System-Call" class="headerlink" title="5.1 The fork() System Call"></a>5.1 The <code>fork()</code> System Call</h2><p>fork() 系统调用会创建一个和当前进程完全相同的子进程，这两个进程除了 fork() 的返回值不同，其他完全相同。fork() 在父进程中返回子进程的进程号，在子进程中返回 0，这可以用于区分两个进程。</p>
-<p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2005%20-%20cpu_api/p1.c">p1.c</a> 展示了一个使用 fork() 的例子，其中 getpid() 函数可以获得当前进程的进程号。注意这个程序的运行结果是 non-deterministic 的：父进程和子进程谁会先输出，这取决于 OS 的调度器。现代操作系统的调度策略极其复杂，可以看<a href="https://linux.cn/article-7325-1.html">这篇文章</a>有一个大概的了解。<span id="more"></span></p>
-<h2 id="5-2-The-wait-System-Call"><a href="#5-2-The-wait-System-Call" class="headerlink" title="5.2 The wait() System Call"></a>5.2 The <code>wait()</code> System Call</h2><p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2005%20-%20cpu_api/p2.c">p2.c</a> 展示了一个使用 wait() 的例子，wait() 提供一种同步机制，保证了父进程在子进程结束之后再执行。如果父进程先被调度器选中，那么它执行 wait() 会被阻塞，直到子进程结束；如果子进程先被调度器选中，那么父进程执行 wait() 时看到子进程已经退出则会立刻返回。</p>
-<blockquote>
-<p><strong>Zombie Process</strong></p>
-<p>一个子进程如果已经退出但还没有被它的父进程 wait()，那它就是一个僵尸进程。内核保存了僵尸进程的一份 minimal 的信息，包括进程号、退出状态等，这样以后如果父进程 wait() 了，父进程就可以获取子进程的信息。</p>
-<p>被 wait() 过的僵尸进程会被从 process table 中移除。一个 zombie process 如果不被 wait，就会一直待在 process table 中，一旦内核的 process table 满了，就不能再创建新的进程。因此父进程应该及时清理自己的僵尸子进程。如果父进程退出了，那么它的僵尸子进程会被 init 进程 (或其他某个指定的进程) wait 掉。</p>
-</blockquote>
-<h2 id="5-3-Finally-The-exec-System-Call"><a href="#5-3-Finally-The-exec-System-Call" class="headerlink" title="5.3 Finally, The exec() System Call"></a>5.3 Finally, The <code>exec()</code> System Call</h2><p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2005%20-%20cpu_api/p3.c">p3.c</a> 展示了一个使用 exec() 的例子。exec() 传入一个可执行程序的文件名，它会将该文件的代码和数据加载到内存中覆盖当前的代码和数据，重新初始化堆区和栈，并跳转到新程序的入口开始执行。exec() 不创建新的进程，它只是重启当前的状态机。exec() 如果执行成功就不会返回。</p>
-<h2 id="5-4-Why-Motivating-the-API"><a href="#5-4-Why-Motivating-the-API" class="headerlink" title="5.4 Why? Motivating the API"></a>5.4 Why? Motivating the API</h2><p>将 fork() 和 exec() 分开的设计似乎有一些反人类：我们创建一个新进程运行新程序需要两个系统调用。这样设计的真正目的是让我们有机会在 fork() 和 exec() 之间做一些有意思的事情。</p>
-<p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2005%20-%20cpu_api/p4.c">p4.c</a> 展示了一个重定向的例子。我们在 fork() 之后 exec() 之前关闭 stdout，再打开一个新的文件，这样新打开的文件的描述符就是 1 (stdout)，这是再 exec()，我们就实现了将标准输出重定向到文件。除了重定向，UNIX 的管道机制也是通过在 fork() 和 exec() 中间操作实现的。</p>
-<h2 id="5-5-Process-Control-And-Users"><a href="#5-5-Process-Control-And-Users" class="headerlink" title="5.5 Process Control And Users"></a>5.5 Process Control And Users</h2><p>除了 fork(), wait() 和 exec()，UNIX 系统中还有很多其他控制进程的 API，比如 kill() 用于给进程发送信号。信号机制可以向进程通知外部事件的发生，常见的信号有 SIGINT (interrupt，通常用于结束程序)，SIGTSTP (暂时挂起程序)，SIGSEGV (段错误) 等。</p>
-<p>既然信号的能力这么强，那么肯定不能让任意用户随便给别人的进程发送 SIGINT。你需要通过密码登录获取管理员权限，或者你本身是 root 用户，才能执行这些系统资源相关的操作。在用户态，你只能管理你自己的进程。</p>
-<h2 id="5-6-Useful-Tools"><a href="#5-6-Useful-Tools" class="headerlink" title="5.6 Useful Tools"></a>5.6 Useful Tools</h2><p>ps 命令可以查看当前活跃的进程。top 命令可以查看所有进程的详细信息。</p>
-<h2 id="5-7-Summary"><a href="#5-7-Summary" class="headerlink" title="5.7 Summary"></a>5.7 Summary</h2><p>略。</p>
 ]]></content>
       <categories>
         <category>WISC-CS537 Introduction to Operating Systems</category>
@@ -4905,6 +4881,30 @@ Blocked --> Ready: I/O Done</pre>
       <categories>
         <category>WISC-CS537 Introduction to Operating Systems</category>
         <category>Homework</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>OSTEP Chapter 05: Interlude: Process API</title>
+    <url>/2022/03/19/OSTEP/OSTEP%20Chapter%2005%20-%20Interlude%20-%20Process%20API/</url>
+    <content><![CDATA[<h2 id="5-1-The-fork-System-Call"><a href="#5-1-The-fork-System-Call" class="headerlink" title="5.1 The fork() System Call"></a>5.1 The <code>fork()</code> System Call</h2><p>fork() 系统调用会创建一个和当前进程完全相同的子进程，这两个进程除了 fork() 的返回值不同，其他完全相同。fork() 在父进程中返回子进程的进程号，在子进程中返回 0，这可以用于区分两个进程。</p>
+<p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2005%20-%20cpu_api/p1.c">p1.c</a> 展示了一个使用 fork() 的例子，其中 getpid() 函数可以获得当前进程的进程号。注意这个程序的运行结果是 non-deterministic 的：父进程和子进程谁会先输出，这取决于 OS 的调度器。现代操作系统的调度策略极其复杂，可以看<a href="https://linux.cn/article-7325-1.html">这篇文章</a>有一个大概的了解。<span id="more"></span></p>
+<h2 id="5-2-The-wait-System-Call"><a href="#5-2-The-wait-System-Call" class="headerlink" title="5.2 The wait() System Call"></a>5.2 The <code>wait()</code> System Call</h2><p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2005%20-%20cpu_api/p2.c">p2.c</a> 展示了一个使用 wait() 的例子，wait() 提供一种同步机制，保证了父进程在子进程结束之后再执行。如果父进程先被调度器选中，那么它执行 wait() 会被阻塞，直到子进程结束；如果子进程先被调度器选中，那么父进程执行 wait() 时看到子进程已经退出则会立刻返回。</p>
+<blockquote>
+<p><strong>Zombie Process</strong></p>
+<p>一个子进程如果已经退出但还没有被它的父进程 wait()，那它就是一个僵尸进程。内核保存了僵尸进程的一份 minimal 的信息，包括进程号、退出状态等，这样以后如果父进程 wait() 了，父进程就可以获取子进程的信息。</p>
+<p>被 wait() 过的僵尸进程会被从 process table 中移除。一个 zombie process 如果不被 wait，就会一直待在 process table 中，一旦内核的 process table 满了，就不能再创建新的进程。因此父进程应该及时清理自己的僵尸子进程。如果父进程退出了，那么它的僵尸子进程会被 init 进程 (或其他某个指定的进程) wait 掉。</p>
+</blockquote>
+<h2 id="5-3-Finally-The-exec-System-Call"><a href="#5-3-Finally-The-exec-System-Call" class="headerlink" title="5.3 Finally, The exec() System Call"></a>5.3 Finally, The <code>exec()</code> System Call</h2><p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2005%20-%20cpu_api/p3.c">p3.c</a> 展示了一个使用 exec() 的例子。exec() 传入一个可执行程序的文件名，它会将该文件的代码和数据加载到内存中覆盖当前的代码和数据，重新初始化堆区和栈，并跳转到新程序的入口开始执行。exec() 不创建新的进程，它只是重启当前的状态机。exec() 如果执行成功就不会返回。</p>
+<h2 id="5-4-Why-Motivating-the-API"><a href="#5-4-Why-Motivating-the-API" class="headerlink" title="5.4 Why? Motivating the API"></a>5.4 Why? Motivating the API</h2><p>将 fork() 和 exec() 分开的设计似乎有一些反人类：我们创建一个新进程运行新程序需要两个系统调用。这样设计的真正目的是让我们有机会在 fork() 和 exec() 之间做一些有意思的事情。</p>
+<p><a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2005%20-%20cpu_api/p4.c">p4.c</a> 展示了一个重定向的例子。我们在 fork() 之后 exec() 之前关闭 stdout，再打开一个新的文件，这样新打开的文件的描述符就是 1 (stdout)，这是再 exec()，我们就实现了将标准输出重定向到文件。除了重定向，UNIX 的管道机制也是通过在 fork() 和 exec() 中间操作实现的。</p>
+<h2 id="5-5-Process-Control-And-Users"><a href="#5-5-Process-Control-And-Users" class="headerlink" title="5.5 Process Control And Users"></a>5.5 Process Control And Users</h2><p>除了 fork(), wait() 和 exec()，UNIX 系统中还有很多其他控制进程的 API，比如 kill() 用于给进程发送信号。信号机制可以向进程通知外部事件的发生，常见的信号有 SIGINT (interrupt，通常用于结束程序)，SIGTSTP (暂时挂起程序)，SIGSEGV (段错误) 等。</p>
+<p>既然信号的能力这么强，那么肯定不能让任意用户随便给别人的进程发送 SIGINT。你需要通过密码登录获取管理员权限，或者你本身是 root 用户，才能执行这些系统资源相关的操作。在用户态，你只能管理你自己的进程。</p>
+<h2 id="5-6-Useful-Tools"><a href="#5-6-Useful-Tools" class="headerlink" title="5.6 Useful Tools"></a>5.6 Useful Tools</h2><p>ps 命令可以查看当前活跃的进程。top 命令可以查看所有进程的详细信息。</p>
+<h2 id="5-7-Summary"><a href="#5-7-Summary" class="headerlink" title="5.7 Summary"></a>5.7 Summary</h2><p>略。</p>
+]]></content>
+      <categories>
+        <category>WISC-CS537 Introduction to Operating Systems</category>
+        <category>Book Notes</category>
       </categories>
   </entry>
   <entry>
