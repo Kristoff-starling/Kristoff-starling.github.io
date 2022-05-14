@@ -1,4 +1,5 @@
-https://kristoff-starling.github.io/2022/05/11/NJU-OS/NJU-OS%20Lecture%2023%20-%20Storage%20Devices/
+https://kristoff-starling.github.io/2022/05/14/NJU-OS/NJU-OS%20Lecture%2024%20-%20IO%20Devices/
+https://kristoff-starling.github.io/2022/05/11/NJU-OS/NJU-OS%20Lecture%2023%20-%201Bit%20Storage/
 https://kristoff-starling.github.io/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/
 https://kristoff-starling.github.io/2022/04/28/NJU-OS/NJU-OS%20Lecture%2020%20-%20Scheduling/
 https://kristoff-starling.github.io/2022/04/25/NJU-OS/NJU-OS%20Lecture%2019%20-%20Context%20Switching/
