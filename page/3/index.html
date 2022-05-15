@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-count">79</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -198,6 +198,94 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/25/NJU-OS/NJU-OS%20Lecture%2011%20-%20Processes%20in%20Operating%20Systems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/03/25/NJU-OS/NJU-OS%20Lecture%2011%20-%20Processes%20in%20Operating%20Systems/" class="post-title-link" itemprop="url">NJU-OS Lecture 11: Processes in Operating Systems</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-03-25 00:00:00 / 修改时间：16:22:04" itemprop="dateCreated datePublished" datetime="2022-03-25T00:00:00+08:00">2022-03-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在 <code>thread-os.c</code> 中，操作系统启动后会初始化若干个线程 (的状态机)，或者说加载若干个程序。真正的操作系统启动后会创建第一个进程。如果查看 Linux 的源码，我们可以看到：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!try_to_run_init_process(<span class="string">&quot;/sbin/init&quot;</span>) ||</span><br><span class="line">	    !try_to_run_init_process(<span class="string">&quot;/etc/init&quot;</span>) ||</span><br><span class="line">	    !try_to_run_init_process(<span class="string">&quot;/bin/init&quot;</span>) ||</span><br><span class="line">	    !try_to_run_init_process(<span class="string">&quot;/bin/sh&quot;</span>))</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">panic(<span class="string">&quot;No working init found.  Try passing init= option to kernel. &quot;</span></span><br><span class="line">	      <span class="string">&quot;See Linux Documentation/admin-guide/init.rst for guidance.&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>内核会按照一个特定的顺序加载“第一个程序”，如果都无法加载，Linux kernel 会直接拒绝启动。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/25/NJU-OS/NJU-OS%20Lecture%2011%20-%20Processes%20in%20Operating%20Systems/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -977,93 +1065,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/03/11/NJU-OS/NJU-OS%20Lab%200%20-%20amgame/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/11/NJU-OS/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/03/11/NJU-OS/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/" class="post-title-link" itemprop="url">NJU-OS Lecture 08: Concurrent Bugs & Confrontation</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2022-03-11 00:00:00 / 修改时间：17:40:04" itemprop="dateCreated datePublished" datetime="2022-03-11T00:00:00+08:00">2022-03-11</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。</p>
-<h2 id="Defensive-Programming"><a href="#Defensive-Programming" class="headerlink" title="Defensive Programming"></a>Defensive Programming</h2><p>一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。</p>
-<p>assert() 虽然不一定能写得对，但如果 assert() 和代码出错的概率是独立的，那么写 assert() 就使得程序出错的概率降低了一个数量级。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/03/11/NJU-OS/NJU-OS%20Lecture%2008%20-%20Concurrent%20Bugs%20and%20Confrontation/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
