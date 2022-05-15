@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="AtCoder Beginner Contest 250 题解A. Adjacent Squares题面描述 传送门 在一个 $H\times W$ 的方格纸上指定一个格子 $(r,c)$，求方格纸上与该格子相邻的格子个数。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AtCoder Beginner Contest 250 题解">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/05/15/AtCoder%20Beginner%20Contest%20250%20%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="AtCoder Beginner Contest 250 题解A. Adjacent Squares题面描述 传送门 在一个 $H\times W$ 的方格纸上指定一个格子 $(r,c)$，求方格纸上与该格子相邻的格子个数。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-15T04:17:03.671Z">
+<meta property="article:author" content="starling">
+<meta property="article:tag" content="AtCoder">
+<meta property="article:tag" content="并查集">
+<meta property="article:tag" content="贪心">
+<meta property="article:tag" content="计算几何">
+<meta property="article:tag" content="哈希">
+<meta property="article:tag" content="two-pointers">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/05/15/AtCoder%20Beginner%20Contest%20250%20%E9%A2%98%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/05/15/AtCoder%20Beginner%20Contest%20250%20%E9%A2%98%E8%A7%A3/","path":"2022/05/15/AtCoder Beginner Contest 250 题解/","title":"AtCoder Beginner Contest 250 题解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>AtCoder Beginner Contest 250 题解 | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#AtCoder-Beginner-Contest-250-%E9%A2%98%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">AtCoder Beginner Contest 250 题解</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Adjacent-Squares"><span class="nav-number">1.1.</span> <span class="nav-text">A. Adjacent Squares</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3"><span class="nav-number">1.1.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Enlarged-Checker-Board"><span class="nav-number">1.2.</span> <span class="nav-text">B. Enlarged Checker Board</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-Adjacent-Swaps"><span class="nav-number">1.3.</span> <span class="nav-text">C. Adjacent Swaps</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-2"><span class="nav-number">1.3.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-2"><span class="nav-number">1.3.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#D-250-like-Number"><span class="nav-number">1.4.</span> <span class="nav-text">D. 250-like Number</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-3"><span class="nav-number">1.4.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-3"><span class="nav-number">1.4.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-Prefix-Equality"><span class="nav-number">1.5.</span> <span class="nav-text">E. Prefix Equality</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-4"><span class="nav-number">1.5.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-4"><span class="nav-number">1.5.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#F-One-Fourth"><span class="nav-number">1.6.</span> <span class="nav-text">F. One Fourth</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-5"><span class="nav-number">1.6.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-5"><span class="nav-number">1.6.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#G-Stonks"><span class="nav-number">1.7.</span> <span class="nav-text">G. Stonks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-6"><span class="nav-number">1.7.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-6"><span class="nav-number">1.7.2.</span> <span class="nav-text">题解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Ex-Trepassing-Takahashi"><span class="nav-number">1.8.</span> <span class="nav-text">Ex. Trepassing Takahashi</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E9%9D%A2%E6%8F%8F%E8%BF%B0-7"><span class="nav-number">1.8.1.</span> <span class="nav-text">题面描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%98%E8%A7%A3-7"><span class="nav-number">1.8.2.</span> <span class="nav-text">题解</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/05/15/AtCoder%20Beginner%20Contest%20250%20%E9%A2%98%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          AtCoder Beginner Contest 250 题解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2022-05-15 00:00:00 / 修改时间：12:17:03" itemprop="dateCreated datePublished" datetime="2022-05-15T00:00:00+08:00">2022-05-15</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="AtCoder-Beginner-Contest-250-题解"><a href="#AtCoder-Beginner-Contest-250-题解" class="headerlink" title="AtCoder Beginner Contest 250 题解"></a>AtCoder Beginner Contest 250 题解</h1><h2 id="A-Adjacent-Squares"><a href="#A-Adjacent-Squares" class="headerlink" title="A. Adjacent Squares"></a>A. Adjacent Squares</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc250/tasks/abc250_a">传送门</a></li>
+<li>在一个 $H\times W$ 的方格纸上指定一个格子 $(r,c)$，求方格纸上与该格子相邻的格子个数。</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="题解"><a href="#题解" class="headerlink" title="题解"></a>题解</h3><p>检查该方格是否贴四个边界即可。</p>
+<h2 id="B-Enlarged-Checker-Board"><a href="#B-Enlarged-Checker-Board" class="headerlink" title="B. Enlarged Checker Board"></a>B. Enlarged Checker Board</h2><h3 id="题面描述-1"><a href="#题面描述-1" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc250/tasks/abc250_b">传送门</a></li>
+<li>按照题目要求打印黑白相间的地砖。</li>
+</ul>
+<h3 id="题解-1"><a href="#题解-1" class="headerlink" title="题解"></a>题解</h3><p>模拟即可。</p>
+<h2 id="C-Adjacent-Swaps"><a href="#C-Adjacent-Swaps" class="headerlink" title="C. Adjacent Swaps"></a>C. Adjacent Swaps</h2><h3 id="题面描述-2"><a href="#题面描述-2" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc250/tasks/abc250_c">传送门</a></li>
+<li>有 $n$ 个球，第 $i$ 个上的数字是 $i$。现在有 $Q$ 次操作，每次操作会指定一个数字 $x$，我们要将写有数字 $x$ 的球和它右边的球交换位置 (如果该球是最右边的球则和它左边的球交换位置)，求最后的球的顺序。</li>
+<li>$n,Q\leq 2\times 10^5$。</li>
+</ul>
+<h3 id="题解-2"><a href="#题解-2" class="headerlink" title="题解"></a>题解</h3><p>我们动态维护每个球的位置，这样就可以 $O(1)$ 地完成一次交换操作。总时间复杂度 $O(n+Q)$。</p>
+<h2 id="D-250-like-Number"><a href="#D-250-like-Number" class="headerlink" title="D. 250-like Number"></a>D. 250-like Number</h2><h3 id="题面描述-3"><a href="#题面描述-3" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc250/tasks/abc250_d">传送门</a></li>
+<li>一个数 $x$ 是 250-like 的当且仅当 $x=p\cdot q^3$，其中 $p&lt;q$ 且 $p,q$ 均为质数。给定 $n$，求不超过 $n$ 的 250-like 的数的个数。</li>
+<li>$n\leq 10^{18}$。</li>
+</ul>
+<h3 id="题解-3"><a href="#题解-3" class="headerlink" title="题解"></a>题解</h3><p>考虑枚举质数 $q$，显然 $q\leq n^{\frac{1}{3}}$。然后我们只要计算 $\min(q,\lfloor\frac{n}{q}\rfloor)$ 以内有多少质数即可，我们可以提前筛好 $n^{\frac{1}{3}}$ 以内的质数来 $O(1)$ 地完成每个 $q$ 的计算。</p>
+<p>总时间复杂度 $O(n^{\frac{1}{3}})$。</p>
+<h2 id="E-Prefix-Equality"><a href="#E-Prefix-Equality" class="headerlink" title="E. Prefix Equality"></a>E. Prefix Equality</h2><h3 id="题面描述-4"><a href="#题面描述-4" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc250/tasks/abc250_e">传送门</a></li>
+<li>给定数列 $(a_1,\cdots,a_n)$ 和 $(b_1,\cdots, b_n)$。现有 $Q$ 个询问，每个询问形如 $(x,y)$，如果 $A$ 数列的前 $x$ 个构成的集合 (即无序、去重) $S_A$ 和 $B$ 数列的前 $y$ 个构成的集合 $S_B$ 相同则输出 <code>Yes</code> ，否则输出 <code>No</code>。</li>
+<li>$n,Q\leq 2\times 10^5$。</li>
+</ul>
+<h3 id="题解-4"><a href="#题解-4" class="headerlink" title="题解"></a>题解</h3><p>对于 $A$ 数列的第 $i$ 个数 $a_i$，记 $p_A(i)$ 为 $a_i$ 在 $B$ 中第一次出现的位置 (如果没有出现过则记为 $n+1$)。那么 $S_A\subseteq S_B$ 等价于 $\max(p_A(1),\cdots, p_A(x))\leq y$。类似地我们可以判断 $S_B\subseteq S_A$。我们可以借助哈希表线性地计算 $p_A$ 和 $p_B$ 并预处理前缀 max。</p>
+<p>总时间复杂度 $O(n+Q)$。</p>
+<h2 id="F-One-Fourth"><a href="#F-One-Fourth" class="headerlink" title="F. One Fourth"></a>F. One Fourth</h2><h3 id="题面描述-5"><a href="#题面描述-5" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc250/tasks/abc250_f">传送门</a></li>
+<li>给定一个平面直角坐标系中的凸 $n$ 边形，记该图形面积的 $1/4$ 为 $a$。现可以选择该图形的两个顶点作一条直线将其切成两块并从中选一块，记选的那块的面积为 $b$。求 $8|a-b|$ 的最小值。</li>
+</ul>
+<h3 id="题解-5"><a href="#题解-5" class="headerlink" title="题解"></a>题解</h3><p>将图形切成两半等价于我们选择一段连续的顶点并考察这些顶点构成的多边形。我们考虑枚举左侧顶点，并向后扫直到碰到加入后第一个大于等于 $1/4$ 的右侧顶点，容易发现随着左顶点的右移动，右侧顶点也会右移，所以利用 two-pointers 技术一遍扫过去就可以考虑到所有的顶点区间的情况。</p>
+<p>此题的难点在于融入了计算几何。我们可以通过叉积快速地计算新添加一个顶点/删去一个顶点后的面积变化 (多/少了一个三角形)。</p>
+<h2 id="G-Stonks"><a href="#G-Stonks" class="headerlink" title="G. Stonks"></a>G. Stonks</h2><h3 id="题面描述-6"><a href="#题面描述-6" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc250/tasks/abc250_g">传送门</a></li>
+<li>有 $n$ 天，第 $i$ 天的股票价格为 $P_i$。每天可以选择买一股，卖一股，或者什么都不做。求 $n$ 天后的最大收益。</li>
+<li>$n\leq 2\times 10^9$。</li>
+</ul>
+<h3 id="题解-6"><a href="#题解-6" class="headerlink" title="题解"></a>题解</h3><p>这道题的一个比较明显的解法是动态规划，但朴素的动态规划时间复杂度会达到 $O(n^2)$。我们之所以希望使用动态规划，是因为当前的决策会受到后面股票价格的影响——比如当前卖出可以获得一定的收益，但如果后面有更高价格的日子那么当前卖出就亏了。</p>
+<p>一个比较神奇的想法是：如果我们在第 $a$ 天买入，第 $b$ 天卖出，然后在第 $b$ 天买入，第 $c$ 天卖出，那么这两次买卖等价于在第 $a$ 天买入第 $c$ 天卖出。因此我们其实可以在能赚钱的时候无脑卖出，只要将当前卖出的股票再作为一个买入备选即可。</p>
+<p>因此我们可以贪心地解决这个问题：我们用一个优先队列维护当前可以选择买入的股票，然后第 $i$ 天我们检查用可买入的最便宜的股票，然后在当天卖出能否赚到钱，只要能赚到钱就做这次操作，然后将当天的价格作为一个买入备选。此外，当天本身也可以买股票，所以还要再放一个买入备选。</p>
+<p>总时间复杂度 $O(n\log n)$。</p>
+<h2 id="Ex-Trepassing-Takahashi"><a href="#Ex-Trepassing-Takahashi" class="headerlink" title="Ex. Trepassing Takahashi"></a>Ex. Trepassing Takahashi</h2><h3 id="题面描述-7"><a href="#题面描述-7" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc250/tasks/abc250_h">传送门</a></li>
+<li>给定一个 $n$ 个顶点 $m$ 条边的带权无向图，其中编号为 $1\cdots k$ 的顶点有屋子。现在有 $Q$ 次询问，第 $i$ 次询问给定 $x_i$, $y_i$ 和 $t_i$，问从 $x_i$ 号屋子能否走到 $y_i$ 号屋子。一个额外的限制是从一个屋子到另一个屋子途中走过的边权和不能超过 $t_i$。</li>
+<li>$n,m\leq 2\times 10^5$。</li>
+</ul>
+<h3 id="题解-7"><a href="#题解-7" class="headerlink" title="题解"></a>题解</h3><p>对于顶点 $i$，令 $d_i$ 表示顶点 $i$ 到最近的屋子的距离，然后我们重构一张图，对于边 $(a_i,b_i)$，令 $c_i’=c_i+d_{a_i}+d_{b_i}$。我们容易发现，对于一个询问 $x_i,y_i,t_i$，给出的答案是 yes 当且仅当在重构的图中我们可以只通过边权小于等于 $t_i$ 的边从 $x_i$ 走到 $y_i$：</p>
+<ul>
+<li><p>如果我们走了一条边 $c_i’&gt;t_i$，那么我们从一个屋子出发到 $a_i$，走到 $b_i$，再走到另一个屋子，这个路程必然超出了限制。</p>
+</li>
+<li><p>如果我们通过小于等于 $t_i$ 的边走出了一条路径，设这条路径为 $p_1,\cdots, p_k$，那么考虑如下行走过程：</p>
+<blockquote>
+<p>nearest house to $p_1$ –&gt; $p_1$ –&gt; $p_2$ –&gt; neareset house to $p_2$ –&gt; $p_2$ –&gt; $p_3$ –&gt; ……</p>
+</blockquote>
+<p>  每四个点一组，每一组的路程恰好对应了一个 $c_i’$，所以确实存在解。</p>
+</li>
+</ul>
+<p>因此我们可以将询问离线，按照 $t_i$ 递增的顺序处理询问，每次将边权小于等于 $t_i$ 的边 $c_i’$ 加入图，用并查集判断连通性即可。</p>
+<p>设 $n$ 和 $m$ 同阶，总时间复杂度 $O(n\log n)$。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AtCoder/" rel="tag"># AtCoder</a>
+              <a href="/tags/%E5%B9%B6%E6%9F%A5%E9%9B%86/" rel="tag"># 并查集</a>
+              <a href="/tags/%E8%B4%AA%E5%BF%83/" rel="tag"># 贪心</a>
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E5%87%A0%E4%BD%95/" rel="tag"># 计算几何</a>
+              <a href="/tags/%E5%93%88%E5%B8%8C/" rel="tag"># 哈希</a>
+              <a href="/tags/two-pointers/" rel="tag"># two-pointers</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/14/NJU-OS/NJU-OS%20Lecture%2024%20-%20IO%20Devices/" rel="prev" title="NJU-OS Lecture 24: I/O Devices">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 24: I/O Devices
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
