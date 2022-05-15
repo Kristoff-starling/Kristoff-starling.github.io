@@ -5640,7 +5640,7 @@ Blocked --> Ready: I/O Done</pre>
   </entry>
   <entry>
     <title>NJU-OS Lecture 22: OSLab Speedrun</title>
-    <url>/2022/05/15/NJU-OS/NJU-OS%20Lecture%2022%20-%20OSLab%20Speedrun/</url>
+    <url>/2022/05/04/NJU-OS/NJU-OS%20Lecture%2022%20-%20OSLab%20Speedrun/</url>
     <content><![CDATA[<h2 id="L1"><a href="#L1" class="headerlink" title="L1"></a>L1</h2><p>一把大锁保平安策略：全局用一把锁，把所有需要保护的代码都用 <code>atomic &#123;&#125;</code> 框起来。</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> atomic \</span></span><br><span class="line"><span class="meta">	for (int __i = (lock(), 0); i &lt; 1; unlock(), __i++)</span></span><br></pre></td></tr></table></figure>
 
