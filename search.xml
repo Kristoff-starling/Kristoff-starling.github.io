@@ -5562,7 +5562,7 @@ Blocked --> Ready: I/O Done</pre>
   <entry>
     <title>AtCoder Beginner Contest 250 题解</title>
     <url>/2022/05/15/AtCoder%20Beginner%20Contest%20250%20%E9%A2%98%E8%A7%A3/</url>
-    <content><![CDATA[<h1 id="AtCoder-Beginner-Contest-250-题解"><a href="#AtCoder-Beginner-Contest-250-题解" class="headerlink" title="AtCoder Beginner Contest 250 题解"></a>AtCoder Beginner Contest 250 题解</h1><h2 id="A-Adjacent-Squares"><a href="#A-Adjacent-Squares" class="headerlink" title="A. Adjacent Squares"></a>A. Adjacent Squares</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
+    <content><![CDATA[<h2 id="A-Adjacent-Squares"><a href="#A-Adjacent-Squares" class="headerlink" title="A. Adjacent Squares"></a>A. Adjacent Squares</h2><h3 id="题面描述"><a href="#题面描述" class="headerlink" title="题面描述"></a>题面描述</h3><ul>
 <li><a href="https://atcoder.jp/contests/abc250/tasks/abc250_a">传送门</a></li>
 <li>在一个 $H\times W$ 的方格纸上指定一个格子 $(r,c)$，求方格纸上与该格子相邻的格子个数。</li>
 </ul>
