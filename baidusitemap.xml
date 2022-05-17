@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/05/17/NJU-OS/NJU-OS%20Lecture%2025%20-%20Device%20Drivers/</loc>
+    <lastmod>2022-05-17</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/05/04/NJU-OS/NJU-OS%20Lecture%2022%20-%20OSLab%20Speedrun/</loc>
     <lastmod>2022-05-15</lastmod>
   </url>
