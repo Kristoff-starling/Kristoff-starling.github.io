@@ -5691,7 +5691,7 @@ Blocked --> Ready: I/O Done</pre>
       </categories>
   </entry>
   <entry>
-    <title># NJU-OS Lecture 25: Device Drivers</title>
+    <title>NJU-OS Lecture 25: Device Drivers</title>
     <url>/2022/05/17/NJU-OS/NJU-OS%20Lecture%2025%20-%20Device%20Drivers/</url>
     <content><![CDATA[<p>在操作系统眼里，I/O 设备 = 一组寄存器 + 一个控制协议。不同设备的控制协议千差万别，如果让软件直接和这些设备寄存器打交道，即使操作系统仔细地管理好访问权限，应用程序也很容易出错。所以我们的想法是：对不同的设备做一个抽象，使得上层应用可以通过尽可能统一的接口来访问设备。<span id="more"></span></p>
 <h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>I/O 设备最基本的需求就是 read 和 write。UNIX 世界里的设备通常分为两种：</p>
