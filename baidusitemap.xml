@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/05/21/NJU-OS/NJU-OS%20Lecture%2026%20-%20File%20System%20API/</loc>
+    <lastmod>2022-05-21</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/05/17/NJU-OS/NJU-OS%20Lecture%2025%20-%20Device%20Drivers/</loc>
     <lastmod>2022-05-17</lastmod>
   </url>
