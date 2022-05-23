@@ -22,27 +22,27 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="一个多线程程序会有多个执行流，即有好几个 PC 并发&#x2F;并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。 虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为">
+<meta name="description" content="数据结构课的一些潜藏的假设：  random access memory，word addressing (不同于磁盘，磁盘是以块为单位访问的) load&#x2F;store 指令和计算指令执行的代价都是 $O(1)$。  在块设备中，即使访问一个 byte 也需要将它所在的一整个 block 拿出来，因此内存中的数据结构用在磁盘上会造成极大的性能问题。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OSTEP Chapter 26: Concurrency: An Introduction">
-<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/26/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/index.html">
+<meta property="og:title" content="NJU-OS Lecture 27: FAT and UNIX File System">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/05/23/NJU-OS/NJU-OS%20Lecture%2027%20-%20FAT%20and%20UNIX%20File%20System/index.html">
 <meta property="og:site_name" content="starling的小屋">
-<meta property="og:description" content="一个多线程程序会有多个执行流，即有好几个 PC 并发&#x2F;并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。 虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为">
+<meta property="og:description" content="数据结构课的一些潜藏的假设：  random access memory，word addressing (不同于磁盘，磁盘是以块为单位访问的) load&#x2F;store 指令和计算指令执行的代价都是 $O(1)$。  在块设备中，即使访问一个 byte 也需要将它所在的一整个 block 拿出来，因此内存中的数据结构用在磁盘上会造成极大的性能问题。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-02-25T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-03-31T08:18:16.952Z">
+<meta property="article:published_time" content="2022-05-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-23T13:26:26.228Z">
 <meta property="article:author" content="starling">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/26/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/">
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/05/23/NJU-OS/NJU-OS%20Lecture%2027%20-%20FAT%20and%20UNIX%20File%20System/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/26/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/","path":"2022/02/26/OSTEP/OSTEP Chapter 26 - Concurrency An Introduction/","title":"OSTEP Chapter 26: Concurrency: An Introduction"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/05/23/NJU-OS/NJU-OS%20Lecture%2027%20-%20FAT%20and%20UNIX%20File%20System/","path":"2022/05/23/NJU-OS/NJU-OS Lecture 27 - FAT and UNIX File System/","title":"NJU-OS Lecture 27: FAT and UNIX File System"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>OSTEP Chapter 26: Concurrency: An Introduction | starling的小屋</title>
+<title>NJU-OS Lecture 27: FAT and UNIX File System | starling的小屋</title>
   
 
 
@@ -148,7 +148,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#26-1-Why-Use-Threads"><span class="nav-number">1.</span> <span class="nav-text">26.1 Why Use Threads?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-2-An-Example-Thread-Creation"><span class="nav-number">2.</span> <span class="nav-text">26.2 An Example: Thread Creation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-3-Why-It-Gets-Worse-Shared-Data"><span class="nav-number">3.</span> <span class="nav-text">26.3 Why It Gets Worse: Shared Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-4-The-Heart-Of-The-Problem-Uncontrolled-Scheduling"><span class="nav-number">4.</span> <span class="nav-text">26.4 The Heart Of The Problem: Uncontrolled Scheduling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-5-The-Wish-For-Atomicity"><span class="nav-number">5.</span> <span class="nav-text">26.5 The Wish For Atomicity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-6-One-More-Problem-Waiting-For-Another"><span class="nav-number">6.</span> <span class="nav-text">26.6 One More Problem: Waiting For Another</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#26-7-Summary-Why-in-OS-Class"><span class="nav-number">7.</span> <span class="nav-text">26.7 Summary: Why in OS Class?</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#File-Allocation-Table-FAT"><span class="nav-number">1.</span> <span class="nav-text">File Allocation Table (FAT)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ext2-Unix-File-System"><span class="nav-number">2.</span> <span class="nav-text">ext2&#x2F;Unix File System</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -213,7 +213,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/26/OSTEP/OSTEP%20Chapter%2026%20-%20Concurrency%20An%20Introduction/">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/05/23/NJU-OS/NJU-OS%20Lecture%2027%20-%20FAT%20and%20UNIX%20File%20System/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -226,7 +226,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          OSTEP Chapter 26: Concurrency: An Introduction
+          NJU-OS Lecture 27: FAT and UNIX File System
         </h1>
 
         <div class="post-meta-container">
@@ -236,27 +236,21 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
+      
 
-      <time title="创建时间：2022-02-26 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-26T00:00:00+08:00">2022-02-26</time>
+      <time title="创建时间：2022-05-23 00:00:00 / 修改时间：21:26:26" itemprop="dateCreated datePublished" datetime="2022-05-23T00:00:00+08:00">2022-05-23</time>
     </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-03-31 16:18:16" itemprop="dateModified" datetime="2022-03-31T16:18:16+08:00">2022-03-31</time>
-      </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">WISC-CS537 Introduction to Operating Systems</span></a>
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
         </span>
           ，
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/Book-Notes/" itemprop="url" rel="index"><span itemprop="name">Book Notes</span></a>
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
         </span>
     </span>
 
@@ -277,38 +271,37 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>一个多线程程序会有多个执行流，即有好几个 PC 并发/并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。</p>
-<p>虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为 thread-local storage。</p>
-<span id="more"></span>
-
-<h2 id="26-1-Why-Use-Threads"><a href="#26-1-Why-Use-Threads" class="headerlink" title="26.1 Why Use Threads?"></a>26.1 Why Use Threads?</h2><p>使用线程至少有以下两点好处：</p>
+        <p>数据结构课的一些潜藏的假设：</p>
 <ul>
-<li>提高并行度。在一个多核处理器上，我们可以让多个线程每个占据一个 CPU 核，分摊一部分工作，从而达到并行提速的效果。</li>
-<li>避免 I/O 操作阻塞程序。如果一个线程在等待 I/O 操作，CPU 可以通过线程切换让别的线程上 CPU 工作，这样就实现了等 I/O 和做其他事情同时进行。</li>
+<li>random access memory，word addressing (不同于磁盘，磁盘是以块为单位访问的)</li>
+<li>load/store 指令和计算指令执行的代价都是 $O(1)$。</li>
 </ul>
-<h2 id="26-2-An-Example-Thread-Creation"><a href="#26-2-An-Example-Thread-Creation" class="headerlink" title="26.2 An Example: Thread Creation"></a>26.2 An Example: Thread Creation</h2><p><a href="">t0.c</a> 中创建了两个进程并让它们打印不同的内容。在多线程程序中，各个线程执行的顺序是不确定的：先被创建的进程可能会后执行；一个线程被创建了之后可能在 wait 它时才执行，也可能会立即执行，然后 wait 时立即返回 etc.</p>
-<h2 id="26-3-Why-It-Gets-Worse-Shared-Data"><a href="#26-3-Why-It-Gets-Worse-Shared-Data" class="headerlink" title="26.3 Why It Gets Worse: Shared Data"></a>26.3 Why It Gets Worse: Shared Data</h2><p><a href="">t1.c</a> 中创建了两个线程，两个线程都对共享变量进行 N 次 +1，在 N 较大时可以观测到共享变量的结果小于 2N。</p>
-<blockquote>
-<p><strong>Thread-local Variables</strong></p>
-<p>在线程调用的函数里定义的变量都会是 thread local 的变量。<code>t1.c</code> 中打印了局部变量 i 的地址，可以看到不同的线程打印出的地址不一样 (在各自的线程栈上)。</p>
-<p>在函数体外，用 <code>__thread</code> 修饰的变量也是 thread local 的。</p>
-</blockquote>
-<blockquote>
-<p><strong>Valgrind</strong></p>
-<p>Valgrind 中的 memchecker 是强大的内存检测工具。编译好一个文件 <code>proc.c</code> 后用 <code>valgrind ./proc</code> 执行，可以检测 memory leak, use after free 等问题。</p>
-</blockquote>
-<h2 id="26-4-The-Heart-Of-The-Problem-Uncontrolled-Scheduling"><a href="#26-4-The-Heart-Of-The-Problem-Uncontrolled-Scheduling" class="headerlink" title="26.4 The Heart Of The Problem: Uncontrolled Scheduling"></a>26.4 The Heart Of The Problem: Uncontrolled Scheduling</h2><p><code>counter ++</code> 这条语句在汇编层面是三条指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov (addr), %eax</span><br><span class="line">add $0x1, %eax</span><br><span class="line">mov %eax, (addr)</span><br></pre></td></tr></table></figure>
+<p>在块设备中，即使访问一个 byte 也需要将它所在的一整个 block 拿出来，因此内存中的数据结构用在磁盘上会造成极大的性能问题。<span id="more"></span></p>
+<p>块设备提供的设备抽象：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">block</span> <span class="title">blocks</span>[<span class="title">NBLK</span>];</span> <span class="comment">// 磁盘</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bread</span><span class="params">(<span class="keyword">int</span> id, struct block *buf)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">memcpy</span>(buf, &amp;blocks[id], <span class="keyword">sizeof</span>(struct block));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bwrite</span><span class="params">(<span class="keyword">int</span> id, <span class="keyword">const</span> struct block *buf)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">memcpy</span>(&amp;blocks[id], buf, <span class="keyword">sizeof</span>(struct block));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>其中 <code>addr</code> 是 counter 变量的内存地址。如果两个线程轮流执行汇编语句，那么它们各执行一次 +1 后，事实上 counter 只加了 1,并没有 +2。</p>
-<p>我们称这两个线程触发了竞争条件 (race condition)，准确说是一次数据竞争。导致这一竞争的代码称为临界区域 (critical section)。我们希望实现一种互斥机制，使得一个线程执行临界区域代码时不会被另一个线程打断。</p>
-<h2 id="26-5-The-Wish-For-Atomicity"><a href="#26-5-The-Wish-For-Atomicity" class="headerlink" title="26.5 The Wish For Atomicity"></a>26.5 The Wish For Atomicity</h2><p>我们希望有这样的一条原子指令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">momory-add (addr), 0x1</span><br></pre></td></tr></table></figure>
+<p>bread() 将磁盘中的一个块拉到内存里，bwrite() 将内存中的一个块写入磁盘。</p>
+<p>我们的文件系统在 bread()/bwrite() 上一层层抽象出来：</p>
+<ul>
+<li>我们可以在 read/write 上实现两个 API：balloc() 和 bfree()，这样我们就把整个磁盘中所有的块管理了起来。</li>
+<li>在此基础上我们可以实现一个文件数据结构，它向上呈现一个可以随机访问、修改以及变长的 byte array (C++中的 vector 容器)，向下使用 balloc()/bfree() 申请 block 并把它们串起来。</li>
+<li>我们可以在文件的基础上实现目录：目录本身也是一个特殊的文件 (字节序列)，目录文件中存放了它里面有哪些文件以及它们的位置索引 (将 <code>vector&lt;char&gt;</code> 当作 <code>vector&lt;dir_entry&gt;</code> 来解读)。</li>
+</ul>
+<h2 id="File-Allocation-Table-FAT"><a href="#File-Allocation-Table-FAT" class="headerlink" title="File Allocation Table (FAT)"></a>File Allocation Table (FAT)</h2><p>在计算机使用软盘作为存储设备的年代，我们要在很少的存储空间上实现文件系统，因此链表是不二之选。关于链表，我们有以下两种设计：</p>
+<ul>
+<li><p>数据结构课上的经典设计：让每个块有数据和 next 指针两部分：</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">block</span> &#123;</span></span><br><span class="line">   	<span class="keyword">char</span> data[NBLOCK];</span><br><span class="line">    <span class="keyword">void</span> *next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>可以一下子帮我们完成 +1 操作。这里的原子性指的是：操作在执行过程中不会被中途打断。这个操作是一个最小的单元，它要么被完全执行了，要么没有被执行  (all or none)，不会在某时刻处于执行了一半的状态。</p>
-<p>将若干个操作打包成一个原子指令的过程我们称为一个交易 (transaction)。但硬件不能允许我们无限制地添加原子指令。我们要实现的是一种同步机制，它可以保证多个线程以一种可控的方式进入临界区域，从而使得执行正确。</p>
-<h2 id="26-6-One-More-Problem-Waiting-For-Another"><a href="#26-6-One-More-Problem-Waiting-For-Another" class="headerlink" title="26.6 One More Problem: Waiting For Another"></a>26.6 One More Problem: Waiting For Another</h2><p>在某些情境下，一个线程需要等待某件事情做好了才能继续进行，比如等待 I/O 操作完成。操作系统不仅要支持线程之间的同步，还要支持在某些条件下挂起/唤醒线程，这会通过条件变量 (condition variables) 来实现。</p>
-<h2 id="26-7-Summary-Why-in-OS-Class"><a href="#26-7-Summary-Why-in-OS-Class" class="headerlink" title="26.7 Summary: Why in OS Class?"></a>26.7 Summary: Why in OS Class?</h2><p>操作系统本身也是一个并发程序。如果有多个程序使用 write() 系统调用，那么操作系统就必须非常小心地处理内核中和 write() 有关的并发数据结构。</p>
+<p>  这是一个很自然的想法，但有一些缺陷：比如每个 block 都有一点空间要用来存储指针，所以数据的对齐会不太好。一个更致命的缺陷是：我们在块设备上并不能 $O(1)$ 地去访问 next 指针，想要读取 next 我们要把整个 block 读出来。如果我们要执行一个 <code>lseek(SEEK_END)</code>，我们得把整个文件读一遍，这非常糟糕，而且无法克服。</p>
+</li>
+<li><p>我们花费开头的几个 block，把所有的 next 指针全部存储在这些 block 中，后面的 block 专门存储数据。这个设计就非常好地利用了数据访问的局部性：当我们在随机访问一个文件是，我们需要快速通过 next 指针跳转，这种设计将 next 指针集中存放在一起，有利于提高访问效率。</p>
+<p>  但这个设计在数据可靠性方面有比较大的问题：一方面，所有的 next 指针都存放在开头的几个 block 内，一旦这些 block 损坏，整个文件系统就完全损坏了 (每个文件的 block 链表都完全断开)，单个 block 损坏对全局的影响过大：另一方面，由于我们经常要 lseek，所以存放 next 指针的 block 又恰恰是我们读写最频繁的区域，也就是说它们损坏的几率要远高于其他 block。不过这个问题不是完全不可解决的：我们可以备份一些 next 指针数组在磁盘的其他地方，并准备一些应急预案。</p>
+<p>  这个磁盘开头集中存放 next 指针的 block，就叫做 file allocation table (FAT)。</p>
+</li>
+</ul>
+<p>若要了解 FAT 文件系统的细节，最好的方法便是 RTFM。<a target="_blank" rel="noopener" href="http://jyywiki.cn/pages/OS/manuals/MSFAT-spec.pdf">这里</a>有 FAT 的手册。</p>
+<h2 id="ext2-Unix-File-System"><a href="#ext2-Unix-File-System" class="headerlink" title="ext2/Unix File System"></a>ext2/Unix File System</h2><p>FAT 使用最简单的链表来管理每个文件的 data block，这使得大文件的随机访问比较慢。ext2 的设计一部分解决了这个问题：ext2 中的每个文件都有一个 inode：inode 存储了每个文件的 metadata，比如文件的大小、名称等，inode 会有一个区域叫做 direct block，这样对于小文件，其 data block 可以直接放在 direct block 里，对于大文件，其 data block 可以用类似页表的方式组织起来，这样随机访问效率非常高。</p>
+<p>所有文件的 inode 在磁盘上统一连续存储，这使得 inode 的索引非常方便，因此我们的目录文件只需要存储文件名到 inode 编号的 key-value mapping 即可。</p>
 
     </div>
 
@@ -322,14 +315,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/02/26/OSTEP/OSTEP%20Homework%2026/" rel="prev" title="OSTEP Chapter 26 - Homework">
-                  <i class="fa fa-chevron-left"></i> OSTEP Chapter 26 - Homework
+                <a href="/2022/05/21/NJU-OS/NJU-OS%20Lecture%2026%20-%20File%20System%20API/" rel="prev" title="NJU-OS Lecture 26: File System API">
+                  <i class="fa fa-chevron-left"></i> NJU-OS Lecture 26: File System API
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/02/28/Stack-smashing%20Attack%20-%20An%20Introduction/" rel="next" title="Stack-smashing Attack: An Introduction">
-                  Stack-smashing Attack: An Introduction <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
