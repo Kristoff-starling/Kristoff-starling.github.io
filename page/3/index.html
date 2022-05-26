@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">82</span>
+          <span class="site-state-item-count">83</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -198,6 +198,99 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/04/06/NJU-OS/NJU-OS%20Lab%201%20-%20pmm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/04/06/NJU-OS/NJU-OS%20Lab%201%20-%20pmm/" class="post-title-link" itemprop="url">NJU-OS Lab 1: Physical Memory Manager</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-04-06 00:00:00" itemprop="dateCreated datePublished" datetime="2022-04-06T00:00:00+08:00">2022-04-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-25 18:12:33" itemprop="dateModified" datetime="2022-04-25T18:12:33+08:00">2022-04-25</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lab-Reports/" itemprop="url" rel="index"><span itemprop="name">Lab Reports</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。在技术上有如下要点：</p>
+<ul>
+<li><p>维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/04/06/NJU-OS/NJU-OS%20Lab%201%20-%20pmm/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -975,91 +1068,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/03/19/OSTEP/OSTEP%20Chapter%2005%20-%20Interlude%20-%20Process%20API/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/03/17/NJU-OS/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/03/17/NJU-OS/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/" class="post-title-link" itemprop="url">NJU-OS Lecture 09: State Machine of OS</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2022-03-17 00:00:00 / 修改时间：18:00:34" itemprop="dateCreated datePublished" datetime="2022-03-17T00:00:00+08:00">2022-03-17</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="Bare-metal-amp-Software"><a href="#Bare-metal-amp-Software" class="headerlink" title="Bare-metal &amp; Software"></a>Bare-metal &amp; Software</h2><p>数字电路本身就是一个巨大的状态机。硬件厂商会保证 CPU reset 后处理器处在一个确定的状态，各个单元的固定的值会写在手册中。以 x86 为例，手册规定了 CPU reset 后 rip 的值会是 0xfff0，EFLAGS 的值为 0x2，当前硬件运行在 16-bit 模式中，不响应中断。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/03/17/NJU-OS/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>

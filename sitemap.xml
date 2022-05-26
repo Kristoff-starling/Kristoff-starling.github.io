@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://kristoff-starling.github.io/2022/05/26/NJU-OS/NJU-OS%20Lecture%2028%20-%20Reliability%20of%20Persistent%20Storage/</loc>
+    
+    <lastmod>2022-05-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://kristoff-starling.github.io/2022/05/23/NJU-OS/NJU-OS%20Lecture%2027%20-%20FAT%20and%20UNIX%20File%20System/</loc>
     
     <lastmod>2022-05-23</lastmod>

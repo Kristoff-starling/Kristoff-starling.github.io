@@ -1,3 +1,4 @@
+https://kristoff-starling.github.io/2022/05/26/NJU-OS/NJU-OS%20Lecture%2028%20-%20Reliability%20of%20Persistent%20Storage/
 https://kristoff-starling.github.io/2022/05/23/NJU-OS/NJU-OS%20Lecture%2027%20-%20FAT%20and%20UNIX%20File%20System/
 https://kristoff-starling.github.io/2022/05/21/NJU-OS/NJU-OS%20Lecture%2026%20-%20File%20System%20API/
 https://kristoff-starling.github.io/2022/05/17/NJU-OS/NJU-OS%20Lecture%2025%20-%20Device%20Drivers/
