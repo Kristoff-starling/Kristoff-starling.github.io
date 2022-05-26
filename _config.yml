@@ -3,7 +3,7 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: starling的算法笔记
+title: starling的小屋
 subtitle: ''
 description: ''
 keywords:
@@ -13,7 +13,7 @@ timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
+url: https://kristoff-starling.github.io
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
@@ -28,7 +28,7 @@ archive_dir: archives
 category_dir: categories
 code_dir: downloads/code
 i18n_dir: :lang
-skip_render:
+skip_render: [demo/**]
 
 # Writing
 new_post_name: :title.md # File name of new posts
@@ -102,7 +102,25 @@ theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: git
-  repo:
+  - type: git
+    repo: git@github.com:Kristoff-starling/Kristoff-starling.github.io.git
     github: git@github.com:Kristoff-starling/Kristoff-starling.github.io.git
-  branch: master
+    branch: master
+  - type: baidu_url_submitter
+
+baidusitemap:
+  path: baidusitemap.xml
+  
+baidu_url_submit:
+  count: 100
+  host: https://kristoff-starling.github.io
+  token: BcMBvyRUqlcy3uxU
+  path: baidu_urls.txt
+
+# Searching
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000
+
