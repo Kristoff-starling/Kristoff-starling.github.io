@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/06/01/NJU-OS/NJU-OS%20Lecture%2029%20-%20Xv6%20File%20System%20Implementation/</loc>
+    <lastmod>2022-06-01</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/02/16/OSTEP/OSTEP%20Chapter%2036%20-%20IO%20Devices/</loc>
     <lastmod>2022-05-28</lastmod>
   </url>

@@ -5954,4 +5954,42 @@ Blocked --> Ready: I/O Done</pre>
         <category>Book Notes</category>
       </categories>
   </entry>
+  <entry>
+    <title>NJU-OS Lecture 29: Xv6 File System Implementation</title>
+    <url>/2022/06/01/NJU-OS/NJU-OS%20Lecture%2029%20-%20Xv6%20File%20System%20Implementation/</url>
+    <content><![CDATA[<h2 id="Review"><a href="#Review" class="headerlink" title="Review"></a>Review</h2><p>文件系统 = 图书馆</p>
+<ul>
+<li>目录：图书馆操作，mkdir, rmdir, link, unlink etc.</li>
+<li>文件：图书，read, write, mmap etc.</li>
+<li>文件描述符 (offset)：书签，lseek etc.</li>
+</ul>
+<span id="more"></span>
+
+<p>FAT：</p>
+<table>
+<thead>
+<tr>
+<th>metadata</th>
+<th>FAT</th>
+<th>FAT</th>
+<th>data clusters</th>
+</tr>
+</thead>
+</table>
+<p>FAT 区域存放文件链表的 next 指针。FAT 的一个缺点在于一个文件的信息散落在磁盘的各个地方。</p>
+<p>UNIX：</p>
+<p>磁盘中的一个区域存放所有文件的 inode。inode 里包括文件的几乎所有信息 (除了所有的 data block 以一个类页表的方式存储，inode 里存放了“页表”的根)，更好地利用了数据的 locality。</p>
+<h2 id="mkfs-mkfs-c"><a href="#mkfs-mkfs-c" class="headerlink" title="/mkfs/mkfs.c"></a><code>/mkfs/mkfs.c</code></h2><p>mkfs 的代码写的非常琐碎。RTFSC 的优雅姿势为：读代码的执行比读代码容易。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># trace.py</span></span><br><span class="line">TRACED = <span class="string">&#x27;bwrite balloc ialloc iappend rinode winode rsect wsect&#x27;</span>.split()</span><br><span class="line">IGNORE = <span class="string">&#x27;ip xp buf&#x27;</span>.split()</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">trace</span>(<span class="params">gdb.Breakpoint</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">stop</span>(<span class="params">self</span>):</span></span><br><span class="line">        f, bt = gdb.selected_frame(), []</span><br><span class="line">        <span class="keyword">while</span> f <span class="keyword">and</span> f.is_valid():</span><br><span class="line">            <span class="keyword">if</span> (name := f.name()) <span class="keyword">in</span> TRACED:</span><br><span class="line">                lvars = [<span class="string">f&#x27;<span class="subst">&#123;sym.name&#125;</span>=<span class="subst">&#123;sym.value(f)&#125;</span>&#x27;</span></span><br><span class="line">                    <span class="keyword">for</span> sym <span class="keyword">in</span> f.block()</span><br><span class="line">                    <span class="keyword">if</span> sym.is_argument <span class="keyword">and</span> sym.name <span class="keyword">not</span> <span class="keyword">in</span> IGNORE]</span><br><span class="line">                bt.append(<span class="string">f&#x27;\033[32m<span class="subst">&#123;name&#125;</span>\033[0m(<span class="subst">&#123;<span class="string">&quot;, &quot;</span>.join(lvars)&#125;</span>)&#x27;</span>)</span><br><span class="line">            f = f.older()</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&#x27;    &#x27;</span> * (<span class="built_in">len</span>(bt) - <span class="number">1</span>) + bt[<span class="number">0</span>])</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span> <span class="comment"># won&#x27;t stop at this breakpoint</span></span><br><span class="line"></span><br><span class="line">gdb.execute(<span class="string">&#x27;set prompt off&#x27;</span>)</span><br><span class="line">gdb.execute(<span class="string">&#x27;set pagination off&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> fn <span class="keyword">in</span> TRACED:</span><br><span class="line">    trace(fn)</span><br><span class="line">gdb.execute(<span class="string">&#x27;run fs.img README user/_ls&#x27;</span>)</span><br><span class="line">gdb.execute(<span class="string">&#x27;quit&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上面的一段代码可以帮我们自动在 <code>mkfs.c</code> 中比较重要的 API 函数上打断点，并追踪栈帧打印函数调用链和关键参数。通过阅读 <code>mfks.c</code> 的执行过程，我们可以更快地了解 mfks 大致做了哪些事情。</p>
+<h2 id="Buffer-Cache"><a href="#Buffer-Cache" class="headerlink" title="Buffer Cache"></a>Buffer Cache</h2><p>内存中的 buffer cache 是磁盘的 cache，所有的读写操作都会经过 buffer cache，buffer cache 提供了和磁盘一样的接口 bread/bwrite，这样反复的读取/反复的写入不用每次都与磁盘交互，提高了效率。</p>
+<p>具体的代码细节见 Xv6 源码解读手册。</p>
+<h2 id="Log"><a href="#Log" class="headerlink" title="Log"></a>Log</h2><p>Xv6 的 logging layer 保证了崩溃一致性。具体的代码细节可以见 Xv6 源码解读手册。</p>
+]]></content>
+      <categories>
+        <category>NJU-22020230 Operating Systems</category>
+        <category>Lecture Notes</category>
+      </categories>
+  </entry>
 </search>
