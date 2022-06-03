@@ -157,7 +157,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">85</span>
+          <span class="site-state-item-count">86</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -267,6 +267,97 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/06/01/NJU-OS/NJU-OS%20Lecture%2029%20-%20Xv6%20File%20System%20Implementation/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/06/01/NJU-OS/NJU-OS%20Lecture%2030%20-%20Modern%20Storage%20System/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/06/01/NJU-OS/NJU-OS%20Lecture%2030%20-%20Modern%20Storage%20System/" class="post-title-link" itemprop="url">NJU-OS Lecture 30: Modern Storage System</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-01 00:00:00" itemprop="dateCreated datePublished" datetime="2022-06-01T00:00:00+08:00">2022-06-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-06-03 18:30:26" itemprop="dateModified" datetime="2022-06-03T18:30:26+08:00">2022-06-03</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="Abilities-and-Limitations-of-FS"><a href="#Abilities-and-Limitations-of-FS" class="headerlink" title="Abilities and Limitations of FS"></a>Abilities and Limitations of FS</h2><p>OJ 最简单的实现方式可以就是一个文件系统。比如 OS2022 课程的学生名单存放在 <code>/OS2022/students.csv</code> 中，向 Lab1 提交的代码以一个压缩包的形式存放在 <code>/OS2022/L1/studentid/xxxxxxxx.tar.bz2</code> 中。OJ 的前端和后端部署在不同的机器上，后端机器通过 ssh 连接前端，扫描文件系统寻找符合格式的提交拉回后台，评测以后发送一个 <code>.tar.bz2.result</code> 文件给前端，前端就可以将评测结果显示出来。
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/06/01/NJU-OS/NJU-OS%20Lecture%2030%20-%20Modern%20Storage%20System/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -959,92 +1050,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/05/04/NJU-OS/NJU-OS%20Lecture%2022%20-%20OSLab%20Speedrun/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="starling">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="starling的小屋">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/" class="post-title-link" itemprop="url">NJU-OS Lecture 21: OS Design</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-      
-
-      <time title="创建时间：2022-05-03 00:00:00 / 修改时间：12:31:32" itemprop="dateCreated datePublished" datetime="2022-05-03T00:00:00+08:00">2022-05-03</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">NJU-22020230 Operating Systems</span></a>
-        </span>
-          ，
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/NJU-22020230-Operating-Systems/Lecture-Notes/" itemprop="url" rel="index"><span itemprop="name">Lecture Notes</span></a>
-        </span>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>操作系统的设计：一组对象+访问对象的 API；操作系统的实现：一个 C 程序完成上面的设计</p>
-<p>我们关心的问题是：操作系统到底应该提供什么样的对象和 API？
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/05/03/NJU-OS/NJU-OS%20Lecture%2021%20-%20OS%20Design/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
