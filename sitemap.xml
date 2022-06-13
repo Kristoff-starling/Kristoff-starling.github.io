@@ -2,6 +2,24 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://kristoff-starling.github.io/article/index.html</loc>
+    
+    <lastmod>2022-06-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://kristoff-starling.github.io/article/JPN/HarukiMurakami/BurningBarn.html</loc>
+    
+    <lastmod>2022-06-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://kristoff-starling.github.io/2022/06/14/NJU-OS/FAT%20Specification%20-%20Notes/</loc>
     
     <lastmod>2022-06-13</lastmod>
@@ -410,15 +428,6 @@
     <loc>https://kristoff-starling.github.io/2022/03/17/NJU-OS/NJU-OS%20Lecture%2009%20-%20State%20Machine%20of%20OS/</loc>
     
     <lastmod>2022-03-17</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://kristoff-starling.github.io/article/index.html</loc>
-    
-    <lastmod>2022-03-15</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
