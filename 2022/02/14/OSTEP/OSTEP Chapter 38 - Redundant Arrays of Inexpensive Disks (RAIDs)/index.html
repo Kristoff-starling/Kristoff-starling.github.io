@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="我们对磁盘有三个维度的需求：我们希望它读写速度快 (I&#x2F;O 操作速度慢，因而成为整个系统的速度瓶颈)，我们希望它容量大，我们还希望它可靠 (如果发生磁盘损坏，仍然能恢复数据)。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSTEP Chapter 38: Redundant Arrays of Inexpensive Disks (RAIDs)">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/14/OSTEP/OSTEP%20Chapter%2038%20-%20Redundant%20Arrays%20of%20Inexpensive%20Disks%20(RAIDs)/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="我们对磁盘有三个维度的需求：我们希望它读写速度快 (I&#x2F;O 操作速度慢，因而成为整个系统的速度瓶颈)，我们希望它容量大，我们还希望它可靠 (如果发生磁盘损坏，仍然能恢复数据)。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-02-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-06-16T15:39:33.599Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/14/OSTEP/OSTEP%20Chapter%2038%20-%20Redundant%20Arrays%20of%20Inexpensive%20Disks%20(RAIDs)/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/14/OSTEP/OSTEP%20Chapter%2038%20-%20Redundant%20Arrays%20of%20Inexpensive%20Disks%20(RAIDs)/","path":"2022/02/14/OSTEP/OSTEP Chapter 38 - Redundant Arrays of Inexpensive Disks (RAIDs)/","title":"OSTEP Chapter 38: Redundant Arrays of Inexpensive Disks (RAIDs)"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OSTEP Chapter 38: Redundant Arrays of Inexpensive Disks (RAIDs) | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#38-1-Interface-And-RAID-Internals"><span class="nav-number">1.</span> <span class="nav-text">38.1 Interface And RAID Internals</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#38-2-Fault-Model"><span class="nav-number">2.</span> <span class="nav-text">38.2 Fault Model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#38-3-How-To-Evaluate-A-RAID"><span class="nav-number">3.</span> <span class="nav-text">38.3 How To Evaluate A RAID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#38-4-RAID-Level-0-Striping"><span class="nav-number">4.</span> <span class="nav-text">38.4 RAID Level 0: Striping</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chunk-Size"><span class="nav-number">4.1.</span> <span class="nav-text">Chunk Size</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Back-To-RAID-0-Analysis"><span class="nav-number">4.2.</span> <span class="nav-text">Back To RAID-0 Analysis</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Evaluating-RAID-Performance"><span class="nav-number">4.3.</span> <span class="nav-text">Evaluating RAID Performance</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Back-To-RAID-0-Analysis-Again"><span class="nav-number">4.4.</span> <span class="nav-text">Back To RAID-0 Analysis, Again</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#38-5-RAID-Level-1-Mirroring"><span class="nav-number">5.</span> <span class="nav-text">38.5 RAID Level 1: Mirroring</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RAID-1-Analysis"><span class="nav-number">5.1.</span> <span class="nav-text">RAID-1 Analysis</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#38-6-RAID-Level-4-Saving-Space-With-Parity"><span class="nav-number">6.</span> <span class="nav-text">38.6 RAID Level 4: Saving Space With Parity</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RAID-4-Analysis"><span class="nav-number">6.1.</span> <span class="nav-text">RAID-4 Analysis</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#38-7-RAID-Level-5-Rotating-Parity"><span class="nav-number">7.</span> <span class="nav-text">38.7 RAID Level 5: Rotating Parity</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RAID-5-Analysis"><span class="nav-number">7.1.</span> <span class="nav-text">RAID-5 Analysis</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#38-8-RAID-Comparison-A-Summary"><span class="nav-number">8.</span> <span class="nav-text">38.8 RAID Comparison: A Summary</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#38-9-Other-Interesting-RAID-Issues"><span class="nav-number">9.</span> <span class="nav-text">38.9 Other Interesting RAID Issues</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#38-10-Summary"><span class="nav-number">10.</span> <span class="nav-text">38.10 Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/14/OSTEP/OSTEP%20Chapter%2038%20-%20Redundant%20Arrays%20of%20Inexpensive%20Disks%20(RAIDs)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OSTEP Chapter 38: Redundant Arrays of Inexpensive Disks (RAIDs)
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-14 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-14T00:00:00+08:00">2022-02-14</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-06-16 23:39:33" itemprop="dateModified" datetime="2022-06-16T23:39:33+08:00">2022-06-16</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">WISC-CS537 Introduction to Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/Book-Notes/" itemprop="url" rel="index"><span itemprop="name">Book Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>我们对磁盘有三个维度的需求：我们希望它读写速度快 (I/O 操作速度慢，因而成为整个系统的速度瓶颈)，我们希望它容量大，我们还希望它可靠 (如果发生磁盘损坏，仍然能恢复数据)。<span id="more"></span></p>
+<p>本章节主要介绍 Redundant Arrays of Inexpensive Disks (RAIDs) 技术，它的核心思想是用多块物理磁盘去构建一个大容量的，高速的，可靠性高的磁盘。对外来看，RAID 虚拟出了一块可读可写的磁盘；在其内部，RAID 由一个非常复杂的系统构成，包含了若干个物理磁盘和一个或多个用于控制的芯片，可以说 RAID 内部就是一个小型的计算机系统。</p>
+<p>RAID 的优点在于：它可以通过多块磁盘并行的读写来提供很好的 performance；通过叠加磁盘的数量来获得 capacity；通过存储一部分的冗余数据来保证数据的 reliability。更重要的是，RAID 可以透明地提供这些优势，这里透明的意思是对于其他硬件/OS来说，RAID 看上去就像是一整块普通的磁盘。整个系统的其他部分不需要做任何修改就可以兼容 RAID。这一点极大地提升了 RAID 的可部署性 (deployability)。用户可以放心地将自己现有的磁盘更换成 RAID，不需要担心兼容问题。</p>
+<h2 id="38-1-Interface-And-RAID-Internals"><a href="#38-1-Interface-And-RAID-Internals" class="headerlink" title="38.1 Interface And RAID Internals"></a>38.1 Interface And RAID Internals</h2><p>对于上层的文件系统来说，RAID deng |看上去就像一个磁盘。和其他单块磁盘的抽象一样，RAID 对外暴露成一个线性的 block array，每个块都可读可写。</p>
+<p>当文件系统向 RAID 发送一个 logical I/O 请求时，RAID 内部需要搞清楚这个逻辑地址对应的块究竟在哪些盘的什么位置，并通过一次或多次 physical I/O 请求来完成这次任务。RAID 的内部结构相当复杂，通常会有一个 microcontroller 执行固件代码来控制 RAID 的行为；会有 DRAM 来作为数据块的 buffer cache；有时还会有一些非易失性的存储用来进行校验计算等。RAID 有一个完整计算机系统的大部分设施 (处理器，内存，磁盘等等)，但它是一个专门运行磁盘管理程序的专用系统。</p>
+<h2 id="38-2-Fault-Model"><a href="#38-2-Fault-Model" class="headerlink" title="38.2 Fault Model"></a>38.2 Fault Model</h2><p>我们在这里考虑的错误模型是一个比较简单的错误模型，称为 fail-stop。在这个模型中，每块磁盘只会处于 working 或 failed 的状态。在 working 状态，磁盘一切正常，可读可写；在 failed 状态，磁盘损坏，可以理解为该磁盘内部的数据永久丢失。</p>
+<p>在 fail-stop 模型中，我们认为我们总是可以立刻检测到磁盘的损坏，即当某块磁盘从 working 变为 failed 时，我们可以迅速发现。因此我们不用考虑一些非常微妙的 silent failure (虽然这是实际中更可能发生的错误)。</p>
+<h2 id="38-3-How-To-Evaluate-A-RAID"><a href="#38-3-How-To-Evaluate-A-RAID" class="headerlink" title="38.3 How To Evaluate A RAID"></a>38.3 How To Evaluate A RAID</h2><p>我们主要从三个尺度来衡量 RAID：</p>
+<ul>
+<li>容量 (capacity)：假设 RAID 中有 $N$ 块磁盘，每块磁盘中有 $B$ 个 block，那么理论上的最大存储量是 $N\cdot B$ 个 block，但由于我们需要存储一些必要的冗余数据来保证可靠性，实际上的容量达不到这个最大值。</li>
+<li>可靠性 (reliability)：我们的 RAID 系统至多可以容忍多少个磁盘同时损坏？(容忍指损坏后可以恢复数据)</li>
+<li>性能 (performance)：性能是比较难衡量的一个尺度，因为它和 workload 息息相关。</li>
+</ul>
+<h2 id="38-4-RAID-Level-0-Striping"><a href="#38-4-RAID-Level-0-Striping" class="headerlink" title="38.4 RAID Level 0: Striping"></a>38.4 RAID Level 0: Striping</h2><p>最简单的一种设计方法是将 block 以条带状放在各个物理磁盘上，下面展示了 4 块物理磁盘时的摆放顺序：</p>
+<table>
+<thead>
+<tr>
+<th>Disk 0</th>
+<th>Disk 1</th>
+<th>Disk 2</th>
+<th>Disk 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+</tr>
+<tr>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+</tr>
+<tr>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+</tr>
+</tbody></table>
+<p>block 以一种 round-robin 的方式放在各个磁盘上，我们称一行中的 block 为一个 stripe。这种方式的好处是我们在读写一串连续的 block 时可以达到最佳的并行性能。上面的摆放方式是 chunk size = 1 block 的方式，即每次放放一个 block 就转到下一个 disk。我们可以调整 chunk size，比如下面展示了 chunk size = 2 block 的摆放方式</p>
+<table>
+<thead>
+<tr>
+<th>Disk 0</th>
+<th>Disk 1</th>
+<th>Disk 2</th>
+<th>Disk 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>2</td>
+<td>4</td>
+<td>6</td>
+</tr>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>5</td>
+<td>7</td>
+</tr>
+<tr>
+<td>8</td>
+<td>10</td>
+<td>12</td>
+<td>14</td>
+</tr>
+<tr>
+<td>9</td>
+<td>11</td>
+<td>13</td>
+<td>15</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>The RAID Mapping Problem</strong></p>
+<p>在 RAID 中我们总是要处理的一个问题就是 mapping problem：给定一个逻辑块号，我们要确定它在哪一个物理磁盘上，以及在物理磁盘上的偏移量。对于 chunk size = 1 block 的 RAID 0，mapping problem 是容易的：假设逻辑块号为 $A$，则</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Disk   = A % number_of_disks;</span><br><span class="line">Offset = A / numbre_of_disks;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="Chunk-Size"><a href="#Chunk-Size" class="headerlink" title="Chunk Size"></a>Chunk Size</h3><p>chunk size 主要影响读写的性能。小的 chunk size 可以带来更好的并行性，但每个物理磁盘上的 chunk 的个数会比较多，定位 chunk 也是需要时间代价的。</p>
+<p>下面的讨论中默认 chunk size = 1 block。</p>
+<h3 id="Back-To-RAID-0-Analysis"><a href="#Back-To-RAID-0-Analysis" class="headerlink" title="Back To RAID-0 Analysis"></a>Back To RAID-0 Analysis</h3><p>RAID-0 的 capacity 是完美的：物理磁盘的每个 block 都被用来存储信息了；RAID-0 的 reliability 是糟糕的：任何一个磁盘的任何一个部分损坏都会导致数据丢失；RAID-0 的 performance 是比较好的，基本可以达到百分之百的带宽。</p>
+<h3 id="Evaluating-RAID-Performance"><a href="#Evaluating-RAID-Performance" class="headerlink" title="Evaluating RAID Performance"></a>Evaluating RAID Performance</h3><p>我们衡量 RAID 的性能时通常从两种尺度出发：一种是单次请求的延迟，一种是稳定状态下的吞吐率。在衡量稳定状态下的吞吐率时，我们对两种 wordload 比较感兴趣：一种是 sequential 的，即一次性读取连续的多个 block；另一种是 random 的，即多次读取少量的 block。可以预见地，因为物理磁盘有寻道时间和旋转延迟，所以 random 的 workload 下磁盘要不停地重新定位，吞吐率会比 sequential 的情况低很多。下面的分析中，我们令 $S$ 表示 sequential 的一段长的数据的平均读取速度，$R$ 表示 random 的一块短的数据的平均读取速度。</p>
+<h3 id="Back-To-RAID-0-Analysis-Again"><a href="#Back-To-RAID-0-Analysis-Again" class="headerlink" title="Back To RAID-0 Analysis, Again"></a>Back To RAID-0 Analysis, Again</h3><p>从单次请求延迟的角度来看， RAID-0 的延迟基本等于一块物理磁盘的延迟，因为一个 single-block request 会被 RAID 的系统定向到某一块物理磁盘上。</p>
+<p>从稳定状态下的吞吐率来看，RAID-0 可以达到最大的带宽，因为不论是 sequential 还是 random，当读取的 block 个数足够多时，期望情况下所有的物理磁盘都在满负荷运作。即 sequential 的吞吐率为 $N\cdot S\text{ MB/s}$，random 的吞吐率为 $N\cdot R\text{ MB/s}$。</p>
+<h2 id="38-5-RAID-Level-1-Mirroring"><a href="#38-5-RAID-Level-1-Mirroring" class="headerlink" title="38.5 RAID Level 1: Mirroring"></a>38.5 RAID Level 1: Mirroring</h2><p>RAID 1 的基本思想是镜像：为每个 block 保存副本，这样我们就可以忍受 disk failure。下面是一个例子：</p>
+<table>
+<thead>
+<tr>
+<th>Disk 0</th>
+<th>Disk 1</th>
+<th>Disk 2</th>
+<th>Disk 3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>6</td>
+<td>6</td>
+<td>7</td>
+<td>7</td>
+</tr>
+</tbody></table>
+<p>这种方式也被称为 RAID-10 (RAID-1+0)，因为它是先复制再按照 RAID-0 的方式排开。相应地也有 RAID-01 (RAID-0+1)，先排开再做镜像。我们所说的 RAID-1 通常指 RAID-10。</p>
+<p>RAID-1 在读取一个块时有两个选择，但 RAID-1 的写入操作必须同时修改两个副本。不过 RAID-1 的设计中一个块的两个副本位于不同的物理磁盘上，对两个副本的修改可以并行进行。</p>
+<h3 id="RAID-1-Analysis"><a href="#RAID-1-Analysis" class="headerlink" title="RAID-1 Analysis"></a>RAID-1 Analysis</h3><ul>
+<li><p>从 capacity 的角度，RAID-1 比较糟糕：只有一半的容量真正存储了信息，剩下的一半都是副本。</p>
+</li>
+<li><p>从 reliability 的角度，RAID-1 很可靠，因为任何一个物理磁盘损坏都不会导致数据丢失。甚至在上述例子中，如果 disk 0 和 disk 2 同时损坏，RAID-1 也不会丢失数据。RAID-1 reliability 的下限是 1 个磁盘，运气好的情况下甚至可以做到 $N/2$ 块磁盘。</p>
+</li>
+<li><p>从 performance 的角度，首先考虑 latency：对于读操作来说延迟就是一块物理磁盘的延迟；写操作则有一点不同，写操作需要更新两个副本，虽然这两个写入在不同的物理磁盘上可以并行，但两块磁盘中寻道+旋转时间较长的那块磁盘将决定写操作的延迟，因此写操作延迟略高于一块物理磁盘的期望延迟。</p>
+<p>  接下来考虑吞吐率。首先是 sequential 的 workload。写入方面，因为每个逻辑块的写入都要同时写入两个副本，所以吞吐率为 $\frac{N\cdot S}{2}$。一个有点反直觉的结论是：读取的吞吐率也是 $\frac{N\cdot S}{2}$。虽然我们每个块有两个副本，但精心安排读取顺序并不能给我们带来效率提升。比如我们要读取 0, 1, 2, 3, 4, 5, 6, 7，如果我们只使用 Disk 0 和 Disk 2，吞吐率显然为 $\frac{N\cdot S}{2}$；我们可能会想出这样的安排方案：Disk 0 和 Disk 2 读 0 和 1，Disk 1 和 Disk 3 读 2 和 3，后面依次类推，这样是不是可以用满带宽呢？实际上不然。我们考虑一个 Disk 接受到的任务，比如 Disk 0：它要读取 0, 4, 8…… 这些 block，这些 block 在 Disk 0 上不是连续存放的，所以磁盘在旋转的时候每读取一个块，就要等待一个块，磁盘划过不需要的块的时候并没有向用户输出有效的带宽，因此它实际上只输出了一半的效率。</p>
+<p>  在 random 的 workload 下，RAID-1 的读取是完美的：Disk 2 和 Disk 4 作为 Disk 0 和 Disk 3 的副本也可以为用户提供带宽，因此聪明的选择当前空闲的磁盘可以使吞吐率达到 $N\cdot R$。写入方面，因为要同时修改两个磁盘中的副本，所以吞吐率是 $\frac{N\cdot R}{2}$。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>The RAID Consistent-Update Problem</strong></p>
+<p>RAID-1 中涉及 mirroring，在写入操作时要同时更新两个副本，因此存在所谓的 consistent-update 问题：如果我们无脑地修改第一个部分再修改第二个副本，那么加入修改完第一个副本后系统掉电了，那么重启后整个磁盘将处于一个 inconsistent 的状态——两个副本的内容不一致。因此修改两个副本的操作应当是原子的。</p>
+<p>在文件系统中我们用 journaling 的方法来解决原子性的问题，在 RAID 中该方法同样适用。我们只要保存一个修改操作的 logging，意外掉电重启后就可以根据 logging 的内容来做恢复。值得一提的是，每次写入操作都在 disk 中做 logging 的代价太大无法忍受，因此 RAID 中一般会有一小块 non-volatile 的 RAM 用于写入 logging。</p>
+</blockquote>
+<h2 id="38-6-RAID-Level-4-Saving-Space-With-Parity"><a href="#38-6-RAID-Level-4-Saving-Space-With-Parity" class="headerlink" title="38.6 RAID Level 4: Saving Space With Parity"></a>38.6 RAID Level 4: Saving Space With Parity</h2><p>镜像所需要的额外存储空间太多。事实上，我们可以使用校验码的思路来为数据保存副本，这就是 RAID-4。RAID-4 的一个例子如下：    </p>
+<table>
+<thead>
+<tr>
+<th>Disk 0</th>
+<th>Disk 1</th>
+<th>Disk 2</th>
+<th>Disk 3</th>
+<th>Disk 4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+<td>11</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>P3</td>
+</tr>
+</tbody></table>
+<p>其中 Disk 4 上存储的都是前 4 个 disk 的校验码：$P0 = 0\oplus 1\oplus 2\oplus 3$，依此类推。这样如果有任何一个磁盘损坏，将其他 4 个磁盘的数据异或起来就可以恢复该磁盘的数据。</p>
+<h3 id="RAID-4-Analysis"><a href="#RAID-4-Analysis" class="headerlink" title="RAID-4 Analysis"></a>RAID-4 Analysis</h3><ul>
+<li><p>从 capacity 的角度：它比 RAID-1 好很多：$\frac{N-1}{N}$ 的空间都可以用来存储有效的信息。</p>
+</li>
+<li><p>从 reliability 的角度：RAID-4 可以容忍一个磁盘的损坏。</p>
+</li>
+<li><p>从 performance 的角度：</p>
+<ul>
+<li><p>首先考虑吞吐率：sequential 的情况是比较容易分析的：读取的时候，只有 $N-1$ 个磁盘中存储的是有效数据，所以带宽为 $(N-1)\cdot S$。写入的时候，每一个 stripe ($N-1$ 个 block) 的数据可以由 $N$ 个磁盘并行写入，因此带宽也是 $(N-1)\cdot S$。random 的读取也容易分析：只有 $N-1$ 个存储了有效数据的磁盘会工作，因此带宽为 $(N-1)\cdot R$。</p>
+<p>  困难的是 random 写入的分析。我们在修改一个 block 的时候同时也要修改它所在的 stripe 的校验 block。我们有两种思路来计算新的校验值：一是 addictive parity，即把该 stripe 中其他的 block 都读出来，然后计算新校验值并写入，该方法的问题是其代价随着 RAID 中磁盘的上升而上升 (要做很多异或)；二是 subtractive parity，即读出旧的校验值，异或掉旧的 block，再异或上新的 block 以获得新的校验值。写成公式就是 $P_{new}=P_{old}\oplus(C_{old}\oplus C_{new})$，该方法需要对校验 block 和数据 block 各做一次读和一次写。通常来说我们选择 subtractive parity，但该方法的关键问题在于不管我们修改哪个物理磁盘上的数据，都要读写校验磁盘，因此即使数据磁盘的修改可以并行，校验磁盘仍然会将整个过程变成串行，它成为了整个系统的瓶颈。这个问题被成为 small-write problem。RAID-4 在 random 写入下的带宽是 $(R/2)$，这非常糟糕，因为它不随着 RAID 规模的增大而提高。</p>
+</li>
+<li><p>接着分析 latency：读一个 block 的延迟和一块物理磁盘上的延迟相同；写一个 block 的延迟则复杂一些：根据之前的 subtractive parity 的方法，我们要读一次写一次数据磁盘和校验磁盘，因此延迟大约是一块物理磁盘延迟的两倍。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="38-7-RAID-Level-5-Rotating-Parity"><a href="#38-7-RAID-Level-5-Rotating-Parity" class="headerlink" title="38.7 RAID Level 5: Rotating Parity"></a>38.7 RAID Level 5: Rotating Parity</h2><p>RAID-5 针对 RAID-4 的 small-write problem 做出了改进，把校验 block 分散到了各个磁盘当中：</p>
+<table>
+<thead>
+<tr>
+<th>Disk 0</th>
+<th>Disk 1</th>
+<th>Disk 2</th>
+<th>Disk 3</th>
+<th>Disk 4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>P1</td>
+<td>7</td>
+</tr>
+<tr>
+<td>8</td>
+<td>9</td>
+<td>P2</td>
+<td>10</td>
+<td>11</td>
+</tr>
+<tr>
+<td>12</td>
+<td>P3</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>16</td>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+</tr>
+</tbody></table>
+<h3 id="RAID-5-Analysis"><a href="#RAID-5-Analysis" class="headerlink" title="RAID-5 Analysis"></a>RAID-5 Analysis</h3><p>RAID-5 很多方面的参数和 RAID-4 是差不多的。这里主要关注 RAID-5 在 random workload 下的吞吐率：</p>
+<ul>
+<li>对于读取操作，由于现在 $N$ 个磁盘上都存储了数据，所以带宽可以达到 $N\cdot R$。</li>
+<li>对于写入操作，RAID-5 相比较于 RAID-4 有很大改善。我们可以认为在 random request 足够多的情况下，所有的物理磁盘都在满负荷运转，因此带宽可以达到 $\frac{N\cdot R}{4}$，这里要除以 4 是因为一个数据块的写入要涉及 4 次 I/O 操作。</li>
+</ul>
+<p>在绝大多数场合下，RAID-5 已经完全取代了 RAID-4。除了某些特殊的场景，使用者确定不会出现大量的随机读写，这时使用 RAID-4 会使磁盘在结构上简单一些。</p>
+<h2 id="38-8-RAID-Comparison-A-Summary"><a href="#38-8-RAID-Comparison-A-Summary" class="headerlink" title="38.8 RAID Comparison: A Summary"></a>38.8 RAID Comparison: A Summary</h2><table>
+<thead>
+<tr>
+<th></th>
+<th>RAID-0</th>
+<th>RAID-1</th>
+<th>RAID-4</th>
+<th>RAID-5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Capacity</td>
+<td>$N\cdot B$</td>
+<td>$(N\cdot B)/2$</td>
+<td>$(N-1)\cdot B$</td>
+<td>$(N-1)\cdot B$</td>
+</tr>
+<tr>
+<td>Reliability</td>
+<td>$0$</td>
+<td>$1$ (for sure)<br>$N/2$ (if lucky)</td>
+<td>$1$</td>
+<td>$1$</td>
+</tr>
+<tr>
+<td>Throughput</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Sequential Read</td>
+<td>$N\cdot S$</td>
+<td>$(N\cdot S)/2$</td>
+<td>$(N-1)\cdot S$</td>
+<td>$(N-1)\cdot S$</td>
+</tr>
+<tr>
+<td>Sequential Write</td>
+<td>$N\cdot S$</td>
+<td>$(N\cdot S)/2$</td>
+<td>$(N-1)\cdot S$</td>
+<td>$(N-1)\cdot S$</td>
+</tr>
+<tr>
+<td>Random Read</td>
+<td>$N\cdot R$</td>
+<td>$N\cdot R$</td>
+<td>$(N-1)\cdot R$</td>
+<td>$N\cdot R$</td>
+</tr>
+<tr>
+<td>Random Write</td>
+<td>$N\cdot R$</td>
+<td>$(N\cdot R)/2$</td>
+<td>$R/2$</td>
+<td>$(N\cdot R)/4$</td>
+</tr>
+<tr>
+<td>Latency</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Read</td>
+<td>$T$</td>
+<td>$T$</td>
+<td>$T$</td>
+<td>$T$</td>
+</tr>
+<tr>
+<td>Write</td>
+<td>$T$</td>
+<td>$T$</td>
+<td>$2T$</td>
+<td>$2T$</td>
+</tr>
+</tbody></table>
+<p>如果你想要极致的性能，不在乎数据的可靠性，那么就选 RAID-0；如果你在乎 random I/O 的效率且需要可靠性，那么就选 RAID-1 (代价是容量)；如果 reliability 和 capacity 你都在乎，那么就选 RAID-5 (代价是 small-write performance)。</p>
+<h2 id="38-9-Other-Interesting-RAID-Issues"><a href="#38-9-Other-Interesting-RAID-Issues" class="headerlink" title="38.9 Other Interesting RAID Issues"></a>38.9 Other Interesting RAID Issues</h2><p>关于 RAID 还有很多有意思的问题可以研究，比如在发生 failure 的时候系统会经历怎样的运作过程，这时候的性能会有什么变化等等。此外，我们也可以提出一些更贴合实际的 fault model，以考虑到 block corruption，latent sector error 等等。甚至有人将 RAID system 放到软件层面。</p>
+<h2 id="38-10-Summary"><a href="#38-10-Summary" class="headerlink" title="38.10 Summary"></a>38.10 Summary</h2><p>RAID 的核心思想是将许多块不太可靠的物理磁盘组合在一起形成一个又大又快又可靠的磁盘。RAID 的选择与使用场景的 workload 息息相关，并不是说 RAID-5 就一定比 RAID-1 来的好。因此选择合适的 RAID 模型并为其调整合适的参数 (比如 chunk size，物理磁盘个数等) 是一门艺术。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/10/MIT-6.S081%20Lecture%2009%20-%20Interrupts/" rel="prev" title="MIT-6.S081 Lecture 09: Interrupts">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 09: Interrupts
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/02/16/OSTEP/OSTEP%20Chapter%2036%20-%20IO%20Devices/" rel="next" title="OSTEP Chapter 36: I/O Devices">
+                  OSTEP Chapter 36: I/O Devices <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
