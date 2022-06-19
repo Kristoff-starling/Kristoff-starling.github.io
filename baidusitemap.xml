@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/02/12/OSTEP/OSTEP%20Chapter%2040%20-%20File%20System%20Implementation/</loc>
+    <lastmod>2022-06-19</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/02/14/OSTEP/OSTEP%20Chapter%2038%20-%20Redundant%20Arrays%20of%20Inexpensive%20Disks%20(RAIDs)/</loc>
     <lastmod>2022-06-16</lastmod>
   </url>

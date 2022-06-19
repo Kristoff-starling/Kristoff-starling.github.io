@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+<meta name="baidu-site-verification" content="code-s4OjxgqHCv">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="true">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"kristoff-starling.github.io","root":"/","images":"/images","scheme":"Muse","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OSTEP Chapter 40: File System Implementation">
+<meta property="og:url" content="https://kristoff-starling.github.io/2022/02/12/OSTEP/OSTEP%20Chapter%2040%20-%20File%20System%20Implementation/index.html">
+<meta property="og:site_name" content="starling的小屋">
+<meta property="og:description" content="文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kristoff-starling.github.io/img/OSTEP-vsfs.png">
+<meta property="og:image" content="https://kristoff-starling.github.io/img/OSTEP-40.1.png">
+<meta property="og:image" content="https://kristoff-starling.github.io/img/OSTEP-40.3.png">
+<meta property="article:published_time" content="2022-02-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-06-19T09:14:29.083Z">
+<meta property="article:author" content="starling">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://kristoff-starling.github.io/img/OSTEP-vsfs.png">
+
+
+<link rel="canonical" href="https://kristoff-starling.github.io/2022/02/12/OSTEP/OSTEP%20Chapter%2040%20-%20File%20System%20Implementation/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://kristoff-starling.github.io/2022/02/12/OSTEP/OSTEP%20Chapter%2040%20-%20File%20System%20Implementation/","path":"2022/02/12/OSTEP/OSTEP Chapter 40 - File System Implementation/","title":"OSTEP Chapter 40: File System Implementation"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>OSTEP Chapter 40: File System Implementation | starling的小屋</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">starling的小屋</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-札记"><a href="/article/" rel="section"><i class="fa fa-book fa-fw"></i>札记</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#40-1-The-Way-To-Think"><span class="nav-number">1.</span> <span class="nav-text">40.1 The Way To Think</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#40-2-Overall-Organization"><span class="nav-number">2.</span> <span class="nav-text">40.2 Overall Organization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#40-3-File-Organization-The-Inode"><span class="nav-number">3.</span> <span class="nav-text">40.3 File Organization: The Inode</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Multi-Level-Index"><span class="nav-number">3.1.</span> <span class="nav-text">The Multi-Level Index</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#40-4-Directory-Organization"><span class="nav-number">4.</span> <span class="nav-text">40.4 Directory Organization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#40-5-Free-Space-Management"><span class="nav-number">5.</span> <span class="nav-text">40.5 Free Space Management</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#40-6-Access-Paths-Reading-and-Writing"><span class="nav-number">6.</span> <span class="nav-text">40.6 Access Paths: Reading and Writing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Reading-A-File-From-Disk"><span class="nav-number">6.1.</span> <span class="nav-text">Reading A File From Disk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Writing-A-File-To-Disk"><span class="nav-number">6.2.</span> <span class="nav-text">Writing A File To Disk</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#40-7-Caching-and-Buffering"><span class="nav-number">7.</span> <span class="nav-text">40.7 Caching and Buffering</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#40-8-Summary"><span class="nav-number">8.</span> <span class="nav-text">40.8 Summary</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-overview">
+            <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">starling</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kristoff-starling.github.io/2022/02/12/OSTEP/OSTEP%20Chapter%2040%20-%20File%20System%20Implementation/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="starling">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="starling的小屋">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          OSTEP Chapter 40: File System Implementation
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-02-12 00:00:00" itemprop="dateCreated datePublished" datetime="2022-02-12T00:00:00+08:00">2022-02-12</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-06-19 17:14:29" itemprop="dateModified" datetime="2022-06-19T17:14:29+08:00">2022-06-19</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/" itemprop="url" rel="index"><span itemprop="name">WISC-CS537 Introduction to Operating Systems</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/WISC-CS537-Introduction-to-Operating-Systems/Book-Notes/" itemprop="url" rel="index"><span itemprop="name">Book Notes</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。<span id="more"></span></p>
+<h2 id="40-1-The-Way-To-Think"><a href="#40-1-The-Way-To-Think" class="headerlink" title="40.1 The Way To Think"></a>40.1 The Way To Think</h2><p>设计文件系统我们通常考虑两件事情：</p>
+<ul>
+<li>数据结构：我们准备使用什么数据结构来组织磁盘上的数据和元数据？在简单的文件系统实现中我们通常使用简单的块链表，在一些比较精密的文件系统实现中也有使用树状结构的。</li>
+<li>访问方式：进程使用的 open(), read(), write() 等函数该如何对应到文件系统的结构上？对于一个特定的系统调用，哪些数据需要被读写？每一步的效率如何？</li>
+</ul>
+<h2 id="40-2-Overall-Organization"><a href="#40-2-Overall-Organization" class="headerlink" title="40.2 Overall Organization"></a>40.2 Overall Organization</h2><p>vsfs (very simple file system，一个 UNIX 文件系统的精简版本) 的结构如下：</p>
+<img src="https://kristoff-starling.github.io/img/OSTEP-vsfs.png" alt="vsfs" style="zoom:50%;" />
+
+<p>整个磁盘被划分成 64 个 block，每个 block 的大小是 4KB。</p>
+<ul>
+<li>后面的 56 个 block 是 data region，用来存储用户数据。</li>
+<li>3~7 这 5 个 block 是 inode table 区，存储了一个 inode 数组，注意到一个 inode 通常没有一个 block 那么大——只有 128 或 256 字节，这里假设 256 字节，则 5 个 block 可以存储 80 个 inode，即我们的文件系统中最多可以有 80 个文件 (在更大的磁盘上，我们的 inode table 可以更大，从而可以存储更多的文件)。</li>
+<li>block 1 是 inode bitmap，block 2 是 data bitmap，bitmap 存储了每个 inode/data block 处于空闲状态还是正在使用的状态。</li>
+<li>block 0 是 superblock，存储了文件系统的元数据，比如 inode 的个数，磁盘的大小，inode table 的起始位置，文件系统的魔数等等。</li>
+</ul>
+<h2 id="40-3-File-Organization-The-Inode"><a href="#40-3-File-Organization-The-Inode" class="headerlink" title="40.3 File Organization: The Inode"></a>40.3 File Organization: The Inode</h2><p>几乎所有的文件系统都有类似于 inode 的结构：它保存了一个文件的元数据，比如大小、权限等等。inode 的全称是 index node，这是因为一般 inode 被整齐地存放在一个数组里面，因此给定一个下标，我们很容易索引到一个对应的 inode。以我们的 vsfs 为例，inode table 的起始地址 <code>inodeStartAddr = 12KB</code>，每个 inode 的大小是 256B，因此给定一个 inumber，我们有如下的计算公式：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">blk = (inumber * <span class="keyword">sizeof</span>(<span class="keyword">inode_t</span>)) / blockSize;</span><br><span class="line">sector = ((blk * blockSize) + inodeStartAddr) / sectorSize;</span><br></pre></td></tr></table></figure>
+
+<p>(注：磁盘不是 byte addressable 的，所以我们只算出精确的地址没有用，而要算出它在哪个 sector 中，把整个 sector 读出来，再根据 offset 定位 inode。)</p>
+<p>inode 中有关于一个文件的所有信息：比如它的类型 (文件/文件夹/设备 etc.)，它的大小，它包含的 block 数目，它的访问权限，它的创建/修改日期等。这些信息通常被称为文件的元数据 (metadata) (通常文件系统中和用户数据无关的其他数据都被称为元数据)。下面展示了一个简化的 ext2 文件系统的 inode 中存储的元数据：</p>
+<img src="https://kristoff-starling.github.io/img/OSTEP-40.1.png" alt="40.1" style="zoom:33%;" />
+
+<p>inode 中最重要的部分就是指示 data block 位置的部分。一种简单的方法是在 inode 中存储若干个 direct pointers，每个指针保存一个 data block 的地址。这种方法的局限性在于无法保存大文件的所有 data block。</p>
+<h3 id="The-Multi-Level-Index"><a href="#The-Multi-Level-Index" class="headerlink" title="The Multi-Level Index"></a>The Multi-Level Index</h3><p>解决大文件存储的方法通常是所谓的 indirect pointer：我们从数据区分配一个 block，让 inode 中的 indirect pointer 指向这个 block，然后这个 block 里存放一堆 direct pointer。假设一个地址占 4B，那么一个 block 里可以存放 1024 个 direct pointer，这意味着只需要一个 indirect pointer 就可以记录一个 1024*4 KB 的文件的所有 data block 的位置。</p>
+<p>这个思想有点像页表。正如页表可以有多级，文件系统中我们也可以有 double indirect pointer 和 triple indirect pointer，这样我们用树状结构存下了很多 data block 的地址。值得一提的是，通常 inode 里会有 12 个左右的 direct pointer 和一个 indirect pointer，存放如此多的 direct pointer 是因为从统计规律上，大部分的文件都非常小，用 direct pointer 直接存地址可以略去遍历“页表”的过程，更加高效。</p>
+<blockquote>
+<p><strong>Linked-Based Approaches</strong></p>
+<p>inode 的另一种常见的设计方案是使用链表。在这种设计下我们不需要在 inode 中存储所有 data block 的地址，而只要存储第一个 data block 的地址。每个 data block 自己有一个 next 指针存储下一个 data block 的地址，这样也可以存储大文件。</p>
+<p>朴素的想法是将每个 data block 的 next 指针存储在 data block 内部。但这样文件系统在 random access 的 workload 下表现得会很坏：注意到磁盘是一个块设备，如果我们要访问一个文件尾部的内容，我们就必须顺着链表往后找，而每次我们要获得一个 next 指针都要把整个 data block 读出来，大量的磁盘读取会使得访问非常慢。</p>
+<p>一个优化是把所有的 next 指针放在一起做成一张表集中存储。这样我们只要将这个 next 指针表从磁盘读进内存，就可以定位一个大文件的任何一个 data block 的位置，再去磁盘中抓取对应的 data block 即可。</p>
+<p>这就是 FAT 的主要思想。</p>
+</blockquote>
+<h2 id="40-4-Directory-Organization"><a href="#40-4-Directory-Organization" class="headerlink" title="40.4 Directory Organization"></a>40.4 Directory Organization</h2><p>在很多文件系统中，目录文件的内容就是一系列的 <code>(文件名, inode)</code> 键值对。举一个例子，比如一个 inode 为 5 的目录文件 dir 中包含了文件 foo, bar 和 foobar_is_a_pretty_longname，那么 dir 文件的内容就大约长这样：</p>
+<table>
+<thead>
+<tr>
+<th>inum</th>
+<th>reclen</th>
+<th>strlen</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5</td>
+<td>12</td>
+<td>2</td>
+<td>.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>12</td>
+<td>3</td>
+<td>..</td>
+</tr>
+<tr>
+<td>12</td>
+<td>12</td>
+<td>4</td>
+<td>foo</td>
+</tr>
+<tr>
+<td>13</td>
+<td>12</td>
+<td>4</td>
+<td>bar</td>
+</tr>
+<tr>
+<td>24</td>
+<td>36</td>
+<td>36</td>
+<td>foobar_is_a_pretty_longname</td>
+</tr>
+</tbody></table>
+<p>这里的 strlen 表示文件名的实际长度 (包括末尾的 <code>\0</code>)，reclen 则表示当前分配给这个目录项文件名的长度 (名字的长度和可能存在的若干空闲空间)。每个目录文件中都有两个文件：<code>.</code> 表示当前目录，<code>..</code> 表示上一级目录。</p>
+<p>如果我们在一个目录下删去一个文件，那么它对应的目录项就会被挖空。通常我们会使用 inode 0 来表示该目录项是空闲的。删除也是我们留有 reclen 字段的原因：比如一个长名文件被删除后，一个短名文件被加进目录，那么新文件可以复用旧文件的目录项，包括之前分配的长文件名的空间，因此文件名后可能会有空格。</p>
+<p>目录文件也是一种文件，因此在文件系统中它也有对应的 inode，上面描述的这些键值对就存在该文件的 data block 中。值得一提的是并不是所有文件系统都使用这种顺序列表的方式存储键值对——数据结构有很多的选择空间，比如有的文件系统使用 B 树存储键值对，这样它们在搜索文件名时就可以避免穷举遍历。</p>
+<h2 id="40-5-Free-Space-Management"><a href="#40-5-Free-Space-Management" class="headerlink" title="40.5 Free Space Management"></a>40.5 Free Space Management</h2><p>在 vsfs 中，我们为 inode table 和 data region 各准备了一个 bitmap 来记录每个 inode/data block 是否处于空闲状态。分配的时候，我们遍历 bitmap 寻找空闲的 inode/data block 即可。</p>
+<p>分配中也有一些“花活”可以玩，比如 ext2/ext3 文件系统中，当一个新文件被创建且需要数据块时，文件系统会去寻找空闲的连续数据块 (8 个或更多)，这样文件在文件系统中存储的更加连续，有助于提升性能。</p>
+<h2 id="40-6-Access-Paths-Reading-and-Writing"><a href="#40-6-Access-Paths-Reading-and-Writing" class="headerlink" title="40.6 Access Paths: Reading and Writing"></a>40.6 Access Paths: Reading and Writing</h2><h3 id="Reading-A-File-From-Disk"><a href="#Reading-A-File-From-Disk" class="headerlink" title="Reading A File From Disk"></a>Reading A File From Disk</h3><p>我们首先考虑这样一个系统调用：<code>open(&quot;/foo/bar&quot;, O_RDONLY)</code>。我们的目标是找到 bar 文件的 inode，但这是无法直接做到的，因此我们必须得通过文件名一层一层地去找。一个文件的 inode 编号存放在它的父目录的文件内容中，因此我们需要去读取 <code>/foo</code> 目录文件的内容，从而需要其 inode 编号，再向上我们需要 <code>/</code> 目录文件的内容，以及 <code>/</code> 的 inode 编号。</p>
+<p>根目录没有父目录，因此根目录文件的 inode 编号必须被显式或隐式地规定。在绝大多数的 UNIX 文件系统中，根目录文件的 inode 编号都是 2。因此整个过程如下：</p>
+<ul>
+<li>读取根目录的 inode 2，根据 inode 中的指针找到根目录文件内容，从目录项中找到 <code>/foo</code> 文件的 inode 号。</li>
+<li>读取 <code>/foo</code> 的 inode，根据 inode 中的指针找到 <code>/foo</code> 文件内容，从目录项中找到 <code>/foo/bar</code> 的 inode 号。</li>
+<li>读取 <code>/foo/bar</code> 的 inode，进行一系列权限检查，返回给当前进程一个指向 <code>/foo/bar</code> 的文件描述符。</li>
+</ul>
+<p>打开文件后，程序就可以通过 read() 系统调用来读取文件内容。对于一次 read() 系统调用，文件系统首先要读取 inode，根据 read 的 offset 找到对应 data block 的地址，然后读取对应的 data block，最后还要修改文件的 inode，更新最近访问时间等字段。在文件系统之外，文件描述符的 offset 也要更新。</p>
+<p>在某个时刻，该文件会被关闭。关闭文件需要释放掉对应的文件描述符，不过这不是文件系统层面的动作，close() 的时候没有任何的 disk I/O 操作。</p>
+<p>下图展示了整个过程各部分数据的读写情况：</p>
+<img src="https://kristoff-starling.github.io/img/OSTEP-40.3.png" alt="40.3" style="zoom: 50%;" />
+
+<h3 id="Writing-A-File-To-Disk"><a href="#Writing-A-File-To-Disk" class="headerlink" title="Writing A File To Disk"></a>Writing A File To Disk</h3><p>写入的过程和读取的过程基本类似，但写入更麻烦的地方在于我们有时候要分配新的 inode/data block，因此还要读写 bitmap。通常来说在文件已经打开的情况下，一次 write 操作要对应 5 次磁盘 I/O 操作：一次读取数据区的 bitmap (寻找可用数据块)，一次写入数据区的 bitmap (更新使用情况)，读取和写入该文件的 inode，以及对数据块的写入。</p>
+<p>如果我们考虑文件的创建，涉及到的 disk I/O 次数则更多：创建文件时我们要为文件创建 inode，因此我们需要读写 inode 的 bitmap；我们要初始化新分配的 inode，因此需要写入新文件的 inode；我们需要更新该文件的父目录的键值对，因此我们要修改父目录的 data block，从而还要读写父目录文件的 inode。如果父目录文件的 data block 容量不足，我们还要为父目录文件分配新的 data block，这又要涉及数据区 bitmap 的读写……</p>
+<p>由此我们可以看出，文件系统 disk I/O 的次数非常多，负担很重，我们需要想办法让频繁的 I/O 更加高效。</p>
+<h2 id="40-7-Caching-and-Buffering"><a href="#40-7-Caching-and-Buffering" class="headerlink" title="40.7 Caching and Buffering"></a>40.7 Caching and Buffering</h2><p>为了缓解文件系统大量的磁盘 I/O 开销，大多数文件系统使用内存作为磁盘的 cache，在内存中保存一些常用的/重要的 block。早期的文件系统使用固定大小的 cache，通常是 DRAM 的 10%，这种静态分区的做法不太高效——当前空闲的文件系统 cache slot 无法作为其他东西使用。因此现代的文件系统采用 dynamic partitioning 的方法，把虚拟内存的页面和文件系统的页面放在一起统一管理。</p>
+<blockquote>
+<p><strong>Understand Static VS. Dynamic Partitioning</strong></p>
+<p>当我们将资源分成若干种不同用途的时候，我们通常有静态和动态两种方法。静态方法提前将资源划分成固定的比例，每种用途取一份；动态方法则根据当前的 workload 动态调整每种用途的使用量。静态实现简单，效率更稳定；而动态可以达到更好的资源利用率，但实现起来比较复杂。两者各有千秋。</p>
+</blockquote>
+<p>简单分析 caching 对于文件系统读写的好处：在读取方面，如果我们遍历一个目录下的所有文件，那么目录文件以及其 inode 就可以一直放在 cache 中供读取，节省了很多 I/O 操作；在写入方面，write buffering 带来的延迟写入可以将多次操作 batch 在一起，减少 I/O 次数 (比如创建文件再删除=什么都不用做)，系统还可以调度多次写入的顺序以获得更好的效率。</p>
+<blockquote>
+<p><strong>Durability/Performance Trade-Off</strong></p>
+<p>存储系统通常面临 durability/performance trade-off。如果用户希望写入的数据能立刻变得持久，那么文件系统就必须将新数据立刻落盘，但这样会很慢；如果用户可以忍受小量的数据丢失，那么文件系统就可以将数据在内存中放一会儿，每隔一段时间落盘一次，这样效率会有明显提升。至于如何在 trade-off 中选择，这与用户需求息息相关。</p>
+</blockquote>
+<p>一些应用 (比如数据库) 不喜欢这种 trade-off，因此它们会通过使用 fsync()，或者跳过文件系统层直接使用磁盘 I/O API 等方式来强制落盘。它们牺牲了效率但获得了稳定性。</p>
+<h2 id="40-8-Summary"><a href="#40-8-Summary" class="headerlink" title="40.8 Summary"></a>40.8 Summary</h2><p>略。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/02/10/MIT-6.S081%20Lecture%2009%20-%20Interrupts/" rel="prev" title="MIT-6.S081 Lecture 09: Interrupts">
+                  <i class="fa fa-chevron-left"></i> MIT-6.S081 Lecture 09: Interrupts
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/02/14/OSTEP/OSTEP%20Chapter%2038%20-%20Redundant%20Arrays%20of%20Inexpensive%20Disks%20(RAIDs)/" rel="next" title="OSTEP Chapter 38: Redundant Arrays of Inexpensive Disks (RAIDs)">
+                  OSTEP Chapter 38: Redundant Arrays of Inexpensive Disks (RAIDs) <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">starling</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":"forest","js":{"url":"https://cdn.jsdelivr.net/npm/mermaid@8.11.2/dist/mermaid.min.js","integrity":"sha256-lBK8/r0PCT3qtPtIvDcaT+20nHioFbzRGg36kOJ+wz4="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
