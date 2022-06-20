@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://kristoff-starling.github.io/2022/03/10/OSTEP/OSTEP%20Chapter%2014%20-%20Interlude%20-%20Memory%20API/</loc>
+    <lastmod>2022-06-20</lastmod>
+  </url>
+  <url>
     <loc>https://kristoff-starling.github.io/2022/03/11/OSTEP/OSTEP%20Chapter%2013%20-%20The%20Abstraction%20-%20The%20Address%20Space/</loc>
     <lastmod>2022-06-19</lastmod>
   </url>
