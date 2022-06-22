@@ -1,0 +1,134 @@
+---
+layout: post
+date: 2022-02-38
+title: "OSTEP Chapter 14: Interlude: Memory API"
+categories: ["WISC-CS537 Introduction to Operating Systems", "Book Notes"]
+tags: 
+mathjax: true
+---
+
+## 14.1 Types of Memory
+
+在一个 C 程序中，程序使用的内存有两种：
+
+* 栈内存，这部分内存的分配和回收由编译器隐式地完成，因此也被称为“自动内存”。在 C 程序中声明使用栈内存是非常简单的，比如 <!-- more -->
+
+    ```c
+    void func() {
+        int x; // declares an integer on the stack
+        ...
+    }
+    ```
+
+    编译器会自动在栈上为变量 x 分配空间，且函数 func() 结束时编译器会自动回收这部分内存。
+
+* 堆内存：如果我们想要一些长生存周期 (不只存活在函数内部) 的内存，我们就要使用堆内存。堆内存是由程序员在程序中显式申请的，分配和释放都由程序员负责。一个例子如下：
+
+    ```c
+    void func() {
+        int *x = (int *)malloc(sizeof(int));
+        ...
+    }
+    ```
+
+    malloc() 函数负责在堆区申请了一个 int 大小的内存，而这个内存的地址被保存在了指针变量 x 中，这个地址是存储在栈上的。
+
+## 14.2 The `malloc()` Call
+
+malloc() 的声明如下：
+
+```c
+#include <stdlib.h>
+void *malloc(size_t size);
+```
+
+传入需要分配的大小，malloc() 要么返回 NULL 表示分配失败，要么返回一个地址表示分配区域的起始位置。
+
+> **小心 sizeof() 的行为！**
+>
+> 下面两段代码的输出行为是不同的！
+>
+> ```c
+> int x[10];
+> printf("%d\n", sizeof(x));
+> ```
+>
+> 这里 sizeof() 会返回整个数组的大小 40。
+>
+> ```c
+> int *x = malloc(10 * sizeof(int));
+> printf("%d\n", sizeof(x));
+> ```
+>
+> 这里 sizeof() 会认为你只是想知道 int 指针的大小，因此会返回 4 (32/64bit machine)。
+
+## 14.3 The `free()` Call
+
+free() API 的参数只有一个，只需要给他传某个 malloc() 返回的首地址指针即可。分配区域的大小是由内存分配库自己记录的。
+
+## 14.4 Common Errors
+
+程序员自己管理 malloc() 和 free() 总是会出现各种细微的错误，因此很多现代的编程语言支持自动内存分配，即某些场景下即使程序员只管分配不管回收，垃圾收集器 (garbage collector) 也会帮你把回收的脏活干完。
+
+### Forgetting To Allocate Memory
+
+错误的例子：
+
+```c
+char *src = "Hello";
+char *dst;
+strcpy(dst, src);
+```
+
+正确的例子：
+
+```c
+char *src = "Hello";
+char *dst = (char *)malloc(strlen(src) + 1); // 小心！别忘了+1,'\0'也要被复制过来
+strcpy(dst, src);
+```
+
+事实上 glibc 还提供了 strdup() 函数，我们只需要指定需要复制的函数，它就会自动帮我们 malloc() 空间，复制字符串，并返回指向复制字符串的指针。
+
+### Not Allocating Enough Memory
+
+分配的内存不够不一定会暴露问题，但一旦有别的变量被覆盖就会导致严重的后果。
+
+### Forgetting to Initialize Allocated Memory
+
+对 malloc() 得到的内存中的初始值作出任何假设都属于 undefined behavior。
+
+### Forgetting to Free Memory
+
+内存泄漏是一种常见的错误。如果程序员总是忘了释放内存，那么长时间运行的软件就有可能将堆区消耗殆尽，最终只能重启机器。需要注意的是，即使你使用的是带有 garbage collector 的语言，你仍然可能无法避免这种错误：如果你还有任何一个指针指向某段内存，即使你将来不再用这段内存，garbage collector 也不会将其回收。
+
+在某些情况下不使用 free() 可能是无害的，比如你写一个短生命周期的程序 (OJ程序)，那么进程退出的时候操作系统会把该进程使用的所有资源释放。但只分配不释放是很坏的编程习惯。
+
+### Freeing Memory Before You Are Done With It
+
+在释放了一段内存后仍然使用其中的内容是危险的，这种指针被称为 dangling pointer。use-after-free 属于 undefined behavior，可能导致严重后果：比如如果内存分配器将这段内存又分配给了别人，就会出现两人同时使用一段内存的情况。
+
+### Freeing Memory Repeatly
+
+double free 也是 undefined behavior，可能导致内存分配器崩溃。
+
+### Calling `free()` Incorrectly
+
+给 free() 传递错误的指针 (不是之前某个 malloc() 的返回值) 也可能造成严重的后果。
+
+## 14.5 Underlying OS Support
+
+操作系统提供 brk() 和 sbrk() 两个系统调用，用于修改进程的 break：break 指向进程堆区的顶部。需要注意的是 malloc() 和 free() 这两个库函数会使用 OS 的系统调用，在程序员层面我们不要跨级去使用系统调用，否则可能导致意想不到的结果，在用户层面我们只要使用库函数即可。
+
+另外一个可以获得内存的系统调用是 mmap()，传入正确的参数后，mmap() 可以返回一段匿名的内存区域，这个区域并不属于任何一个文件，而是磁盘上交换空间 (swap space) 的一部分。对于应用程序来说，这样一段内存可以被当作堆区内存使用。
+
+## 14.6 Other Calls
+
+一些其他有用的库函数包括但不限于：
+
+* calloc()：先 malloc() 再将分配的内存清零。
+* realloc()：当你调用 malloc() 分配了一段内存，但发现大小不足时，可以调用 realloc()，它会分配一段更大的内存，将旧内存中的内容复制到新内存区域中，并返回新内存的指针。
+
+## 14.7 Summary
+
+略。

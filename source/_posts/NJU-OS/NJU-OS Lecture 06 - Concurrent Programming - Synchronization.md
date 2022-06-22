@@ -100,52 +100,52 @@ int main(int argc, char *argv[]) {
 > ```python
 > # pc.py
 > class ProducerConsumer:
-> locked, count, log, = '', 0, ''
+>   locked, count, log, = '', 0, ''
 > 
-> def tryacquire(self):
->   self.locked, seen = '🔒', self.locked
->   return seen == ''
+>   def tryacquire(self):
+>       self.locked, seen = '🔒', self.locked
+>       return seen == ''
 > 
-> def release(self):
->   self.locked = ''
+>   def release(self):
+>     self.locked = ''
 > 
-> @thread
-> def tp(self):
->   while True:
->       while not self.tryacquire(): pass
->       if not self.count == 1:
->           break
+>   @thread
+>   def tp(self):
+>       while True:
+>          while not self.tryacquire(): pass
+>          if not self.count == 1:
+>            break
+>          self.release()
+>       self.log, self.count = self.log + '(', self.count + 1
 >       self.release()
->   self.log, self.count = self.log + '(', self.count + 1
->   self.release()
 > 
-> @thread
-> def tc1(self):
->   while True:
->       while not self.tryacquire(): pass
->       if not self.count == 0:
->           break
+>   @thread
+>   def tc1(self):
+>       while True:
+>          while not self.tryacquire(): pass
+>          if not self.count == 0:
+>            break
+>          self.release()
+>       self.log, self.count = self.log + ')', self.count - 1
 >       self.release()
->   self.log, self.count = self.log + ')', self.count - 1
->   self.release()
 > 
-> @thread
-> def tc2(self):
->   while True:
->       while not self.tryacquire(): pass
->       if not self.count == 0:
->           break
+>   @thread
+>   def tc2(self):
+>       while True:
+>          while not self.tryacquire(): pass
+>          if not self.count == 0:
+>            break
+>          self.release()
+>       self.log, self.count = self.log + ')', self.count - 1
 >       self.release()
->   self.log, self.count = self.log + ')', self.count - 1
->   self.release()
 > 
-> @marker
-> def mark_negative(self, state):
->   count = 0
->   for ch in self.log:
->       if ch == '(': count += 1
->       if ch == ')': count -= 1
->       if count < 0: return 'red'
+>   @marker
+>   def mark_negative(self, state):
+>       count = 0
+>       for ch in self.log:
+>          if ch == '(': count += 1
+>          if ch == ')': count -= 1
+>          if count < 0: return 'red'
 > ```
 >
 > 使用命令 `python model-checker.py pc.py | grep red` 可以快速检查是否有红色节点。
@@ -178,7 +178,7 @@ assert(cond);
 // if job is unrelated to critical variables, mutex lock can be released.
 
 /* if other threads' cv may be satisfied */
-cond_broadcase(&cv);
+cond_broadcast(&cv);
 /* ------------------------------------- */
 mutex_unlock(&lk);
 ```
