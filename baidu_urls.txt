@@ -1,3 +1,4 @@
+https://kristoff-starling.github.io/2022/06/22/AtCoder%20Beginner%20Contest%20256%20%E9%A2%98%E8%A7%A3/
 https://kristoff-starling.github.io/2022/06/14/NJU-OS/FAT%20Specification%20-%20Notes/
 https://kristoff-starling.github.io/2022/06/01/NJU-OS/NJU-OS%20Lecture%2029%20-%20Xv6%20File%20System%20Implementation/
 https://kristoff-starling.github.io/2022/06/01/NJU-OS/NJU-OS%20Lecture%2030%20-%20Modern%20Storage%20System/
