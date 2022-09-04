@@ -205,7 +205,7 @@ s1(statement 1)
 s2{statement 2 yes?}
 s3(body)
 s4(statement 3)
-s5(continue)
+s5(break)
 s0 --&amp;gt; s1
 s1 --&amp;gt; s2
 s2 --&amp;gt; |yes| s3
