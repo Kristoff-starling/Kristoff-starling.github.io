@@ -241,8 +241,8 @@ iiiiiiiiiiiiiiiiiiiiiiiiijjjjjjjjjjjjjjjjjjjjjjjjj
 | :---------: | :----------------------------------------------------------: |
 |   `go+d`    | 开头是g结尾是d，中间出现了一次及以上的o<br>`+` 表示前一个字符出现了若干次（与 `*` 的区别是非零） |
 |   `go?d`    |         gd或god<br>`?` 表示前一个字符重复零次或一次          |
-|  `gd|god`   |                    gd或god<br>`|` 表示或                     |
-| `g(la|oo)d` |     glad/good<br>`()` 里可以罗列若干个串并用 `|` 分隔开      |
+|  `gd\|god`   |                    gd或god<br>`\|` 表示或                     |
+| `g(la\|oo)d` |     glad/good<br>`()` 里可以罗列若干个串并用 `\|` 分隔开      |
 | `A(xyz)+B`  | 开头是A结尾是B中间有一个或多个xyz<br>`()+` 表示括号中的群组重复一次或多次 |
 
 #### Standard Streams
@@ -287,7 +287,7 @@ find . -printf '"%p"\n' | grep '\.cpp"$' | xargs wc -l
 
 Makefile最简单的一点语法：
 
-```
+```makefile
 要生成的文件名:依赖文件列表
 	用于生成目标文件的命令序列
 ```
