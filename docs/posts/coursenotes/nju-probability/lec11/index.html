@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="【例】 (顺序统计量, order statistics) 设 $X,Y$ 相互独立，分布函数分别为 $F_X(x)$ 和 $F_Y(y)$。令 $M=\max \{X,Y\}$，$N=\min \{X,Y\}$，现考虑 $M,N$ 的分布。 $$ \begin{align} F_M(z)&amp;=P(M\leq z)=P(\max {X,Y}\leq z)=P(X\leq z,Y\leq z)\overset{独立性}{=}P(X\leq z)P(Y\leq z)=F_X(z)F_Y(z)\\ F_N(z)&amp;=P(N\leq z)=P(\min {X,Y}\leq z)=1-P(X&gt;z,Y&gt;z)=1-(1-F_X(z))(1-F_Y(z)) \end{align} $$ 注：(1) 设 $X,Y$ 只取整数，则 $P(M=n)=P(M\leq n)-P(M\leq n-1)=F_M(n)-F_M(n-1)$。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-probability/lec11/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/nju-probability/lec11/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/nju-probability/lec11/">
+  <meta property="og:title" content="Lecture 11: Examples of 2-Dimensional Random Variable Function | Academic">
+  <meta property="og:description" content="【例】 (顺序统计量, order statistics) 设 $X,Y$ 相互独立，分布函数分别为 $F_X(x)$ 和 $F_Y(y)$。令 $M=\max \{X,Y\}$，$N=\min \{X,Y\}$，现考虑 $M,N$ 的分布。 $$ \begin{align} F_M(z)&amp;=P(M\leq z)=P(\max {X,Y}\leq z)=P(X\leq z,Y\leq z)\overset{独立性}{=}P(X\leq z)P(Y\leq z)=F_X(z)F_Y(z)\\ F_N(z)&amp;=P(N\leq z)=P(\min {X,Y}\leq z)=1-P(X&gt;z,Y&gt;z)=1-(1-F_X(z))(1-F_Y(z)) \end{align} $$ 注：(1) 设 $X,Y$ 只取整数，则 $P(M=n)=P(M\leq n)-P(M\leq n-1)=F_M(n)-F_M(n-1)$。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 11: Examples of 2-Dimensional Random Variable Function | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/hw1/">Homework</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/hw1/">Homework 1</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/hw2/">Homework 2</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/lec01/">Lectures</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec01/">Lecture 01</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec02/">Lecture 02</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec03/">Lecture 03</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec04/">Lecture 04</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec05/">Lecture 05</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec06/">Lecture 06</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec07/">Lecture 07</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec08/">Lecture 08</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec09/">Lecture 09</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec10/">Lecture 10</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/nju-probability/lec11/">Lecture 11</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec12/">Lecture 12</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec13/">Lecture 13</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec14/">Lecture 14</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec15/">Lecture 15</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec16/">Lecture 16</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec21/">Lecture 21</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec22/">Lecture 22</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/mgf/">Materials</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/mgf/">MGF</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 11: Examples of 2-Dimensional Random Variable Function</h1>
+
+          <div class="article-style">
+            <p>【例】 (顺序统计量, order statistics) 设 $X,Y$ 相互独立，分布函数分别为 $F_X(x)$ 和 $F_Y(y)$。令 $M=\max \{X,Y\}$，$N=\min \{X,Y\}$，现考虑 $M,N$ 的分布。
+$$
+\begin{align}
+F_M(z)&amp;=P(M\leq z)=P(\max {X,Y}\leq z)=P(X\leq z,Y\leq z)\overset{独立性}{=}P(X\leq z)P(Y\leq z)=F_X(z)F_Y(z)\\
+F_N(z)&amp;=P(N\leq z)=P(\min {X,Y}\leq z)=1-P(X&gt;z,Y&gt;z)=1-(1-F_X(z))(1-F_Y(z))
+\end{align}
+$$
+注：(1) 设 $X,Y$ 只取整数，则 $P(M=n)=P(M\leq n)-P(M\leq n-1)=F_M(n)-F_M(n-1)$。</p>
+<p>(2) 上述结果可以推广到 $n$ 个独立随机变量 $X_1,\cdots, X_n$ 的情形，此时有
+$$
+\begin{align}
+F_M(z)&amp;=\prod_{k=1}^nF_{X_i}(z)\\
+F_N(z)&amp;=1-\prod_{k=1}^n(1-F_{X_i}(z))
+\end{align}
+$$
+【例】 (和的分布) 令 $Z=X+Y$，考虑下列情形中 $Z$ 的分布：</p>
+<ul>
+<li>$X,Y$ 相互独立，且取值均为非负整数。此时 $X,Y$ 显然均为离散型随机变量，记 $P(X=k)=p_k$，$P(Y-k)=q_k$，$k=0,1,2,\cdots$。</li>
+<li>$(X,Y)$ 的密度函数为 $p(x,y)$。</li>
+</ul>
+<p>对于离散情形：
+$$
+P(Z=n)=P(X+Y=n)=\sum_{k=0}^nP(X=k,Y=n-k)=\sum_{k=0}^nP(X=k)P(Y=n-k)=\sum_{k=0}^np_kq_{n-k}
+$$
+上式称为 (离散) 卷积 (convolution) 公式。</p>
+<p>对于连续情形：
+$$
+\begin{align}
+F_Z(z)&amp;=P(X+Y\leq z)=\iint_{{(x,y):x+y\leq z}}p(x,y)dxdy\\
+&amp;=\int_{-\infty}^{+\infty}\int_{-\infty}^{z-x}p(x,y)dydx\\
+&amp;\overset{y=v-x}{=}\int_{-\infty}^{+\infty}\int_{-\infty}^zp(x,v-x)dvdx\\
+&amp;\overset{换序}{=}\int_{-\infty}^z\left(\int_{-\infty}^{+\infty}p(x,v-x)dx\right)dv
+\end{align}
+$$
+因为 $\displaystyle{F_Z(z)=\int_{-\infty}^z p_Z(u)du}$，和上式对比，我们发现括号内的部分正好是 $Z$ 的密度函数。
+$$
+p_Z(v)=\int_{-\infty}^{+\infty}p(x,v-x)dx
+$$
+上式称为 (连续) 卷积公式。</p>
+<p>进一步地，若 $X,Y$ 独立，则 $p(x,y)=p_X(x)p_Y(y)$，因此 $Z$ 的密度为
+$$
+p_Z(v)=\int_{-\infty}^{+\infty}p_X(x)p_Y(v-x)dx
+$$</p>
+<hr>
+<p>【例题】 设 $X\sim B(n_1,p),Y\sim B(n_2,p)$，且 $X,Y$ 独立，求 $X+Y$ 的分布。</p>
+<blockquote>
+<p>解：$P(X=k)=\binom{n_1}{k}p^k(1-p)^{n_1-k},k=0,\cdots,n_1$，$P(Y=k)=\binom{n_2}{k}p^k(1-p)^{n_2-k},k=0,\cdots n_2$。</p>
+<p>令 $Z=X+Y$，则
+$$
+\begin{align}
+P(Z=n)&amp;=\sum_{k=0}^nP(X=k,Y=n-k)=\sum_{k=0}^nP(X=k)P(Y=n-k)\\
+&amp;=\sum_{k=\max \{0,n-n_2\}}^{\min\{n,n_1\}}\binom{n_1}{k}p^k(1-p)^{n_1-k}\binom{n_2}{n-k}p^{n-k}(1-p)^{n_2-n+k}\\
+&amp;=p^n(1-p)^{n_1+n_2-n}\sum_{k=\max \{0,n-n_2\}}^{\min \{n,n_1\}}\binom{n_1}{k}\binom{n_2}{n-k}\\
+&amp;=p^n(1-p)^{n_1+n_2-n}\binom{n_1+n_2}{n}
+\end{align}
+$$
+因此 $Z\sim B(n_1+n_2,p)$。</p>
+<p>在多次实验 $p$ 相同的情况下，这个结论是容易理解的：先做 $n_1$ 次再做 $n_2$ 次和一共做 $n_1+n_2$ 次是一样的。</p>
+</blockquote>
+<p>注：上述结论可以推广到 $n$ 个变量的情形。且类似可证对于独立的泊松分布 $X_k\sim P(\lambda_k),k=1,\cdots n$，有 $X=\sum_{k=1}^nX_k\sim P(\sum_{k=1}^n\lambda_k)$。</p>
+<p>【例题】设 $X\sim N(\mu_1,\sigma_1^2),Y\sim N(\mu_2,\sigma_2^2)$ 且 $X,Y$ 相互独立，求 $Z=X+Y$ 的分布。</p>
+<blockquote>
+<p>解：$p_X(x)=\frac{1}{\sqrt {2\pi}\sigma_1}e^{-\frac{(x-\mu_1)^2}{2\sigma_1^2}},p_Y(y)=\frac{1}{\sqrt {2\pi}\sigma_2}e^{-\frac{(y-\mu_2)^2}{2\sigma_2^2}}$。</p>
+<p>正态分布变量的取值均为 $\mathbb R$ ，因此我们直接使用卷积公式：
+$$
+\begin{align}
+p_Z(z)=\int_{-\infty}^{+\infty}p_X(x)p_Y(z-x)dx=\frac{1}{2\pi \sigma_1 \sigma_2}\int_{-\infty}^{+\infty}e^{-\frac{1}{2}\left[\left(\frac{x-\mu_1}{\sigma_1}\right)^2+\left(\frac{z-x-\mu_2}{\sigma_2}\right)^2\right]}dx
+\end{align}
+$$
+遇到这种 e 上带指数，积分区域是 $\mathbb R$ 的积分，常见的处理手法是将其凑成平方的形式，然后套用高斯积分。因此我们现在希望中括号中两个平方式的交叉项消掉。这里给出一个处理技巧：令 $x=y+a$，$a$ 为待定的系数，则
+$$
+\begin{align}
+p_Z(z)=\frac{1}{2\pi \sigma_1 \sigma_2}\int_{-\infty}^{+\infty}e^{-\frac{1}{2}\left[\left(\frac{y+a-\mu_1}{\sigma_1}\right)^2+\left(\frac{y+a+\mu_2-z}{\sigma_2}\right)^2\right]}dy
+\end{align}
+$$
+令交叉项为零，即
+$$
+\frac{y}{\sigma_1}\cdot \frac{a-\mu_1}{\sigma_1}+\frac{y}{\sigma_2}\cdot \frac{a+\mu_2-z}{\sigma_2}=0
+$$
+解得
+$$
+a=\frac{\mu_1\sigma_2^2-\mu_2\sigma_1^2+z\sigma_1^2}{\sigma_1^2+\sigma_2^2}
+$$
+带回原式，有
+$$
+\begin{align}
+p_Z(z)&amp;=\frac{1}{2\pi \sigma_1 \sigma_2}\int_{-\infty}^{+\infty}e^{-\frac{1}{2}\left[\left(\frac{y}{\sigma_1}\right)^2+\left(\frac{y}{\sigma_2}\right)^2+\frac{(z-\mu_1-\mu_2)^2}{\sigma_1^2+\sigma_2^2}\right]}dy\\
+&amp;=\frac{1}{2\pi \sigma_1 \sigma_2}e^{-\frac{(z-\mu_1-\mu_2)^2}{2\left(\sigma_1^2+\sigma_2^2\right)}}\int_{-\infty}^{+\infty}e^{-\frac{1}{2}\cdot \frac{\sigma_1^2+\sigma_2^2}{\sigma_1^2\sigma_2^2}y^2}dy\\
+&amp;\overset{v=\sqrt{\frac{\sigma_1^2+\sigma_2^2}{\sigma_1^2\sigma_2^2}}y}{=}\frac{1}{2\pi \sigma_1 \sigma_2}e^{-\frac{(z-\mu_1-\mu_2)^2}{2\left(\sigma_1^2+\sigma_2^2\right)}}\int_{-\infty}^{+\infty}e^{-\frac{v^2}{2}}d\left(\sqrt{\frac{\sigma_1\sigma_2}{\sigma_1^2+\sigma_2^2}}y\right)\\
+&amp;=\frac{1}{\sqrt{2\pi}\cdot \sqrt{\sigma_1^2+\sigma_2^2}}e^{-\frac{(z-\mu_1-\mu_2)^2}{2\left(\sigma_1^2+\sigma_2^2\right)}}
+\end{align}
+$$
+因此 $Z\sim N(\mu_1+\mu_2,\sigma_1^2+\sigma_2^2)$。</p>
+</blockquote>
+<p>【例题】 (习题 3.25) 设 $X\sim U[0,2],Y\sim U[0,1]$ 且 $X,Y$ 独立，求 $Z=X+Y$ 的密度函数。</p>
+<blockquote>
+<p>解：该题随机变量取值不是 $\mathbb R$，因此不能套用卷积公式，要从定义出法求解。</p>
+<p>$p_X(x)=\begin{cases}\frac{1}{2}&amp;,0\leq x\leq 2\\0&amp;,otherwise\end{cases}$，$p_Y(y)=\begin{cases}1&amp;,0\leq y\leq 1\\0&amp;,otherwise\end{cases}$。$(X,Y)$ 的有效区域是一个长方形。
+$$
+F_Z(z)=P(X+Y\leq z)=\iint_{{(x,y):x+y\leq z}}p(x,y)dxdy
+$$
+在有效区域内，有 $p(x,y)=p_X(x)p_Y(y)=\frac{1}{2}$。考虑拿直线 $x+y\leq z$ 滑过平面，看直线左侧。</p>
+<p>容易看出 $z\leq 0$ 时 $F_Z(z)=0$；$z\geq 3$ 时 $F_Z(z)=1$。剩下的几种情形需要仔细考虑：</p>
+<ul>
+<li>$0&lt;z&lt;1$，此时获得的是一个三角形，$F_Z(z)=\frac{1}{2}\cdot \frac{z^2}{2}=\frac{z^2}{4},p_Z(z)=F&rsquo;_Z(z)=\frac{z}{2}$。</li>
+<li>$1\leq z&lt;2$，此时获得的是一个梯形，$F_Z(z)=\frac{1}{2}\cdot \frac{z-1+z}{2}=\frac{z}{2}-\frac{1}{4}，p_Z(z)=\frac{1}{2}$。</li>
+<li>$2\leq z&lt;3$，此时获得的是矩形减去一个三角形，$F_Z(z)=\frac{1}{2}\cdot (2-\frac{1}{2}(3-z)^2)=1-\frac{1}{4}(3-z)^2$，$p_Z(z)=\frac{1}{2}(3-z)$。</li>
+</ul>
+</blockquote>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/nju-probability/lec10/" rel="next">Lecture 10: 2-Dimensional Normal Distribution and Random Variable Function</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/nju-probability/lec12/" rel="prev"> Lecture 12: More Examples of 2-Dimensional Random Variable Function</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/nju-probability/lec11.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

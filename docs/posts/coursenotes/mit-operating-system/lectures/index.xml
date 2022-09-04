@@ -1,0 +1,1377 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lectures | Academic</title>
+    <link>/posts/coursenotes/mit-operating-system/lectures/</link>
+      <atom:link href="/posts/coursenotes/mit-operating-system/lectures/index.xml" rel="self" type="application/rss+xml" />
+    <description>Lectures</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Lectures</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/</link>
+    </image>
+    
+    <item>
+      <title>MIT-6.S081 Lecture 01: Introduction and Examples</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/lec01/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/mit-operating-system/lectures/lec01/</guid>
+      <description>&lt;h2 id=&#34;purposes-of-os&#34;&gt;Purposes of O/S&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Abstraction of hardware. Higher level interfaces and abstractions that applications can use can enhance convenience and portability (e.g. processes and file systems)&lt;/li&gt;
+&lt;li&gt;Multiplexing. Different applications can execute at the same time.&lt;/li&gt;
+&lt;li&gt;Isolation and sharing.&lt;/li&gt;
+&lt;li&gt;Security. Restrictions on resources applications have access to.&lt;/li&gt;
+&lt;li&gt;(Help applications to get) performance.&lt;/li&gt;
+&lt;li&gt;Range of different uses.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;os-organization&#34;&gt;O/S Organization&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;User:  VIM, CC, SHELL etc.&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Kernel: File system etc.&lt;br&gt;Processes, Memory allocations, Access control &amp;hellip;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Hardware: CPU, RAM, DISK, NET etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;api-kernel&#34;&gt;API-Kernel&lt;/h2&gt;
+&lt;p&gt;Applications use API-kernel provided by Kernel to jump into Kernel. For example:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;fd = open(&amp;quot;out&amp;quot;, 1);	// fd is the file descriptor
+write(fd, &amp;quot;hello\n&amp;quot;, 6);
+pid = fork();			// fork() API returns the descriptor of the newly created process
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Do high-level programming language like Python directly use system calls?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Some high-level programming languages focus on portability - its code should be executable on different operating systems so usually they call library functions instead of directly using system calls to ensure its portability. Of course, theses languages provide methods for programmers to directly use system calls.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;How is jumping to kernel different from ordinary function calls?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Kernel codes have direct access to sensitive information such as disks, so the privilege level should be carefully maintained during kernel jumping to ensure the safety of data.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;why-hardinteresting&#34;&gt;Why hard/interesting?&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;unforgiving environment: different from applications whose environment is provided by O/S, O/S is built directly on the hardware, which is harder.&lt;/p&gt;
+&lt;p&gt;(In this course, QEMU is used to simulate CPU and corresponding hardwares.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Tensions: there are some trade-offs. For example&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;we want high efficiency so O/S should be close to the H/W, but to support applications we need a correct high-level abstraction.&lt;/li&gt;
+&lt;li&gt;We want powerful O/S services, but applications want simple interfaces.&lt;/li&gt;
+&lt;li&gt;We want flexible API, but for security reasons we need to have restraints.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Interactions. For example,&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;fd = open();
+pid = fork();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The semantic of &lt;code&gt;fork()&lt;/code&gt; is to create a copy of the current process. The file descriptor &lt;code&gt;fd&lt;/code&gt; we acquire at the first line should be accessible by the child process, so interactions between processes are needed.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;applications-using-system-calls-examples&#34;&gt;Applications using system calls: Examples&lt;/h2&gt;
+&lt;h3 id=&#34;read-write&#34;&gt;&lt;code&gt;read()&lt;/code&gt; &lt;code&gt;write()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;This is &lt;code&gt;copy.c&lt;/code&gt;, we execute it on xv6:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// copy.c: copy input to output.
+
+#include &amp;quot;kernel/types.h&amp;quot;
+#include &amp;quot;user/user.h&amp;quot;
+
+int main ()
+{
+    char buf[64];
+    
+    while (1)
+    {
+        int n = read(0, buf, sizeof(buf));
+        if (n &amp;lt;= 0) break;
+        write(1, buf, n);
+    }
+    
+    exit(0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;copy.c&lt;/code&gt; &amp;rsquo;s function is that it prints on the screen whatever you input on the screen. Here 0/1 are the file descriptors of stdin/stdout (pervasive UNIX convention), which, in default, connect to the console input/output. Shell ensures that stdin/stdout have been opened when &lt;code&gt;copy.c&lt;/code&gt; is being executed.&lt;/p&gt;
+&lt;p&gt;Here &lt;code&gt;copy.c&lt;/code&gt; doesn&amp;rsquo;t check the return values of system calls for error (e.g. line 16). We should be more careful when coding.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;What if we replace &lt;code&gt;sizeof(buf)&lt;/code&gt; by 65?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;O/S will happily read at most 65 bytes from console input, but it may cause unexpected memory error. It&amp;rsquo;s a bug.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;open&#34;&gt;&lt;code&gt;open()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;stdin and stdout are automatically opened, but we need a method to open files by ourselves, here&amp;rsquo;s another example program &lt;code&gt;open.c&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// open.c: create a file, write to it.
+
+#include &amp;quot;kernel/types.h&amp;quot;
+#include &amp;quot;user/user.h&amp;quot;
+#include &amp;quot;kernel/fcntl.h&amp;quot;
+
+int main ()
+{
+    int fd = open(&amp;quot;output.txt&amp;quot;, O_WRONLY | O_CREATE);
+    write(fd, &amp;quot;ooo\n&amp;quot;, 4);
+    
+    exit(0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;After running &lt;code&gt;open&lt;/code&gt;, we use &lt;code&gt;cat output.txt&lt;/code&gt; to see the contents and we&amp;rsquo;ll get &lt;code&gt;ooo\n&lt;/code&gt;. Here &lt;code&gt;fd&lt;/code&gt; is the file descriptor indexing into a table inside the kernel. The kernel maintains a table for every running process and the table tells the kernel which file each file descriptor refers to. (NOTE: same file descriptor may refer to different files in different processes because the &amp;ldquo;table&amp;rdquo; is different.)&lt;/p&gt;
+&lt;h3 id=&#34;fork&#34;&gt;&lt;code&gt;fork()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;This is &lt;code&gt;fork.c&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// fork.c: create a new process
+
+#include &amp;quot;kernel/types.h&amp;quot;
+#include &amp;quot;user/user.h&amp;quot;
+
+int main ()
+{
+    int pid;
+    pid = fork();
+    
+    printf(&amp;quot;fork() returned %d\n&amp;quot;, pid);
+    if (pid == 0)
+    	printf(&amp;quot;child\n&amp;quot;);
+    else
+        printf(&amp;quot;parent\n&amp;quot;);
+  	
+    exit(0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;fork()&lt;/code&gt; returns in both processes. In the original process, &lt;code&gt;fork()&lt;/code&gt; returns a value greater than zero representing the pid of the child process. In the new process, &lt;code&gt;fork()&lt;/code&gt; returns zero. Even if the two processes have the same memory, we can discriminate the parent from the child according to the return value of &lt;code&gt;fork()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The printed message is&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;ffoorrkk(()) rreettuurrnende d 0
+1c9h
+ilpda
+rent
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It seems like messy code, but actually the two processes run at the same time and QEMU simulates a multi-core processor for us, so the two processes alternatively print information on the console.&lt;/p&gt;
+&lt;h3 id=&#34;exec&#34;&gt;&lt;code&gt;exec()&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;When a command is typed into the shell, the shell forks a child process and use &lt;code&gt;exec()&lt;/code&gt; system call to run the application in the child process. &lt;code&gt;exec()&lt;/code&gt; loads the instructions in the file you specify over the current process, discards its current memory and starts executing those instructions.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;fork()&lt;/code&gt; and &lt;code&gt;exec()&lt;/code&gt; are always used together to run an application, here is &lt;code&gt;forkexec.c&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// forkexec.c: fork then exec
+
+int main ()
+{
+    int pid, status;
+    pid = fork();
+    if (pid == 0)
+    {
+        char *argv[] = { &amp;quot;echo&amp;quot;, &amp;quot;THIS&amp;quot;, &amp;quot;IS&amp;quot;, &amp;quot;ECHO&amp;quot;, 0 };
+        	// Note: there should be a null pointer NULL/0 at the end of the array
+        exec(&amp;quot;echo&amp;quot;, argv);
+        printf(&amp;quot;exec failed!\n&amp;quot;);
+        exit(1);
+    }
+    else
+    {
+        printf(&amp;quot;parent waiting\n&amp;quot;);
+        wait(&amp;amp;status);
+        	// the exit status of the child process will be recorded in variable status
+        printf(&amp;quot;the child exited with status %d\n&amp;quot;, status);
+    }
+    exit(0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If &lt;code&gt;echo&lt;/code&gt; is executed successfully, it will print the arguments and use &lt;code&gt;exit(0)&lt;/code&gt; to exit. If &lt;code&gt;echo&lt;/code&gt; returns, which means something goes wrong, the child process will exit by &lt;code&gt;exit(1)&lt;/code&gt; to tell the parent process about the error.&lt;/p&gt;
+&lt;p&gt;In lots of cases, &lt;code&gt;fork()&lt;/code&gt; and &lt;code&gt;exec()&lt;/code&gt; are used together. It seems that a lot of memory space is wasted because after &lt;code&gt;fork()&lt;/code&gt; copies the memory of the parent process, &lt;code&gt;exec()&lt;/code&gt; immediately discards it. But with the aid of virtual memory, we can use the tricky &amp;ldquo;copy on write&amp;rdquo; technique to solve the issue.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Is there any way for the child process to wait for the parent process?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;No.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Will &amp;ldquo;parent waiting\n&amp;rdquo; always be printed first?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Not necessary. The parent process and the child process execute concurrently so there outputs may interweave. However, because it takes a lot of machine instructions to discard the memory, load the memory and start &lt;code&gt;echo&lt;/code&gt;, &amp;ldquo;parent waiting\n&amp;rdquo;, in most cases, will be printed first.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;How should we use &lt;code&gt;wait()&lt;/code&gt; if there are more than one child processes?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If there are 2 child processes, the parent process should use 2 &lt;code&gt;wait()&lt;/code&gt; to wait for both of them to exit.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;io-redirection&#34;&gt;IO Redirection&lt;/h3&gt;
+&lt;p&gt;IO redirection can be achieved if we do something sophisticated between &lt;code&gt;fork()&lt;/code&gt; and &lt;code&gt;exec()&lt;/code&gt;. Here is &lt;code&gt;redirect.c&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// redirect.c: run a command with output redirected
+
+int main()
+{
+ 	int pid;
+
+	pid = fork();
+	if(pid == 0){
+		close(1);
+		open(&amp;quot;output.txt&amp;quot;, O_WRONLY|O_CREATE);
+
+        char *argv[] = { &amp;quot;echo&amp;quot;, &amp;quot;this&amp;quot;, &amp;quot;is&amp;quot;, &amp;quot;redirected&amp;quot;, &amp;quot;echo&amp;quot;, 0 };
+        exec(&amp;quot;echo&amp;quot;, argv);
+        printf(&amp;quot;exec failed!\n&amp;quot;);
+        exit(1);
+  	} else {
+    	wait((int *) 0);
+  	}
+
+  	exit(0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the child process, we firstly close file descriptor 1 and then open &amp;ldquo;output.txt&amp;rdquo;, the semantic of &lt;code&gt;open()&lt;/code&gt; is to allocate the least file descriptor that is not being used to the file. Since 0 is still allocated to the console input, file descriptor 1 is allocated to output.txt and &lt;code&gt;echo&lt;/code&gt; will output things into file 1, i.e. output.txt. It should be noticed that only the child process&amp;rsquo;s IO is redirected, the parent process, i.e. the shell process, stays the same.&lt;/p&gt;
+&lt;p&gt;The magical thing is that the application &lt;code&gt;echo&lt;/code&gt; doesn&amp;rsquo;t need to know about the redirection - the only thing it knows is that it should output to file descriptor 1. This is abstraction.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-6.S081 Lecture 03: OS Organization and System Calls</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/lec03/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/mit-operating-system/lectures/lec03/</guid>
+      <description>&lt;h2 id=&#34;isolation&#34;&gt;Isolation&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;We want strong isolation between applications so that if there&amp;rsquo;s a bug in one application, the others will not be damaged.&lt;/li&gt;
+&lt;li&gt;We also want isolation between applications and the operating system so that if weird arguments were passed to the OS, OS wouldn&amp;rsquo;t crash.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Let&amp;rsquo;s consider what happens if there&amp;rsquo;s no operating system, a strawman design. In this case, several applications (e.g. &lt;code&gt;shell&lt;/code&gt;, &lt;code&gt;echo&lt;/code&gt; etc.) run on the hardware, there is no abstraction layer between H/W and applications.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;There&amp;rsquo;s a demand for switching between applications. Because there&amp;rsquo;s no OS, &lt;code&gt;shell&lt;/code&gt; needs to proactively &amp;ldquo;give up&amp;rdquo; and &amp;ldquo;quit&amp;rdquo; the CPU to let others use the hardware. This is the so-called cooperating schedule. However, if there&amp;rsquo;s a dead loop in &lt;code&gt;shell&lt;/code&gt; or &lt;code&gt;shell&lt;/code&gt; is a malware, it will not quit and the hardware is completely occupied by this application. Therefore, we need a kind of &amp;ldquo;enforced multipliexing&amp;rdquo;: &lt;strong&gt;no matter what the application does, it will be forced to give up the CPU once in a while&lt;/strong&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Different applications share the same memory space. For example, &lt;code&gt;shell&lt;/code&gt;&amp;rsquo;s memory may start at address 1000 and &lt;code&gt;echo&lt;/code&gt;&amp;rsquo;s memory may start at address 2000. There&amp;rsquo;s no boundary between their memory space and it&amp;rsquo;s easy for one application to overwrite others&amp;rsquo; memory and cause tricky bugs.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In summary, we need operating systems to &lt;strong&gt;enforce both multiplexing and strong memory isolation&lt;/strong&gt;. Strawman design is not very common in today&amp;rsquo;s computer system. Some real-time system doesn&amp;rsquo;t have OS because applications trust each other, but in most cases we need OS to ensure isolation.&lt;/p&gt;
+&lt;p&gt;Unix inferfaces are sophisticated design. They abstracts the hardware resources and make isolation possible. For example,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Process is the abstraction of CPU. Applications use &lt;code&gt;fork()&lt;/code&gt; to create new processes, but it cannot assign a CPU core directly. How to schedule the processes on the CPU and how to arrange different CPU cores are the jobs of OS.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Exec&lt;/code&gt; is the abstraction of memory. Application use &lt;code&gt;exec()&lt;/code&gt; to load a new applications, during which it loads the &lt;strong&gt;memory image&lt;/strong&gt; which describes the text, data segments etc. During execution, applications can use system calls like &lt;code&gt;sbrk()&lt;/code&gt; to modify the memory image, but they cannot act directly on the physical memory. OS is responsible for allocating physical memory to the memory image.&lt;/li&gt;
+&lt;li&gt;File is the abstraction of disk blocks. Applications do operations on the files but they don&amp;rsquo;t have direct access to the physical storage device. They don&amp;rsquo;t know where the &amp;ldquo;file&amp;rdquo; is actually stored, which is the job belongs to OS.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;OS should be defensive: it should treat all the processes as malicious applications written by attackers and ensure that&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Apps cannot crash the OS.&lt;/li&gt;
+&lt;li&gt;Apps cannot break out of the isolation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Strong isolation is totally depend on the OS. The kernel is call &amp;ldquo;trusted computing base&amp;rdquo; (TCB). Kernels must have as few bugs as possible because any bug may be taken advantage of and becomes an exploit.&lt;/p&gt;
+&lt;p&gt;Strong isolation between applications and the OS are typically implemented by hardware support. Ususally there&amp;rsquo;re two: use/kernel mode and virtual memory.&lt;/p&gt;
+&lt;h3 id=&#34;userkernel-mode&#34;&gt;User/Kernel mode&lt;/h3&gt;
+&lt;p&gt;When running in kernel mode, CPU can execute privileged instructions which interact directly with CSRs e.g. setting up page table register, disable clock interrupts etc.&lt;/p&gt;
+&lt;p&gt;In user mode, CPU can only execute unprivileged instructions such as &lt;code&gt;add&lt;/code&gt; &lt;code&gt;jmp&lt;/code&gt; etc. There is a bit in the CSR to let hardware check which mode the current process/thread is in (0 for kernel, 1 for user). If the CPU decode one instruction, find out that it&amp;rsquo;s a privileged one and the mode bit is 1, it will deny executing the instruction. (Of course, the instruction for changing the mode bit is a privileged one.)&lt;/p&gt;
+&lt;p&gt;If a user application wants to execute privileged instructions, it should transfer from user mode to kernel mode first and let the kernel execute the instruction.&lt;/p&gt;
+&lt;p&gt;There is a method for applications to enter the kernel. In RISC-V, the instruction is &lt;code&gt;ecall&lt;/code&gt;. The user store ssystem call number in a particular register and &lt;code&gt;ecall&lt;/code&gt;, the PC jumps to a specific address in the kernel, and kernel checks the syetem call number, does security checks and jumps to corresponding service functions.&lt;/p&gt;
+&lt;h3 id=&#34;virtual-memory&#34;&gt;Virtual Memory&lt;/h3&gt;
+&lt;p&gt;Each process has its own page table: it maps virtual addresses to physical addresses. If the OS allocates different memory space to different processes, processes will not be able to access other processes&amp;rsquo;s memory space because those addresses are not in its page table. In this way, the OS provides strong memory isolation.&lt;/p&gt;
+&lt;h2 id=&#34;kernel-design&#34;&gt;Kernel Design&lt;/h2&gt;
+&lt;p&gt;An instant question is: since kernel should be TCB, what kind of code should be run in kernel mode? Most Unix-like operating system put the whole OS into the kernel mode(including xv6). This style is call monolithic kernel design. Though this design contains more code and increases the risk of having serious bugs, it&amp;rsquo;s helpful for tight integration between different modules (file system, virtual memory, processes etc.) and can achieve better performance.&lt;/p&gt;
+&lt;p&gt;Another style, which aims at running as fewer lines as possible in the kernel to avoid bug risks, is called micro kernel design. The kernel only contains some core modules and other modules like file system are run in user mode and treated like ordinary user applications. The challenge for this design is how to improve performance. For example, if an application wants to access the file system, frequent jumps between kernel mode and user mode are needed to achieve that. (app(u) $\rightarrow$ IPC(k) $\rightarrow$ FS(u) $\rightarrow$ IPC(k) $\rightarrow$ app(u))&lt;/p&gt;
+&lt;h2 id=&#34;xv6-code-details&#34;&gt;Xv6 Code Details&lt;/h2&gt;
+&lt;p&gt;Xv6 uses monolithic kernel design. All the &lt;code&gt;*.c&lt;/code&gt; programs in &lt;code&gt;/kernel&lt;/code&gt; are run in kernel mode. The Makefile grabs all the C files in &lt;code&gt;/kernel&lt;/code&gt; and generates relocatable files: &lt;code&gt;*.c&lt;/code&gt;$\overset{CC}{\rightarrow}$&lt;code&gt;*.S&lt;/code&gt;$\overset{AS}{\rightarrow}$&lt;code&gt;*.o&lt;/code&gt;. ld is responsible for linking all the &lt;code&gt;*.o&lt;/code&gt; files and generate an executable file &lt;code&gt;/kernel/kernel&lt;/code&gt;. &lt;code&gt;/kernel/kernel.asm&lt;/code&gt; containing disassembled code of the kernel will also be generated for debugging.&lt;/p&gt;
+&lt;p&gt;Xv6 starts at address 0x80000000. The code is written directly in assembly and is in &lt;code&gt;/kernel/entry.S&lt;/code&gt;. &lt;code&gt;/kernel/kernel.ld&lt;/code&gt; ensures that the assembly code will be linked to 0x80000000. Currently, xv6 runs in machine mode - no protection, no virtual memory etc. The job for xv6 is to enter supervisor mode(kernel mode) as soon as possible.&lt;/p&gt;
+&lt;p&gt;When xv6 jumps to &lt;code&gt;main()&lt;/code&gt; in &lt;code&gt;/kernel/main.c&lt;/code&gt;, it has been in supervisor mode. Here we use &lt;code&gt;make CPUS=1 qemu-gdb&lt;/code&gt; to fire up xv6, so there&amp;rsquo;s only one CPU core in our simulated CPU. The code in &lt;code&gt;main()&lt;/code&gt; is shown as below:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;if(cpuid() == 0){
+    consoleinit();
+    printfinit();
+    printf(&amp;quot;\n&amp;quot;);
+    printf(&amp;quot;xv6 kernel is booting\n&amp;quot;);
+    printf(&amp;quot;\n&amp;quot;);
+    kinit();         // physical page allocator
+    kvminit();       // create kernel page table
+    kvminithart();   // turn on paging
+    procinit();      // process table
+    trapinit();      // trap vectors
+    trapinithart();  // install kernel trap vector
+    plicinit();      // set up interrupt controller
+    plicinithart();  // ask PLIC for device interrupts
+    binit();         // buffer cache
+    iinit();         // inode cache
+    fileinit();      // file table
+    virtio_disk_init(); // emulated hard disk
+    userinit();      // first user process
+    __sync_synchronize();
+    started = 1;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Xv6 initializes lots of things and then jumps to &lt;code&gt;userinit()&lt;/code&gt; run the first process. &lt;code&gt;userinit()&lt;/code&gt; (in &lt;code&gt;/kernel/proc.c&lt;/code&gt;) loads the first process. Because currently xv6 hasn&amp;rsquo;t built the file system and cannot load images, the assembly code is statically declared in the array &lt;code&gt;initcode[]&lt;/code&gt;. The assembly code of the &amp;ldquo;first process loader&amp;rdquo; is in &lt;code&gt;/user/initcode.S&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-assembly&#34;&gt;# Initial process that execs /init.
+# This code runs in user space.
+
+#include &amp;quot;syscall.h&amp;quot;
+
+# exec(init, argv)
+.globl start
+start:
+        la a0, init
+        la a1, argv
+        li a7, SYS_exec
+        ecall
+
+# for(;;) exit();
+exit:
+        li a7, SYS_exit
+        ecall
+        jal exit
+
+# char init[] = &amp;quot;/init\0&amp;quot;;
+init:
+  .string &amp;quot;/init\0&amp;quot;
+
+# char *argv[] = { init, 0 };
+.p2align 2
+argv:
+  .long init
+  .long 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;initcode.S&lt;/code&gt; prepares arguments for the &lt;code&gt;SYS_exec&lt;/code&gt; system call and uses &lt;code&gt;ecall&lt;/code&gt; instruction to go back to kernel space. &lt;code&gt;ecall&lt;/code&gt; will lead us to &lt;code&gt;syscall()&lt;/code&gt; in &lt;code&gt;/kernel/syscall.c&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void
+syscall(void)
+{
+  int num;
+  struct proc *p = myproc();
+
+  num = p-&amp;gt;trapframe-&amp;gt;a7;
+  if(num &amp;gt; 0 &amp;amp;&amp;amp; num &amp;lt; NELEM(syscalls) &amp;amp;&amp;amp; syscalls[num]) {
+    p-&amp;gt;trapframe-&amp;gt;a0 = syscalls[num]();
+  } else {
+    printf(&amp;quot;%d %s: unknown sys call %d\n&amp;quot;,
+            p-&amp;gt;pid, p-&amp;gt;name, num);
+    p-&amp;gt;trapframe-&amp;gt;a0 = -1;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The variable num&amp;rsquo;s value, after the instruction &lt;code&gt;num = p-&amp;gt;trapframe-&amp;gt;a7&lt;/code&gt;, equals 7, which is &lt;code&gt;SYS_exec&lt;/code&gt;&amp;rsquo;s value defined in &lt;code&gt;/kernel/syscall.h&lt;/code&gt;. The kernel knows that some user program wants to use the exec system call, so it goes to &lt;code&gt;syscalls[num]()&lt;/code&gt;, which is a function table for providing system call services.&lt;/p&gt;
+&lt;p&gt;The function &lt;code&gt;sys_exec()&lt;/code&gt; is in &lt;code&gt;/kernel/sysfile.c&lt;/code&gt;. In line 444:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int ret = exec(path, argv)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we print the value of &amp;ldquo;path&amp;rdquo;, we will find that it equals &amp;ldquo;/init&amp;rdquo;. So xv6 loads user program &lt;code&gt;/user/init.c&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;init.c&lt;/code&gt; mainly forks some child processes and exec &lt;code&gt;sh.c&lt;/code&gt;, so xv6 starts the shell and the booting procedure is completed.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-6.S081 Lecture 04: Page Tables</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/lec04/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/mit-operating-system/lectures/lec04/</guid>
+      <description>&lt;h2 id=&#34;address-spaces&#34;&gt;Address Spaces&lt;/h2&gt;
+&lt;p&gt;Virtual memory helps realize memory isolation. The basic idea is simple: we want each process to have its own address space. The address spaces are independent.&lt;/p&gt;
+&lt;h2 id=&#34;paging-hardware&#34;&gt;Paging Hardware&lt;/h2&gt;
+&lt;p&gt;We need a method to maintain the mappings of virtual memory to physical memory. The most common method is to maintain page tables.&lt;/p&gt;
+&lt;p&gt;We should be aware that page table is a hardware mechanism: all the addresses that the CPU gets are virtual addresses. The memory management unit (MMU) is responsible for translating virtual addresses to physical addresses according to the page table and we use the &amp;ldquo;pa&amp;rdquo; to access main memory. The page tables are stored somewhere in the main memory and the satp register in the CPU stores the physical address the current page table.&lt;/p&gt;
+&lt;p&gt;If we maintain the mappings for each virtual address, we will have $2^{64}$ entries and it&amp;rsquo;s obviously unreasonable. Actually we maintain the mappings for &lt;strong&gt;pages&lt;/strong&gt;. The size of each page is 4096 bytes. i.e. The lower 12 bits of va are offset in page. We use 39 bits virtual address - 27 bits for VPN and 12 for offset, and we use 56 bits physical address.&lt;/p&gt;
+&lt;p&gt;Maintaining $2^{27}$ entries is also a huge task. If all the processes store their page table in the memory, the physical memory will soon be used up. The real RISC-V design of page table has multi-level page tables. The 27 bits are divided into 9+9+9. We use the top 9 bits to index the page directory, and we get the physical address of the lower level page directory. Then we use the second 9 bits to index the next page directory&amp;hellip; Each page table/directory is stored in a page. Since each page is 4KB in size and each PTE is 8B in size, there are $512=2^9$ entries in a page, that&amp;rsquo;s where the &amp;ldquo;9&amp;rdquo; comes from.&lt;/p&gt;
+&lt;p&gt;The advantage of the page table tree is that we can leave unused page table entry empty. In that case, we don&amp;rsquo;t need to create the lower-level page tables for that entry, and it greatly saves memory space.&lt;/p&gt;
+&lt;p&gt;The hierarchical page tables make the translation very expensive. In modern design there&amp;rsquo;s a kind of &amp;ldquo;cache of PTE entries&amp;rdquo;, called &lt;strong&gt;Translation Look-aside Buffer (TLB)&lt;/strong&gt;, that helps accelerate the procedure. It stores the recently used [VA,PA] mappings and before translation you can firstly refer to to TLB to see if the mapping exists.&lt;/p&gt;
+&lt;p&gt;In most architectures, the TLB is transparent to the OS. i.e. OS doesn&amp;rsquo;t care about the implementation details of TLB. It just needs to be aware of the existence of TLB and when switching page tables, it needs to flush the TLB. (In RISC-V, that&amp;rsquo;s the instruction &lt;code&gt;sfence.vma()&lt;/code&gt;)&lt;/p&gt;
+&lt;h2 id=&#34;code-xv6-vmcode--layout&#34;&gt;Code: xv6 VMcode &amp;amp; Layout&lt;/h2&gt;
+&lt;p&gt;In xv6, physical addresses above 0x80000000 are mapped to the DRAM chips. physical addresses below 0x80000000 are used by I/O devices.&lt;/p&gt;
+&lt;p&gt;For simplicity, the kernel mappings are identity mappings. i.e. va=pa. Pages for kernel stacks and guard pages are exceptions: guard pages are not mapped so they&amp;rsquo;re put in the high address of virtual address space to save physical memory space. Refer to the &amp;ldquo;Xv6-book Notes&amp;rdquo; for details.&lt;/p&gt;
+&lt;p&gt;Refer to the &amp;ldquo;Xv6 Source code Manual&amp;rdquo; for details about how the kernel sets up the kernel address space.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-6.S081 Lecture 05: RISC-V Calling Convention and Stack Frames</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/lec05/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/mit-operating-system/lectures/lec05/</guid>
+      <description>&lt;h2 id=&#34;c-rightarrow-asm&#34;&gt;C $\rightarrow$ ASM&lt;/h2&gt;
+&lt;p&gt;A C program&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;int main () {
+	...
+	exit(0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;cannot be directly understood by a processor. It should go through a &amp;ldquo;C -&amp;gt; Asm (&lt;code&gt;.s&lt;/code&gt; files) -&amp;gt; binary (&lt;code&gt;.o&lt;/code&gt; files) &amp;quot; process.&lt;/p&gt;
+&lt;p&gt;RISC-V is a reduced instruction set while x86/x86-64, which is common in personal computers, is a complex instruction set. CISC has far more instructions and more complex instruction structure than RISC. CISC has some &amp;ldquo;big&amp;rdquo; instruction that does lots of things, while in RISC we use several &amp;ldquo;small&amp;rdquo; instructions together to achieve that.&lt;/p&gt;
+&lt;p&gt;RISC-V has a base integer instruction set, which supports basic functions. A RISC-V processor can also choose to include some extension module to support more complicated functions. For example, if a RISC-V processor includes the &amp;ldquo;F&amp;rdquo; standard extension, it can support instructions about single-precision floating-point. Extension modules make RISC-V processors to have backward compatibility. If one day, a new extension is added, and the compiler will get the message from the processor and it can use new instructions to do the compilation.&lt;/p&gt;
+&lt;h2 id=&#34;risc-v-registers&#34;&gt;RISC-V Registers&lt;/h2&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/files/MIT-6.S081-lecture05.png&#34; alt=&#34;registers&#34; style=&#34;zoom:33%;&#34; /&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Why &lt;code&gt;s1&lt;/code&gt; register is separated from other s-series registers?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;RISC-V has a compressed version of instructions which have only 16 bits. In this version, only 8 registers (x8-x15) are used. (Just a guess)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;When function A is calling function B, for register &lt;code&gt;x&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If &lt;code&gt;x&lt;/code&gt; is a caller-saved register, e.g &lt;code&gt;ra&lt;/code&gt;, A is responsible for saving its value on the stack and B can overwrite &lt;code&gt;x&lt;/code&gt; without saving it.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;x&lt;/code&gt; is a callee-saved register, A don&amp;rsquo;t need to save its value before calling B and B should save &lt;code&gt;x&lt;/code&gt;&amp;rsquo;s value on the stack before using it, and before returning, B is responsible for restore &lt;code&gt;x&lt;/code&gt;&amp;rsquo;s value.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;stack-frames&#34;&gt;Stack Frames&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;return address &lt;code&gt;*&lt;/code&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;previous fp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;saved registers&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;local variables&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&amp;hellip;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;return address&lt;/strong&gt;                                      &lt;code&gt;fp&lt;/code&gt; register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;previous fp (pointed to &lt;code&gt;*&lt;/code&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;saved registers&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;local variables&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&amp;hellip;                                                               &lt;code&gt;sp&lt;/code&gt; register&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Stack frames may have different sizes and contents, but the general structure is similar: every stack frame begins with the return value of this function and the value of &lt;code&gt;fp&lt;/code&gt; register in the previous function. &lt;code&gt;sp&lt;/code&gt; register always points to the bottom of the current stack frame while &lt;code&gt;fp&lt;/code&gt; register always points to the top of the current stack frame. When &lt;code&gt;ret&lt;/code&gt; instruction is executed, pseudo code below will be implemented to adjust stack pointers and PC:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-pseudocode&#34;&gt;pc = return address
+sp = fp + ENTRY_SIZE
+fp = previous fp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To comply with the calling conventions, the assembly of a function usually consists of a &amp;ldquo;prologue&amp;rdquo;, a &amp;ldquo;body part&amp;rdquo; and a &amp;ldquo;epilogue&amp;rdquo;. In the prologue, the function modifies &lt;code&gt;sp&lt;/code&gt; &lt;code&gt;fp&lt;/code&gt; registers and creates the stack frame (save values of needed registers). In the epilogue, the function modifies &lt;code&gt;sp&lt;/code&gt; &lt;code&gt;fp&lt;/code&gt; registers and restore values of callee-saved registers.&lt;/p&gt;
+&lt;p&gt;For example, the assembly of a simple function &lt;code&gt;sum_then_double&lt;/code&gt; which calls function &lt;code&gt;sum_to&lt;/code&gt; is shown below (note: the &lt;code&gt;.global&lt;/code&gt; sign means that the function can be fetched at any place):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-assembly&#34;&gt;.global sum_then_double
+sum_then_double:
+	addi sp, sp, -16		# prologue
+	sd ra, 0(sp)			
+	
+	call sum_to
+	li t0, 2
+	mul a0, a0, t0
+	
+	ld ra, 0(sp)			# epilogue
+	addi sp, sp, 16
+	
+	ret
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;ra&lt;/code&gt; is a caller-saved register, so before calling &lt;code&gt;sum_to&lt;/code&gt;, &lt;code&gt;sum_then_double&lt;/code&gt; should firstly save the return address on the stack to avoid &lt;code&gt;ra&lt;/code&gt; being overwritten by &lt;code&gt;sum_to&lt;/code&gt;. At last, &lt;code&gt;sum_then_double&lt;/code&gt; restore the value of &lt;code&gt;ra&lt;/code&gt; from the stack.&lt;/p&gt;
+&lt;p&gt;If we delete the prologue and epilogue:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-assembly&#34;&gt;.global sum_then_double
+sum_then_double:		
+	
+	call sum_to
+	li t0, 2	(*)
+	mul a0, a0, t0
+	
+	ret
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The processor will fall into a dead loop: &lt;code&gt;sum_to&lt;/code&gt; modifies &lt;code&gt;ra&lt;/code&gt;&amp;rsquo;s value to the address of the next instruction. (*), so when &lt;code&gt;sum_then_double&lt;/code&gt; execute &lt;code&gt;ret&lt;/code&gt;, it cannot trace back to its caller and will go to &lt;code&gt;li t0, 2&lt;/code&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;gdb-skills&#34;&gt;GDB Skills&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Use &lt;code&gt;layout src&lt;/code&gt; &lt;code&gt;layout asm&lt;/code&gt; &lt;code&gt;layout reg&lt;/code&gt; to open a tui window and display source code, assembly code or register values. Use &lt;code&gt;layout split&lt;/code&gt; to display source code and assembly code at the same time. Use &lt;code&gt;focus src/asm/reg&lt;/code&gt; to switch between different windows.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use &lt;code&gt;i frame&lt;/code&gt; to display information of the current stack frame.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use &lt;code&gt;backtrace/bt&lt;/code&gt; to display previous calling functions. Furthermore, use &lt;code&gt;i frame #num&lt;/code&gt; to specify a stack frame to print.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use &lt;code&gt;p [variable]&lt;/code&gt; to print values of variables. Notice that modern compilers have compiling optimization and some variables may be optimized out.&lt;/p&gt;
+&lt;p&gt;If &lt;code&gt;x&lt;/code&gt; is a pointer variable, &lt;code&gt;p *x&lt;/code&gt; can dereference the pointer and print the value.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use &lt;code&gt;i args&lt;/code&gt; to print the arguments of the current function. &lt;code&gt;p *argv&lt;/code&gt; can print the first argument. If you want to get a complete list of arguments, use &lt;code&gt;p *argv@argc&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Watchpoints are used to monitor variables and gdb stops running as soon as the values of the expressions of the watchpoints change.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;conditional breakpoint is very powerful. For example, if you want to set a breakpoint in a for-loop but only want to trigger it when &lt;code&gt;i=5&lt;/code&gt;, use &lt;code&gt;b ... if i==5&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-6.S081 Lecture 06: Traps</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/lec06/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/mit-operating-system/lectures/lec06/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;When going into traps, we need to carefully change the hardware state so that isolation will not be broken. The hardware state of RISC-V machine includes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;32 general registers&lt;/p&gt;
+&lt;p&gt;We keep a copy of general registers because we want to resume the user code later transparently, particularly when it&amp;rsquo;s a unexpected device interrupt.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;PC&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Mode: we need to switch to supervisor mode.&lt;/p&gt;
+&lt;p&gt;Supervisor mode has the following privileges:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;read/write control registers&lt;/li&gt;
+&lt;li&gt;use PTEs without PTE_U sign.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Page table (satp): page table currently points to the user page table, which only contains user&amp;rsquo;s code and data. To run kernel code, we need to switch to kernel page table.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;stvec&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;sepc&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;sscratch&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are some high-level principles of trap design:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;We cannot count on anything in the user space&lt;/strong&gt;. We can&amp;rsquo;t assume anything about the registers since they are likely to contain malicious values. In xv6, the trap handler just saves them.&lt;/li&gt;
+&lt;li&gt;We want to be &lt;strong&gt;transparent&lt;/strong&gt; to the user code.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;the-high-level-procedure-of-a-system-call&#34;&gt;The high-level procedure of a system call&lt;/h2&gt;
+&lt;p&gt;Shell $\rightarrow$ write() $\overset{ecall}{\rightarrow}$ uservec (asm) $\rightarrow$ usertrap() $\rightarrow$ syscall() $\rightarrow$ sys_write() $\rightarrow$ syscall() $\rightarrow$ usertrapret() $\rightarrow$ userret (asm) $\rightarrow$ the next instruction of &lt;code&gt;ecall&lt;/code&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;System call is quite expensive. So can we return some address mappings instead of a file descriptor in &lt;code&gt;open()&lt;/code&gt; , so that the user program can directly write to the memory without using system calls?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Yes. Modern operating systems support this mechanism and it&amp;rsquo;s called memory mapped file access. It makes read/write much faster compared with the file descriptor method.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;code-write-system-call&#34;&gt;Code: &lt;code&gt;write()&lt;/code&gt; system call&lt;/h2&gt;
+&lt;h3 id=&#34;preliminaries&#34;&gt;Preliminaries&lt;/h3&gt;
+&lt;p&gt;The shell program uses &lt;code&gt;write()&lt;/code&gt; system call to print a &lt;code&gt;$&lt;/code&gt; to the console.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;static void
+putc(int fd, char c)
+{
+  write(fd, &amp;amp;c, 1);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;write() function is defined in &lt;code&gt;usys.asm&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-assembly&#34;&gt;write:
+ li a7, SYS_write
+ ecall
+ ret
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It loads the system call number &amp;ldquo;SYS_write&amp;rdquo; into register &lt;code&gt;a7&lt;/code&gt;. &lt;code&gt;a0&lt;/code&gt; &lt;code&gt;a1&lt;/code&gt; &lt;code&gt;a2&lt;/code&gt; stores the arguments of the system call. In GDB, we can use &lt;code&gt;x/2c $a1&lt;/code&gt; to print the argument strings.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;GDB Tips&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Use &lt;code&gt;b *addr&lt;/code&gt; to set a breakpoint at a specific address. This method is useful when we want to set breakpoints at particular instructions.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Before switching to kernel, we are using the user page table. We cannot print the page table in GDB, but luckily, QEMU provides functions to print the current page table. Type &lt;code&gt;&amp;lt;c-a&amp;gt;&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; to get into the QEMU monitor, and type &lt;code&gt;info mem&lt;/code&gt; to print the page table:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;vaddr            paddr            size             attr
+---------------- ---------------- ---------------- -------
+0000000000000000 0000000087f60000 0000000000001000 rwxu-a-
+0000000000001000 0000000087f5d000 0000000000001000 rwxu-a-
+0000000000002000 0000000087f5c000 0000000000001000 rwx----
+0000000000003000 0000000087f5b000 0000000000001000 rwxu-ad
+0000003fffffe000 0000000087f6f000 0000000000001000 rw---ad
+0000003ffffff000 0000000080007000 0000000000001000 r-x--a-
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The last column shows the privilege flags of PTEs. The first and second PTEs are code and data page of the shell program. The third page, which doesn&amp;rsquo;t have the PTE_U flag, is the guard page below the stack page. The fourth page is the stack page. The last two pages, which have high virtual addresses, are the trap frame and the trampoline page. Those pages also don&amp;rsquo;t have PTE_U flag and can only be accessed by the kernel.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;PTE&amp;rsquo;s PTE_A &amp;amp; PTE_D flags&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;xv6 doesn&amp;rsquo;t use these flags. These flags are used for page exchanges when there&amp;rsquo;s a page fault and the physical memory pages are used out.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;trampoline&#34;&gt;Trampoline&lt;/h3&gt;
+&lt;p&gt;We&amp;rsquo;re now ready for executing &lt;code&gt;ecall&lt;/code&gt;. After executing &lt;code&gt;ecall&lt;/code&gt;, our PC register goes to the trampoline page: 0x3fffff000. &lt;code&gt;ecall&lt;/code&gt; doesn&amp;rsquo;t switch the page table, which means that the trampoline page must be mapped in the user page table. Although user page table contains this mapping, the corresponding PTE doesn&amp;rsquo;t have PTE_U flag so this page is protected against user code.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;ecall&lt;/code&gt; actually does 3 things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Switch from user mode to supervisor mode.&lt;/li&gt;
+&lt;li&gt;Save the value of PC into sepc.&lt;/li&gt;
+&lt;li&gt;Jump to the address held in stvec register.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;ecall&lt;/code&gt; only does the minimum things. Some hardware does more when triggering a system call: they save the registers, switch the page table and set the stack pointer. RISC-V doesn&amp;rsquo;t choose to include those parts into the hardware because it wants the software to achieve the maximum flexibility. For example:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In some system calls the kernel can finish jobs without the help of kernel page table. Also, some operating systems combine the user page table and kernel page table together, which means they don&amp;rsquo;t need to change the page table during system calls.&lt;/li&gt;
+&lt;li&gt;According to the specific function, some system calls won&amp;rsquo;t use all the general registers and some registers&amp;rsquo; values don&amp;rsquo;t need to be saved.&lt;/li&gt;
+&lt;li&gt;Some easy system call may not require a kernel stack. Stack switching is not necessary.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Although xv6 doesn&amp;rsquo;t utilize those freedom, modern operating systems care a lot about the performance. There are a lot of sophisticated, clever schemes that make full use of the flexibility and achieve better efficiency.&lt;/p&gt;
+&lt;p&gt;If we check the general registers&amp;rsquo; values, we&amp;rsquo;ll find that they are the same as those in the user space. Currently we cannot modify any register, otherwise the user data would be damaged. We should firstly store them somewhere and restore them before returning.&lt;/p&gt;
+&lt;p&gt;Some hardware may switch to the kernel page table and store the 32 values somewhere in a physical page. But now we even don&amp;rsquo;t know the address of the kernel page table! xv6&amp;rsquo;s solution for saving registers includes two parts:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use a trap frame. User page table contains the mapping of this per-process trap frame. The trap frame contains 32 slots for register values, and some other useful values such as the address of kernel page table.&lt;/li&gt;
+&lt;li&gt;The (virtual) address of the trap frame is beforehand stored in sscratch register. xv6 utilize &lt;code&gt;csrrw&lt;/code&gt; instruction to atomically swap the values in a0 and sscratch. So sscratch temporarily stores the old value of a0 and a0 contains the address of the trap frame. We now can use &lt;code&gt;sd&lt;/code&gt; instruction to save register values in the slots.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Where does the kernel set the value of sscratch register?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The function usertrapret() in &lt;code&gt;/kernel/trap.c&lt;/code&gt; sets control registers including stvec, sscratch etc.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;w_stvec(TRAMPOLINE + (uservec - trampoline));
+
+p-&amp;gt;trapframe-&amp;gt;kernel_satp = r_satp();         // kernel page table
+p-&amp;gt;trapframe-&amp;gt;kernel_sp = p-&amp;gt;kstack + PGSIZE; // process&#39;s kernel stack
+p-&amp;gt;trapframe-&amp;gt;kernel_trap = (uint64)usertrap;
+p-&amp;gt;trapframe-&amp;gt;kernel_hartid = r_tp();         // hartid for cpuid()
+
+unsigned long x = r_sstatus();
+x &amp;amp;= ~SSTATUS_SPP; // clear SPP to 0 for user mode
+x |= SSTATUS_SPIE; // enable interrupts in user mode
+w_sstatus(x);
+
+w_sepc(p-&amp;gt;trapframe-&amp;gt;epc);
+
+uint64 satp = MAKE_SATP(p-&amp;gt;pagetable);
+uint64 fn = TRAMPOLINE + (userret - trampoline);
+((void (*)(uint64,uint64))fn)(TRAPFRAME, satp);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The last line calls userret() and transmits two arguments including the address of TRAPFRAME, in userrret(), TRAPFRAME is stored into sscratch register.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Every time after &lt;code&gt;ecall&lt;/code&gt;, we have a chance to execute usertrapret() and set the correct value in sscratch, but how do we set it correctly before the first execution?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When xv6 is booting, it firstly goes into the supervisor mode. So the kernel also use usertrapret() to start executing a user program. usertrapret() is the only way xv6 provides to enter into the user program from the kernel.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Why should we use a particular trap frame instead of saving the values on the user stack?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Not all the program languages have the same stack structure. Some program languages don&amp;rsquo;t have a stack, and some languages organize stack space in a weird way that kernel cannot understand (e.g. by allocating memory blocks). The principle for trap design is that &lt;strong&gt;the kernel cannot count on anything from the user space&lt;/strong&gt;. The safest way for kernel is to save the values in the trap frame - a frame that belongs to the kernel and is reliable.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;(Author&amp;rsquo;s question: can we use a control register in RISC-V to store the address of kernel stack and save the register values on the kernel stack? In this way we don&amp;rsquo;t need an additional trap frame?)&lt;/p&gt;
+&lt;p&gt;After saving registers, the kernel use &lt;code&gt;ld sp, 8(a0)&lt;/code&gt; to load the address of kernel stack into the sp register. If we type &lt;code&gt;print/x $sp&lt;/code&gt; in GDB, we&amp;rsquo;ll see that &lt;code&gt;sp = 0x3fffffc000&lt;/code&gt;. Recalling the structure of kernel space mappings, the address is reasonable - just below the trap frame, there&amp;rsquo;s a guard page and the first kernel stack.&lt;/p&gt;
+&lt;p&gt;Next, the hart id is stored into tp register. The address of the function to be jumped to (usertrap()) is stored into t0 register. &lt;code&gt;csrw satp, t1&lt;/code&gt; switches to the kernel page table.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Why doesn&amp;rsquo;t the kernel crash since we keep using user&amp;rsquo;s virtual addresses?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;That&amp;rsquo;s because we&amp;rsquo;re executing in the trampoline page. The kernel and user page tables both have mappings to the trampoline page. (The same virtual address) The page is named &amp;ldquo;trampoline&amp;rdquo; because xv6 bounces on this page between user code and kernel code.&lt;/p&gt;
+&lt;p&gt;An important thing to remember is that: &lt;strong&gt;page table switching can only be implemented in the trampoline&lt;/strong&gt; because the virtual address in this page maps to the same physical page in kernel and user page tables. Otherwise, the instruction addresses could not be interpreted and the kernel would crash.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;usertrap&#34;&gt;usertrap()&lt;/h3&gt;
+&lt;p&gt;After executing &lt;code&gt;jr t0&lt;/code&gt;, we jump to the C-code function usertrap(). The first thing we do is&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;w_stvec((uint64)kernelvec)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which overwrites the stvec register. Xv6 handles traps differently depending on whether they come from user space or the kernel.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;struct proc *p = myproc();
+p-&amp;gt;trapframe-&amp;gt;epc = r_sepc();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;These lines save the value of sepc into the trap frame. It&amp;rsquo;s necessary because the kernel may switch to another process. After returning to the user space of that process, the user program may do another system call, and the sepc register will be overwritten. (Note: it&amp;rsquo;s also correct to save sepc in the trampoline assembly code.)&lt;/p&gt;
+&lt;p&gt;Here we&amp;rsquo;re doing &lt;code&gt;write()&lt;/code&gt; system call, so the value in scause register is 8. We firstly add 4 to the sepc value in the trap frame in order not to re-execute the &lt;code&gt;ecall&lt;/code&gt; instruction. Then we call intr_on() to accept interrupts. &lt;u&gt;Interrupts are always turned off by the RISC-V trap hardware, so we need to explicitly open it in the code&lt;/u&gt;.&lt;/p&gt;
+&lt;p&gt;Xv6 enters syscall() in &lt;code&gt;/kernel/syscall.c&lt;/code&gt; to handle system calls. In syscall(), xv6 retrieves the value in the a7 register (context in trap frame) to acquire the system call number and uses that to index the syscalls[] function array. After returning from sys_write(), the return value is stored in p-&amp;gt;trapframe-&amp;gt;a0.&lt;/p&gt;
+&lt;h3 id=&#34;usertrapretuserret&#34;&gt;usertrapret()/userret()&lt;/h3&gt;
+&lt;p&gt;After handling the system call, xv6 enters usertrapret(). The job for usertrapret() is to set control registers to appropriate states for user mode. At the end, it calls userret() in &lt;code&gt;/kernel/trampoline.S&lt;/code&gt; to resume registers. Refer to code details in &amp;ldquo;Xv6 Source Code Manual&amp;rdquo;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-6.S081 Lecture 07: Q&amp;A for Labs #1</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/lec07/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/mit-operating-system/lectures/lec07/</guid>
+      <description>&lt;p&gt;The Q&amp;amp;A focuses on lab pgtbl. The lab contain few lines of code, but hard-to-debug problems. Harsh environment of kernel programming makes it more difficult.&lt;/p&gt;
+&lt;h2 id=&#34;task-01&#34;&gt;Task 01&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;page table 0x0000000087f6e000
+..0: pte 0x0000000021fda801 pa 0x0000000087f6a000
+.. ..0: pte 0x0000000021fda401 pa 0x0000000087f69000
+.. .. ..0: pte 0x0000000021fdac1f pa 0x0000000087f6b000
+.. .. ..1: pte 0x0000000021fda00f pa 0x0000000087f68000
+.. .. ..2: pte 0x0000000021fd9c1f pa 0x0000000087f67000
+..255: pte 0x0000000021fdb401 pa 0x0000000087f6d000
+.. ..511: pte 0x0000000021fdb001 pa 0x0000000087f6c000
+.. .. ..510: pte 0x0000000021fdd807 pa 0x0000000087f76000
+.. .. ..511: pte 0x0000000020001c0b pa 0x0000000080007000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;0-0-0: text and data of the &lt;code&gt;init&lt;/code&gt; program.&lt;/li&gt;
+&lt;li&gt;0-0-1: the guard page (of the user stack)&lt;/li&gt;
+&lt;li&gt;0-0-2: user stack (tighter privilege can be set: PTE_X flags can be erased, the user stack is not supposed to store instructions.)&lt;/li&gt;
+&lt;li&gt;255-511-510: trap frame&lt;/li&gt;
+&lt;li&gt;255-511-511: trampoline&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;One interesting fact is that: the physical pages allocated to the continuous virtual pages are not continuous. That&amp;rsquo;s the magic of virtual memory.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: The trampoline page is at the highest virtual memory address MAXVA, why the first page directory&amp;rsquo;s index is 255 instead of 511?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;RISC-V Sv39 support 39 bits virtual address, but xv6 only uses 38 bits to avoid dealing with sign extension. Therefore, the first page directory&amp;rsquo;s index is only up to 255.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Why the text page and data page are merged into one page in &lt;code&gt;init&lt;/code&gt;?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Generally, separate text page and data page can support more careful privilege settings. But in &lt;code&gt;init&lt;/code&gt; program, we don&amp;rsquo;t use the &lt;code&gt;exec()&lt;/code&gt; system call to load memory image, for simplicity of code in userinit() function, we combine text and data into one page.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;task-02&#34;&gt;Task 02&lt;/h2&gt;
+&lt;p&gt;One possible approach is to just copy the mappings in the kernel page tables that keep unchanged.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;pagetable_t
+kvmcreate()
+{
+	pagetable_t pagetable;
+	int i;
+ 	pagetable = uvmcreate();
+    for (i = 1; i &amp;lt; 512; i ++) pagetable[i] = kernel_pagetable[i];
+    
+    kvmmapkern(pagetable, UART0, UART0, PGSIZE, PTE_R | PTE_W);
+    kvmmapkern(pagetable, VIRTIO0, VIRTIO0, PGSIZE, PTE_R | PTE_W);
+    kvmmapkern(pagetable, CLINT, CLINT, 0x10000, PTE_R | PTE_W);
+    kvmmapkern(pagetable, PLIC, PLIC, 0x400000, PTE_R | PTE_W);
+    
+    return pagetable;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For the creation of a user kernel page table, we&amp;rsquo;re sure that later we only use the range &lt;code&gt;[0, PLIC)&lt;/code&gt; for user memory, so only the first page directory entry may change. We can directly copy the kernel&amp;rsquo;s first level page directory of range &lt;code&gt;[1,512)&lt;/code&gt; . Don&amp;rsquo;t forget to map several I/O devices in the first page directory entry.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void
+kvmfree(pagetable_t kpagetable, uint64 sz)
+{
+    pte_t pte = kpagetable[0];
+    pagetable_t level1 = (pagetable_t) PTE2PA(pte);
+    for (int i = 0; i &amp;lt; 512; i ++)
+    {
+        pte_t pte = level1[i];
+        if (pte &amp;amp; PTE_V)
+        {
+            uint64 level2 = PTE2PA(pte);
+            kfree((void *)level2);
+            level1[i] = 0;
+        }
+    }
+    kfree((void *) level1);
+    kfree((void *) kpagetable);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To free the user page table, we don&amp;rsquo;t need to do anything about the 1~511 page directory entries since they&amp;rsquo;re just copied from the kernel page table. We need to walk through the first page directory entry to free the remaining pages. (Notice: kvmfree() is only responsible for freeing page table pages, the leaf physical pages for user memory should be beforehand freed.)&lt;/p&gt;
+&lt;p&gt;In the function scheduler(), we should switch to user kernel page table before swtch() and switch to kernel page table after swtch():&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;kvmswitch(p-&amp;gt;kpagetable);
+swtch(&amp;amp;c-&amp;gt;context, &amp;amp;p-&amp;gt;context);
+kvminithart();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Why must we switch back to the kernel page table after going back?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;If there&amp;rsquo;s no running process, the kernel should have an page table to use. Also, if we want to free a process, we must firstly switch back to the kernel page table before the process &amp;ldquo;disappears&amp;rdquo;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;task-03&#34;&gt;Task 03&lt;/h2&gt;
+&lt;p&gt;The advantages of adding user mappings into user kernel page table include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;during copyin()/copyout(), we don&amp;rsquo;t need to call walk() in the kernel to translate the user virtual address since now hardware can do the same thing for us, which is a relief to kernel programmers.&lt;/li&gt;
+&lt;li&gt;performance is enhanced since we do less page table walks.&lt;/li&gt;
+&lt;li&gt;kernel has more freedom to manipulate with user space. it can directly read/write data without repeatedly calling copyin()/copyout().&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The core function should be responsible for copying mappings from user page table to user kernel page table:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void
+kvmmapuser(int pid, pagetable_t kpagetable, pagetable_t upagetable, uint64 newsz, uint64 oldsz)
+{
+    uint64 va;
+    pte_t *upte;
+    pte_t *kpte;
+    
+    if (newsz &amp;gt;= PLIC)
+        panic(&amp;quot;kvmmapuser: news too large&amp;quot;);
+   	
+    for (va = oldsz; va &amp;lt; newsz; va += PGSIZE)
+    {
+        upte = walk(upagetabe, va, 0);
+        if (upte == 0)
+            panic(&amp;quot;kvmmapuser: no upte&amp;quot;);
+       	if ((*upte &amp;amp; PTE_V) == 0)
+            panic(&amp;quot;kvmmapuser: no valid upte&amp;quot;);
+       	kpte = walk(kpagetable, va, 1);
+        if (kpte == 0)
+            panic(&amp;quot;kvmmapuser: no kpte&amp;quot;);
+        *kpte = *upte;
+        *kpte &amp;amp;= ~(PTE_U|PTE_W|PTE_X);
+    }  
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The line &lt;code&gt;*kpte = *upte&lt;/code&gt; means that user physical pages are shared between user space and kernel space although the kernel allocates new pages for page directories/tables.&lt;/p&gt;
+&lt;p&gt;The PTE_U bit is cleared because in RISC-V hardware, kernel doesn&amp;rsquo;t have the privilege to read/write pages with PTE_U flag. The reason for this mechanism is not isolation, but convenience for kernel debugging. Xv6 without modification should never write/execute user memory.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Currently we require that the user memory space cannot exceed PLIC. What if we want to use all the space below KERNBASE?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;We can remap the I/O devices: CLINT, PLIC, UART0 etc. Actually there is still much space between PHYSTOP and the kernel stacks. Put I/O devices there in the kernel&amp;rsquo;s virtual address space and map them to low physical addresses. In this case, low virtual addresses are available for user memory.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Why should we put the kernel stacks high in the virtual address space?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Below every kernel stack there is a guard page, which is not mapped to any physical page, in order of detecting stack overflow issue. If the guard pages are put in the range of &lt;code&gt;[KERNBASE, PHYSTOP)&lt;/code&gt;, physical pages will be wasted.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-6.S081 Lecture 08: Page Faults</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/lec08/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/mit-operating-system/lectures/lec08/</guid>
+      <description>&lt;p&gt;The benefits of virtual memory, besides offering isolation, include levels of indirection. We have already seen some interesting usage of mappings, such as trampoline page and guard page, but these mappings are relatively static. With the aid of page faults, the mappings become dynamic: when page faults occur, the kernel can change page table mappings. Combination of page table and page fault provides enormous amount of flexibility.&lt;/p&gt;
+&lt;p&gt;The kernel needs necessary information to handle with page faults:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The faulting virtual address: RISC-V hardware stores it in the stval register.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The type of page faults, including instruction page fault, load page fault and store page fault. RISC-V manual specifies each type&amp;rsquo;s scause number:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;page fault type&lt;/th&gt;
+&lt;th&gt;scause number&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;instruction page fault&lt;/td&gt;
+&lt;td&gt;12&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;load page fault&lt;/td&gt;
+&lt;td&gt;13&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;store page fault&lt;/td&gt;
+&lt;td&gt;15&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;the va of instruction that causes the exception. The PC value is stored in sepc register and transferred into the trap frame.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;lazy-allocation&#34;&gt;Lazy allocation&lt;/h2&gt;
+&lt;p&gt;Xv6 provides &lt;code&gt;sbrk()&lt;/code&gt; system call for user program to grow or shrink its heap size. Xv6 uses &amp;ldquo;eager allocation&amp;rdquo; for &lt;code&gt;sbrk()&lt;/code&gt;, i.e. it immediately allocates physical memory for the applications. However, it&amp;rsquo;s difficult for applications to estimate the amount of heap space, so they usually ask for more pages than they need. Using page faults, kernel can respond to the system call in a more intelligent manner.&lt;/p&gt;
+&lt;p&gt;In lazy allocation, when &lt;code&gt;sbrk()&lt;/code&gt; is called, we only increase p-&amp;gt;sz by n, not allocating any physical pages. When the user program load/store a virtual address later in the heap, page fault exception is triggered. The kernel checks the faulting va in stval register: if &lt;code&gt;p-&amp;gt;stack &amp;lt; faulting va &amp;lt; p-&amp;gt;sz&lt;/code&gt;, we call kalloc() to allocate physical page, update the user page table, and re-execute the instruction.&lt;/p&gt;
+&lt;p&gt;Here&amp;rsquo;s a simple version of code implementation:&lt;/p&gt;
+&lt;p&gt;In sys_sbrk(), we don&amp;rsquo;t need to call growproc() to allocate physical pages, the only thing we need to do is to modify p-&amp;gt;sz:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-diff&#34;&gt;uint64
+sys_sbrk(void)
+{
+  int addr;
+  int n;
+
+  if(argint(0, &amp;amp;n) &amp;lt; 0)
+    return -1;
+  addr = myproc()-&amp;gt;sz;
++ p-&amp;gt;sz = p-&amp;gt;sz + n;
+- if(growproc(n) &amp;lt; 0)
+-   return -1;
+  return addr;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Currently, if we boot xv6 and execute shell instruction &lt;code&gt;echo hello&lt;/code&gt;, we&amp;rsquo;ll get a kernel panic:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;usertrap(): unexpected scause 0x000000000000000f pid=3
+			sepc = 0x00000000000012a4 stval=0x0000000000004008
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The instruction at 0x12a4 is a store instruction, so the value in scause is 0xf. User program shell has 4 pages and the faulting va stored in stval register is just above the stack and belongs to the heap area.&lt;/p&gt;
+&lt;p&gt;We need to modify the kernel to let xv6 handle with the page fault instead of directly triggering panic:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-diff&#34;&gt;void
+usertrap(void)
+{
+  ...
+  if(r_scause() == 8){
+    // system call
+    ...
+  } else if((which_dev = devintr()) != 0){
+    // ok
++ } else if (r_scause() = 15){
++ 	uint64 va = r_stval();
++ 	printf(&amp;quot;page fault %p\n&amp;quot;, va);
++ 	uint64 ka = (uint64) kalloc();
++ 	if(ka == 0){
++ 	  p-&amp;gt;killed = 1;
++ 	} else{
++ 	  memset((void *)ka, 0, PGSIZE);
++ 	  va = PGROUNDDOWN(va);
++ 	  if (mappages(p-&amp;gt;pagetable, va, PGSIZE, ka, PTE_W|PTE_U|PTE_R) != 0)
++ 	  {
++ 	  	kfree((void *)ka);
++ 	  	p-&amp;gt;killed = 1;
++ 	  }
++ 	}
+  } else {
+    printf(&amp;quot;usertrap(): unexpected scause %p pid=%d\n&amp;quot;, r_scause(), p-&amp;gt;pid);
+    printf(&amp;quot;            sepc=%p stval=%p\n&amp;quot;, r_sepc(), r_stval());
+    p-&amp;gt;killed = 1;
+  }
+
+  if(p-&amp;gt;killed)
+    exit(-1);
+
+  // give up the CPU if this is a timer interrupt.
+  if(which_dev == 2)
+    yield();
+
+  usertrapret();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;in usertrap(), we insert a branch for handling with page faults. We read stval register to get the faulting virtual address, allocate a new physical page, and call mappages() to insert mappings in the user page table.&lt;/p&gt;
+&lt;p&gt;However, we cannot let xv6 run correctly by only those modification. There&amp;rsquo;s another kernel panic message:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;panic: uvmunmap: not mapped
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;uvmunmap() doesn&amp;rsquo;t allow us to unmap pages that hasn&amp;rsquo;t benn allocated, but in lazy allocation this is valid. Therefore we need to modify uvmunmap():&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-diff&#34;&gt;void
+uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
+{
+  uint64 a;
+  pte_t *pte;
+
+  if((va % PGSIZE) != 0)
+    panic(&amp;quot;uvmunmap: not aligned&amp;quot;);
+
+  for(a = va; a &amp;lt; va + npages*PGSIZE; a += PGSIZE){
+    if((pte = walk(pagetable, a, 0)) == 0)
+      panic(&amp;quot;uvmunmap: walk&amp;quot;);
+    if((*pte &amp;amp; PTE_V) == 0)
+-     panic(&amp;quot;uvmunmap: not mapped&amp;quot;);
++     continue;
+    if(PTE_FLAGS(*pte) == PTE_V)
+      panic(&amp;quot;uvmunmap: not a leaf&amp;quot;);
+    if(do_free){
+      uint64 pa = PTE2PA(*pte);
+      kfree((void*)pa);
+    }
+    *pte = 0;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;zero-fill-in-demand&#34;&gt;Zero fill in demand&lt;/h2&gt;
+&lt;p&gt;Ususally there are lots of zero pages in the user space. For example, in the ELF file there is a .bss segment, in xv6, when we use &lt;code&gt;exec()&lt;/code&gt; system call to load a program, the kernel allocate pages for the .bss segment and set the values as zero.&lt;/p&gt;
+&lt;p&gt;A clever implementation is: during &lt;code&gt;exec()&lt;/code&gt;, we only allocate one zero page in the physical memory and map all the zero pages in the virtual memory space to it. Those mappings should be read only. In the future when one zero page needs to be modified, a page fault exception will be triggered, and the kernel should allocate another zero page in the physical memory and modify page table&amp;rsquo;s PTE to map the virtual page being written to the new page (read-and-write).&lt;/p&gt;
+&lt;p&gt;This &amp;ldquo;lazy zero page allocation&amp;rdquo; has at least 2 advantages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In some cases, only a small part of the .bss segment will be modified and zero-fill-in-demand saves lots of physical space.&lt;/li&gt;
+&lt;li&gt;In &lt;code&gt;exec()&lt;/code&gt; we don&amp;rsquo;t need to do lots of allocations, which makes &lt;code&gt;exec()&lt;/code&gt; faster and provides better interact performance between users and the kernel. (Of course, we somehow &amp;ldquo;postpone&amp;rdquo; the penalty: a page fault contains hundreds of load/store instructions, which is very expensive.)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;copy-on-write-cow-fork&#34;&gt;Copy-on-write (COW) fork&lt;/h2&gt;
+&lt;p&gt;An observation is that: when we use &lt;code&gt;fork()&lt;/code&gt; system call, xv6 creates physical pages and copies all the memory pages in the parent process into child process. Usually, there&amp;rsquo;s an &lt;code&gt;exec()&lt;/code&gt; system call afterwards and xv6 frees the pages that have just be created.&lt;/p&gt;
+&lt;p&gt;Copy-on-write fork somehow optimizes it. During a &lt;code&gt;fork()&lt;/code&gt; system call, we copy the parent process&amp;rsquo;s page table into the child&amp;rsquo;s page table, i.e. let parent and child map to the same physical pages, instead of making copies of physical pages at once.&lt;/p&gt;
+&lt;p&gt;However, we should remember that parent and child&amp;rsquo;s modifications cannot be visible to each other. To achieve the isolation, we set the PTEs as read-only PTEs. In the future, when parent/child process makes a modification, a page fault exception will be triggered, and the kernel is responsible for copying the corresponding physical page, updating page tables, changing the PTEs as read-and-write PTEs, and restarting the faulting instruction.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: How can the kernel tells the copy-on-write page fault from other invalid page faults?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Almost all the hardware supporting paging, including RISC-V, can address this issue. In RISC-V&amp;rsquo;s PTE format, there are some bits called RSW bits, which are available for kernel use. Kernel can set copy-on-write bit in the RSW area, and when page faults happen, the kernel checks the copy-on-write bit to decide whether it&amp;rsquo;s a valid page fault.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;If copy-on-write fork is implemented, there&amp;rsquo;s another things worth attention: in unmodified xv6, one physical page belongs to more or less one process except the trampoline page, which will never be freed. However, in copy-on-write-fork situation, there will be pages belonging to multiple processes, so when a process is being freed, it cannot directly free all the corresponding physical pages since other processes may be using them. A reasonable approach is that, we maintain a &amp;ldquo;ref count&amp;rdquo; for each page recording the number of processes using this page, and we free a page when its ref count equals zero.&lt;/p&gt;
+&lt;h2 id=&#34;demand-paging&#34;&gt;Demand paging&lt;/h2&gt;
+&lt;p&gt;For unmodified xv6, In &lt;code&gt;exec()&lt;/code&gt; system call the kernel loads all the text segment pages and data segment pages into the memory. Accessing files is quite expensive and sometimes the user program doesn&amp;rsquo;t use all its instructions and data.&lt;/p&gt;
+&lt;p&gt;If demand paging is implemented, in &lt;code&gt;exec()&lt;/code&gt;, the kernel doesn&amp;rsquo;t load the pages, but set the PTEs as invalid (PTE_V bit removed). So when the user program executes its first instruction, a page fault exception will be triggered. The text/data segment pages are beforehand binded to corresponding files, and in the page fault handler, the kernel copies pages from the file to the memory, updating page tables and restarting the faulting instruction.&lt;/p&gt;
+&lt;p&gt;In some situation, when a page fault happens and the kernel needs to load a new page into memory, there&amp;rsquo;s no free pages - the memory is used up. In this case, the kernel should firstly choose one page and evict it into the file/disk, and then use the just freed physical page to load the new page. After that, it can restart the faulting instruction.&lt;/p&gt;
+&lt;p&gt;There are several strategies for choosing the evicted page. The most commonly used strategy is to evict the least recently used page (LRU strategy). Another useful strategy is that the kernel prefers to choose non-dirty page than dirty page, since evicting non-dirty page only requires disabling the corresponding PTE. In hardware, RISC-V&amp;rsquo;s PTE format includes PTE_A bit representing whether the page has been accessed recently, which is helpful for implementing LRU (of course, the operating system should periodically clear all the PTE_A bits). There&amp;rsquo;s also a PTE_D bit representing whether the page has ever been modified.&lt;/p&gt;
+&lt;h2 id=&#34;memory-mapped-files&#34;&gt;Memory-mapped files&lt;/h2&gt;
+&lt;p&gt;Most modern operating system provides &lt;code&gt;mmap()&lt;/code&gt; system call, which aims at letting user program use load/store instructions to directly read/write files instead of repeatedly using expensive  &lt;code&gt;read()&lt;/code&gt; / &lt;code&gt;write()&lt;/code&gt; system calls. The declaration of &lt;code&gt;mmap()&lt;/code&gt; is&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void *mmap(void *va, size_t length, int prot, int flags, int fd, off_t offset);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It will map the specified virtual address to the file descriptor. Some operating systems eagerly do the mappings: it loads pages in the files into the memory. However, by utilizing page fault mechanism, we can firstly only maintain a virtual memory area (vma) recording necessary information, and when a paging fault happens, it loads needed pages into memory, and when the file is closed, the kernel should write dirty pages back to the file/disk.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: What if multiple processes share one file page?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;We don&amp;rsquo;t know the exact order of read/write operations in the two processes, so it&amp;rsquo;s an undefined behavior, we don&amp;rsquo;t need to do extra maintenance. If we implement a file locking in the file system, we can address the synchronizing issue.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-6.S081 Lecture 09: Interrupts</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/lec09/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/mit-operating-system/lectures/lec09/</guid>
+      <description>&lt;p&gt;Type &lt;code&gt;top&lt;/code&gt; in the command line and you can check the memory usage, processes information etc. in the terminal:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;top - 11:57:33 up 1 day,  1:04,  1 user,  load average: 0.21, 0.25, 0.32
+Tasks: 354 total,   1 running, 353 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.9 us,  0.7 sy,  0.0 ni, 98.4 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :  15661.3 total,    586.9 free,   2944.0 used,  12130.4 buff/cache
+MiB Swap:  19531.0 total,  19528.5 free,      2.5 used.  11403.6 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND  
+    840 root      20   0  421340  21428  16712 S   9.0   0.1   3:59.57 Network+ 
+   4461 starling   9 -11 2834104  17456  13760 S   4.0   0.1  32:30.95 pulseau+ 
+    949 root      20   0   10488   6496   4940 S   1.0   0.0  14:10.30 EasyMon+ 
+    962 root      20   0  407004   9836   7688 S   1.0   0.1   8:50.53 ECAgent  
+ 113206 starling  20   0   36.3g  67604  51524 S   0.7   0.4   0:17.59 code     
+   4466 starling  20   0   10520   6480   3740 S   0.3   0.0   0:27.20 dbus-da+ 
+   4615 starling  20   0 6096848 442400 163960 S   0.3   2.8  18:26.29 gnome-s+ 
+   5241 starling  20   0  561596  35788  26204 S   0.3   0.2   5:20.81 sogoupi+ 
+ 112573 starling  20   0 4934416 716796 396344 S   0.3   4.5   1:10.73 GeckoMa+ 
+ 113141 starling  20   0   36.3g 165072  55252 S   0.3   1.0   0:08.28 code     
+ 113678 starling  20   0   40.6g 274404 121660 S   0.3   1.7   4:42.63 Typora   
+ 116933 starling  20   0 2571540 173676 127868 S   0.3   1.1   0:24.61 Isolate+ 
+ 120059 root      20   0       0      0      0 I   0.3   0.0   0:00.03 kworker+ 
+ 120151 starling  20   0   21704   4412   3460 R   0.3   0.0   0:00.77 top      
+      1 root      20   0  165108  11200   7684 S   0.0   0.1   0:04.22 systemd  
+      2 root      20   0       0      0      0 S   0.0   0.0   0:00.15 kthreadd 
+      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can see that there&amp;rsquo;s little free memory left, most memory is used by the buffer cache. That&amp;rsquo;s a very common case in modern operating systems. Leaving too much memory space idle is wasteful, so operating systems usually make full use of the memory space. In this case, handling page fault exception and evicting pages out to the disk is very frequent.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Sometimes the hardware wants attention, so they generate interrupts. The software should save its work, process the interrupts, and afterwards resume its work. The saving and resuming procedures are similar to those of system calls and traps, they all use the same mechanism. But the following features make interrupts different and be worth of a lecture:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Asynchronous: interrupts can happen at any time. A system call must happen when a user program is running, but when interrupts come, we have no idea which process is being executed, or whether there is a process running.&lt;/li&gt;
+&lt;li&gt;Concurrency. We have to address a lot of issues about concurrency and parallelism. This is the start point of talking about concurrency. The devices and the CPU are independent parts: CPU executes instructions while devices handling I/O events. This is true parallelism.&lt;/li&gt;
+&lt;li&gt;Device programming: devices like ether-net cards and UART needs programming. There may be manual illustrating the function of each control register, but devices are often pool documented.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;risc-v-interrupt-structure&#34;&gt;RISC-V Interrupt Structure&lt;/h2&gt;
+&lt;p&gt;The first question is: where are interrupts come from? Interrupts come from the various devices. Devices send the interrupts to a device called platform-level interrupt controller (PLIC), CPU cores can access PLIC to see whether there&amp;rsquo;s an pending interrupts. When a CPU core finishes processing an interrupt, it sends a signal to the PLIC and PLIC knows that this interrupts can be forgot.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Does PLIC has some mechanism to ensure fairness?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s up to the kernel. The kernel programs the PLIC hardware. PLIC doesn&amp;rsquo;t really actively choose service of delivering interrupts. The kernel fetches the interrupts and decides where interrupts should be sent. The kernel can also decide the priority of different kinds of interrupts. There is a huge amount of flexibility.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;organization-of-drivers&#34;&gt;Organization of Drivers&lt;/h2&gt;
+&lt;p&gt;Drivers are codes used for managing devices. A typical driver structure includes 2 parts:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Top part: this part handle system calls related to the device such as &lt;code&gt;read()&lt;/code&gt; and &lt;code&gt;write()&lt;/code&gt; system calls. It interacts with the user processes, so things like copyin()/copyout() are done in this part.&lt;/li&gt;
+&lt;li&gt;Bottom part: this part serves as the interrupt handler of the corresponding device. When the device raises an interrupt, the kernel catches it and calls functions in the bottom part of its driver to handle the interrupt. It may happen that the current process is not the previous pending process, so the interrupt handler cannot count on any information about the process in the CPU core (e.g. page table).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;programming-devices&#34;&gt;Programming Devices&lt;/h2&gt;
+&lt;p&gt;In xv6 we use memory mapped I/O. In this case devices show up at particular addresses in the physical memory space, which are determined by the hardware board manufacturers. The operating systems should know these addresses in order to programming devices. OS can use normal load/store instructions to read/write the control registers of the devices.&lt;/p&gt;
+&lt;h2 id=&#34;interrupts-on-hardware&#34;&gt;Interrupts on Hardware&lt;/h2&gt;
+&lt;p&gt;The PLIC hardware is responsible for receiving interrupts from different devices and routing them to CPU cores. If a CPU core receives an interrupt and the SIE bit of sstatus register is set (i.e. interrupt enabled), the hardware will do the following things:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Clear the SIE bit in sstatus register to temporarily disable interrupts.&lt;/li&gt;
+&lt;li&gt;store PC value into sepc register.&lt;/li&gt;
+&lt;li&gt;save the current mode, and then switch to supervisor mode.&lt;/li&gt;
+&lt;li&gt;copy the address in stvec register into PC. In xv6, it goes to usertrap()/kerneltrap().&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;case-study-&#34;&gt;Case Study: &lt;code&gt;$&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;We want to know how the prompt &lt;code&gt;$&lt;/code&gt; shows up in the console. In general, the device puts &lt;code&gt;$&lt;/code&gt; into the UART, and UART generates an interrupt when the char has been sent.&lt;/p&gt;
+&lt;p&gt;RISC-V hardware has some supports for interrupts:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;SIE register. The supervisor interrupt enable register has a bit for external interrupt, a bit for software interrupt and a bit for timer interrupt. Here we only focus on external interrupts.&lt;/li&gt;
+&lt;li&gt;SSTATUS register. This control register contains a bit that can enable/disable interrupts.&lt;/li&gt;
+&lt;li&gt;SIP register. The supervisor interrupt pending register, together with SCAUSE register, contain information about what interrupt is coming.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In main(), xv6 does a bunch of preparations which get ready for interrupts. The true time when interrupt is able to come in is when scheduler() calls intr_on():&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void
+scheduler(void)
+{
+  struct proc *p;
+  struct cpu *c = mycpu();
+  
+  c-&amp;gt;proc = 0;
+  for(;;){
+    // Avoid deadlock by ensuring that devices can interrupt.
+    intr_on();
+    ...
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;intr_on() is responsible for writing SSTATUS_SIE bit into SSTATUS register:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;static inline void
+intr_on()
+{
+  w_sstatus(r_sstatus() | SSTATUS_SIE);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Every CPU core runs scheduler() code, and when intr_on() is called, the corresponding core is able to accept interrupts.&lt;/p&gt;
+&lt;p&gt;The first user process, &lt;code&gt;init&lt;/code&gt;, opens the console device and assign 0/1/2 to standard input/output/error.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;if(open(&amp;quot;console&amp;quot;, O_RDWR) &amp;lt; 0){
+    mknod(&amp;quot;console&amp;quot;, CONSOLE, 0);
+    open(&amp;quot;console&amp;quot;, O_RDWR);
+}
+dup(0);  // stdout
+dup(0);  // stderr
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then in user program &lt;code&gt;/user/sh.c&lt;/code&gt;, getcmd() function uses fprintf() to print a prompt to stderr. Here fprintf() doesn&amp;rsquo;t know what&amp;rsquo;s behind the file descriptor 2, maybe a file, a pipe or a device.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int
+getcmd(char *buf, int nbuf)
+{
+  fprintf(2, &amp;quot;$ &amp;quot;);
+  memset(buf, 0, nbuf);
+  gets(buf, nbuf);
+  if(buf[0] == 0) // EOF
+    return -1;
+  return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;fprintf() will eventually use &lt;code&gt;write()&lt;/code&gt; system call to write a character. Refer to the xv6-book notes for the procedure after that.&lt;/p&gt;
+&lt;h2 id=&#34;case-study-ls&#34;&gt;Case Study: &lt;code&gt;ls&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;We want to know how the command &lt;code&gt;ls&lt;/code&gt; is typed into the console. In general, the keyboard connects to the receive line of UART. When a character is typed, UART generates an interrupt to let the kernel fetches that char.&lt;/p&gt;
+&lt;p&gt;When a interrupt is received by the kernel, usertrap()/kerneltrap() calls devintr() to check whether there&amp;rsquo;s an interrupt and do corresponding operations. devintr() calls plic_claim() to make the CPU core claim the type of device and call uartintr() to handle UART interrupt. In uartintr(), it calls uartgetc() to get the character &lt;code&gt;l&lt;/code&gt; and &lt;code&gt;s&lt;/code&gt;, and calls consoleintr() to put them into buffer.&lt;/p&gt;
+&lt;h2 id=&#34;interrupts-and-concurrency&#34;&gt;Interrupts and Concurrency&lt;/h2&gt;
+&lt;p&gt;Concurrency issues in interrupts are difficult to tackle with. Here are some common concurrency problems:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Devices and CPU cores run in parallel. It&amp;rsquo;s called producer-consumer parallelism and needs to be carefully managed.&lt;/li&gt;
+&lt;li&gt;Interrupts can stop the current program. If it stops the user program, the procedure is similar to traps. However, interrupt can also stop the kernel, which means that the instruction sequence in kernel code may not be continuous either now. We have to carefully enable/disable interrupts in kernel code to avoid crashing.&lt;/li&gt;
+&lt;li&gt;The top of drivers and the bottom of drivers may run in parallel. For example, when the shell program use &lt;code&gt;write()&lt;/code&gt; system call to put a dollar prompt on the display, i.e. the top of the console driver is running, another CPU core may be handling interrupts from uart. The top and bottom share resources such as the buffer array. To make sure each core can see the correct, up-to-date content, we need a mechanism to ensure that only one core can do operations to shared resources at a time. Xv6 uses locks to realize that.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Xv6 uses buffer array to address the producer-consumer parallelism. There are a read pointer and a write pointer for each buffer. The buffer is empty when &lt;code&gt;r==w&lt;/code&gt;, the buffer is full when &lt;code&gt;w+1 mod BUFFER_SIZE==r&lt;/code&gt;. The producer puts characters at the end of the queue and updates write pointer, while the consumer reads characters at the beginning of the queue and updates read pointer. Buffer array successfully decouple devices and CPU cores, making them able to run separately at high speed.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Is there multiple buffer arrays, one for each CPU core?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The buffer array is an array declared in &lt;code&gt;/kernel/uart.c&lt;/code&gt; and is set in RAM. There&amp;rsquo;s only one RAM so there&amp;rsquo;s only one buffer array. There are several CPU cores running processes in parallel, and they may access the UART device at the same time, i.e. access the buffer array in parallel.&lt;/p&gt;
+&lt;p&gt;The main task for locking is to serialize accesses. Only the core that acquires the lock has access to the array and the read/write pointers. After it releases the lock, other cores can acquire the lock.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;interrupt-evolution&#34;&gt;Interrupt Evolution&lt;/h2&gt;
+&lt;p&gt;Interrupts used to be very fast because hardware is very simple in old times. Nowadays, interrupts are slow because devices are more complicated. They have to do lots of preliminary work before generating an interrupt. On the other hand, kernel design becomes more complicated and it takes longer to handle an interrupt.&lt;/p&gt;
+&lt;p&gt;For some fast devices, e.g. high performing network card, there may be a stream of packets and the period is even shorter than the interrupt handling time. In this case, we have another strategy - polling. The CPU keeps checking a particular control register, once there&amp;rsquo;s data in, the CPU handles it. For slow devices, polling wastes CPU cycles on checking registers, but if devices are fast, polling can save frequent entry/exit cost.&lt;/p&gt;
+&lt;p&gt;Nowadays, sophisticated devices can dynamically switch between polling and interrupts.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-6.S081 Lecture 10: Multiprocessors and Locks</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/lec10/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/mit-operating-system/lectures/lec10/</guid>
+      <description>&lt;p&gt;Applications may want multiple CPU cores, so the kernel must handle parallel system calls, e.g. carefully maintain shared data structure in parallel. We use locks to ensure correct sharing, but on the other hand, locks can limit performance.&lt;/p&gt;
+&lt;p&gt;The frequency of CPU clock gradually reaches a limit at 2010, which means that single thread performance cannot be optimized. However, the number of transistors keeps growing, so having multiple cores is our only choice to increase performance.&lt;/p&gt;
+&lt;h2 id=&#34;why-lock&#34;&gt;Why Lock?&lt;/h2&gt;
+&lt;p&gt;We use lock to avoid race conditions. For example, if we delete the &lt;code&gt;acquire(kmem.lock)&lt;/code&gt; and &lt;code&gt;release(kmem.lock)&lt;/code&gt; in kfree(), it&amp;rsquo;s possible that pages are lost during freeing.&lt;/p&gt;
+&lt;h2 id=&#34;lock-abstraction&#34;&gt;Lock Abstraction&lt;/h2&gt;
+&lt;p&gt;The lock in xv6 is simply a struct:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;struct lock
+{
+    int locked;
+    ...
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;there are two APIs: &lt;code&gt;acquire(struct lock *lk)&lt;/code&gt; and &lt;code&gt;release(struct lock *lk)&lt;/code&gt;，at one time, only one process can acquire the lock, and other processes have to wait until the first process calls release().&lt;/p&gt;
+&lt;p&gt;The area between acquire() and release() is called critical section. The code in critical sections are executed &lt;strong&gt;atomically&lt;/strong&gt;, i.e. either &lt;strong&gt;all or none&lt;/strong&gt; of the code is executed, it&amp;rsquo;s impossible for codes in the same critical section to interweave.&lt;/p&gt;
+&lt;p&gt;Programs usually have many locks, aiming at more parallelism. If there&amp;rsquo;s only one lock in the kernel, to ensure correctness, the lock must protects all the codes in the kernel (the so called &amp;lsquo;big kernel lock&amp;rsquo;). In this case, the execution of the whole kernel is serialized. If we use multiple locks, it&amp;rsquo;s allowable to let two processes using different locks run in parallel.&lt;/p&gt;
+&lt;h2 id=&#34;when-to-lock&#34;&gt;When to Lock?&lt;/h2&gt;
+&lt;p&gt;A conservative rule (guideline): if 2 processes access a shared data structure and at least one operation is writing, then we have to lock that data structure.&lt;/p&gt;
+&lt;p&gt;From some aspects, the guideline is too strict: we can use lock-free programming. But lock-free programming is so tricky that we won&amp;rsquo;t cover that. From some aspects, the guideline is too loose: in printf() we use lock to ensure that the printed message is atomic.&lt;/p&gt;
+&lt;p&gt;We may want data structures to automatically acquire and release locks when we&amp;rsquo;re accessing them, but there are cases when we need more flexible lock management. Consider a system call &lt;code&gt;rename()&lt;/code&gt; . Suppose now we deal with &lt;code&gt;rename(&amp;quot;d1/x&amp;quot;, &amp;quot;d2/y&amp;quot;)&lt;/code&gt;, if we act like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;lock(d1); erase(&amp;quot;d1/x&amp;quot;); release(d1); (**)
+lock(d2); add(&amp;quot;d2/y&amp;quot;); release(d2);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then at time &lt;code&gt;**&lt;/code&gt;, from other processes&amp;rsquo; perspective, the file doesn&amp;rsquo;t exist! - obviously incorrect. The correct implementation is&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;lock(d1 and d2); erase(&amp;quot;d1/x&amp;quot;); add(&amp;quot;d2/y&amp;quot;); release(d1 and d2);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this example, we see that sometimes we need multiple locks before doing operations.&lt;/p&gt;
+&lt;h2 id=&#34;lock-perspectives&#34;&gt;Lock Perspectives&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Locks help avoid lost updates. (e.g. kfree() )&lt;/li&gt;
+&lt;li&gt;Locks make multi-step operations (critical section) atomic.&lt;/li&gt;
+&lt;li&gt;Locks help maintain invariants. (e.g. in kfree(), the lock protects moments when there are multiple pointers pointing to the head node.)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;deadlock&#34;&gt;Deadlock&lt;/h2&gt;
+&lt;p&gt;Let&amp;rsquo;s look at a case which may lead to deadlock:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;CPU1                            CPU2
+rename(&amp;quot;d1/x&amp;quot;, &amp;quot;d2/y&amp;quot;)          rename(&amp;quot;d2/a&amp;quot;, &amp;quot;d1/b&amp;quot;)
+acquire(d1)                     acquire(d2)
+acquire(d2) &amp;lt;-- blocked         acquire(d1) &amp;lt;-- blocked
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The solution is to always acquire locks in order. (actually, it&amp;rsquo;s OK for CPU2 to acquire d1 and then d2 in this case.) Here the lock ordering is a partial order.&lt;/p&gt;
+&lt;p&gt;Lock makes modularity more complicated. Suppose a function f() in module 1 calls a function g() in module 2, f() must ensure that locks in g() will not violate global lock ordering, which means that the internals of module 2 (in terms of locks) must be visible to module 1, which somehow violates the module abstraction principle.&lt;/p&gt;
+&lt;h2 id=&#34;lock-performance&#34;&gt;Lock Performance&lt;/h2&gt;
+&lt;p&gt;Locks lead to serialization, which influences performance. To increase performance, we need to split up data structures and introduce more locks, which require lots of work.&lt;/p&gt;
+&lt;p&gt;A general approach is to firstly use coarse-grained locks, and do profiling tests to see whether we need smaller locks to increase parallelism.&lt;/p&gt;
+&lt;h2 id=&#34;code-lock-implementation&#34;&gt;Code: Lock Implementation&lt;/h2&gt;
+&lt;p&gt;The most common way to acquire locks is to use the hardware test-and-set support. In RISC-V, we use the &lt;code&gt;amoswap addr, r1, r2&lt;/code&gt; atomic instruction. It can be viewed as the following pseudo instructions:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;lock addr
+	tmp   &amp;lt;-- *addr
+	*addr &amp;lt;-- r1
+	r2    &amp;lt;-- tmp
+unlock addr
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Hardware test-and-set support is dependent on memory system. If the memories are sitting on a share bus, a memory controller (bus arbiter) is responsible for sorting the locks in order. If processors have caches, the cache coherence protocol will ensure the consistency.&lt;/p&gt;
+&lt;p&gt;In acquire() in xv6, we use the C function &lt;code&gt;__sync_lock_test_and_set()&lt;/code&gt; to do atomic operations. Refer to Xv6 Source Code Manual for more details.&lt;/p&gt;
+&lt;p&gt;In release(), we may wonder that why we still need to use atomic instruction to set the lock: a simple store instruction can finish that. However, the store instruction may be executed differently depending on architecture design. &lt;code&gt;sw&lt;/code&gt; may be decomposed to several micro instructions, which leads to lost of atomicity.&lt;/p&gt;
+&lt;h2 id=&#34;code-locks-and-interrupts&#34;&gt;Code: Locks and Interrupts&lt;/h2&gt;
+&lt;p&gt;In acquire(), we must firstly turn off the interrupts. That&amp;rsquo;s because unexpected interrupts may cause deadlock. For example, in &lt;code&gt;/kernel/uart.c&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void
+uartputc(int c)
+{
+  acquire(&amp;amp;uart_tx_lock);
+
+  if(panicked){
+    for(;;)
+      ;
+  }
+  ......
+}
+
+void
+uartintr(void)
+{
+  // read and process incoming characters.
+  while(1){
+    int c = uartgetc();
+    if(c == -1)
+      break;
+    consoleintr(c);
+  }
+
+  // send buffered characters.
+  acquire(&amp;amp;uart_tx_lock);
+  uartstart();
+  release(&amp;amp;uart_tx_lock);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Suppose that we don&amp;rsquo;t turn off interrupts when holding locks, we acquire the lock &lt;code&gt;uart_tx_lock&lt;/code&gt; in uartputc(), and when we&amp;rsquo;re in the critical section, the uart hardware sends an interrupt, leading us to uartintr(). In uartintr() the kernel tries to acquire the lock &lt;code&gt;uart_tx_lock&lt;/code&gt;, but the lock is held by the interrupted thread, on the other hand, it&amp;rsquo;s impossible for the interrupted thread to move on unless interrupt handler returns. So a deadlock appears.&lt;/p&gt;
+&lt;h2 id=&#34;code-memory-ordering&#34;&gt;Code: Memory Ordering&lt;/h2&gt;
+&lt;p&gt;Modern compilers and processors usually adjust instruction order to increase performance. For example,&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;lock = 1;
+x = x + 1; // ---+
+lock = 0;  //    |
+           // &amp;lt;--+		
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It&amp;rsquo;s possible for compilers/processors to move &lt;code&gt;x = x + 1&lt;/code&gt; to the end of the paragraph. If the code is executed in a single-core, serial mode, it&amp;rsquo;s absolutely OK and correct. But if it&amp;rsquo;s executed on mult-core processors, it&amp;rsquo;s a disaster.&lt;/p&gt;
+&lt;p&gt;To avoid such things, we can build a memory fence. In RISC-V, it&amp;rsquo;s a &lt;code&gt;mfence&lt;/code&gt; instruction and it&amp;rsquo;s encapsulated as &lt;code&gt;__sync_synchronize()&lt;/code&gt; in libc. We put memory fence at the beginning of acquire() and the end of release() to ensure that no instruction will be unexpectedly moved out of our critical section.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-6.S081 Lecture 11: Thread Switching</title>
+      <link>/posts/coursenotes/mit-operating-system/lectures/lec11/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/mit-operating-system/lectures/lec11/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;People want threads for the following reasons:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;People want their computers to &amp;ldquo;seemingly&amp;rdquo; simultaneously do multiple jobs.&lt;/li&gt;
+&lt;li&gt;Programmers can use multiple threads to write simple and elegant code. &lt;code&gt;prime.c&lt;/code&gt; in Lab 1 is a good example, it uses multiple processes but the principle is similar.&lt;/li&gt;
+&lt;li&gt;We can utilize multiple threads to speed up our programs on a multi-core machine.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A thread is an abstract concept that can be viewed as &lt;strong&gt;a serial execution&lt;/strong&gt;. The state of an execution includes the PC, the registers and a stack. Operating systems interleave the execution of multiple threads, which is implemented in mainly two ways:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Multi-core machine: a machine with multiple CPU cores can naturally interleave the executions. There are automatically multiple sets of PCs, registers, etc.&lt;/li&gt;
+&lt;li&gt;Thread switching. Even on a multi-core machine, we need to focus on how a single core an execute multiple threads by executing the first one for a while and switching to the second and so forth.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;An important issue about threads is: does threads have shared memory? If threads have shared memory, then each thread&amp;rsquo;s changes are visible to other threads and we need locks to access shared resources. In xv6, kernel threads do have shared memories while user processes with only one thread don&amp;rsquo;t have shared memory - each thread lives in the address space of its corresponding process. In real OS like Linux, which supports user processes to have multiple threads, threads of the same process share the same address space.&lt;/p&gt;
+&lt;p&gt;There are several challenges for implementing a threading system:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;How to decide which thread to execute - scheduling.&lt;/li&gt;
+&lt;li&gt;What and where to save/restore the thread state.&lt;/li&gt;
+&lt;li&gt;How to deal with compute bound threads: threads may not voluntarily yield the CPU ,so we need a method to automatically revoking control from some long running compute bound process, setting it aside and running it later.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The answer to the third question is &lt;strong&gt;timer interrupts&lt;/strong&gt;. There is a piece of hardware on the CPU that periodically generates interrupt signals and the signals are somehow transferred to the kernel. So even if the process is running in user level, the coming signal will interrupt it and give the control to the kernel. Then the kernel voluntarily yields the CPU.&lt;/p&gt;
+&lt;p&gt;This kind of policy is called &lt;strong&gt;preemptive scheduling&lt;/strong&gt;. Here the &amp;ldquo;preemptive&amp;rdquo; means that even if the user process is unwilling to yield the CPU, our kernel will force it to quit. Correspondingly another policy is called voluntary scheduling, which counts on processes to proactively yield the CPU. An interesting thing is, xv6 implements preemptive scheduling by letting kernel threads voluntarily yield CPU.&lt;/p&gt;
+&lt;p&gt;Kernel threads have multiple states, some of which are listed below:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;RUNNING: the thread is currently running on one of the core.&lt;/li&gt;
+&lt;li&gt;RUNNABLE: the thread is able to run and wants to be scheduled onto CPU as soon as possible.&lt;/li&gt;
+&lt;li&gt;SLEEPING: the thread cannot run currently (maybe because it&amp;rsquo;s waiting for I/O).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Preemptive scheduling is responsible for changing a running thread to a runnable thread. In xv6, since kernel threads share memory, thread state only includes CPU information. A running thread&amp;rsquo;s state is stored in the CPU hardware while a runnable/sleeping thread&amp;rsquo;s state, i.e. PC and registers, is stored elsewhere.&lt;/p&gt;
+&lt;h2 id=&#34;a-roadmap-for-thread-switching&#34;&gt;A Roadmap for Thread Switching&lt;/h2&gt;
+&lt;p&gt;Generally, in xv6, a user process cannot directly switch to another user process, it must realize it in an indirect way: the user process first falls into the kernel, during which the user level information is stored in the trapframe, then it saves the &lt;strong&gt;context&lt;/strong&gt; of its kernel thread, switches to another process&amp;rsquo;s kernel thread by restoring the context. At last it goes back to the user space of another process.&lt;/p&gt;
+&lt;p&gt;A more detailed picture is described below: suppose we have two processes P1 and P2, P1 is running using its own user stack. Now a timer interrupt comes and the execution of P1 is suspended. In &lt;code&gt;trampoline.S&lt;/code&gt;, it stores the user level information in the trapframe, switches to the corresponding kernel stack, and now it&amp;rsquo;s P1&amp;rsquo;s kernel thread running.&lt;/p&gt;
+&lt;p&gt;The kernel thread voluntarily yields the CPU by calling a function swtch(). In swtch(), the context of P1&amp;rsquo;s kernel thread (i.e. values of registers) is saved and a &lt;strong&gt;scheduler thread&lt;/strong&gt;&amp;rsquo;s context is restored. After restoring scheduler thread&amp;rsquo;s context, our execution flow jumps to the return address of an swtch() call in scheduler thread&amp;rsquo;s function scheduler(). Also, the stack is switched to the scheduler&amp;rsquo;s stack (this stack is allocated in &lt;code&gt;entry.S&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;The scheduler thread is responsible for choosing an runnable thread and switching to it. After deciding which thread to switch to, the scheduler thread does the same procedure again: it calls swtch(), saves the context and restore the context of the target process&amp;rsquo;s kernel thread. Now the execution flow jumps to the return address of an swtch() call in P2&amp;rsquo;s kernel thread. Also the stack is switched to P2&amp;rsquo;s kernel stack. Finally, P2 restores user level information through P2&amp;rsquo;s trapframe and goes back to the user space.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Where are the context stored?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Contexts of processes&amp;rsquo;s kernel threads are stored in p-&amp;gt;context. Context of scheduler thread is stored in the CPU struct.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A process is either running in the user space, or running in the kernel level, or it&amp;rsquo;s not running at all. In the last case the information of the process is stored in the combination of trapframe and thread context.&lt;/p&gt;
+&lt;h2 id=&#34;code-spinc&#34;&gt;Code: &lt;code&gt;spin.c&lt;/code&gt;&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;struct cpu {
+  struct proc *proc;          // The process running on this cpu, or null.
+  struct context context;     // swtch() here to enter scheduler().
+  int noff;                   // Depth of push_off() nesting.
+  int intena;                 // Were interrupts enabled before push_off()?
+};
+struct proc {
+  struct spinlock lock;
+
+  // p-&amp;gt;lock must be held when using these:
+  enum procstate state;        // Process state
+  struct proc *parent;         // Parent process
+  void *chan;                  // If non-zero, sleeping on chan
+  int killed;                  // If non-zero, have been killed
+  int xstate;                  // Exit status to be returned to parent&#39;s wait
+  int pid;                     // Process ID
+
+  // these are private to the process, so p-&amp;gt;lock need not be held.
+  uint64 kstack;               // Virtual address of kernel stack
+  uint64 sz;                   // Size of process memory (bytes)
+  pagetable_t pagetable;       // User page table
+  struct trapframe *trapframe; // data page for trampoline.S
+  struct context context;      // swtch() here to run process
+  struct file *ofile[NOFILE];  // Open files
+  struct inode *cwd;           // Current directory
+  char name[16];               // Process name (debugging)
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;process struct and CPU struct are shown above. In &lt;code&gt;struct proc&lt;/code&gt; we can see variable &lt;code&gt;state&lt;/code&gt; representing the status of the process, &lt;code&gt;kstack&lt;/code&gt; representing the address of the process&amp;rsquo;s kernel stack, &lt;code&gt;trapframe&lt;/code&gt; storing user level information and &lt;code&gt;context&lt;/code&gt; storing kernel thread context. In &lt;code&gt;struct cpu&lt;/code&gt; there&amp;rsquo;s also a &lt;code&gt;context&lt;/code&gt; storing the context of scheduler thread.&lt;/p&gt;
+&lt;p&gt;We use a demo program, &lt;code&gt;spin.c&lt;/code&gt;, to illustrate the complete procedure of thread switching.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;//
+// spin.c
+// a demo program illustrating the principle of thread switching.
+//
+
+#include &amp;quot;kernel/types.h&amp;quot;
+#include &amp;quot;user/user.h&amp;quot;
+
+int
+main (int argc, char *argv[])
+{
+    int pid;
+    char c;
+
+    pid = fork();
+    if (pid == 0) {
+        c = &#39;/&#39;;
+    }
+    else {
+        printf(&amp;quot;parent pid is %d, child is %d\n&amp;quot;, getpid(), pid);
+        c = &#39;\\&#39;;
+    }
+
+    for (int i = 0; ; i++)
+        if (i % 1000000 == 0)
+            write(2, &amp;amp;c, 1);
+    
+    exit(0);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In &lt;code&gt;spin.c&lt;/code&gt; two processes print &lt;code&gt;/&lt;/code&gt; and &lt;code&gt;\&lt;/code&gt; respectively. Due to timer interrupt, two kinds of slashes are printed alternatively. We use GDB to set a breakpoint at where devintr() recognizes an timer interrupt.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Tip: GDB Usage&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;We can set breakpoints at a particular line in the source code. In this case, we can use &lt;code&gt;b trap.c:207&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;If we check the trapframe by &lt;code&gt;p/x p-&amp;gt;trapframe&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$6 = {kernel_satp = 0x8000000000087fff, kernel_sp = 0x3fffff8000,  
+  kernel_trap = 0x80002880, epc = 0x62, kernel_hartid = 0x0,        
+  ra = 0x62, sp = 0x2fb0, gp = 0x505050505050505,                   
+  tp = 0x505050505050505, t0 = 0x505050505050505,                   
+  t1 = 0x505050505050505, t2 = 0x505050505050505, s0 = 0x2fe0,      
+  s1 = 0x1c4a4111, a0 = 0x1, a1 = 0x2fbf, a2 = 0x1, a3 = 0x3ea0,    
+  a4 = 0x1400, a5 = 0x99691, a6 = 0x505050505050505, a7 = 0x10,     
+  s2 = 0xf4240, s3 = 0x20, s4 = 0x146b, s5 = 0x13f0,                
+  s6 = 0x505050505050505, s7 = 0x505050505050505,                   
+  s8 = 0x505050505050505, s9 = 0x505050505050505,                   
+  s10 = 0x505050505050505, s11 = 0x505050505050505,                 
+  t3 = 0x505050505050505, t4 = 0x505050505050505,                   
+  t5 = 0x505050505050505, t6 = 0x505050505050505}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The epc points at 0x62, by looking up in &lt;code&gt;spin.asm&lt;/code&gt;, this is &lt;code&gt;addiw s1, s1, 1&lt;/code&gt; instruction, which demonstrates that our process is interrupted when doing infinite calculation.&lt;/p&gt;
+&lt;p&gt;We continue and go into the yield() function, which makes the kernel thread voluntarily yield the CPU.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void
+yield(void)
+{
+  struct proc *p = myproc();
+  acquire(&amp;amp;p-&amp;gt;lock);
+  p-&amp;gt;state = RUNNABLE;
+  sched();
+  release(&amp;amp;p-&amp;gt;lock);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Before doing jobs, yield() firstly acquires the lock of the current process because it&amp;rsquo;s about to change the state of the process to RUNNABLE. We want this procedure to be atomic to other cores because the invariant that &lt;code&gt;p-&amp;gt;state&lt;/code&gt; represents the current status of the process is temporarily violated: the process is indeed running, but the status becomes RUNNABLE. If other cores&amp;rsquo; scheduler threads were able to see the change now and decide to execute this process, our current process would be running simultaneously on multiple CPUs, which is a disaster.&lt;/p&gt;
+&lt;p&gt;We go into sched(). After finishing several sanity checks, sched() calls swtch(), which is the core function of thread switching.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;swtch(&amp;amp;p-&amp;gt;context, &amp;amp;c-&amp;gt;context);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This line will save the current context into p-&amp;gt;context and restore c-&amp;gt;context. We can use &lt;code&gt;p/x cpus[0].context&lt;/code&gt; to check the context we are going to switch to:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;$12 = {ra = 0x80001fce, sp = 0x8000a7c0, s0 = 0x8000a810,
+  s1 = 0x800121a0, s2 = 0x2, s3 = 0x80017768, s4 = 0x80011950,
+  s5 = 0x1, s6 = 0x80011970, s7 = 0x1, s8 = 0x3, s9 = 0x0,
+  s10 = 0x0, s11 = 0x0}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We are particularly interested in the &lt;code&gt;ra&lt;/code&gt; register because it determines where we&amp;rsquo;ll go to after returning from swtch(). We use &lt;code&gt;x/i cpus[0].context-&amp;gt;ra&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;0x80001fce &amp;lt;scheduler+138&amp;gt;:  sd      zero,24(s4)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We are assured that after executing swtch(), we will be in the scheduler thread.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;swtch.S&lt;/code&gt; is written in assembly. It stores and restores values according to a0 and a1, which are registers containing the first and the second argument, i.e. p-&amp;gt;context and c-&amp;gt;context.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Why don&amp;rsquo;t we save the PC register? Without saving the PC register, how can we know which instruction to jump to?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;We use the &lt;code&gt;ra&lt;/code&gt; register to indirectly record PC. When swtch() returns by executing &lt;code&gt;ret&lt;/code&gt;, the value in &lt;code&gt;ra&lt;/code&gt; will be put into PC, which is exactly the next instruction of &lt;code&gt;call swtch&lt;/code&gt; in scheduler().&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;There are 32 general registers in RISC-V, why swtch() only saves 14 of them?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In C code, swtch() is only a normal function call, according to the calling convention, swtch() only need to carefully manage callee-saved registers. Even if swtch() do nothing with caller-saved registers, the caller will be able to restore the caller-saved registers (from the kernel stack or somewhere). This is ensured by the C compiler.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;After executing 28 &lt;code&gt;ld&lt;/code&gt; and &lt;code&gt;sd&lt;/code&gt; instructions, we now use &lt;code&gt;x $sp&lt;/code&gt; to print the stack:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;0x8000a7c0 &amp;lt;stack0+3984&amp;gt;:       0x00000000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;our stack pointer now points to stack0, which is the stack we allocate to the scheduler thread during booting. If we use &lt;code&gt;where&lt;/code&gt; to unwind the stack information, we&amp;rsquo;ll get&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;#0  0x00000000800026b8 in swtch ()
+#1  0x0000000080001fce in scheduler () at kernel/proc.c:489
+#2  0x0000000080000f2c in main () at kernel/main.c:44
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We&amp;rsquo;re now in scheduler thread, which is created at the last line of &lt;code&gt;main.c&lt;/code&gt; during booting. We return from a swtch() call which scheduler() makes a while ago.&lt;/p&gt;
+&lt;p&gt;scheduler() loops and tries to find process that is RUNNABLE state. It&amp;rsquo;s worth attention that we need to acquire lock before checking the status and doing subsequent jobs. Generally, after we acquire a process lock, we usually do the following jobs to realize thread switching:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Modify the status of the target process.&lt;/li&gt;
+&lt;li&gt;Call swtch() to save and restore context.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Previously we talked about acquiring lock can avoid other cores discovering processes in temporary incorrect state. Another significant point of acquiring lock is that we explicitly turn off interrupts in acquire(), this is important because we don&amp;rsquo;t want to respond to timer interrupts when doing swtch(), otherwise the register values would be damaged.&lt;/p&gt;
+&lt;p&gt;After scheduler() decides the target process to switch to, it will call swtch() again, save scheduler thread&amp;rsquo;s context into c-&amp;gt;context, restore context in p-&amp;gt;context (another process&amp;rsquo;s kernel thread&amp;rsquo;s context), and resume executing that process.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;How can a process be switched to at the first time, since it hasn&amp;rsquo;t called swtch() yet?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In xv6 there is a function forkret(), it serves as the target address of the first &amp;ldquo;fake&amp;rdquo; context: in allocproc(), we set up a fake context with &lt;code&gt;ra&lt;/code&gt; pointing to forkret() and &lt;code&gt;sp&lt;/code&gt; pointing to the corresponding kernel stack. We don&amp;rsquo;t care about other registers&amp;rsquo; values before the first execution. The only thing forkret() does is to release the process lock.&lt;/p&gt;
+&lt;p&gt;In addition, there is a situation in which xv6 creates a &amp;ldquo;fake&amp;rdquo; trapframe: in userinit(), xv6 creates a fake trapframe with &lt;code&gt;epc=0&lt;/code&gt; and &lt;code&gt;sp=PGSIZE&lt;/code&gt;. In other situations, a new process is created by fork() and fork() copies the trapframe of parent process.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

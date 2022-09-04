@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Overview 该实验的主要内容是实现内核线程的调度。本实验报告主要记录一些有趣的设计和测试方法。
+Designation spinlock 在 L2 中我们需要实现一个相较于 L1 更加精细的自旋锁。在引入了中断机制后，我们在临界区内需要关闭中断，否则一旦持有锁的线程被调度下了 CPU 一整个时间片就会卡住。我们需要小心地维护中断的嵌套。我们需要一个 per-cpu 的变量来记录中断嵌套的层数，在第一层的时候关闭中断，并在最后一层被解开时打开中断。
+Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模仿 xv6 的设计)，因而是架构相关的 (笔者针对 x86-64 和 x86 各写了一遍汇编)。在这种实现下，一次线程切换 (以时钟中断为例) 会经历如下历程：
+经过 AM 中的一些代码后，上下文保存在了栈上的 Context 结构体中，进入 os-&gt;trap。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/labs/lab02/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/labs/lab02/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/labs/lab02/">
+  <meta property="og:title" content="Lab 02: Kernel Multi-Threads | Academic">
+  <meta property="og:description" content="Overview 该实验的主要内容是实现内核线程的调度。本实验报告主要记录一些有趣的设计和测试方法。
+Designation spinlock 在 L2 中我们需要实现一个相较于 L1 更加精细的自旋锁。在引入了中断机制后，我们在临界区内需要关闭中断，否则一旦持有锁的线程被调度下了 CPU 一整个时间片就会卡住。我们需要小心地维护中断的嵌套。我们需要一个 per-cpu 的变量来记录中断嵌套的层数，在第一层的时候关闭中断，并在最后一层被解开时打开中断。
+Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模仿 xv6 的设计)，因而是架构相关的 (笔者针对 x86-64 和 x86 各写了一遍汇编)。在这种实现下，一次线程切换 (以时钟中断为例) 会经历如下历程：
+经过 AM 中的一些代码后，上下文保存在了栈上的 Context 结构体中，进入 os-&gt;trap。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lab 02: Kernel Multi-Threads | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/labs/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/labs/lab00/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/labs/lab00/">Lab 00: amgame</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/labs/lab01/">Lab 01: pmm</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/nju-operating-system/labs/lab02/">Lab 02: kmt</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/labs/lab03/">Lab 03: uproc</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lab 02: Kernel Multi-Threads</h1>
+
+          <div class="article-style">
+            <h2 id="overview">Overview</h2>
+<p>该实验的主要内容是实现内核线程的调度。本实验报告主要记录一些有趣的设计和测试方法。</p>
+<h2 id="designation">Designation</h2>
+<h3 id="spinlock">spinlock</h3>
+<p>在 L2 中我们需要实现一个相较于 L1 更加精细的自旋锁。在引入了中断机制后，我们在临界区内需要关闭中断，否则一旦持有锁的线程被调度下了 CPU 一整个时间片就会卡住。我们需要小心地维护中断的嵌套。我们需要一个 per-cpu 的变量来记录中断嵌套的层数，在第一层的时候关闭中断，并在最后一层被解开时打开中断。</p>
+<h3 id="inline-assembly">Inline Assembly</h3>
+<p>笔者的初代实现使用了內联汇编进行栈切换 (模仿 xv6 的设计)，因而是架构相关的 (笔者针对 x86-64 和 x86 各写了一遍汇编)。在这种实现下，一次线程切换 (以时钟中断为例) 会经历如下历程：</p>
+<ul>
+<li>
+<p>经过 AM 中的一些代码后，上下文保存在了栈上的 Context 结构体中，进入 os-&gt;trap。</p>
+</li>
+<li>
+<p>os-&gt;trap 根据中断原因，进入时钟中断的 handler。时钟中断要求当前线程主动让出 CPU。handler 会通过一个 swtch() 函数 (內联汇编) 跳转到 scheduler 线程，该函数原理类似 setjmp 和 longjmp，恢复寄存器现场并切换栈。scheduler 线程使用自己的独立的栈 (即不是线程的内核栈)，每个 CPU 核一个。</p>
+</li>
+<li>
+<p>调度器线程是一个死循环，它不断选择状态为 RUNNABLE 的线程并调用 swtch() 函数切换过去。</p>
+</li>
+<li>
+<p>目标线程返回自己的 Context 结构体。</p>
+</li>
+</ul>
+<p>这种写法下，每个 os-&gt;trap 最终返回的 Context 结构体就是传进来的那个，因此不需要对 Context 做额外的保存。这其中有一些细节需要注意：</p>
+<ul>
+<li>scheduler 线程必须打开中断，比如当前所有 input_task 线程都处于睡眠状态，我们只有让调度器线程响应键盘中断信号，才能唤醒这些 input_task 线程。</li>
+<li>CPU 上锁之前的中断开关情况是一个 proc local 的状态，在调用 swtch() 切换前必须保存下来：比如在笔者的实现中，我们可能是在中断处理程序中 yield，这时 intena 是关中断状态；而信号量的 sleep() 中也会调用 swtch()，这时 intena 是开中断状态。</li>
+<li>不使用 AM API 的最大坏处是：我们必须手动维护第一次进入一个线程的过程，因为我们之后切换到一个线程依赖的是它之前有一个 swtch() 到 scheduler 的现场，但一个进程刚被创建时没有现场。笔者的解决方法是：伪造一个寄存器现场完成栈切换，并通过一个內联汇编的 wrapper call 直接跳转到目标函数执行 (类似 M2)。</li>
+</ul>
+<h3 id="semaphore">Semaphore</h3>
+<p>笔者为每个信号量准备了一把锁，这样可以用类似条件变量的方式实现信号量。sem_wait() 和 sem_post() 共用信号量的锁，sleep() 通过线程的锁来保证原子性。这其中的关键细节在于 sleep() 中先获取线程锁再释放信号量锁，这样对于 wait() 函数来说，sleep() 释放锁、线程睡眠 (修改线程的状态) 和线程切换这几个步骤就是原子的。</p>
+<p>有了信号量之后，我们可以使用 binary semaphore 作为一个睡眠锁，在长临界区的代码片段中睡眠锁可以提升效率。</p>
+<h2 id="testing">Testing</h2>
+<h3 id="producer-consumer">Producer Consumer</h3>
+<p>在多核上多线程跑生产者消费者是一种比较好的暴露并发 bug 的好方法。在测试集的参数上笔者有如下心得：</p>
+<ul>
+<li>我们并不需要将括号打印在屏幕上肉眼检查，可以选择写一个 python 程序接收 oslab 的输出自动检查，或者在 oslab 的括号输出函数中直接修改一个全局计数器并执行检查。</li>
+<li>创建较多的线程，将括号的嵌套层数调得浅一些 (比如 5 以内) 比较有利于测试并发正确性，因为嵌套层数浅时更容易触发错误，以及生产者/消费者的睡眠条件更容易满足，程序的并发行更高。</li>
+<li>创建较小的线程可能有利于检查死锁错误。</li>
+</ul>
+<h3 id="dev-test-suite">dev Test Suite</h3>
+<p>一次完整的输入输出会经过如下步骤：</p>
+<ul>
+<li>
+<p><code>tty_reader</code> 线程向 tty 输出命令行提示符，然后调用 tty 的 read() 函数。tty 的 read() 函数要等待 tty_cook() 的信号，因此暂时挂起。</p>
+</li>
+<li>
+<p>每当用户按下一个键，硬件会生成一个中断，dev 测试集中的 input_notify() 函数负责处理这个中断，它会发送一个 kbdirq 信号，唤醒正在睡眠的 <code>input_task</code> 线程。<code>input_task</code> 线程从设备寄存器中读取按键的内容，更新当前的键盘按键状态，调用 push_event() 将按键事件放入 <code>in-&gt;events[]</code> 队列中，并发送一个 event_sem 信号。此外，时钟中断也会发送 kbdirq 信号唤醒 <code>input_task</code> 线程，如果一段时间内没有任何按键，<code>input_task</code> 会 push 一个空的按键事件并发送 event_sem，向别的线程提供一个伪时钟。</p>
+</li>
+<li>
+<p><code>tty_task</code> 线程会不断调用 input_read() 函数读取键盘输入，input_read() 会调用 pop_event() 从 <code>in-&gt;events[]</code> 队列中取出一个按键事件返回，对于一个普通的按键事件，<code>tty_task</code> 会调用 tty_cook() 函数将字符加入一个和读取线程共享的队列 (保护该队列的锁是 <code>tty-&gt;lock</code>)，并调用 <code>ttydev-&gt;ops-&gt;write</code> 将字符回显在 tty 上。</p>
+<p>tty_cook() 调用 tty_enqueue() 函数将字符放入队列 <code>tty-&gt;queue</code>，如果遇到换行符 <code>\n</code>，tty_cook() 会发送 cooked 信号来唤醒 <code>tty_reader</code> 线程。</p>
+</li>
+<li>
+<p>tty_read() 函数被唤醒后，会将队列里的字符拷贝到指定的地址。然后 <code>tty_reader</code> 线程打印相应的长度信息。</p>
+</li>
+</ul>
+<p>注：tty_read() 打印信息和字符回显的先后无法保证。这里理应有的顺序是：在字符回显完成后 <code>tty_reader</code> 被唤醒并打印信息；<code>tty_reader</code> 打印出下一个命令行提示符之后再进行字符回显示。如果要获得更好的体验可能需要一些同步机制。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/nju-operating-system/labs/lab01/" rel="next">Lab 01: Physical Memory Manager</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/nju-operating-system/labs/lab03/" rel="prev">Lab 03: User Level Processes</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/nju-operating-system/Labs/lab02.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

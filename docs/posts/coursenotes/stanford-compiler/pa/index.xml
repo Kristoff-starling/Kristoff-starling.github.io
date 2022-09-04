@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Programming Assignments | Academic</title>
+    <link>/posts/coursenotes/stanford-compiler/pa/</link>
+      <atom:link href="/posts/coursenotes/stanford-compiler/pa/index.xml" rel="self" type="application/rss+xml" />
+    <description>Programming Assignments</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Programming Assignments</title>
+      <link>/posts/coursenotes/stanford-compiler/pa/</link>
+    </image>
+    
+    <item>
+      <title>Stanford-CS143 PA0: Cool Programming</title>
+      <link>/posts/coursenotes/stanford-compiler/pa/pa0/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/stanford-compiler/pa/pa0/</guid>
+      <description>&lt;p&gt;该入门实验的主要目的是熟悉 cool 语言的语法，为编译器编写打下基础。本实验的任务是用 cool 语言写一个简单的 stack machine，支持 &lt;code&gt;int&lt;/code&gt; &lt;code&gt;+&lt;/code&gt; &lt;code&gt;s&lt;/code&gt; &lt;code&gt;e&lt;/code&gt; &lt;code&gt;d&lt;/code&gt; 五种操作。&lt;/p&gt;
+&lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;
+&lt;p&gt;由于 cool 语言中没有开数组的功能，所以笔者使用链表来模拟这个栈数据结构。插入操作是新建一个链表节点插在 head 前面，&lt;code&gt;e&lt;/code&gt; 操作则是查看链表开头的若干个元素并执行相应操作。&lt;/p&gt;
+&lt;h2 id=&#34;interesting-bugs&#34;&gt;Interesting Bugs&lt;/h2&gt;
+&lt;p&gt;cool 是一个面向对象风格的语言，一开始笔者吃了不少苦头；而且 PA 提供的 cool 编译器报错信息很少，不方便知道到底发生了什么，只能自己猜测和摸索。&lt;/p&gt;
+&lt;p&gt;笔者遇到的一个有意思的 bug 是在实现 &lt;code&gt;class List&lt;/code&gt; 的某个 method 时，无法直接使用另一个 List 变量的 attribute。这是因为 cool 要求所有的 attribute 都是 private 的，method 是 public 的，因此如果想要访问某个变量的 attribute 要这样写：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;class CLASS {
+    attribute : Object;
+    
+    attribute() : Object { attribute };
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样就可以通过 attribute() 方法来访问 attribute 属性。&lt;/p&gt;
+&lt;h2 id=&#34;miscellaneous&#34;&gt;Miscellaneous&lt;/h2&gt;
+&lt;p&gt;关于 cool 的一点吐槽 (README 要求的作业之一)：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;无法指定 private/public 的 attribute；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;没有逻辑运算符 (and/or) 导致有一些 if-else 语句不得不拆成两个写；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;if 结构必须是 if-then-else-fi，不能省略 else 分支；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;多行代码必须用大括号框起来，有一点丑 (不过这应该可以简化 parser 的设计)；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;……&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Stanford-CS143 PA1: Lexical Analysis</title>
+      <link>/posts/coursenotes/stanford-compiler/pa/pa1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/stanford-compiler/pa/pa1/</guid>
+      <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;该实验的目的是完成 cool compiler 的 lexical analysis 部分。课堂上讲解了用正则表达式描述词汇格式以及如何根据正则表达式生成 NFA，通过 NFA 转 DFA，再将 DFA 以二维表的形式存储下来。不过现在有成熟的工具可以完成正则表达式的 implementation，所以本实验中我们只需要考虑如何用正则表达式描述 cool 语言的词汇，不需要考虑自动机。&lt;/p&gt;
+&lt;p&gt;笔者选择了 C++ 版本的实验。本实验中我们使用 flex 工具来完成正则表达式的 implementation。我们识别出一个 token 后需要向 flex 生成的 &lt;code&gt;yylex()&lt;/code&gt; 函数返回 token 的编号 (在 &lt;code&gt;cool-parse.h&lt;/code&gt; 中定义)，如果当前 token 有额外的语义信息 (比如字符串，bool const) 则需要在 &lt;code&gt;coolyyval&lt;/code&gt; 这个 union 的相应字段中填写信息。&lt;/p&gt;
+&lt;p&gt;顺利完成该实验的重要前提是仔细阅读官方提供的各种手册：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;阅读 flex manual 的前 10 个 section 以熟悉 flex 的语法。&lt;/li&gt;
+&lt;li&gt;阅读 cool manual 的第 10 章以及 Figure 1 以了解 cool 的语法规则。&lt;/li&gt;
+&lt;li&gt;阅读 PA1 的讲义，该讲义的逻辑不太清晰，各种对返回值的 specification 散落在讲义的各个角落，需要非常仔细地寻找。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;tokens&#34;&gt;Tokens&lt;/h2&gt;
+&lt;p&gt;cool 的编译器需要识别以下几类 token：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Integer: 非空的由 0~9 构成的字符串。&lt;/li&gt;
+&lt;li&gt;Identifier: identifier 都是由小写/大写字母、数字和下划线构成的非空字符串。type identifier 要求第一个字符必须是小写字母，object identifier 要求第一个字符必须是大写字母。&lt;/li&gt;
+&lt;li&gt;Operator: 各种符号，除了 &lt;code&gt;&amp;lt;=&lt;/code&gt; &lt;code&gt;&amp;lt;-&lt;/code&gt; &lt;code&gt;=&amp;gt;&lt;/code&gt; 三个多字符符号有专门的 token id，其余的符号直接返回 ascii 码。&lt;/li&gt;
+&lt;li&gt;Keyword: 关键字都有各自定义好的 token id。true 和 false 这两个关键字要求首字母必须小写，其余的关键字都是大小写不敏感的。&lt;/li&gt;
+&lt;li&gt;White space: 编译器需要根据 &lt;code&gt;\n&lt;/code&gt; 正确判断行号，并过滤 &lt;code&gt;\v&lt;/code&gt; &lt;code&gt;\r&lt;/code&gt; &lt;code&gt;\f&lt;/code&gt; &lt;code&gt;\t&lt;/code&gt; &lt;code&gt; &lt;/code&gt; 几种空白字符。&lt;/li&gt;
+&lt;li&gt;String, Comments: 这两个类别比较复杂，下面专门讨论。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;comments&#34;&gt;Comments&lt;/h3&gt;
+&lt;p&gt;注释分为 inline comment 和 block comment 两种，写法大同小异。因为我们要吞掉注释中的所有字符，注释中字符的 action 和外面不一样，所以对于 comment 我们最好使用 flex 的 start condition 机制来识别。&lt;/p&gt;
+&lt;p&gt;当遇到 &lt;code&gt;(*&lt;/code&gt; 时，进入 COMMENT 状态，在 COMMENT 状态中，我们只需要特殊处理换行符和 &lt;code&gt;&amp;lt;EOF&amp;gt;&lt;/code&gt;，其余的字符都可以直接吞掉。&lt;/p&gt;
+&lt;h3 id=&#34;strings&#34;&gt;Strings&lt;/h3&gt;
+&lt;p&gt;处理 string 我们最好也使用 start condition 机制。string 中有更多的限制，比如不能有 unescaped 的 &lt;code&gt;\n&lt;/code&gt;，不能有 &lt;code&gt;\0&lt;/code&gt;，不能有 &lt;code&gt;&amp;lt;EOF&amp;gt;&lt;/code&gt;，以及要单独处理特殊字符等。&lt;/p&gt;
+&lt;p&gt;注意手册中对 string 错误处理的要求：如果一个 string 中有多个错误，只返回第一个错误的相关信息；当一个 string 错误时，下一次扫描应当从这个 string 结束的地方开始 (unescaped &lt;code&gt;\n&lt;/code&gt; or &lt;code&gt;\&amp;quot;&lt;/code&gt;)。有的人选择先将整个 string 无脑识别并存储下来，然后对着 char 数组处理各种特殊字符和错误。笔者采取的做法是在遇到 ERROR 后再进入一个 &lt;code&gt;&amp;lt;STR_ERROR&amp;gt;&lt;/code&gt; 的 start condition，在这种状态中不再字符处理和 error handling，一路扫到 string 的结束。&lt;/p&gt;
+&lt;h2 id=&#34;miscellaneous&#34;&gt;Miscellaneous&lt;/h2&gt;
+&lt;p&gt;这里列举一些易漏易错点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;要注意识别没有 &lt;code&gt;(*&lt;/code&gt; 匹配的单独的 &lt;code&gt;*)&lt;/code&gt;，返回 &lt;code&gt;unmatched *)&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;在 string, comment 等状态中要返回 ERROR 时，不要忘了在返回前将 start condition 重置为 INITIAL，因为我们要完整地处理整个输入，遇到 ERROR 之后剩下的内容也不能摆烂。&lt;/li&gt;
+&lt;li&gt;, n 和 &lt;code&gt;\n&lt;/code&gt; 是不一样的。在 string 中单独出现的两个字符 (例如 &amp;ldquo;\n&amp;rdquo;) 应当保留并合并成一个字符，真正的特殊字符是一个不可见字符。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;\&lt;/code&gt; 之后再跟特殊字符 &lt;code&gt;\0&lt;/code&gt; 是一个容易忽略的情况。我们通常会对 \0 设置一个 rule 识别，使用正则表达式处理转义字符，需要注意转义字符后面跟的字符也可能是 null character。&lt;/li&gt;
+&lt;li&gt;为了正确地获得 string 的行号，对于 unterminated 的 string 最好使用 &lt;code&gt;yyless(0)&lt;/code&gt; 将 &lt;code&gt;\n&lt;/code&gt; 退回，让编译器在 INITIAL 的状态下处理这个换行符，否则 unterminated 的 string 的行号会大1。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

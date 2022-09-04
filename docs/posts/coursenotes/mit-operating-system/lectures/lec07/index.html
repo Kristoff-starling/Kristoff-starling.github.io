@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="The Q&amp;A focuses on lab pgtbl. The lab contain few lines of code, but hard-to-debug problems. Harsh environment of kernel programming makes it more difficult.
+Task 01 page table 0x0000000087f6e000 .">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/mit-operating-system/lectures/lec07/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/mit-operating-system/lectures/lec07/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/mit-operating-system/lectures/lec07/">
+  <meta property="og:title" content="MIT-6.S081 Lecture 07: Q&amp;A for Labs #1 | Academic">
+  <meta property="og:description" content="The Q&amp;A focuses on lab pgtbl. The lab contain few lines of code, but hard-to-debug problems. Harsh environment of kernel programming makes it more difficult.
+Task 01 page table 0x0000000087f6e000 ."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>MIT-6.S081 Lecture 07: Q&amp;A for Labs #1 | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/mit-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/mit-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec03/">03: OS设计&amp;系统调用</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec04/">04: 页表</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec05/">05: RISCV相关</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec06/">06: Traps</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec07/">07: Q&amp;A Lab1</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec08/">08: 页错误</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec09/">09: 中断</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec10/">10: 多核&amp;锁</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec11/">11: 线程切换</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>MIT-6.S081 Lecture 07: Q&amp;A for Labs #1</h1>
+
+          <div class="article-style">
+            <p>The Q&amp;A focuses on lab pgtbl. The lab contain few lines of code, but hard-to-debug problems. Harsh environment of kernel programming makes it more difficult.</p>
+<h2 id="task-01">Task 01</h2>
+<pre><code class="language-bash">page table 0x0000000087f6e000
+..0: pte 0x0000000021fda801 pa 0x0000000087f6a000
+.. ..0: pte 0x0000000021fda401 pa 0x0000000087f69000
+.. .. ..0: pte 0x0000000021fdac1f pa 0x0000000087f6b000
+.. .. ..1: pte 0x0000000021fda00f pa 0x0000000087f68000
+.. .. ..2: pte 0x0000000021fd9c1f pa 0x0000000087f67000
+..255: pte 0x0000000021fdb401 pa 0x0000000087f6d000
+.. ..511: pte 0x0000000021fdb001 pa 0x0000000087f6c000
+.. .. ..510: pte 0x0000000021fdd807 pa 0x0000000087f76000
+.. .. ..511: pte 0x0000000020001c0b pa 0x0000000080007000
+</code></pre>
+<ul>
+<li>0-0-0: text and data of the <code>init</code> program.</li>
+<li>0-0-1: the guard page (of the user stack)</li>
+<li>0-0-2: user stack (tighter privilege can be set: PTE_X flags can be erased, the user stack is not supposed to store instructions.)</li>
+<li>255-511-510: trap frame</li>
+<li>255-511-511: trampoline</li>
+</ul>
+<p>One interesting fact is that: the physical pages allocated to the continuous virtual pages are not continuous. That&rsquo;s the magic of virtual memory.</p>
+<blockquote>
+<p><strong>Q: The trampoline page is at the highest virtual memory address MAXVA, why the first page directory&rsquo;s index is 255 instead of 511?</strong></p>
+<p>RISC-V Sv39 support 39 bits virtual address, but xv6 only uses 38 bits to avoid dealing with sign extension. Therefore, the first page directory&rsquo;s index is only up to 255.</p>
+</blockquote>
+<blockquote>
+<p><strong>Q: Why the text page and data page are merged into one page in <code>init</code>?</strong></p>
+<p>Generally, separate text page and data page can support more careful privilege settings. But in <code>init</code> program, we don&rsquo;t use the <code>exec()</code> system call to load memory image, for simplicity of code in userinit() function, we combine text and data into one page.</p>
+</blockquote>
+<h2 id="task-02">Task 02</h2>
+<p>One possible approach is to just copy the mappings in the kernel page tables that keep unchanged.</p>
+<pre><code class="language-c">pagetable_t
+kvmcreate()
+{
+	pagetable_t pagetable;
+	int i;
+ 	pagetable = uvmcreate();
+    for (i = 1; i &lt; 512; i ++) pagetable[i] = kernel_pagetable[i];
+    
+    kvmmapkern(pagetable, UART0, UART0, PGSIZE, PTE_R | PTE_W);
+    kvmmapkern(pagetable, VIRTIO0, VIRTIO0, PGSIZE, PTE_R | PTE_W);
+    kvmmapkern(pagetable, CLINT, CLINT, 0x10000, PTE_R | PTE_W);
+    kvmmapkern(pagetable, PLIC, PLIC, 0x400000, PTE_R | PTE_W);
+    
+    return pagetable;
+}
+</code></pre>
+<p>For the creation of a user kernel page table, we&rsquo;re sure that later we only use the range <code>[0, PLIC)</code> for user memory, so only the first page directory entry may change. We can directly copy the kernel&rsquo;s first level page directory of range <code>[1,512)</code> . Don&rsquo;t forget to map several I/O devices in the first page directory entry.</p>
+<pre><code class="language-c">void
+kvmfree(pagetable_t kpagetable, uint64 sz)
+{
+    pte_t pte = kpagetable[0];
+    pagetable_t level1 = (pagetable_t) PTE2PA(pte);
+    for (int i = 0; i &lt; 512; i ++)
+    {
+        pte_t pte = level1[i];
+        if (pte &amp; PTE_V)
+        {
+            uint64 level2 = PTE2PA(pte);
+            kfree((void *)level2);
+            level1[i] = 0;
+        }
+    }
+    kfree((void *) level1);
+    kfree((void *) kpagetable);
+}
+</code></pre>
+<p>To free the user page table, we don&rsquo;t need to do anything about the 1~511 page directory entries since they&rsquo;re just copied from the kernel page table. We need to walk through the first page directory entry to free the remaining pages. (Notice: kvmfree() is only responsible for freeing page table pages, the leaf physical pages for user memory should be beforehand freed.)</p>
+<p>In the function scheduler(), we should switch to user kernel page table before swtch() and switch to kernel page table after swtch():</p>
+<pre><code class="language-c">kvmswitch(p-&gt;kpagetable);
+swtch(&amp;c-&gt;context, &amp;p-&gt;context);
+kvminithart();
+</code></pre>
+<blockquote>
+<p><strong>Q: Why must we switch back to the kernel page table after going back?</strong></p>
+<p>If there&rsquo;s no running process, the kernel should have an page table to use. Also, if we want to free a process, we must firstly switch back to the kernel page table before the process &ldquo;disappears&rdquo;.</p>
+</blockquote>
+<h2 id="task-03">Task 03</h2>
+<p>The advantages of adding user mappings into user kernel page table include:</p>
+<ul>
+<li>during copyin()/copyout(), we don&rsquo;t need to call walk() in the kernel to translate the user virtual address since now hardware can do the same thing for us, which is a relief to kernel programmers.</li>
+<li>performance is enhanced since we do less page table walks.</li>
+<li>kernel has more freedom to manipulate with user space. it can directly read/write data without repeatedly calling copyin()/copyout().</li>
+</ul>
+<p>The core function should be responsible for copying mappings from user page table to user kernel page table:</p>
+<pre><code class="language-c">void
+kvmmapuser(int pid, pagetable_t kpagetable, pagetable_t upagetable, uint64 newsz, uint64 oldsz)
+{
+    uint64 va;
+    pte_t *upte;
+    pte_t *kpte;
+    
+    if (newsz &gt;= PLIC)
+        panic(&quot;kvmmapuser: news too large&quot;);
+   	
+    for (va = oldsz; va &lt; newsz; va += PGSIZE)
+    {
+        upte = walk(upagetabe, va, 0);
+        if (upte == 0)
+            panic(&quot;kvmmapuser: no upte&quot;);
+       	if ((*upte &amp; PTE_V) == 0)
+            panic(&quot;kvmmapuser: no valid upte&quot;);
+       	kpte = walk(kpagetable, va, 1);
+        if (kpte == 0)
+            panic(&quot;kvmmapuser: no kpte&quot;);
+        *kpte = *upte;
+        *kpte &amp;= ~(PTE_U|PTE_W|PTE_X);
+    }  
+}
+</code></pre>
+<p>The line <code>*kpte = *upte</code> means that user physical pages are shared between user space and kernel space although the kernel allocates new pages for page directories/tables.</p>
+<p>The PTE_U bit is cleared because in RISC-V hardware, kernel doesn&rsquo;t have the privilege to read/write pages with PTE_U flag. The reason for this mechanism is not isolation, but convenience for kernel debugging. Xv6 without modification should never write/execute user memory.</p>
+<blockquote>
+<p><strong>Q: Currently we require that the user memory space cannot exceed PLIC. What if we want to use all the space below KERNBASE?</strong></p>
+<p>We can remap the I/O devices: CLINT, PLIC, UART0 etc. Actually there is still much space between PHYSTOP and the kernel stacks. Put I/O devices there in the kernel&rsquo;s virtual address space and map them to low physical addresses. In this case, low virtual addresses are available for user memory.</p>
+</blockquote>
+<blockquote>
+<p><strong>Q: Why should we put the kernel stacks high in the virtual address space?</strong></p>
+<p>Below every kernel stack there is a guard page, which is not mapped to any physical page, in order of detecting stack overflow issue. If the guard pages are put in the range of <code>[KERNBASE, PHYSTOP)</code>, physical pages will be wasted.</p>
+</blockquote>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/mit-operating-system/lectures/lec06/" rel="next">MIT-6.S081 Lecture 06: Traps</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/mit-operating-system/lectures/lec08/" rel="prev">MIT-6.S081 Lecture 08: Page Faults</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/mit-operating-system/Lectures/lec07.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="A. 常系数线性递推 题面描述 给定递推式 $a_n=x_0&#43;\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。 $k\leq 60,p\leq 2\times 10^9$。 题解 令向量 $$ x_{n}= \left( \begin{matrix} a_n\\a_{n&#43;1}\\ \vdots\\a_{n&#43;k-1}\\x_0 \end{matrix} \right) $$ 则令 $$ A=\left[\begin{matrix}1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\0 &amp; 1 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; \vdots &amp; &amp; \vdots &amp; \vdots\\0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0\\ x_k &amp; x_{k-1} &amp; \dots &amp; x_1 &amp; 1\\0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1\end{matrix}\right] $$ 有 $$ Ax_n=x_{n&#43;1} $$ 因此只要求 $A^{p-k&#43;1}x_0$，即可求得 $a_p$。矩阵乘法可以用快速幂加速。总时间复杂度 $O(k^3logp)$。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
+  <meta property="og:title" content="问题求解 III - 05 题解 | Academic">
+  <meta property="og:description" content="A. 常系数线性递推 题面描述 给定递推式 $a_n=x_0&#43;\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。 $k\leq 60,p\leq 2\times 10^9$。 题解 令向量 $$ x_{n}= \left( \begin{matrix} a_n\\a_{n&#43;1}\\ \vdots\\a_{n&#43;k-1}\\x_0 \end{matrix} \right) $$ 则令 $$ A=\left[\begin{matrix}1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\0 &amp; 1 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; \vdots &amp; &amp; \vdots &amp; \vdots\\0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0\\ x_k &amp; x_{k-1} &amp; \dots &amp; x_1 &amp; 1\\0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1\end{matrix}\right] $$ 有 $$ Ax_n=x_{n&#43;1} $$ 因此只要求 $A^{p-k&#43;1}x_0$，即可求得 $a_p$。矩阵乘法可以用快速幂加速。总时间复杂度 $O(k^3logp)$。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>问题求解 III - 05 题解 | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-problem-solving/oj-solutions/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-problem-solving/oj-solutions/ii-final/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/ii-final/">II-Final Sol</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-01/">III-01 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-02/">III-02 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-03/">III-03 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-04/">III-04 Sol</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/">III-05 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-06/">III-06 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-07/">III-07 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-10/">III-10 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iv-02/">IV-02 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iv-03/">IV-03 Sol</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>问题求解 III - 05 题解</h1>
+
+          <div class="article-style">
+            <h2 id="a-常系数线性递推">A. 常系数线性递推</h2>
+<h3 id="题面描述">题面描述</h3>
+<ul>
+<li>给定递推式 $a_n=x_0+\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。</li>
+<li>$k\leq 60,p\leq 2\times 10^9$。</li>
+</ul>
+<h3 id="题解">题解</h3>
+<p>令向量
+$$
+x_{n}=
+\left(
+\begin{matrix}
+a_n\\a_{n+1}\\ \vdots\\a_{n+k-1}\\x_0
+\end{matrix}
+\right)
+$$
+则令
+$$
+A=\left[\begin{matrix}1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\0 &amp; 1 &amp; \cdots &amp; 0 &amp; 0\\
+\vdots &amp; \vdots &amp; &amp; \vdots &amp; \vdots\\0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0\\
+x_k &amp; x_{k-1} &amp; \dots &amp; x_1 &amp; 1\\0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1\end{matrix}\right]
+$$
+有
+$$
+Ax_n=x_{n+1}
+$$
+因此只要求 $A^{p-k+1}x_0$，即可求得 $a_p$。矩阵乘法可以用快速幂加速。总时间复杂度 $O(k^3logp)$。</p>
+<h2 id="b-骨牌覆盖">B. 骨牌覆盖</h2>
+<h3 id="题面描述-1">题面描述</h3>
+<ul>
+<li>给定一个 $m$ 行 $n$ 列的棋盘，要求用 $1\times 2$ 的骨牌铺满，求方案数。</li>
+<li>$n\leq 3,m\leq 10^{18}$。</li>
+</ul>
+<h3 id="题解-1">题解</h3>
+<p>当 $n=1$ 时，显然当 $m$ 为偶数时有 1 种方案，$m$ 为奇数时没有方案。</p>
+<p>当 $n=2$ 时，容易发现答案是 Fibonacci 数列的第 $m$ 项，使用矩阵快速幂计算答案即可。</p>
+<p>当 $n=3$ 时，首先考虑一个状压 dp 的思路：令 $dp[i][Mask]$ 表示当前看到第 $i$ 行，第 $i$ 行已经被覆盖的状态为 $Mask$ 的方案数。由于骨牌的长度不超过 2，所以在第 $i$ 行放骨牌只会影响第 $i$ 行和第 $i+1$ 行，从 $dp[i][Mask]$ 可以轻松转移到 $dp[i+1][Mask&rsquo;]$。</p>
+<p>但此题 $m$ 过大，需要优化该 dp 思路。我们可以把 $dp[i][Mask]\rightarrow dp[i+1][Mask&rsquo;]$ 的转移方式写成一个 $8\times 8$ 的矩阵，将 $dp[i]$ 写成一个 $8$ 维向量，使得乘上该矩阵即可从 $i$ 转移到 $i+1$ ，这样就可以用矩阵快速幂优化了。</p>
+<p>总时间复杂度 $O(2^nlogm)$。</p>
+<h2 id="c-简单的题">C. 简单的题</h2>
+<h3 id="题面描述-2">题面描述</h3>
+<ul>
+<li>给定有 $t$ 条边的无向图，求从 $s$ 到 $t$ 恰好经过了 $n$ 条边的最短路。</li>
+<li>$n\leq 10^6,t\leq 100$。</li>
+</ul>
+<h3 id="题解-2">题解</h3>
+<p>由于边数不多，所以图中的点数至多是百级。设该图的邻接矩阵为 $A$，考虑 $A^n$，其中重新定义矩阵乘法的运算，用 $+$ 代替 $\times$，用 $\min$ 代替 $+$，可以证明这种新式矩阵乘法仍然满足结合律，所以仍然可以矩阵快速幂。$A^n$ 中保存的即为恰好经过 $n$ 条边的最短路。</p>
+<p>总时间复杂度 $O(t^3logn)$。</p>
+<h2 id="d-线段覆盖">D. 线段覆盖</h2>
+<h3 id="题面描述-3">题面描述</h3>
+<ul>
+<li>给定 $n$ 条线段，第 $i$ 条线段为 $[l_i,r_i]$。每条线段有一个代价 $c_i$，表示可以花费 $c_i$ 的代价使线段向左或向右延长一个单位长度。问要使得这些线段覆盖全部 $[0,m]$ 至少需要多少代价。</li>
+<li>$n\leq 1000,m\leq 10^6$。</li>
+</ul>
+<h3 id="题解-3">题解</h3>
+<p>考虑 $[0,m]$ 上有多少段还没有被线段覆盖，显然“空白段”的数量是 $O(n)$ 级别的。我们发现有如下重要性质：在最优的覆盖方案中，一个空白段不会被多个线段覆盖。</p>
+<blockquote>
+<ul>
+<li>如果两个线段交汇在一个空白段的中间，那我们总可以缩短代价长的那个线段，增长代价小的线段，使得代价变小。</li>
+<li>如果两个线段同时覆盖了一整个空白段，可以发现代价小的线段一定能以相同或更小的代价完成两个线段要覆盖的线段，因此不需要大代价线段付出。</li>
+</ul>
+</blockquote>
+<p>基于以上重要性质，我们可以进行动态规划。令 $dp[i][j]$ 表示当前考虑到第 $i$ 个空白段，第 $i$ 个空白段是被第 $j$ 个线段覆盖的情况下的最小代价。转移分为两种情况：</p>
+<ul>
+<li>第 $i-1$ 段空白段也是被第 $j$ 个线段覆盖的，此时只需要根据第 $i-1$ 个空白段，第 $i$ 个空白段和第 $j$ 个线段的位置关系计算第 $j$ 个线段要完整覆盖住第 $i$ 个空白段所需的额外代价即可。</li>
+<li>第 $i-1$ 段空白段不是被第 $j$ 个线段覆盖的。根据之前分析的性质，我们只需要考虑第 $i-1$ 段空白段被 $min(j,i)$ 之前的线段覆盖，因此只需要维护一个 dp 数组的前缀 min 即可。事实上在写代码时，我们可以直接用 $i-1$ 的全局最小值来更新答案，因为这样只会误计算一些非最优解的值，仍然可以保证我们算出最优解的代价。（当然维护前缀 min也是可以的）。</li>
+</ul>
+<p>总时间复杂度 $O(n^2)$。</p>
+<p>此外在发现性质之后也可以建图跑最短路：为每条线段建一个点，为起点 0 和 终点 $m$ 也各建立一个点。之前的性质可以被翻译为：两条线段在延伸之后的相交处必然在某条线段的端点处。对于两条线段代表的点，我们只需要建从一条线段到另一条线段（左端点和右端点中较近的一个，取决于线段之间的相对位置）延伸所需的代价即可。该图是一个阶数为 $n$ 的稠密图，在上面跑不带堆优化的 Dijkstra 算法，也可在 $O(n^2)$ 内得到结果。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-04/" rel="next">问题求解 III - 04 题解</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-06/" rel="prev">问题求解 III - 06 题解</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/nju-problem-solving/oj-solutions/III-05.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

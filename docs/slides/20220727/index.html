@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  
+  
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/slides/20220727/">
+
+  <title>Slides | Academic</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/css/reveal.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/css/theme/serif.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous">
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/reveal_custom.min.css">
+
+  
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/css/print/pdf.css' : 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+
+</head>
+<body>
+
+  
+<div class="reveal">
+  <div class="slides">
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    <section>
+    
+      <h2 id="dl-library-fuzzing">DL Library Fuzzing</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h2 id="bug-report">Bug Report</h2>
+<ul>
+<li>Source: release notes of latest versions, Github PRs</li>
+<li>Version: TensorFlow 2.8&amp;2.9, PyTorch 1.12</li>
+<li>Amount: 40</li>
+<li>Multi-API triggered bugs: 8 (all in PyTorch)</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="typical-bugs">Typical Bugs</h3>
+<p>PyTorch, GitHub #73187</p>
+<p align=left>Error: unexpected RuntimeError</p>
+<pre><code class="language-python">import torch
+
+grad_output = torch.full((1, 1, 1, 4, 4,), 1, dtype=torch.float64, requires_grad=True)
+input = torch.full((5, 5, 5, 5, 5,), 3.5e+35, dtype=torch.float64, requires_grad=True)
+grid = torch.full((1, 1, 1, 4, 4,), 1, dtype=torch.float64, requires_grad=True)
+interpolation_mode = 0
+padding_mode = 0
+align_corners = True
+res = torch.grid_sampler_3d(input, grid, interpolation_mode, padding_mode, align_corners)
+grad_out = torch.zeros_like(res)
+torch.autograd.backward(res, grad_tensors=grad_out)
+</code></pre>
+<p><code>grid_sampler_3d()</code> + <code>backward()</code></p>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="typical-bugs-1">Typical Bugs</h3>
+<p>PyTorch, GitHub #75781</p>
+<p align=left>Error: unexpected warning</p>
+<pre><code class="language-python">import torch
+
+if __name__ == &quot;__main__&quot;:
+
+    n = 8
+    x = torch.zeros(n).normal_()
+    x.requires_grad = True
+    z = torch.fft.irfft(x).sum()
+    z.backward()
+</code></pre>
+<p><code>fft()</code> + <code>irfft()</code> + <code>sum()</code> + <code>backward()</code></p>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="typical-bugs-2">Typical Bugs</h3>
+<p>PyTorch, GitHub #77245</p>
+<p align=left>Error: unexpected RuntimeError</p>
+<pre><code class="language-python">import torch
+
+def fn(input):
+    offset = 0
+    fn_res = torch.diagonal(input, offset=offset, )
+    return fn_res
+
+input = torch.rand([0, 1], dtype=torch.complex128, requires_grad=True)
+torch.autograd.gradcheck(fn, (input), check_forward_ad=True, check_backward_ad=False)
+</code></pre>
+<p><code>gradcheck()</code> + <code>diagonal()</code> + function parameter</p>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="typical-bugs-3">Typical Bugs</h3>
+<p>PyTorch, GitHub #77526</p>
+<p align=left>Error: man-made assertion error</p>
+<pre><code class="language-python">a = torch.randn((2, 2), dtype=torch.cfloat).transpose(0, 1)
+result = torch.abs(a)
+assert a.stride() == b.stride()
+</code></pre>
+<p><code>transpose()</code> + <code>abs()</code> + <code>stride()</code></p>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="summary">Summary</h3>
+<ul>
+<li>Linux kernel(system) v.s. DL libraries(tool kit)</li>
+<li>Common bug types
+<ul>
+<li>Integer overflow, division by zero</li>
+<li>Out of memory(OOM), Out of bound(OOB)</li>
+<li>missing validation</li>
+</ul>
+</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h2 id="documentation">Documentation</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="documentation-semantics">Documentation Semantics</h3>
+<p>Learning-based semantics &lsquo;understanding&rsquo; seems inevitable. $\Rightarrow$ NLP work</p>
+<p align=left>An interesting bug: PyTorch, GitHub #70657</p>
+<pre><code class="language-python">import torch
+assert torch.ones(10)[::2].ravel().is_contiguous() == True
+</code></pre>
+<p align=left>The assertion comes from the document: "ravel() returns a <b>contiguous</b> flattened tensor".</p>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="documentation-structure">Documentation Structure</h3>
+<ul>
+<li>
+<p>The &ldquo;Python API&rdquo; module is divided into 54 sections, including <code>torch</code>, <code>torch.nn</code>, <code>torch.cuda</code> etc.</p>
+</li>
+<li>
+<p>The <code>torch.nn</code> section is divided into 20 subsections, including &ldquo;Convolutional layers&rdquo;, &ldquo;Pooling layers&rdquo;, &ldquo;Padding layers&rdquo; etc. The section contains 186 APIs in total.</p>
+</li>
+<li>
+<p>Subsection &ldquo;Convolutional layers&rdquo; includes 14 APIs, offering rich relational information.</p>
+</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="documentation-structure-1">Documentation Structure</h3>
+<p align=left>Drawback: scalability (e.g. TensorFlow's doc only has coarse categories and lots of APIs are sorted in chronological order.)</p>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h2 id="fuzzing">Fuzzing</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="fuzzing-perspectives">Fuzzing perspectives</h3>
+<ul>
+<li>Model-level fuzzing: CRADLE, LEMON</li>
+<li>Sub-Model?</li>
+<li>API-level fuzzing: FreeFuzz, DeepREL, DocTer</li>
+<li>Sub-API?</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="sub-model-fuzzing">Sub-Model Fuzzing</h3>
+<ul>
+<li>Model-level: precison loss, hard for mutation&hellip;</li>
+<li>API-level: complicated situations uncovered</li>
+</ul>
+<p align=left>
+Sub-model level fuzzing serves as an auxiliary approach to cover more cases. The scale of sub-models/combinations of APIs should be small.
+</p>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h4 id="example-pytorch-github-74404">Example: PyTorch, GitHub #74404</h4>
+<pre><code class="language-python">import torch
+from torch import nn
+
+class MyModule(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.module_list = nn.ModuleList([nn.Linear(1,1) for _ in range(10)])
+        self.parameter_list = nn.ParameterList([nn.Parameter(torch.zeros(1)) for _ in range(10)])
+    def forward(self, x):
+        for m in self.module_list:
+            x = m(x)
+        return x
+
+if __name__ == '__main__':
+    model = MyModule()
+    optimize = True
+    with torch.jit.optimized_execution(optimize):
+      a = torch.jit.script(model, 2)
+</code></pre>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="sub-api-fuzzing">Sub-API Fuzzing</h3>
+<p>Under Python APIs: C++ codes</p>
+<p align=left>Idea:</p>
+<ul>
+<li>Most bugs come from missing validations/boundary argument values.</li>
+<li>The propagation chain of a bug: fault $\to$ error $\to$ failure</li>
+<li>#error &gt; #failure</li>
+</ul>
+<p align=left>Open the state machine</p>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="example-assertion-injections">Example: assertion injections</h3>
+<p align=left>TensorFlow: CVE-2022-21725 (division by 0)</p>
+<pre><code class="language-diff">int64_t GetOutputSize(const int64_t input, const int64_t filter,
+                      const int64_t stride, const Padding&amp; padding) {
++ assert(stride != 0);
+  if (padding == Padding::VALID) {
+    return (input - filter + stride) / stride;  // what if stride = 0 ?
+  } else {  // SAME.
+    return (input + stride - 1) / stride;
+  }
+} 
+</code></pre>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="example-assertion-injections-1">Example: assertion injections</h3>
+<p align=left>TensorFlow: CVE-2022-21728 (heap OOB)</p>
+<pre><code class="language-diff">static DimensionHandle DimKnownRank(ShapeHandle s, int64_t idx) {
++ assert(-s-&gt;dims_.size() &lt;= idx &amp;&amp; idx &lt; s-&gt;dims_.size());
+  CHECK_NE(s-&gt;rank_, kUnknownRank);
+  if (idx &lt; 0) {
+    return s-&gt;dims_[s-&gt;dims_.size() + idx];
+  }
+  return s-&gt;dims_[idx];
+}
+</code></pre>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="example-assertion-injections-2">Example: assertion injections</h3>
+<p align=left>TensorFlow: CVE-2022-23589 (null pointer dereference)</p>
+<pre><code class="language-diff">NodeDef* mul_left_child = node_map_-&gt;GetNode(node-&gt;input(0));
+NodeDef* mul_right_child = node_map_-&gt;GetNode(node-&gt;input(1));
++ assert(mul_left_child != NULL &amp;&amp; mul_right_child != NULL);
+const bool left_child_is_constant = IsReallyConstant(*mul_left_child);
+const bool right_child_is_constant = IsReallyConstant(*mul_right_child);
+</code></pre>
+
+    </section>
+    
+
+    
+    
+  </div>
+</div>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/js/reveal.min.js"></script>
+
+  <script>
+    window.revealPlugins = { dependencies: [
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/zoom-js/zoom.js', async: true },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/math/math.js', async: true },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/print-pdf/print-pdf.js', async: true },
+      
+      { src: '\/js\/vendor\/reveal.js\/plugin\/notes\/notes.js', async: true }
+    ]};
+
+    let revealDefaults = { center: true, controls: true, history: true, progress: true, transition: 'slide', mouseWheel: true };
+    let revealOptions = Object.assign({}, revealDefaults, revealPlugins);
+    Reveal.initialize(revealOptions);
+  </script>
+
+</body>
+</html>

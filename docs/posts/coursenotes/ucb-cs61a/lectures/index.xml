@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lectures | Academic</title>
+    <link>/posts/coursenotes/ucb-cs61a/lectures/</link>
+      <atom:link href="/posts/coursenotes/ucb-cs61a/lectures/index.xml" rel="self" type="application/rss+xml" />
+    <description>Lectures</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Lectures</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/</link>
+    </image>
+    
+    <item>
+      <title>UCB-CS61A Lecture 03: Control</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec03/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec03/</guid>
+      <description>&lt;h2 id=&#34;side-effects&#34;&gt;Side Effects&lt;/h2&gt;
+&lt;p&gt;一个函数如果没有显式地返回内容，那么它的返回值默认为 None。比如下面的程序会报 TypeError：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def square(x):
+    x * x
+
+result = square(4) # result = &#39;None&#39;
+print(result + 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;一个函数有 side-effect 指的是它除了返回内容还做了一些可见的事情，最常见的有 side-effect 的函数就是 &lt;code&gt;print()&lt;/code&gt;。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;一个有趣的问题：&lt;code&gt;print(print(1), print(2))&lt;/code&gt; 的结果？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;首先，里面的 &lt;code&gt;print(1)&lt;/code&gt; 会 Display &amp;ldquo;1&amp;rdquo;，&lt;code&gt;print(2)&lt;/code&gt; 会 Display &amp;ldquo;2&amp;rdquo;。两个 print 函数没有显式地返回，所以外层的 print 会 Display &amp;ldquo;None None&amp;rdquo;。整个语句的返回值是 None。&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 04: Higher-Order Functions</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec04/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec04/</guid>
+      <description>&lt;h2 id=&#34;higher-order-functions&#34;&gt;Higher-Order Functions&lt;/h2&gt;
+&lt;p&gt;以函数作为参数的，或者以函数作为返回值的函数被称为 higher-order function。例如&lt;/p&gt;
+&lt;p&gt;以函数作为参数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def cube(k):
+    return k ** 3
+def summation(n, term):
+    &amp;quot;&amp;quot;&amp;quot;Sum the first N terms of a sequence
+    &amp;gt;&amp;gt;&amp;gt; summation(5, cube)
+    225
+    &amp;quot;&amp;quot;&amp;quot;
+    total, k = 0, 1;
+    while k &amp;lt;= n:
+        total = total + term(k)
+        k += 1
+    return total
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;传入的 &lt;code&gt;term&lt;/code&gt; 是一个函数。&lt;/p&gt;
+&lt;p&gt;以函数为返回值：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def make_adder(n):
+    &amp;quot;&amp;quot;&amp;quot;Return a function that takes one argument k
+       and returns k + n
+    &amp;gt;&amp;gt;&amp;gt; add_three = make_adder(3)
+    &amp;gt;&amp;gt;&amp;gt; add_three(4)
+    7
+    &amp;quot;&amp;quot;&amp;quot;
+    def adder(k):
+        return k + n
+   	return adder
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样我们就可以将一个 call expression 作为一个 operator。例如&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;make_adder(1)(2)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中 &lt;code&gt;make_adder(1)&lt;/code&gt; 形式上是 call expression，但返回结果是 &lt;code&gt;adder&lt;/code&gt; 这一 operator，因此最终会返回 3。&lt;/p&gt;
+&lt;h2 id=&#34;lambda-expression&#34;&gt;Lambda Expression&lt;/h2&gt;
+&lt;p&gt;lambda 表达式定义了一个匿名函数，其格式为&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;lambda &amp;lt;parameters&amp;gt;: &amp;lt;expression&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;lambda 表达式作为函数参数传给高阶函数是很方便的，例如之前的 summation 的例子中我们可以写&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;summation(5, lambda x: x ** 3)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;从而不需要额外定义 &lt;code&gt;cube&lt;/code&gt; 这个函数。&lt;/p&gt;
+&lt;p&gt;带有条件的 lambda 表达式举例 (取绝对值函数)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;lambda x: x if x &amp;gt; 0 else -x
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 05: Environments</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec05/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec05/</guid>
+      <description>&lt;h2 id=&#34;environments&#34;&gt;Environments&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;刚开始有一个 global frame，每发生一次函数调用，就会随之生成一个 local frame。&lt;/li&gt;
+&lt;li&gt;每个用户定义的 function 都有一个 parent frame。一个函数的 parent 指的是函数定义所在的 frame。&lt;/li&gt;
+&lt;li&gt;每个 frame 也有一个 parent frame，一个 frame 的 parent 指的是生成这个 frame 的函数的 parent。&lt;/li&gt;
+&lt;li&gt;environment 指的是一串 frame 序列。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;environment-diagram&#34;&gt;Environment Diagram&lt;/h3&gt;
+&lt;p&gt;当一个函数被定义时：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;创建一个 function value：&lt;code&gt;func &amp;lt;name&amp;gt;(&amp;lt;formal parameters&amp;gt;) [parent=&amp;lt;label&amp;gt;]&lt;/code&gt;，这里的 parent 就是当前的 frame。&lt;/li&gt;
+&lt;li&gt;当前 frame 中的 &lt;code&gt;&amp;lt;name&amp;gt;&lt;/code&gt; 指向创建的 function value。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;当一个函数被调用时：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;添加一个 local frame，frame 的名字是被调用的函数的名字，frame 的 parent 是被调用的函数的 parent。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;&amp;lt;formal parameters&amp;gt;&lt;/code&gt;  指向传入的参数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;self-reference&#34;&gt;Self-Reference&lt;/h2&gt;
+&lt;p&gt;高阶函数可以拿自己作为返回值，例如&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def print_sums(n):
+    print(n)
+    def next_sum(k):
+        return print_sums(n + k)
+    return next_sum
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;调用 &lt;code&gt;print_sums(1)(3)(5)&lt;/code&gt; 后会打印出 &lt;code&gt;1\n 4\n 9\n&lt;/code&gt;，且最后的返回值仍然是一个 &lt;code&gt;next_sum()&lt;/code&gt; 函数。&lt;/p&gt;
+&lt;h2 id=&#34;function-currying&#34;&gt;Function Currying&lt;/h2&gt;
+&lt;p&gt;Currying 指的是将接收多个参数的函数转化为只接收一个参数的高阶函数。例如我们可以实现一个这样的函数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def curry(f):
+    def g(x):
+        def h(y):
+            return f(x, y)
+       	return h
+   	return g
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;或者用 lambda 表达式：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;curry = lambda f: lambda x: lambda y: f(x, y)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;调用 &lt;code&gt;curry(add)(2, 3)&lt;/code&gt; 和调用 &lt;code&gt;add(2, 3)&lt;/code&gt; 的效果一样。利用 Currying 创建一些中间状态的辅助函数可以减少重复传参。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 07: Function Examples</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec07/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec07/</guid>
+      <description>&lt;h2 id=&#34;decorators&#34;&gt;Decorators&lt;/h2&gt;
+&lt;p&gt;考虑如下的高阶函数 &lt;code&gt;trace()&lt;/code&gt; ：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def square(x):
+    return x * x
+def trace(f):
+    def traced(x):
+        print(f&#39;arg: {x}&#39;)
+        r = f(x)
+        print(f&#39;return: {r}&#39;)
+        return r
+    return traced
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当我们调用 &lt;code&gt;trace(square)&lt;/code&gt; 时，我们就会获得一个函数，这个函数的功能和 &lt;code&gt;square()&lt;/code&gt; 是一样的，但传入的参数和返回值会被打印出来。&lt;/p&gt;
+&lt;p&gt;如果我们想要每次调用 &lt;code&gt;square()&lt;/code&gt; 时都使用这个 traced 的版本，每次都写 &lt;code&gt;trace(square)&lt;/code&gt; 有点太麻烦了。这时我们可以使用&lt;strong&gt;装饰器 (decorator)&lt;/strong&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;@trace
+def square(x):
+    return x * x
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样调用 &lt;code&gt;square()&lt;/code&gt; 时就会自动 trace 参数和返回值。装饰器的原理是：如下的代码&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;@ATTR
+def func(...):
+    ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;等价于&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def func(...):
+    ...
+func = ATTR(func)
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61a Lecture 09: Tree Recursion</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec09/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec09/</guid>
+      <description>&lt;p&gt;没有需要特别注意的知识点。&lt;/p&gt;
+&lt;p&gt;(注：这里的 tree recursion 指的不是在树上搜索的递归，而是一个函数在函数体内多次调用自己，整个调用构成了一棵树的情形，最经典的例子就是不带记忆化地递归计算斐波那契数列。)&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 10: Containers</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec10/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec10/</guid>
+      <description>&lt;h2 id=&#34;list-comprehension&#34;&gt;List Comprehension&lt;/h2&gt;
+&lt;p&gt;通过一个已经存在的 list 创建一个新的 list。&lt;/p&gt;
+&lt;p&gt;完整的语法为：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;[&amp;lt;map exp&amp;gt; for &amp;lt;name&amp;gt; in &amp;lt;iter exp&amp;gt; if &amp;lt;filter exp&amp;gt;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在执行这样一条语句时，Python 解释器会做这样的事情：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;临时创建一个新的 frame，这个 frame 的 parent frame 是执行该语句的当前 frame。&lt;/li&gt;
+&lt;li&gt;创建一个空的 list 作为当前语句的结果&lt;/li&gt;
+&lt;li&gt;执行 &lt;code&gt;&amp;lt;iter exp&amp;gt;&lt;/code&gt;，结果必须是一个 iterable 的东西。&lt;/li&gt;
+&lt;li&gt;对于 &lt;code&gt;&amp;lt;iter exp&amp;gt;&lt;/code&gt; 结果中的每个元素，将 &lt;code&gt;&amp;lt;name&amp;gt;&lt;/code&gt; 绑定到该元素上，并执行 &lt;code&gt;&amp;lt;filter exp&amp;gt;&lt;/code&gt; 以决定是否放入 list。&lt;/li&gt;
+&lt;li&gt;临时 frame 的返回值就是结果 list。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;注意：list comprehension 中的 if 语句不能跟 else。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 11: Sequences</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec11/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec11/</guid>
+      <description>&lt;h2 id=&#34;copying&#34;&gt;Copying&lt;/h2&gt;
+&lt;p&gt;我们平时写的&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;listA = [0, 1, 2, 3]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;本质上是一个名叫 &amp;ldquo;listA&amp;rdquo;  的指针指向了 &lt;code&gt;[0, 1, 2, 3]&lt;/code&gt; 这个对象。&lt;/p&gt;
+&lt;p&gt;拷贝分深拷贝和浅拷贝两种。浅拷贝只是让两个指针指向了同一个对象，而深拷贝会将对象复制一遍，然后让新指针指向新复制的对象。例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; listA = [0, 1, 2, 3]
+&amp;gt;&amp;gt;&amp;gt; listB = listA         # 浅拷贝
+&amp;gt;&amp;gt;&amp;gt; listC = list(listA)   # 深拷贝
+&amp;gt;&amp;gt;&amp;gt; listA[0] = 1
+&amp;gt;&amp;gt;&amp;gt; listB, listC
+([1, 1, 2, 3], [0, 1, 2, 3])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;built-in-functions-for-iterables&#34;&gt;Built-in Functions for Iterables&lt;/h2&gt;
+&lt;p&gt;一些常见的内置函数有：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Function&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;sum(iterable)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;求和&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;all(iterable)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;返回 True 当且仅当 iterable 中所有元素均为 True&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;any(iterable)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;返回 True 当且仅当 iterable 中存在元素为 True&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;max(iterable, key=None)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;最大值&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;min(iterable, key=None)&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;最小值&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;其中 &lt;code&gt;max()&lt;/code&gt; &lt;code&gt;min()&lt;/code&gt; 可以通过给 key 传递函数的方式自定义比大小的标准，例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; coords = [ [37, -144], [-22, -115], [56, -163] ]
+&amp;gt;&amp;gt;&amp;gt; max(coords, key=lambda coord: coord[0])
+[56, -163]
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 12: Data Abstraction</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec12/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec12/</guid>
+      <description>&lt;h2 id=&#34;abstraction-barriers&#34;&gt;Abstraction Barriers&lt;/h2&gt;
+&lt;p&gt;抽象是一层一层的，好的程序设计应当只使用上一层抽象提供的接口，不应该跨层地去使用底层的接口。&lt;/p&gt;
+&lt;h2 id=&#34;dictionary&#34;&gt;Dictionary&lt;/h2&gt;
+&lt;h3 id=&#34;dictionary-selection&#34;&gt;Dictionary Selection&lt;/h3&gt;
+&lt;p&gt;一个有用的 API：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; people = {&#39;alice&#39;: &#39;girl&#39;, &#39;bob&#39;: &#39;boy&#39;}
+&amp;gt;&amp;gt;&amp;gt; people.get(&amp;quot;eve&amp;quot;, &amp;quot;🤔&amp;quot;)
+🤔
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;dict.get(key, default=None)&lt;/code&gt; 会返回字典 &lt;code&gt;dict&lt;/code&gt; 中 key 对应的 value，如果 key 不存在则会返回 default 的内容。&lt;/p&gt;
+&lt;h3 id=&#34;dictionary-rules&#34;&gt;Dictionary Rules&lt;/h3&gt;
+&lt;p&gt;字典的 key 不能是 list, dictionary 等 mutable 的东西，且 key 是两两不同的，但 value 可以是任意内容。&lt;/p&gt;
+&lt;h3 id=&#34;dictionary-iteration&#34;&gt;Dictionary Iteration&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; insects = {&amp;quot;spiders&amp;quot;: 8, &amp;quot;centipedes&amp;quot;: 100, &amp;quot;bees&amp;quot;: 6}
+&amp;gt;&amp;gt;&amp;gt; for name in insects:
+&amp;gt;&amp;gt;&amp;gt;     print(insects[name])
+8 100 6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;遍历字典时按照 key-value pair 被加入字典时的顺序访问。&lt;/p&gt;
+&lt;h3 id=&#34;dictionary-comprehensions&#34;&gt;Dictionary Comprehensions&lt;/h3&gt;
+&lt;p&gt;General syntax:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;{key: value for &amp;lt;name&amp;gt; in &amp;lt;iter exp&amp;gt;}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;squares = {x: x * x for x in range(3, 6)}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 13: Trees</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec13/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec13/</guid>
+      <description>&lt;h2 id=&#34;tree-data-abstraction&#34;&gt;Tree: Data Abstraction&lt;/h2&gt;
+&lt;p&gt;我们希望 tree 这个抽象数据类型提供如下的几个 API:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;tree(label, branches)&lt;/code&gt;：创建以 &lt;code&gt;label&lt;/code&gt; 为根，&lt;code&gt;branches&lt;/code&gt; 为子树的树 (&lt;code&gt;branches&lt;/code&gt; 是一个列表，其中的每个元素都是一个 tree)。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;label(tree)&lt;/code&gt;：返回一个树 tree 的根。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;branches(tree)&lt;/code&gt; 返回一个树的子树的列表。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;is_leaf(tree)&lt;/code&gt; 判断 tree 是不是一个叶子 (没有子树)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;tree-a-simple-implementation&#34;&gt;Tree: A Simple Implementation&lt;/h2&gt;
+&lt;p&gt;使用嵌套的列表去实现：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def tree(label, branches=[]):
+    return [label] + list(branches)
+def label(tree):
+    return tree[0]
+def branches(tree):
+    return tree[1:]
+def is_leaf(tree):
+    return len(branches(tree)) == 0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;exercise-list-of-leaves&#34;&gt;Exercise: List of Leaves&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def leaves(t):
+    &amp;quot;&amp;quot;&amp;quot;Return a list containing the leaf labels of T.
+    &amp;gt;&amp;gt;&amp;gt; t = tree(20, [tree(12, [tree(9, [tree(7), tree(2)]), tree(3)]), tree(8, [tree(4), tree(4)])])
+    &amp;gt;&amp;gt;&amp;gt; leaves(t)
+    [7, 2, 3, 4, 4]
+    &amp;quot;&amp;quot;&amp;quot;
+    if is_leaf(t):
+        return [label(t)]
+    else
+    	leaf_labels = [leaves(b) for b in branches(t)]
+        return sum(leaf_labels, [])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注：&lt;code&gt;sum()&lt;/code&gt; 函数如果接受两个 list，其中第一个 list 里是若干个 list，那么它的行为是将第一个 list 中的所有 list 中的元素整合成一个大 list，接在第二个参数的 list 后面。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 14: Mutability</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec14/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec14/</guid>
+      <description>&lt;h2 id=&#34;objects&#34;&gt;Objects&lt;/h2&gt;
+&lt;p&gt;对象 (object) 是一组数据和行为 (函数) 的集合。在 Python 中所有的 value 都是对象，对象有一系列属性 (attribute) 也有一系列方法 (method)。比如 Python 中的字符串可以通过索引的方式获取具体位置的数据，也可以使用 upper(), lower() 等方法对其进行操作。&lt;/p&gt;
+&lt;h2 id=&#34;list-mutation&#34;&gt;List Mutation&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;append()&lt;/code&gt; 和 &lt;code&gt;extend()&lt;/code&gt; 这两个方法的行为是有区别的：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;append()&lt;/code&gt; 只能向 list 的后面添加一个元素。如果 &lt;code&gt;append()&lt;/code&gt; 的参数是一个 list，那么它会在本 list 的后面添加一个元素，这个元素是一个 list (形成了一个嵌套的 list)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;extend()&lt;/code&gt; 的参数必须是一个 iterable 的东西，它会将这个东西里的所有元素添加到本 list 中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; s1, s2 = [2, 3]
+&amp;gt;&amp;gt;&amp;gt; t = [4, 5]
+&amp;gt;&amp;gt;&amp;gt; s1.append(t)
+&amp;gt;&amp;gt;&amp;gt; s2.extend(t)
+&amp;gt;&amp;gt;&amp;gt; s1
+[2, 3, [4, 5]]
+&amp;gt;&amp;gt;&amp;gt; s2
+[2, 3, 4, 5]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;remove(v)&lt;/code&gt; 方法用于删除 list 中的第一个元素 v (如果 list 中没有 v 会报错)。&lt;/p&gt;
+&lt;h2 id=&#34;tuples&#34;&gt;Tuples&lt;/h2&gt;
+&lt;p&gt;tuple 和 list 基本相同，除了 tuple 中的元素不可修改。创建 tuple 应使用小括号。值得注意的是如果要创建只有一个元素 v 的 tuple，应当写成 &lt;code&gt;(v,)&lt;/code&gt; 而不是 &lt;code&gt;(v)&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;list 中一些只读的操作 tuple 中同样有，比如 slicing，&lt;code&gt;+&lt;/code&gt; 合并，&lt;code&gt;in&lt;/code&gt; 判断某个元素是否存在等等。&lt;/p&gt;
+&lt;h2 id=&#34;immutability-vs-mutability&#34;&gt;Immutability vs. Mutability&lt;/h2&gt;
+&lt;p&gt;immutable 的 value 一旦创建就不能修改。常见的 immutable 的例子有 int, float, string, tuple 等。注：我们平时可以写 &lt;code&gt;a += 2&lt;/code&gt; 这种操作修改变量的值，本质上是让 a 这个变量名与一个新的 int value 捆绑，而不是对原值的修改。&lt;/p&gt;
+&lt;p&gt;如果一个 imuutable 的对象里的元素是 mutable 的 (比如 tuple 的元素是 list)，那么该元素是可以修改的：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; t = (1, [2, 3])
+&amp;gt;&amp;gt;&amp;gt; t[1][0] = 99
+&amp;gt;&amp;gt;&amp;gt; t[1][1] = &amp;quot;problem&amp;quot;
+&amp;gt;&amp;gt;&amp;gt; t
+(1, [99, &#39;problem&#39;])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Equality of contents vs. Identity of objects&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;==&lt;/code&gt; 和 &lt;code&gt;is&lt;/code&gt; 这两个比较方法是有区别的。&lt;code&gt;==&lt;/code&gt; 的返回值为 True 当且仅当两个对象的 value 相同。而 &lt;code&gt;is&lt;/code&gt; 要求两个变量名指向同一个对象。&lt;code&gt;is&lt;/code&gt; 返回值为 True 的 &lt;code&gt;==&lt;/code&gt; 必定为 True，反之则不一定。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; list1, list2 = [1, 2, 3], [1, 2, 3]
+&amp;gt;&amp;gt;&amp;gt; list1 == list2
+True
+&amp;gt;&amp;gt;&amp;gt; list1 is list2
+False
+&amp;gt;&amp;gt;&amp;gt; list2 = list1
+&amp;gt;&amp;gt;&amp;gt; list1 is list2
+True
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;mutable-functions&#34;&gt;Mutable Functions&lt;/h2&gt;
+&lt;p&gt;Python 函数可以对 parent frame 中的 mutable 的对象进行修改。下面是一个例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def make_withdraw_account(initial):
+    balance = [initial]
+    
+    def withdraw(amount):
+        if balance[0] - amount &amp;lt; 0:
+            return &#39;Insufficient funds&#39;
+        balance[0] -= amount
+        return balance[0]
+    
+    return withdraw
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注：如果我们想要用一个变量 &lt;code&gt;balance&lt;/code&gt; 来存储金额，那么在 &lt;code&gt;withdraw()&lt;/code&gt; 函数中就要用 &lt;code&gt;nonlocal balance&lt;/code&gt; 来声明下面的 balance 是对 parent frame 中的变量进行的操作。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 15: Syntax</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec15/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec15/</guid>
+      <description>&lt;h2 id=&#34;syntax-tree&#34;&gt;Syntax Tree&lt;/h2&gt;
+&lt;p&gt;中间的节点称为 non-terminal，叶子节点称为 terminal，一个 syntax tree 描述了一个句子的句法结构。&lt;/p&gt;
+&lt;p&gt;我们可以使用上一课中提到的嵌套列表的方法作为 syntax tree 这一抽象的实现：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def phrase(tag, branches):
+    return tree(tag, branches)
+
+def word(tag, text):
+    return tree([tag, text])
+
+def text(word):
+    return label(word)[1]
+
+def tag(t):
+    &amp;quot;&amp;quot;&amp;quot;Return the tag of a phrase or word.&amp;quot;&amp;quot;&amp;quot;
+    if is_leaf(t):
+        return label(t)[0]
+    else:
+        return label(t)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;generating-sentences&#34;&gt;Generating Sentences&lt;/h2&gt;
+&lt;p&gt;一个 language model 描述了每种文本出现的概率。我们可以使用 sampling 的方法根据一个 language model 来生成语言。&lt;/p&gt;
+&lt;p&gt;language model 中有很多 syntax tree，树上的每个节点都被打了标签。我们首先遍历所有的树来获取每种 tag 的节点列表：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def index_trees(trees):
+    index = {}
+    for t in trees:
+        for tag, node in nodes(t):
+            if tag not in index:
+                index[tag] = []
+            index[tag].append(node)
+    return index
+trees = [tokens_to_parse_tree(s) for s in all_sentences()]
+tree_index = index_trees(trees)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接下来我们可以根据 index 列表来生成一句新的话：我们从一棵已有的 syntax tree 开始，每次随机决定是否将一个子树换成 tag 相同的另一个子树：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def gen_tree(t, tree_index, flip):
+    new_branches = []
+    if is_leaf(t):
+        return t
+    for b in branches(t):
+        if flip():
+            b = random.choice(tree_index[tag(b)])
+        new_branches.append(gen_tree(b, tree_index, flip))
+    return phrase(tag(t), new_branches)
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 16: Iterators</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec16/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec16/</guid>
+      <description>&lt;h2 id=&#34;iterators&#34;&gt;Iterators&lt;/h2&gt;
+&lt;p&gt;迭代器 (iterator) 是一种对象，提供了对某个 itarable 的 sequential access。&lt;code&gt;iter(iterable)&lt;/code&gt; 会返回一个指向 iterable 第一个元素的 iterator，之后可以用 &lt;code&gt;next()&lt;/code&gt; 函数来查看后续的元素。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;toppings = [&amp;quot;pineapple&amp;quot;, &amp;quot;pepper&amp;quot;, &amp;quot;mushroom&amp;quot;, &amp;quot;roasted red pepper&amp;quot;]
+
+topperator = iter(toppings)
+next(topperator) # &#39;pineapple&#39;
+next(topperator) # &#39;pepper&#39;
+next(topperator) # &#39;mushroom&#39;
+next(topperator) # &#39;roasted red pepper&#39;
+next(topperator) # ❌ StopIteration exception
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注：如果给 &lt;code&gt;iter()&lt;/code&gt; 传入的参数是 iterator，那么它会返回一个一样的 iterator。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; topperator2 = iter(topperator)
+&amp;gt;&amp;gt;&amp;gt; topperator is topperator2
+True
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;list, tuple, dictionary, string, range 都属于 iterable，这里提一下对于字典的访问：从 Python 3.6 开始，字典中的元素按照它们插入的顺序排列，使用 &lt;code&gt;iter(dic.keys())&lt;/code&gt; 可以获得 key 的 iterator；使用 &lt;code&gt;iter(dic.values())&lt;/code&gt; 可以获得 value 的 iterator；使用 &lt;code&gt;iter(dic.items))&lt;/code&gt; 可以获得 key-value pair 的 iterator。&lt;/p&gt;
+&lt;p&gt;如果在 for 循环中使用 iterator，那么每次执行完循环体后 Python 都会调用 &lt;code&gt;next()&lt;/code&gt; 让 iterator 指向下一个元素，直到没有更多元素：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;nums = range(1, 4)
+num_iter = iter(nums)
+first = iter(num_iter) # 1
+for num in num_iter:
+    print(num)
+# 2
+# 3
+# 4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;useful-bulit-in-functions&#34;&gt;Useful Bulit-in Functions&lt;/h2&gt;
+&lt;p&gt;一些比较好用的返回 iterable 的函数：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;list(iterable)&lt;/code&gt;：返回一个 list，该 list 中的元素是 iterable 中的元素 (这里传入的也可以是一个 iterator)。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tuple(iterable)&lt;/code&gt;：类似，返回一个 tuple。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sorted(iterable)&lt;/code&gt; ：返回一个 list，里面的元素是排好序的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;一些比较好用的返回 iterator 的函数：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;map(func, iterable)&lt;/code&gt; 会对 iterable 中的每个元素 x 执行 &lt;code&gt;func(x)&lt;/code&gt;，并返回一个 iterator。我们可以用 &lt;code&gt;list(map(func, iterable))&lt;/code&gt; 的方式来获得列表，这句话的功能和 &lt;code&gt;[func(x) for x in iterable]&lt;/code&gt; 等价。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;filter(func, iterable)&lt;/code&gt; 会保留 iterable 中那些满足 &lt;code&gt;func(x)&lt;/code&gt; 为 True 的元素 x，并返回一个 iterator。&lt;code&gt;list(filter(func, iterable))&lt;/code&gt; 的功能和 &lt;code&gt;[x for x in iterable if func(x)]&lt;/code&gt; 等价。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;zip(*iterables)&lt;/code&gt; 接收两个 iterable，将这个 iterable 处于相同下标的元素组成 pair，返回一个 pair list 的 iterator。例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;num1, num2 = [1, 2, 3], [4, 5, 6]
+num_pairs = list(zip(num1, num2))
+for n1, n2 in num_pairs:
+    print(n1, n2)
+# 1 4
+# 2 5
+# 3 6
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lecture 17: Generators</title>
+      <link>/posts/coursenotes/ucb-cs61a/lectures/lec17/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec17/</guid>
+      <description>&lt;h2 id=&#34;generators&#34;&gt;Generators&lt;/h2&gt;
+&lt;p&gt;generator function 中不使用 return 返回结果，而使用 yield。generator 是一种 iterator，它通过 generator function 来逐个地获得结果。这里 generator function 可以理解为一个状态机，当遇到 yield 语句时，它会将自己的执行状态暂时封存起来并返回结果。下一次 generator 再次调用该函数时，generator function 将会从上一次 yield 后的第一条语句开始继续执行，直到遇到下一个 yield。如果没有遇到 yield 而是函数一直执行到结束，generator function 会返回一个 &lt;code&gt;StopIteration&lt;/code&gt; exception。&lt;/p&gt;
+&lt;p&gt;下面是一个例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def evens(start, end):
+    num = start + (start % 2)
+    while num &amp;lt; end:
+        yield num
+        num += 2
+
+for num in evens(55, 61):
+    print(num)
+# 56
+# 58
+# 60
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个例子的功能和&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;evens = [num for num in range(55, 61) if num % 2 == 0]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;相同。使用 generator 的好处时 generator function 每次只生成下一个元素。如果列表很长，直接生成出整个列表再遍历的方式会消耗很多内存。&lt;/p&gt;
+&lt;h2 id=&#34;yield-from&#34;&gt;Yield From&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;yield from&lt;/code&gt; 语句可以将一个 iterable 中的元素逐个 yield 出去。例如下面两段程序的功能等价：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def yield_list(a):
+    for item in a:
+        yield item
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def yield_list(a):
+    yield from a
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;更有趣的用法是：&lt;code&gt;yield from&lt;/code&gt; 后面跟的东西可以是 generator function，甚至是自己本身这个 generator function，我们可以利用这个性质写出一些类似于”递归“ 的 generator function。下面是一个”递归“版本的 countdown：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def countdown(k):
+    if k &amp;gt; 0:
+        yield k
+        yield from countdown(k - 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;generator-functions-with-returns&#34;&gt;Generator Functions with Returns&lt;/h2&gt;
+&lt;p&gt;如果 generator function 执行过程中遇到 return，那么即使下次再调用后面的内容也不会再执行，return value 不会作为 yield 的一部分。如果你确实想要将返回值也 yield 出来，可以这样写：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def g(x):
+    yield x
+    yield x + 1
+    return x + 2
+def h(x):
+    r = yield from g(x)
+    yield r
+list(h(2)) # [2, 3, 4]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;example&#34;&gt;Example&lt;/h2&gt;
+&lt;p&gt;下面展示一个用 generator function 来生成所有整数 partition 的例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def partitions(n, m):
+    &amp;quot;&amp;quot;&amp;quot;List partitions.
+
+    &amp;gt;&amp;gt;&amp;gt; for p in partitions(6, 4): print(p)
+    4 + 2
+    4 + 1 + 1
+    3 + 3
+    3 + 2 + 1
+    3 + 1 + 1 + 1
+    2 + 2 + 2
+    2 + 2 + 1 + 1
+    2 + 1 + 1 + 1 + 1
+    1 + 1 + 1 + 1 + 1 + 1
+    &amp;quot;&amp;quot;&amp;quot;
+    if n &amp;lt; 0 or m == 0:
+        return
+    else:
+        if n == m:
+            yield str(m)
+        for p in partitions(n-m, m):
+            yield str(m) + &amp;quot; + &amp;quot; + p
+        yield from partitions(n, m - 1)
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

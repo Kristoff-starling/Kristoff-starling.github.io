@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="C $\rightarrow$ ASM A C program
+int main () { ... exit(0); } cannot be directly understood by a processor. It should go through a &ldquo;C -&gt; Asm (.s files) -&gt; binary (.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/mit-operating-system/lectures/lec05/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/mit-operating-system/lectures/lec05/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/mit-operating-system/lectures/lec05/">
+  <meta property="og:title" content="MIT-6.S081 Lecture 05: RISC-V Calling Convention and Stack Frames | Academic">
+  <meta property="og:description" content="C $\rightarrow$ ASM A C program
+int main () { ... exit(0); } cannot be directly understood by a processor. It should go through a &ldquo;C -&gt; Asm (.s files) -&gt; binary (."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>MIT-6.S081 Lecture 05: RISC-V Calling Convention and Stack Frames | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/mit-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/mit-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec03/">03: OS设计&amp;系统调用</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec04/">04: 页表</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec05/">05: RISCV相关</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec06/">06: Traps</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec07/">07: Q&amp;A Lab1</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec08/">08: 页错误</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec09/">09: 中断</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec10/">10: 多核&amp;锁</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/mit-operating-system/lectures/lec11/">11: 线程切换</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>MIT-6.S081 Lecture 05: RISC-V Calling Convention and Stack Frames</h1>
+
+          <div class="article-style">
+            <h2 id="c-rightarrow-asm">C $\rightarrow$ ASM</h2>
+<p>A C program</p>
+<pre><code>int main () {
+	...
+	exit(0);
+}
+</code></pre>
+<p>cannot be directly understood by a processor. It should go through a &ldquo;C -&gt; Asm (<code>.s</code> files) -&gt; binary (<code>.o</code> files) &quot; process.</p>
+<p>RISC-V is a reduced instruction set while x86/x86-64, which is common in personal computers, is a complex instruction set. CISC has far more instructions and more complex instruction structure than RISC. CISC has some &ldquo;big&rdquo; instruction that does lots of things, while in RISC we use several &ldquo;small&rdquo; instructions together to achieve that.</p>
+<p>RISC-V has a base integer instruction set, which supports basic functions. A RISC-V processor can also choose to include some extension module to support more complicated functions. For example, if a RISC-V processor includes the &ldquo;F&rdquo; standard extension, it can support instructions about single-precision floating-point. Extension modules make RISC-V processors to have backward compatibility. If one day, a new extension is added, and the compiler will get the message from the processor and it can use new instructions to do the compilation.</p>
+<h2 id="risc-v-registers">RISC-V Registers</h2>
+<img src="https://kristoff-starling.github.io/files/MIT-6.S081-lecture05.png" alt="registers" style="zoom:33%;" />
+<blockquote>
+<p><strong>Why <code>s1</code> register is separated from other s-series registers?</strong></p>
+<p>RISC-V has a compressed version of instructions which have only 16 bits. In this version, only 8 registers (x8-x15) are used. (Just a guess)</p>
+</blockquote>
+<p>When function A is calling function B, for register <code>x</code>:</p>
+<ul>
+<li>If <code>x</code> is a caller-saved register, e.g <code>ra</code>, A is responsible for saving its value on the stack and B can overwrite <code>x</code> without saving it.</li>
+<li>If <code>x</code> is a callee-saved register, A don&rsquo;t need to save its value before calling B and B should save <code>x</code>&rsquo;s value on the stack before using it, and before returning, B is responsible for restore <code>x</code>&rsquo;s value.</li>
+</ul>
+<h2 id="stack-frames">Stack Frames</h2>
+<table>
+<thead>
+<tr>
+<th>return address <code>*</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>previous fp</td>
+</tr>
+<tr>
+<td>saved registers</td>
+</tr>
+<tr>
+<td>local variables</td>
+</tr>
+<tr>
+<td>&hellip;</td>
+</tr>
+<tr>
+<td><strong>return address</strong>                                      <code>fp</code> register</td>
+</tr>
+<tr>
+<td>previous fp (pointed to <code>*</code>)</td>
+</tr>
+<tr>
+<td>saved registers</td>
+</tr>
+<tr>
+<td>local variables</td>
+</tr>
+<tr>
+<td>&hellip;                                                               <code>sp</code> register</td>
+</tr>
+</tbody>
+</table>
+<p>Stack frames may have different sizes and contents, but the general structure is similar: every stack frame begins with the return value of this function and the value of <code>fp</code> register in the previous function. <code>sp</code> register always points to the bottom of the current stack frame while <code>fp</code> register always points to the top of the current stack frame. When <code>ret</code> instruction is executed, pseudo code below will be implemented to adjust stack pointers and PC:</p>
+<pre><code class="language-pseudocode">pc = return address
+sp = fp + ENTRY_SIZE
+fp = previous fp
+</code></pre>
+<p>To comply with the calling conventions, the assembly of a function usually consists of a &ldquo;prologue&rdquo;, a &ldquo;body part&rdquo; and a &ldquo;epilogue&rdquo;. In the prologue, the function modifies <code>sp</code> <code>fp</code> registers and creates the stack frame (save values of needed registers). In the epilogue, the function modifies <code>sp</code> <code>fp</code> registers and restore values of callee-saved registers.</p>
+<p>For example, the assembly of a simple function <code>sum_then_double</code> which calls function <code>sum_to</code> is shown below (note: the <code>.global</code> sign means that the function can be fetched at any place):</p>
+<pre><code class="language-assembly">.global sum_then_double
+sum_then_double:
+	addi sp, sp, -16		# prologue
+	sd ra, 0(sp)			
+	
+	call sum_to
+	li t0, 2
+	mul a0, a0, t0
+	
+	ld ra, 0(sp)			# epilogue
+	addi sp, sp, 16
+	
+	ret
+</code></pre>
+<p><code>ra</code> is a caller-saved register, so before calling <code>sum_to</code>, <code>sum_then_double</code> should firstly save the return address on the stack to avoid <code>ra</code> being overwritten by <code>sum_to</code>. At last, <code>sum_then_double</code> restore the value of <code>ra</code> from the stack.</p>
+<p>If we delete the prologue and epilogue:</p>
+<pre><code class="language-assembly">.global sum_then_double
+sum_then_double:		
+	
+	call sum_to
+	li t0, 2	(*)
+	mul a0, a0, t0
+	
+	ret
+</code></pre>
+<p>The processor will fall into a dead loop: <code>sum_to</code> modifies <code>ra</code>&rsquo;s value to the address of the next instruction. (*), so when <code>sum_then_double</code> execute <code>ret</code>, it cannot trace back to its caller and will go to <code>li t0, 2</code>.</p>
+<h2 id="gdb-skills">GDB Skills</h2>
+<ul>
+<li>
+<p>Use <code>layout src</code> <code>layout asm</code> <code>layout reg</code> to open a tui window and display source code, assembly code or register values. Use <code>layout split</code> to display source code and assembly code at the same time. Use <code>focus src/asm/reg</code> to switch between different windows.</p>
+</li>
+<li>
+<p>Use <code>i frame</code> to display information of the current stack frame.</p>
+</li>
+<li>
+<p>Use <code>backtrace/bt</code> to display previous calling functions. Furthermore, use <code>i frame #num</code> to specify a stack frame to print.</p>
+</li>
+<li>
+<p>Use <code>p [variable]</code> to print values of variables. Notice that modern compilers have compiling optimization and some variables may be optimized out.</p>
+<p>If <code>x</code> is a pointer variable, <code>p *x</code> can dereference the pointer and print the value.</p>
+</li>
+<li>
+<p>Use <code>i args</code> to print the arguments of the current function. <code>p *argv</code> can print the first argument. If you want to get a complete list of arguments, use <code>p *argv@argc</code>.</p>
+</li>
+<li>
+<p>Watchpoints are used to monitor variables and gdb stops running as soon as the values of the expressions of the watchpoints change.</p>
+</li>
+<li>
+<p>conditional breakpoint is very powerful. For example, if you want to set a breakpoint in a for-loop but only want to trigger it when <code>i=5</code>, use <code>b ... if i==5</code>.</p>
+</li>
+</ul>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/mit-operating-system/lectures/lec04/" rel="next">MIT-6.S081 Lecture 04: Page Tables</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/mit-operating-system/lectures/lec06/" rel="prev">MIT-6.S081 Lecture 06: Traps</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/mit-operating-system/Lectures/lec05.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

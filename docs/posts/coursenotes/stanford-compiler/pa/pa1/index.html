@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Overview 该实验的目的是完成 cool compiler 的 lexical analysis 部分。课堂上讲解了用正则表达式描述词汇格式以及如何根据正则表达式生成 NFA，通过 NFA 转 DFA，再将 DFA 以二维表的形式存储下来。不过现在有成熟的工具可以完成正则表达式的 implementation，所以本实验中我们只需要考虑如何用正则表达式描述 cool 语言的词汇，不需要考虑自动机。
+笔者选择了 C&#43;&#43; 版本的实验。本实验中我们使用 flex 工具来完成正则表达式的 implementation。我们识别出一个 token 后需要向 flex 生成的 yylex() 函数返回 token 的编号 (在 cool-parse.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/stanford-compiler/pa/pa1/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/stanford-compiler/pa/pa1/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/stanford-compiler/pa/pa1/">
+  <meta property="og:title" content="Stanford-CS143 PA1: Lexical Analysis | Academic">
+  <meta property="og:description" content="Overview 该实验的目的是完成 cool compiler 的 lexical analysis 部分。课堂上讲解了用正则表达式描述词汇格式以及如何根据正则表达式生成 NFA，通过 NFA 转 DFA，再将 DFA 以二维表的形式存储下来。不过现在有成熟的工具可以完成正则表达式的 implementation，所以本实验中我们只需要考虑如何用正则表达式描述 cool 语言的词汇，不需要考虑自动机。
+笔者选择了 C&#43;&#43; 版本的实验。本实验中我们使用 flex 工具来完成正则表达式的 implementation。我们识别出一个 token 后需要向 flex 生成的 yylex() 函数返回 token 的编号 (在 cool-parse."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Stanford-CS143 PA1: Lexical Analysis | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/stanford-compiler/pa/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/stanford-compiler/pa/pa0/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/stanford-compiler/pa/pa0/">PA0: Cool</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/stanford-compiler/pa/pa1/">PA1: Lexer</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Stanford-CS143 PA1: Lexical Analysis</h1>
+
+          <div class="article-style">
+            <h2 id="overview">Overview</h2>
+<p>该实验的目的是完成 cool compiler 的 lexical analysis 部分。课堂上讲解了用正则表达式描述词汇格式以及如何根据正则表达式生成 NFA，通过 NFA 转 DFA，再将 DFA 以二维表的形式存储下来。不过现在有成熟的工具可以完成正则表达式的 implementation，所以本实验中我们只需要考虑如何用正则表达式描述 cool 语言的词汇，不需要考虑自动机。</p>
+<p>笔者选择了 C++ 版本的实验。本实验中我们使用 flex 工具来完成正则表达式的 implementation。我们识别出一个 token 后需要向 flex 生成的 <code>yylex()</code> 函数返回 token 的编号 (在 <code>cool-parse.h</code> 中定义)，如果当前 token 有额外的语义信息 (比如字符串，bool const) 则需要在 <code>coolyyval</code> 这个 union 的相应字段中填写信息。</p>
+<p>顺利完成该实验的重要前提是仔细阅读官方提供的各种手册：</p>
+<ul>
+<li>阅读 flex manual 的前 10 个 section 以熟悉 flex 的语法。</li>
+<li>阅读 cool manual 的第 10 章以及 Figure 1 以了解 cool 的语法规则。</li>
+<li>阅读 PA1 的讲义，该讲义的逻辑不太清晰，各种对返回值的 specification 散落在讲义的各个角落，需要非常仔细地寻找。</li>
+</ul>
+<h2 id="tokens">Tokens</h2>
+<p>cool 的编译器需要识别以下几类 token：</p>
+<ul>
+<li>Integer: 非空的由 0~9 构成的字符串。</li>
+<li>Identifier: identifier 都是由小写/大写字母、数字和下划线构成的非空字符串。type identifier 要求第一个字符必须是小写字母，object identifier 要求第一个字符必须是大写字母。</li>
+<li>Operator: 各种符号，除了 <code>&lt;=</code> <code>&lt;-</code> <code>=&gt;</code> 三个多字符符号有专门的 token id，其余的符号直接返回 ascii 码。</li>
+<li>Keyword: 关键字都有各自定义好的 token id。true 和 false 这两个关键字要求首字母必须小写，其余的关键字都是大小写不敏感的。</li>
+<li>White space: 编译器需要根据 <code>\n</code> 正确判断行号，并过滤 <code>\v</code> <code>\r</code> <code>\f</code> <code>\t</code> <code> </code> 几种空白字符。</li>
+<li>String, Comments: 这两个类别比较复杂，下面专门讨论。</li>
+</ul>
+<h3 id="comments">Comments</h3>
+<p>注释分为 inline comment 和 block comment 两种，写法大同小异。因为我们要吞掉注释中的所有字符，注释中字符的 action 和外面不一样，所以对于 comment 我们最好使用 flex 的 start condition 机制来识别。</p>
+<p>当遇到 <code>(*</code> 时，进入 COMMENT 状态，在 COMMENT 状态中，我们只需要特殊处理换行符和 <code>&lt;EOF&gt;</code>，其余的字符都可以直接吞掉。</p>
+<h3 id="strings">Strings</h3>
+<p>处理 string 我们最好也使用 start condition 机制。string 中有更多的限制，比如不能有 unescaped 的 <code>\n</code>，不能有 <code>\0</code>，不能有 <code>&lt;EOF&gt;</code>，以及要单独处理特殊字符等。</p>
+<p>注意手册中对 string 错误处理的要求：如果一个 string 中有多个错误，只返回第一个错误的相关信息；当一个 string 错误时，下一次扫描应当从这个 string 结束的地方开始 (unescaped <code>\n</code> or <code>\&quot;</code>)。有的人选择先将整个 string 无脑识别并存储下来，然后对着 char 数组处理各种特殊字符和错误。笔者采取的做法是在遇到 ERROR 后再进入一个 <code>&lt;STR_ERROR&gt;</code> 的 start condition，在这种状态中不再字符处理和 error handling，一路扫到 string 的结束。</p>
+<h2 id="miscellaneous">Miscellaneous</h2>
+<p>这里列举一些易漏易错点：</p>
+<ul>
+<li>要注意识别没有 <code>(*</code> 匹配的单独的 <code>*)</code>，返回 <code>unmatched *)</code>。</li>
+<li>在 string, comment 等状态中要返回 ERROR 时，不要忘了在返回前将 start condition 重置为 INITIAL，因为我们要完整地处理整个输入，遇到 ERROR 之后剩下的内容也不能摆烂。</li>
+<li>, n 和 <code>\n</code> 是不一样的。在 string 中单独出现的两个字符 (例如 &ldquo;\n&rdquo;) 应当保留并合并成一个字符，真正的特殊字符是一个不可见字符。</li>
+<li><code>\</code> 之后再跟特殊字符 <code>\0</code> 是一个容易忽略的情况。我们通常会对 \0 设置一个 rule 识别，使用正则表达式处理转义字符，需要注意转义字符后面跟的字符也可能是 null character。</li>
+<li>为了正确地获得 string 的行号，对于 unterminated 的 string 最好使用 <code>yyless(0)</code> 将 <code>\n</code> 退回，让编译器在 INITIAL 的状态下处理这个换行符，否则 unterminated 的 string 的行号会大1。</li>
+</ul>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/stanford-compiler/pa/pa0/" rel="next">Stanford-CS143 PA0: Cool Programming</a>
+  </div>
+  
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/stanford-compiler/pa/pa1.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

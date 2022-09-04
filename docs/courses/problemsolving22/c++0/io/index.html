@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="如果你使用的是 Dev-cpp，将基本框架中的程序拷贝到代码区并按下 F11，你会发现程序已经可以成功地运行了！不过跳出的黑色窗口中没有任何内容——因为我们的 main 函数中什么都没写。我们现在来尝试输出一行 &ldquo;hello world!&quot;：
+#include &lt;bits/stdc&#43;&#43;.h&gt; int main () { std::cout &lt;&lt; &quot;Hello World&quot; &lt;&lt; endl; // don&#39;t forget to add &#39;;&#39; at the end! return 0; } cout 是一个对象 (object)，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &ldquo;cout&rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 &lt;&lt; 就像箭头一样指明了数据的流向，“Hello World&rdquo; 和代表换行符的 &ldquo;endl&rdquo; 依次流入 &ldquo;cout&rdquo; 并被显示出来，这就是 cout 的用法，颇有象形文字的智慧。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/courses/problemsolving22/c&#43;&#43;0/io/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/courses/problemsolving22/c&#43;&#43;0/io/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/courses/problemsolving22/c&#43;&#43;0/io/">
+  <meta property="og:title" content="输入输出 | Academic">
+  <meta property="og:description" content="如果你使用的是 Dev-cpp，将基本框架中的程序拷贝到代码区并按下 F11，你会发现程序已经可以成功地运行了！不过跳出的黑色窗口中没有任何内容——因为我们的 main 函数中什么都没写。我们现在来尝试输出一行 &ldquo;hello world!&quot;：
+#include &lt;bits/stdc&#43;&#43;.h&gt; int main () { std::cout &lt;&lt; &quot;Hello World&quot; &lt;&lt; endl; // don&#39;t forget to add &#39;;&#39; at the end! return 0; } cout 是一个对象 (object)，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &ldquo;cout&rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 &lt;&lt; 就像箭头一样指明了数据的流向，“Hello World&rdquo; 和代表换行符的 &ldquo;endl&rdquo; 依次流入 &ldquo;cout&rdquo; 并被显示出来，这就是 cout 的用法，颇有象形文字的智慧。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>输入输出 | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving22/c&#43;&#43;0/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving22/c&#43;&#43;0/framework/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/courses/problemsolving22/c&#43;&#43;0/framework/">基本框架</a>
+      </li>
+      
+      <li class="active">
+        <a href="/courses/problemsolving22/c&#43;&#43;0/io/">输入输出</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/c&#43;&#43;0/branch/">分支</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/c&#43;&#43;0/loop/">循环</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>输入输出</h1>
+
+          <div class="article-style">
+            <p>如果你使用的是 Dev-cpp，将基本框架中的程序拷贝到代码区并按下 F11，你会发现程序已经可以成功地运行了！不过跳出的黑色窗口中没有任何内容——因为我们的 main 函数中什么都没写。我们现在来尝试输出一行 &ldquo;hello world!&quot;：</p>
+<pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
+
+int main ()
+{
+    std::cout &lt;&lt; &quot;Hello World&quot; &lt;&lt; endl; // don't forget to add ';' at the end!
+    return 0;
+}
+</code></pre>
+<p><code>cout</code> 是一个<strong>对象 (object)</strong>，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &ldquo;cout&rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 <code>&lt;&lt;</code> 就像箭头一样指明了数据的流向，“Hello World&rdquo; 和代表换行符的 &ldquo;endl&rdquo; 依次流入 &ldquo;cout&rdquo; 并被显示出来，这就是 <code>cout</code> 的用法，颇有象形文字的智慧。</p>
+<blockquote>
+<p><strong><code>std::</code> 这个前缀是什么意思？</strong></p>
+<p><code>std</code> 是一个<strong>命名空间 (namespace)</strong>。对于初学者来说命名空间的概念太过复杂了，你可以把它当作“头文件”来理解：<code>std</code> 中有很多函数/对象/&hellip;可以供我们使用。在使用它们时，为了让计算机知道这个函数/对象/&hellip;来自于 <code>std</code>，我们要前面加上 <code>std::</code> 这个前缀。</p>
+<p>一个自然的问题是：我们既然有一个 include 语句包含头文件，那么我们可不可以也用一条语句来“包含” <code>std</code> 从而避免每次使用 <code>std</code> 中的东西都要写 <code>std::</code> 呢？答案是肯定的，我们可以这样写：</p>
+<pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+</code></pre>
+<p>第二行的意思是：在整个程序中我都可以任意地使用 <code>std</code> 这个 namespace 的所有内容，不再需要 <code>std::</code> 这个前缀。这样写固然方便，但我们仍然推荐新手养成不滥用 <code>using namespace std;</code> 的习惯，因为这样你能够更好地知道哪些函数是头文件中的，哪些函数是 <code>std</code> 中的，这对将来的编程学习很有好处。</p>
+</blockquote>
+<p>一个只能输出的程序没有意思，我们希望程序可以与人类交互，因此我们接下来考虑一个更复杂的例子：输入两个数，输出它们的和。我们直接给出示例代码：</p>
+<pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
+
+int main ()
+{
+    int a, b, sum;
+    std::cin &gt;&gt; a &gt;&gt; b; // don't forget the &quot;std::&quot; prefix!
+    sum = a + b;
+    std::cout &lt;&lt; sum &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>这个程序颇为复杂，出现了很多新东西，我们来一一看：</p>
+<ul>
+<li>程序中的 <code>a</code> <code>b</code> <code>sum</code> 被称为<strong>变量 (variable)</strong>。变量可以被理解为一个“小盒子“，里面可以存放一个值。在使用变量前我们需要定义变量，定义的格式是 <code>类型 变量名;</code>，这里我们定义了 <code>int</code> 类型的变量，表示 <code>a</code> <code>b</code> <code>sum</code> 这三个“盒子”里只能存放<strong>整数</strong>。</li>
+<li><code>cin</code> 是用于输入的对象。有了 <code>cout</code> 的经验，<code>cin</code> 一行很好理解：我们还是将 &ldquo;cin&rdquo; 想象成黑色窗口，当我们输入了两个数字的时候，&ldquo;cin&rdquo; 需要将数据喂给变量，因此流符号的方向是 <code>&gt;&gt;</code>。</li>
+<li><code>sum = a + b;</code> 是一个赋值语句，它的含义是将 <code>a</code> 和 <code>b</code> 中的值加起来，存放到 <code>sum</code> 中，注意该操作不会影响 <code>a</code> 和 <code>b</code> 中的内容。</li>
+</ul>
+<blockquote>
+<p><strong>变量</strong></p>
+<p>上述示例代码中定义的是 <code>int</code> 型的变量 (&ldquo;int&quot;是整数 integer 的缩写）。C++ 为我们提供了很多的变量类型，比如存储小数(浮点数）的 <code>float</code> 类型和 <code>double</code> 类型，存储更大的整数的 <code>long long</code> 类型，存储字符的 <code>char</code> 类型等等，你可以上网搜索这些类型的含义。</p>
+<p>除此之外，变量的命名看似自由，其实也有一定的约束条件，比如变量名的第一个字符不能是数字。如果你感兴趣，你也可以上网搜索相关的资料。</p>
+</blockquote>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving22/c&#43;&#43;0/loop/" rel="next">循环</a>
+  </div>
+  
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/io.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

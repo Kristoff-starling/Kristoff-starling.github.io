@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Conditional Probability “事件 $A$ 和 $B$ 同时发生的概率”与“ $B$ 发生的条件下，$A$ 发生的概率”不一定相等！
+“事件 $A$ 和 $B$ 同时发生” 是在 $\Omega$ 中 寻找 $A\cap B$，$P(A\cap B)=\frac{|A\cap B|}{|\Omega|}$。 “ $B$ 发生的条件下，$A$ 发生”，样本空间退化为 $B$，$P(A|B)=\frac{|A\cap B|}{|B|}$。 $\fbox{Definition 3.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-probability/lec03/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/nju-probability/lec03/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/nju-probability/lec03/">
+  <meta property="og:title" content="Lecture 03: Conditional Probability and Bayes Formula | Academic">
+  <meta property="og:description" content="Conditional Probability “事件 $A$ 和 $B$ 同时发生的概率”与“ $B$ 发生的条件下，$A$ 发生的概率”不一定相等！
+“事件 $A$ 和 $B$ 同时发生” 是在 $\Omega$ 中 寻找 $A\cap B$，$P(A\cap B)=\frac{|A\cap B|}{|\Omega|}$。 “ $B$ 发生的条件下，$A$ 发生”，样本空间退化为 $B$，$P(A|B)=\frac{|A\cap B|}{|B|}$。 $\fbox{Definition 3."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 03: Conditional Probability and Bayes Formula | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/hw1/">Homework</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/hw1/">Homework 1</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/hw2/">Homework 2</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/lec01/">Lectures</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec01/">Lecture 01</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec02/">Lecture 02</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/nju-probability/lec03/">Lecture 03</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec04/">Lecture 04</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec05/">Lecture 05</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec06/">Lecture 06</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec07/">Lecture 07</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec08/">Lecture 08</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec09/">Lecture 09</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec10/">Lecture 10</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec11/">Lecture 11</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec12/">Lecture 12</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec13/">Lecture 13</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec14/">Lecture 14</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec15/">Lecture 15</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec16/">Lecture 16</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec21/">Lecture 21</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec22/">Lecture 22</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/mgf/">Materials</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/mgf/">MGF</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 03: Conditional Probability and Bayes Formula</h1>
+
+          <div class="article-style">
+            <h2 id="conditional-probability">Conditional Probability</h2>
+<p>“事件 $A$ 和 $B$ 同时发生的概率”与“ $B$ 发生的条件下，$A$ 发生的概率”不一定相等！</p>
+<ul>
+<li>“事件 $A$ 和 $B$ 同时发生” 是在 $\Omega$ 中 寻找 $A\cap B$，$P(A\cap B)=\frac{|A\cap B|}{|\Omega|}$。</li>
+<li>“ $B$ 发生的条件下，$A$ 发生”，样本空间退化为 $B$，$P(A|B)=\frac{|A\cap B|}{|B|}$。</li>
+</ul>
+<p>$\fbox{Definition 3.1}$ 设事件 $A,B$ 满足 $P(B)&gt;0$，则称 $P(A|B)=\frac{P(AB)}{P(B)}$ 为在事件 $B$ 发生的条件下事件 $A$ 发生的概率。</p>
+<p>注：若将 $B$ 视为一个样本空间 $\Omega_B$，则可定义概率空间 $(\Omega_B,\mathscr{F}_B,P_B)$，其中 $\mathscr{F}_B={A\cap B| A\in \mathscr{F}}$，$P_B(A)=P(A|B)$。此时若直接取 $P$ 为 $\Omega_B$ 的概率测度，即令 $P_B=P$，则 $P_B(B)&lt;1$，违反了概率空间的定义 (出现了某种概率损失)，所以应该对其除掉 $P(B)$ 进行一个<strong>归一化</strong>：$P_B(A)=\frac{P(AB)}{P(B)}$。</p>
+<p>事实上， $P_B$ 也是 $(\Omega,\mathscr{F})$ 上的一个概率</p>
+<ul>
+<li>$P_B(A)\geq 0$，$P_B(\Omega)=1$；</li>
+<li>满足可列可加性。</li>
+</ul>
+<p>因此，之前推导的关于交、并的概率公式在条件概率上仍然适用。$P_B$ 的特点是将所有发生的事件聚焦在 $B$ 以内，即对于任意 $A\cap B=\emptyset$，$P_B(A)=0$。</p>
+<p><strong>乘法公式</strong>：当 $P(A_{n-1}\cdots A_1)&gt;0$ 时，
+$$
+P(A_nA_{n-1}\cdots A_1)=P(A_n|A_{n-1}A_{n-2}\cdots A_1)P(A_{n-1}|A_{n-2}\cdots A_1)\cdots P(A_2|A_1)P(A_1)
+$$
+注：对于任意 $1\leq m\leq n-1$，$\bigcap_{i=1}^{n-1}A_i\subseteq \bigcap_{i=1}^mA_i$，因此 $P(\bigcap_{i=1}^{n-1}A_i)&gt;0$ 的条件已经为之后所有的条件概率做好了假设。</p>
+<p>【例】$n$ 个人抽签，求放回/不放回的情况下，第 $k$ 个人抽中的概率。</p>
+<blockquote>
+<p>解：令 $A_k$ 表示事件“第 $k$ 个人抽中“，则要求 $P(A_k\overline{A_{k-1}}\cdots\overline{A_1})$，根据乘法公式，$P(A_k\overline{A_{k-1}}\cdots\overline{A_1})=P(A_k|\overline{A_{k-1}}\cdots\overline{A_1})P(\overline{A_{k-1}}|\overline{A_{k-2}}\cdots \overline{A_1})\cdots P(\overline{A_2}|\overline{A_1})P(\overline{A_1})$。</p>
+<p>(a) 当 $k=1$ 时，$P(A_k)=\frac{1}{n}$，当 $k\geq 2$ 时，$P(\overline{A_1})=\frac{n-1}{n}$，对于任意 $2\leq m\leq k-1$，$P(\overline{A_m}|\overline{A_{m-1}}\cdots\overline{A_1})=\frac{n-m}{n-m+1}$，$P(A_k|\overline{A_{k-1}}\cdots\overline{A_1})=\frac{1}{n-k+1}$，所以 $P=(\prod_{m=1}^{k-1}\frac{n-m}{n-m+1})\frac{1}{n-k+1}=\frac{1}{n}$</p>
+<p>(b) 当 $k=1$ 时，$P(A_k)=\frac{1}{n}$，当 $k\geq 2$ 时，$P(\overline{A_1})=\frac{n-1}{n}$，对于任意 $2\leq m\leq k-1$，$P(\overline{A_m}|\overline{A_{m-1}}\cdots\overline{A_1})=\frac{n-1}{n}$，$P(A_k|\overline{A_{k-1}}\cdots\overline{A_1})=\frac{1}{n}$，所以 $P=\left(\frac{n-1}{n}\right)^{k-1}\frac{1}{n}$。</p>
+</blockquote>
+<h2 id="total-probability-formula">Total Probability Formula</h2>
+<p>$\fbox{Definition 3.2}$ 若事件 $A_1,A_2,\cdots,A_n$ 满足</p>
+<ul>
+<li>对于任意 $1\leq i&lt;j\leq n$，$A_i\cap A_j=\emptyset$；</li>
+<li>$\bigcup_{i=1}^nA_i=\Omega$。</li>
+</ul>
+<p>则称 $A_1,\cdots,A_n$ 为 $\Omega$ 的一个<strong>划分/完备事件集</strong>。</p>
+<p>$\fbox{Theorem 3.3}$ (全概率公式) 设 $A_1,\cdots,A_n$ 为 $\Omega$ 的一个划分，则
+$$
+P(B)=\sum_{i=1}^nP(BA_i)=\sum_{i=1}^nP(A_i)P(B|A_i)\upharpoonleft {P(A_i)&gt;0}
+$$
+其中最后的部分是示性函数 (indicator function)，表示略过 $P(A_i)=0$ 的那些部分的条件概率。</p>
+<blockquote>
+<p>Proof：首先有 $B=B\Omega=B(\bigcup_{i=1}^nA_i)=\bigcup_{i=1}^n(BA_i)$，且 $BA_i$ 彼此互不相容，所以
+$$
+P(B)=P\left(\bigcup_{i=1}^n(BA_i)\right)\overset{可列可加性}{=}\sum_{i=1}^nP(BA_i) \qquad\qquad\qquad \blacksquare
+$$</p>
+</blockquote>
+<p>注：全概率公式对于无限可列的划分仍然成立。</p>
+<p>对于全概率公式的一个感性理解是：<strong>如果要计算事件A的概率，我们可以“分类讨论”A在各种情况下发生的概率，再全部加起来</strong>。</p>
+<p>对于一个条件概率 $P(B|C)$，我们可以考虑一个划分 $A_1,\cdots,A_n$ 并将其写为 $P(B|C)=\sum_{i=1}^nP(BA_i|C)$。若这仍不好算，仍然可以有以下变形：
+$$
+\sum_{i=1}^nP(BA_i|C)=\sum_{i=1}^n\frac{P(BA_iC)}{P(C)}=\sum_{i=1}^n\frac{P(A_iC)}{P(C)}P(B|A_iC)\upharpoonleft {P(A_iC)&gt;0}
+$$
+我们将条件 $C$ 加强到了条件 $A_iC$，从而可能更容易计算。</p>
+<p>【例】有两批灯泡各10支，第一批有一个次品，第二批有两个次品。运输过程中两批各打碎了一个。现从剩余灯泡中抽取一个，抽到次品的概率是多少？</p>
+<blockquote>
+<p>解：讨论打碎的两个灯泡的情况：$B_1=(好,好),B_2=(好,次),B_3=(次,好),B_4=(次,次)$。记 $A$ 为抽到次品这个事件
+$$
+\begin{align}
+P(A)&amp;=P(B_1)P(A|B_1)+P(B_2)P(A|B_2)+P(B_3)P(A|B_3)+P(B_4)P(A|B_4)\\
+&amp;=\frac{9}{10}\cdot \frac{8}{10}\cdot \frac{3}{18}+\frac{9}{10}\cdot \frac{2}{10}\cdot \frac{2}{18}+\frac{1}{10}\cdot \frac{8}{10}\cdot \frac{2}{18}+\frac{1}{10}\cdot \frac{2}{10}\cdot \frac{1}{18}\\
+&amp;=\frac{3}{20}
+\end{align}
+$$</p>
+</blockquote>
+<h2 id="bayes-formula">Bayes Formula</h2>
+<p>在全概率公式 $P(B)=\sum_{i=1}^nP(A_i)P(B|A_i)$ 中，$B$ 可以看作发生的结果，$A_i$ 可以看作 $B$ 发生的可能原因。$P(A_i)$ 被称为先验概率，$P(A_i|B)$ 衡量了 $B$ 已经发生的情况下原因发生的可能性，称为后验概率。</p>
+<p>$\fbox{Theorem 3.4}$ (贝叶斯公式) 设 $A_1,\cdots,A_n$ 为 $\Omega$ 的一个划分，对于任意 $1\leq k\leq n$，$P(A_k)&gt;0$。则对于 $B\in \mathscr F$，我们有
+$$
+P(A_k|B)=\frac{P(A_kB)}{P(\Omega B)}=\frac{P(A_k)P(B|A_k)}{\sum_{i=1}^nP(A_i)P(B|A_i)}
+$$
+【例】有一种罕见病，用某方法来检测时，如果该人患病，那么他被检测出有病的概率是 0.95，如果一个人没有患病，那么他被检测出没病的概率是 0.9，正常人中罕见病发病率为 0.0004。现有一个人检测出有病，他真正有病的概率是多少？</p>
+<blockquote>
+<p>解：令 $C={某人患罕见病},A={某人被检测出罕见病}$，则
+$$
+P(C|A)=\frac{P(C)P(A|C)}{P(C)P(A|C)+P(\overline{C})P(A|\overline{C})}=\frac{0.0004\cdot 0.95}{0.0004\cdot 0.95+0.9996\cdot 0.1}\approx 0.003
+$$</p>
+</blockquote>
+<p>该概率实际上非常小的原因是：人群中不患病的很多，而不患病情况下的误诊率不够小，这导致有很大概率都是这种情况导致的检测结果异常。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/nju-probability/lec02/" rel="next">Lecture 02: Classical Probability and Geometric Probability</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/nju-probability/lec04/" rel="prev">Lecture 04: Independence and Bernoulli Experiments</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/nju-probability/lec03.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

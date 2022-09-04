@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C/C&#43;&#43;基础入门 | Academic</title>
+    <link>/courses/problemsolving22/c&#43;&#43;0/</link>
+      <atom:link href="/courses/problemsolving22/c++0/index.xml" rel="self" type="application/rss+xml" />
+    <description>C/C&#43;&#43;基础入门</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>C/C&#43;&#43;基础入门</title>
+      <link>/courses/problemsolving22/c&#43;&#43;0/</link>
+    </image>
+    
+    <item>
+      <title>分支</title>
+      <link>/courses/problemsolving22/c&#43;&#43;0/branch/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/courses/problemsolving22/c&#43;&#43;0/branch/</guid>
+      <description>&lt;p&gt;很多时候我们需要根据某个条件决定去做事情1还是事情2,这就是分支。一个分支框架的格式如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;if (condition)
+{
+    // your code
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;它的意思是：如果 &lt;code&gt;if ()&lt;/code&gt; 括号中的条件成立，那么就执行大括号中的那些语句，否则跳过这些语句。此外，我们还可以添加 else 分支：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;if (condition)
+{
+    // your code
+}
+else
+{
+    // your code
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这时如果条件成立就执行紧接着的大括号中的语句，并跳过 else 下的语句；如果条件不成立就跳过紧接着的语句，直接执行 else 下的语句。一个额外的规则是：如果 &amp;ldquo;your code&amp;rdquo; 的地方你只需要写一条语句，你可以省略大括号对 (这样代码看上去更紧凑简洁)，不过如果你没有把握，加上大括号永远是最稳妥最正确的选择。&lt;/p&gt;
+&lt;p&gt;我们来看一个简单的例子：输入两个数，如果它们的和是奇数就输出 &amp;ldquo;odd&amp;rdquo;，否则输出 &amp;ldquo;even&amp;rdquo;：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int a, b, sum;
+    std::cin &amp;gt;&amp;gt; a &amp;gt;&amp;gt; b;
+    sum = a + b;
+    if (sum % 2 == 1)
+        std::cout &amp;lt;&amp;lt; &amp;quot;odd&amp;quot; &amp;lt;&amp;lt; endl;
+    else
+        std::cout &amp;lt;&amp;lt; &amp;quot;even&amp;quot; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里需要对 if 的条件语句做一点说明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;%&lt;/code&gt; 是取模符号，&lt;code&gt;sum % 2&lt;/code&gt; 即计算变量 &lt;code&gt;sum&lt;/code&gt; 除以 2 后的余数。&lt;/li&gt;
+&lt;li&gt;在 C++ 中我们要格外小心 &lt;code&gt;==&lt;/code&gt; 和 &lt;code&gt;=&lt;/code&gt; 的区别:
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;==&lt;/code&gt; 是一个比较运算符，用来比较式子的左边和右边是否相等。其他的一些常用的比较运算符列举如下&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;符号&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;意义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;lt;=&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;小于等于&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;lt;&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;小于&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;gt;=&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;大于等于&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;大于&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;!=&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;不等于&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;=&lt;/code&gt; 是赋值符号，比如在 &lt;code&gt;sum = a + b;&lt;/code&gt; 中，将 &lt;code&gt;a + b&lt;/code&gt; 的值赋给 &lt;code&gt;sum&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>基本框架</title>
+      <link>/courses/problemsolving22/c&#43;&#43;0/framework/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/courses/problemsolving22/c&#43;&#43;0/framework/</guid>
+      <description>&lt;p&gt;一个最简单的 C++ 程序长成这样：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    // your code
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们对这个程序的几个组成部分做一点说明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;include&amp;quot;一行使程序包含了一系列&lt;strong&gt;头文件 (header file)&lt;/strong&gt;, 头文件中定义了许多有用的函数，我们只有使用 include 包含这些头文件才能使用这些函数（头文件在安装环境时就有了，你暂时不需要关心它们在哪里以及是如何实现的，你只需要知道 include 这行几乎是必须要写的）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int main () {}&lt;/code&gt; 称为 main 函数。每个程序都必须有 main 函数，当程序开始运行时，第一条执行的指令就是 main 函数的第一条指令。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;return 0;&lt;/code&gt; 是一条语句，无论 main 函数中写了什么内容，最后一样都应当是 &lt;code&gt;return 0;&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;C++ 语法&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;你的每条语句都&lt;strong&gt;必须&lt;/strong&gt;以 &lt;code&gt;;&lt;/code&gt; 结尾。一行可以有多条语句，但每个语句后都要有 &lt;code&gt;;&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用 &lt;code&gt;//&lt;/code&gt; 可以在 C++ 代码中书写&lt;strong&gt;注释 (comment)&lt;/strong&gt;，注释类似于批注，其目的是让阅读代码的人更好地理解代码的意思，注释中的内容不会被执行。此外，如果你想书写一段多行的注释，可以使用如下方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;/*
+  write your comments here
+  write your comments here
+*/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>循环</title>
+      <link>/courses/problemsolving22/c&#43;&#43;0/loop/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/courses/problemsolving22/c&#43;&#43;0/loop/</guid>
+      <description>&lt;p&gt;假设我们现在要计算 $1+2+3+&amp;hellip;+10$，相信你已经有能力写出一段代码完成这个任务：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int sum;
+sum = 1;
+sum = sum + 2; // 你也可以写 sum += 2; 它们的功能是一样的
+sum = sum + 3;
+sum = sum + 4;
+sum = sum + 5;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是这样的代码看起来未免有些笨拙，如果我们要计算 $1+2+\cdots+100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;while (condition)
+{
+    // your code here
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在进入循环体之前，程序会先检查括号中的条件是否成立，如果成立就执行大括号中的内容，执行完内容后程序会再次判断括号中的条件是否成立……直到某次执行完循环体后条件不成立了，while 循环才会退出，下面的流程图很好地诠释了 while 循环的执行过程：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph TD
+
+s0[start]
+s1{while yes?}
+s2(body)
+s3(continue)
+s0 --&amp;gt; s1
+s1 --&amp;gt; |yes| s2
+s2 --&amp;gt; s1
+s1 --&amp;gt; |no| s3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;有了 while 循环后，我们可以容易地解决下面的这个问题：输入一个整数 $n$，输出 $1+2+\cdots+n$：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int n, sum;
+    std::cin &amp;gt;&amp;gt; n;
+    sum = 0;
+    while (n != 0)
+    {
+        sum += n;
+        n--; // &amp;quot;n--&amp;quot; is equal to &amp;quot;n = n - 1&amp;quot;
+    }
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;上述 while 循环将判断条件放在开头，另有一种 do-while 循环框架将判断条件放在末尾：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;do
+{
+    // your code
+}
+while (condition); // 这里要加分号！
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;do-while 循环一定会先执行循环体再检查条件，其他的部分和 while 循环没有区别。&lt;/p&gt;
+&lt;p&gt;除了 while 循环，for 循环也是一种常用的循环框架，不过 for 循环的格式相对复杂：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (/* statement 1 */; /* statement 2 */; /* statement 3 */)
+{
+    // your code
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;C++ 语言的 for 循环中有 3 条语句，其执行顺序非常微妙 (这是 C/C++ 经常被吐槽的一个点)。用流程图可以比较清楚地解释执行的顺序：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph LR
+
+s0[start]
+s1(statement 1)
+s2{statement 2 yes?}
+s3(body)
+s4(statement 3)
+s5(continue)
+s0 --&amp;gt; s1
+s1 --&amp;gt; s2
+s2 --&amp;gt; |yes| s3
+s3 --&amp;gt; s4
+s4 --&amp;gt; s2
+s2 --&amp;gt; |no| s5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你觉得这个流程比较复杂，也可以暂时不那么仔细地理解它，毕竟 while 循环可以做到 for 循环能做到的所有事情。不过你可以记住的是：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int i;
+for (i = 1; i &amp;lt;= n; i++) {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样一个 for 循环可以让变量 &lt;code&gt;i&lt;/code&gt; 分别取 $1, 2, \cdots, n$，然后退出循环。如果你把三条语句代入刚才的流程图，你会发现它确实是正确的。这样一个从 $1$ 枚举到 $n$ 的写法比 while 循环看上去简洁一些。&lt;/p&gt;
+&lt;p&gt;我们给出两个使用 for 循环实现计算 $1+2+\cdots n$ 的示例代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int n, sum;
+    std::cin &amp;gt;&amp;gt; n;
+    for (int i = 1; i &amp;lt;= n; i++)
+        sum += i; // 别忘了单条语句可以不用{}包裹起来
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如你所见，你可以在 for 循环中临时定义变量 &lt;code&gt;i&lt;/code&gt;，这个变量 &lt;code&gt;i&lt;/code&gt; 只可以在循环体中使用，在循环体以外你不能使用 &lt;code&gt;i&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;这个 for 循环的写法是之前介绍的比较规整的写法，下面是一个长相比较特别的 for 循环：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int main ()
+{
+    int n, sum;
+    std::cin &amp;gt;&amp;gt; n;
+    for ( ;n != 0; n--)
+        sum = sum + n;
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你代入之前的流程图理解 for 循环执行的过程，你会发现这个写法比较像 while 循环的逻辑。事实上，之所以说 for 循环完全可以用 while 循环代替，是因为&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (s1; s2; s3)
+{
+    // your code
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;等价于&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;s1;
+while (s2)
+{
+    // your code
+    s3;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>输入输出</title>
+      <link>/courses/problemsolving22/c&#43;&#43;0/io/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/courses/problemsolving22/c&#43;&#43;0/io/</guid>
+      <description>&lt;p&gt;如果你使用的是 Dev-cpp，将基本框架中的程序拷贝到代码区并按下 F11，你会发现程序已经可以成功地运行了！不过跳出的黑色窗口中没有任何内容——因为我们的 main 函数中什么都没写。我们现在来尝试输出一行 &amp;ldquo;hello world!&amp;quot;：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    std::cout &amp;lt;&amp;lt; &amp;quot;Hello World&amp;quot; &amp;lt;&amp;lt; endl; // don&#39;t forget to add &#39;;&#39; at the end!
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;cout&lt;/code&gt; 是一个&lt;strong&gt;对象 (object)&lt;/strong&gt;，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &amp;ldquo;cout&amp;rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 &lt;code&gt;&amp;lt;&amp;lt;&lt;/code&gt; 就像箭头一样指明了数据的流向，“Hello World&amp;rdquo; 和代表换行符的 &amp;ldquo;endl&amp;rdquo; 依次流入 &amp;ldquo;cout&amp;rdquo; 并被显示出来，这就是 &lt;code&gt;cout&lt;/code&gt; 的用法，颇有象形文字的智慧。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;std::&lt;/code&gt; 这个前缀是什么意思？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;std&lt;/code&gt; 是一个&lt;strong&gt;命名空间 (namespace)&lt;/strong&gt;。对于初学者来说命名空间的概念太过复杂了，你可以把它当作“头文件”来理解：&lt;code&gt;std&lt;/code&gt; 中有很多函数/对象/&amp;hellip;可以供我们使用。在使用它们时，为了让计算机知道这个函数/对象/&amp;hellip;来自于 &lt;code&gt;std&lt;/code&gt;，我们要前面加上 &lt;code&gt;std::&lt;/code&gt; 这个前缀。&lt;/p&gt;
+&lt;p&gt;一个自然的问题是：我们既然有一个 include 语句包含头文件，那么我们可不可以也用一条语句来“包含” &lt;code&gt;std&lt;/code&gt; 从而避免每次使用 &lt;code&gt;std&lt;/code&gt; 中的东西都要写 &lt;code&gt;std::&lt;/code&gt; 呢？答案是肯定的，我们可以这样写：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+using namespace std;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二行的意思是：在整个程序中我都可以任意地使用 &lt;code&gt;std&lt;/code&gt; 这个 namespace 的所有内容，不再需要 &lt;code&gt;std::&lt;/code&gt; 这个前缀。这样写固然方便，但我们仍然推荐新手养成不滥用 &lt;code&gt;using namespace std;&lt;/code&gt; 的习惯，因为这样你能够更好地知道哪些函数是头文件中的，哪些函数是 &lt;code&gt;std&lt;/code&gt; 中的，这对将来的编程学习很有好处。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;一个只能输出的程序没有意思，我们希望程序可以与人类交互，因此我们接下来考虑一个更复杂的例子：输入两个数，输出它们的和。我们直接给出示例代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int a, b, sum;
+    std::cin &amp;gt;&amp;gt; a &amp;gt;&amp;gt; b; // don&#39;t forget the &amp;quot;std::&amp;quot; prefix!
+    sum = a + b;
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个程序颇为复杂，出现了很多新东西，我们来一一看：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;程序中的 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;sum&lt;/code&gt; 被称为&lt;strong&gt;变量 (variable)&lt;/strong&gt;。变量可以被理解为一个“小盒子“，里面可以存放一个值。在使用变量前我们需要定义变量，定义的格式是 &lt;code&gt;类型 变量名;&lt;/code&gt;，这里我们定义了 &lt;code&gt;int&lt;/code&gt; 类型的变量，表示 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;sum&lt;/code&gt; 这三个“盒子”里只能存放&lt;strong&gt;整数&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cin&lt;/code&gt; 是用于输入的对象。有了 &lt;code&gt;cout&lt;/code&gt; 的经验，&lt;code&gt;cin&lt;/code&gt; 一行很好理解：我们还是将 &amp;ldquo;cin&amp;rdquo; 想象成黑色窗口，当我们输入了两个数字的时候，&amp;ldquo;cin&amp;rdquo; 需要将数据喂给变量，因此流符号的方向是 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sum = a + b;&lt;/code&gt; 是一个赋值语句，它的含义是将 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 中的值加起来，存放到 &lt;code&gt;sum&lt;/code&gt; 中，注意该操作不会影响 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 中的内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;变量&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;上述示例代码中定义的是 &lt;code&gt;int&lt;/code&gt; 型的变量 (&amp;ldquo;int&amp;quot;是整数 integer 的缩写）。C++ 为我们提供了很多的变量类型，比如存储小数(浮点数）的 &lt;code&gt;float&lt;/code&gt; 类型和 &lt;code&gt;double&lt;/code&gt; 类型，存储更大的整数的 &lt;code&gt;long long&lt;/code&gt; 类型，存储字符的 &lt;code&gt;char&lt;/code&gt; 类型等等，你可以上网搜索这些类型的含义。&lt;/p&gt;
+&lt;p&gt;除此之外，变量的命名看似自由，其实也有一定的约束条件，比如变量名的第一个字符不能是数字。如果你感兴趣，你也可以上网搜索相关的资料。&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

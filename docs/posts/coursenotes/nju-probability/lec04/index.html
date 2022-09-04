@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Independence 【例】$a$ 个黑球，$b$ 个白球，分别在有放回、无放回的情况下计算：
+(1) 第一次摸到黑球 (A)，第二次摸到黑球的概率 (B)。
+(2) 第二次摸到黑球的概率。
+容易发现，有放回时，$P(B|A)=P(B)$ (放回后，第二次的实验条件与第一次的结果无关)，无放回时 $P(B|A)\neq P(B)$。
+$\fbox{Definition 4.1}$ 称事件 $A$ 和 $B$ 互相独立，若 $P(AB)=P(A)P(B)$ (或者说，$P(B)=P(B|A)$)。
+以下是一些推论：
+$\emptyset,\Omega$ 与任意事件独立。
+若 $A,B$ 独立，则 $\overline{A},B$，$A,\overline{B}$ ，$\overline{A},\overline{B}$ 也独立。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-probability/lec04/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/nju-probability/lec04/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/nju-probability/lec04/">
+  <meta property="og:title" content="Lecture 04: Independence and Bernoulli Experiments | Academic">
+  <meta property="og:description" content="Independence 【例】$a$ 个黑球，$b$ 个白球，分别在有放回、无放回的情况下计算：
+(1) 第一次摸到黑球 (A)，第二次摸到黑球的概率 (B)。
+(2) 第二次摸到黑球的概率。
+容易发现，有放回时，$P(B|A)=P(B)$ (放回后，第二次的实验条件与第一次的结果无关)，无放回时 $P(B|A)\neq P(B)$。
+$\fbox{Definition 4.1}$ 称事件 $A$ 和 $B$ 互相独立，若 $P(AB)=P(A)P(B)$ (或者说，$P(B)=P(B|A)$)。
+以下是一些推论：
+$\emptyset,\Omega$ 与任意事件独立。
+若 $A,B$ 独立，则 $\overline{A},B$，$A,\overline{B}$ ，$\overline{A},\overline{B}$ 也独立。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 04: Independence and Bernoulli Experiments | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/hw1/">Homework</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/hw1/">Homework 1</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/hw2/">Homework 2</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/lec01/">Lectures</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec01/">Lecture 01</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec02/">Lecture 02</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec03/">Lecture 03</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/nju-probability/lec04/">Lecture 04</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec05/">Lecture 05</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec06/">Lecture 06</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec07/">Lecture 07</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec08/">Lecture 08</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec09/">Lecture 09</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec10/">Lecture 10</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec11/">Lecture 11</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec12/">Lecture 12</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec13/">Lecture 13</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec14/">Lecture 14</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec15/">Lecture 15</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec16/">Lecture 16</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec21/">Lecture 21</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/lec22/">Lecture 22</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-probability/mgf/">Materials</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-probability/mgf/">MGF</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 04: Independence and Bernoulli Experiments</h1>
+
+          <div class="article-style">
+            <h2 id="independence">Independence</h2>
+<p>【例】$a$ 个黑球，$b$ 个白球，分别在有放回、无放回的情况下计算：</p>
+<p>(1) 第一次摸到黑球 (A)，第二次摸到黑球的概率 (B)。</p>
+<p>(2) 第二次摸到黑球的概率。</p>
+<p>容易发现，有放回时，$P(B|A)=P(B)$ (放回后，第二次的实验条件与第一次的结果无关)，无放回时 $P(B|A)\neq P(B)$。</p>
+<p>$\fbox{Definition 4.1}$ 称事件 $A$ 和 $B$ 互相独立，若 $P(AB)=P(A)P(B)$ (或者说，$P(B)=P(B|A)$)。</p>
+<p>以下是一些推论：</p>
+<ul>
+<li>
+<p>$\emptyset,\Omega$ 与任意事件独立。</p>
+</li>
+<li>
+<p>若 $A,B$ 独立，则 $\overline{A},B$，$A,\overline{B}$ ，$\overline{A},\overline{B}$ 也独立。</p>
+<blockquote>
+<p>Proof: 第一条：$P(\overline{A}B)=P(B-BA)=P(B)-P(BA)=P(B)-P(B)P(A)=P(B)(1-P(A))=P(B)P(\overline{A})$</p>
+<p>容易推得第二，第三条也成立。$\blacksquare$</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>注：事件独立和韦恩图上两个事件没有交集没有任何关系！</strong></p>
+<p>$\fbox{Definition 4.2}$ (三个事件的独立性) $A,B,C$ 相互独立，若</p>
+<ul>
+<li>$A,B,C$ 两两互相独立。</li>
+<li>$P(ABC)=P(A)P(B)P(C)$。</li>
+</ul>
+<p>注：这两条并不能互相推出，以下是例子：</p>
+<ul>
+<li>(1) 推不出 (2)：一个正四面体，一面红色 (A)，一面绿色 (B)，一面蓝色 (C)，一面三个颜色都有，讨论向下面的颜色：
+<ul>
+<li>$P(A)=P(B)=P(C)=2/4=1/2$，$P(AB)=1/4=P(A)P(B)$。</li>
+<li>然而 $P(ABC)=1/4\neq P(A)P(B)P(C)$。</li>
+</ul>
+</li>
+<li>(2) 推不出 (1)：一个正八面体，1,2,3,4面有红色，1,2,3,5面有绿色，1,6,7,8面有蓝色。
+<ul>
+<li>$P(A)=P(B)=P(C)=4/8=1/2$，$P(ABC)=1/8=P(A)P(B)P(C)$。</li>
+<li>然而 $P(AB)=3/8\neq P(A)P(B)$。</li>
+</ul>
+</li>
+</ul>
+<p>类似地可以定义 $n$ 个事件的独立性：对于事件 $A_1,\cdots,A_n$，令 $I$ 为指标集，则它们独立当且仅当对于任意 $S\subseteq I$，有 $P(\bigcap_{\alpha\in S}A_\alpha)=\prod_{\alpha\in S}P(A_\alpha)$。</p>
+<p>$\fbox{Theorem 4.3}$ 若事件 $A_1,\cdots, A_n$ 互相独立，那么考虑事件集的任意一个划分，每个组里的事件做任意运算的结果与别组的结果也互相独立。</p>
+<p>$\fbox{Theorem 4.4}$ 若 $A_1,\cdots, A_n$ 相互独立，则 $P(\bigcup_{k=1}^nA_k)=1-\prod_{k=1}^nP(\overline{A_k})$。</p>
+<p>证明：$P(\bigcup_{k=1}^nA_k)=1-P(\overline{\bigcup_{k=1}^nA_k})=1-P(\bigcap_{k=1}^n\overline{A_k})=1-\prod_{k=1}^nP(\overline{A_k})$。$\blacksquare$</p>
+<h2 id="bernoulli-experiments">Bernoulli Experiments</h2>
+<p>$\fbox{Definition 4.5}$ 若一个独立重复试验满足</p>
+<ul>
+<li>每个事件只有两个结果：$A$ 和 $\overline{A}$，$P(A)=p,P(\overline(A))=1-p$。</li>
+<li>试验可重复，每两次试验之间互相独立。</li>
+</ul>
+<p>则 $n$ 次上述实验称为 $n$ 重伯努利试验 (Bernoulli Experiment)。</p>
+<p>$\fbox{Theorem 4.6}$ 伯努利试验中，记 $P_n(k)$ 为 $A$ 发生 $k$ 次的概率，则 $P_n(k)=\binom{n}{k}p^k(1-p)^{n-k}$。</p>
+<p>【例】 (简单随机游走 simple random walk) 一个粒子从0出发在整数数轴上运动，每次向右移动的概率为 $p$，求跳 $n$ 次后位于 $k$ 的概率。</p>
+<blockquote>
+<p>解：以下只讨论 $k\geq 0$ 的情况：
+$$
+P(n,k)=
+\begin{cases}
+0&amp;, k&gt;n\\
+0&amp;, n与k奇偶性不同\\
+\binom{n}{(n+k)/2}p^{(n+k)/2}(1-p)^{(n-k)/2}&amp;，otherwise
+\end{cases}
+$$</p>
+</blockquote>
+<p>$\fbox{Theorem 4.7}$ (泊松定理, Poisson) 若 $np_n=\lambda$，则对于固定的 $k$，
+$$
+\lim_{n\rightarrow \infty} \binom{n}{k}p_n^k(1-p_n)^{n-k}=\frac{\lambda^k}{k!}e^{-\lambda}
+$$
+证明：
+$$
+\begin{align}
+\lim_{n\rightarrow \infty}\binom{n}{k}p_n^k(1-p_n)^{n-k}&amp;=\lim_{n\rightarrow \infty}\frac{n(n-1)\cdots (n-k+1)}{k!}(\frac{\lambda}{n})^k(1-\frac{\lambda}{n})^{n-k}\\
+&amp;=\lim_{n\rightarrow \infty}\frac{\lambda^k}{k!}\cdot 1(1-\frac{1}{n})(1-\frac{2}{n})\cdots (1-\frac{k-1}{n})(1-\frac{\lambda}{n})^n(1-\frac{\lambda}{n})^{-k}\\
+&amp;=\lim_{n\rightarrow \infty}\frac{\lambda^k}{k!}(1-\frac{\lambda}{n})^n\\
+&amp;=\frac{\lambda^k}{k!}\left[\lim_{n\rightarrow \infty}(1+\frac{-\lambda}{n})^{\frac{n}{-\lambda}}\right]^{-\lambda}\\
+&amp;=\frac{\lambda^k}{k!}e^{-\lambda}
+\end{align}
+$$</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/nju-probability/lec03/" rel="next">Lecture 03: Conditional Probability and Bayes Formula</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/nju-probability/lec05/" rel="prev">Lecture 05: Random Variable and Distribution Function</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/nju-probability/lec04.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

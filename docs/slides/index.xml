@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Slides | Academic</title>
+    <link>/slides/</link>
+      <atom:link href="/slides/index.xml" rel="self" type="application/rss+xml" />
+    <description>Slides</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 05 Feb 2019 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>Slides</title>
+      <link>/slides/20220727/</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
+      <guid>/slides/20220727/</guid>
+      <description>&lt;h2 id=&#34;dl-library-fuzzing&#34;&gt;DL Library Fuzzing&lt;/h2&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;bug-report&#34;&gt;Bug Report&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Source: release notes of latest versions, Github PRs&lt;/li&gt;
+&lt;li&gt;Version: TensorFlow 2.8&amp;amp;2.9, PyTorch 1.12&lt;/li&gt;
+&lt;li&gt;Amount: 40&lt;/li&gt;
+&lt;li&gt;Multi-API triggered bugs: 8 (all in PyTorch)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;typical-bugs&#34;&gt;Typical Bugs&lt;/h3&gt;
+&lt;p&gt;PyTorch, GitHub #73187&lt;/p&gt;
+&lt;p align=left&gt;Error: unexpected RuntimeError&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import torch
+
+grad_output = torch.full((1, 1, 1, 4, 4,), 1, dtype=torch.float64, requires_grad=True)
+input = torch.full((5, 5, 5, 5, 5,), 3.5e+35, dtype=torch.float64, requires_grad=True)
+grid = torch.full((1, 1, 1, 4, 4,), 1, dtype=torch.float64, requires_grad=True)
+interpolation_mode = 0
+padding_mode = 0
+align_corners = True
+res = torch.grid_sampler_3d(input, grid, interpolation_mode, padding_mode, align_corners)
+grad_out = torch.zeros_like(res)
+torch.autograd.backward(res, grad_tensors=grad_out)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;grid_sampler_3d()&lt;/code&gt; + &lt;code&gt;backward()&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;typical-bugs-1&#34;&gt;Typical Bugs&lt;/h3&gt;
+&lt;p&gt;PyTorch, GitHub #75781&lt;/p&gt;
+&lt;p align=left&gt;Error: unexpected warning&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import torch
+
+if __name__ == &amp;quot;__main__&amp;quot;:
+
+    n = 8
+    x = torch.zeros(n).normal_()
+    x.requires_grad = True
+    z = torch.fft.irfft(x).sum()
+    z.backward()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;fft()&lt;/code&gt; + &lt;code&gt;irfft()&lt;/code&gt; + &lt;code&gt;sum()&lt;/code&gt; + &lt;code&gt;backward()&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;typical-bugs-2&#34;&gt;Typical Bugs&lt;/h3&gt;
+&lt;p&gt;PyTorch, GitHub #77245&lt;/p&gt;
+&lt;p align=left&gt;Error: unexpected RuntimeError&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import torch
+
+def fn(input):
+    offset = 0
+    fn_res = torch.diagonal(input, offset=offset, )
+    return fn_res
+
+input = torch.rand([0, 1], dtype=torch.complex128, requires_grad=True)
+torch.autograd.gradcheck(fn, (input), check_forward_ad=True, check_backward_ad=False)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;gradcheck()&lt;/code&gt; + &lt;code&gt;diagonal()&lt;/code&gt; + function parameter&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;typical-bugs-3&#34;&gt;Typical Bugs&lt;/h3&gt;
+&lt;p&gt;PyTorch, GitHub #77526&lt;/p&gt;
+&lt;p align=left&gt;Error: man-made assertion error&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;a = torch.randn((2, 2), dtype=torch.cfloat).transpose(0, 1)
+result = torch.abs(a)
+assert a.stride() == b.stride()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;transpose()&lt;/code&gt; + &lt;code&gt;abs()&lt;/code&gt; + &lt;code&gt;stride()&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;summary&#34;&gt;Summary&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Linux kernel(system) v.s. DL libraries(tool kit)&lt;/li&gt;
+&lt;li&gt;Common bug types
+&lt;ul&gt;
+&lt;li&gt;Integer overflow, division by zero&lt;/li&gt;
+&lt;li&gt;Out of memory(OOM), Out of bound(OOB)&lt;/li&gt;
+&lt;li&gt;missing validation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;documentation&#34;&gt;Documentation&lt;/h2&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;documentation-semantics&#34;&gt;Documentation Semantics&lt;/h3&gt;
+&lt;p&gt;Learning-based semantics &amp;lsquo;understanding&amp;rsquo; seems inevitable. $\Rightarrow$ NLP work&lt;/p&gt;
+&lt;p align=left&gt;An interesting bug: PyTorch, GitHub #70657&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import torch
+assert torch.ones(10)[::2].ravel().is_contiguous() == True
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p align=left&gt;The assertion comes from the document: &#34;ravel() returns a &lt;b&gt;contiguous&lt;/b&gt; flattened tensor&#34;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;documentation-structure&#34;&gt;Documentation Structure&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;The &amp;ldquo;Python API&amp;rdquo; module is divided into 54 sections, including &lt;code&gt;torch&lt;/code&gt;, &lt;code&gt;torch.nn&lt;/code&gt;, &lt;code&gt;torch.cuda&lt;/code&gt; etc.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The &lt;code&gt;torch.nn&lt;/code&gt; section is divided into 20 subsections, including &amp;ldquo;Convolutional layers&amp;rdquo;, &amp;ldquo;Pooling layers&amp;rdquo;, &amp;ldquo;Padding layers&amp;rdquo; etc. The section contains 186 APIs in total.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Subsection &amp;ldquo;Convolutional layers&amp;rdquo; includes 14 APIs, offering rich relational information.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;documentation-structure-1&#34;&gt;Documentation Structure&lt;/h3&gt;
+&lt;p align=left&gt;Drawback: scalability (e.g. TensorFlow&#39;s doc only has coarse categories and lots of APIs are sorted in chronological order.)&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;fuzzing&#34;&gt;Fuzzing&lt;/h2&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;fuzzing-perspectives&#34;&gt;Fuzzing perspectives&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Model-level fuzzing: CRADLE, LEMON&lt;/li&gt;
+&lt;li&gt;Sub-Model?&lt;/li&gt;
+&lt;li&gt;API-level fuzzing: FreeFuzz, DeepREL, DocTer&lt;/li&gt;
+&lt;li&gt;Sub-API?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;sub-model-fuzzing&#34;&gt;Sub-Model Fuzzing&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Model-level: precison loss, hard for mutation&amp;hellip;&lt;/li&gt;
+&lt;li&gt;API-level: complicated situations uncovered&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p align=left&gt;
+Sub-model level fuzzing serves as an auxiliary approach to cover more cases. The scale of sub-models/combinations of APIs should be small.
+&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;example-pytorch-github-74404&#34;&gt;Example: PyTorch, GitHub #74404&lt;/h4&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import torch
+from torch import nn
+
+class MyModule(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.module_list = nn.ModuleList([nn.Linear(1,1) for _ in range(10)])
+        self.parameter_list = nn.ParameterList([nn.Parameter(torch.zeros(1)) for _ in range(10)])
+    def forward(self, x):
+        for m in self.module_list:
+            x = m(x)
+        return x
+
+if __name__ == &#39;__main__&#39;:
+    model = MyModule()
+    optimize = True
+    with torch.jit.optimized_execution(optimize):
+      a = torch.jit.script(model, 2)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;sub-api-fuzzing&#34;&gt;Sub-API Fuzzing&lt;/h3&gt;
+&lt;p&gt;Under Python APIs: C++ codes&lt;/p&gt;
+&lt;p align=left&gt;Idea:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Most bugs come from missing validations/boundary argument values.&lt;/li&gt;
+&lt;li&gt;The propagation chain of a bug: fault $\to$ error $\to$ failure&lt;/li&gt;
+&lt;li&gt;#error &amp;gt; #failure&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p align=left&gt;Open the state machine&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;example-assertion-injections&#34;&gt;Example: assertion injections&lt;/h3&gt;
+&lt;p align=left&gt;TensorFlow: CVE-2022-21725 (division by 0)&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-diff&#34;&gt;int64_t GetOutputSize(const int64_t input, const int64_t filter,
+                      const int64_t stride, const Padding&amp;amp; padding) {
++ assert(stride != 0);
+  if (padding == Padding::VALID) {
+    return (input - filter + stride) / stride;  // what if stride = 0 ?
+  } else {  // SAME.
+    return (input + stride - 1) / stride;
+  }
+} 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;example-assertion-injections-1&#34;&gt;Example: assertion injections&lt;/h3&gt;
+&lt;p align=left&gt;TensorFlow: CVE-2022-21728 (heap OOB)&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-diff&#34;&gt;static DimensionHandle DimKnownRank(ShapeHandle s, int64_t idx) {
++ assert(-s-&amp;gt;dims_.size() &amp;lt;= idx &amp;amp;&amp;amp; idx &amp;lt; s-&amp;gt;dims_.size());
+  CHECK_NE(s-&amp;gt;rank_, kUnknownRank);
+  if (idx &amp;lt; 0) {
+    return s-&amp;gt;dims_[s-&amp;gt;dims_.size() + idx];
+  }
+  return s-&amp;gt;dims_[idx];
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;example-assertion-injections-2&#34;&gt;Example: assertion injections&lt;/h3&gt;
+&lt;p align=left&gt;TensorFlow: CVE-2022-23589 (null pointer dereference)&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-diff&#34;&gt;NodeDef* mul_left_child = node_map_-&amp;gt;GetNode(node-&amp;gt;input(0));
+NodeDef* mul_right_child = node_map_-&amp;gt;GetNode(node-&amp;gt;input(1));
++ assert(mul_left_child != NULL &amp;amp;&amp;amp; mul_right_child != NULL);
+const bool left_child_is_constant = IsReallyConstant(*mul_left_child);
+const bool right_child_is_constant = IsReallyConstant(*mul_right_child);
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Slides</title>
+      <link>/slides/20220810/</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
+      <guid>/slides/20220810/</guid>
+      <description>&lt;h2 id=&#34;fuzzing-report&#34;&gt;Fuzzing Report&lt;/h2&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;documentation&#34;&gt;Documentation&lt;/h2&gt;
+&lt;hr&gt;
+&lt;p align=left&gt;
+PyTorch: Big sections categorized, small sections listed.
+MXNet: Big sections categorized, small sections listed.
+&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Slides</title>
+      <link>/slides/example/</link>
+      <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
+      <guid>/slides/example/</guid>
+      <description>&lt;h1 id=&#34;create-slides-in-markdown-with-academic&#34;&gt;Create slides in Markdown with Academic&lt;/h1&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://sourcethemes.com/academic/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Academic&lt;/a&gt; | 
+&lt;a href=&#34;https://sourcethemes.com/academic/docs/managing-content/#create-slides&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Documentation&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;features&#34;&gt;Features&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Efficiently write slides in Markdown&lt;/li&gt;
+&lt;li&gt;3-in-1: Create, Present, and Publish your slides&lt;/li&gt;
+&lt;li&gt;Supports speaker notes&lt;/li&gt;
+&lt;li&gt;Mobile friendly slides&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;controls&#34;&gt;Controls&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Next: &lt;code&gt;Right Arrow&lt;/code&gt; or &lt;code&gt;Space&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Previous: &lt;code&gt;Left Arrow&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Start: &lt;code&gt;Home&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Finish: &lt;code&gt;End&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Overview: &lt;code&gt;Esc&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Speaker notes: &lt;code&gt;S&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Fullscreen: &lt;code&gt;F&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Zoom: &lt;code&gt;Alt + Click&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;https://github.com/hakimel/reveal.js#pdf-export&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;PDF Export&lt;/a&gt;: &lt;code&gt;E&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;code-highlighting&#34;&gt;Code Highlighting&lt;/h2&gt;
+&lt;p&gt;Inline code: &lt;code&gt;variable&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Code block:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;porridge = &amp;quot;blueberry&amp;quot;
+if porridge == &amp;quot;blueberry&amp;quot;:
+    print(&amp;quot;Eating...&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;math&#34;&gt;Math&lt;/h2&gt;
+&lt;p&gt;In-line math: $x + y = z$&lt;/p&gt;
+&lt;p&gt;Block math:&lt;/p&gt;
+&lt;p&gt;$$
+f\left( x \right) = ;\frac{{2\left( {x + 4} \right)\left( {x - 4} \right)}}{{\left( {x + 4} \right)\left( {x + 1} \right)}}
+$$&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;fragments&#34;&gt;Fragments&lt;/h2&gt;
+&lt;p&gt;Make content appear incrementally&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{{% fragment &amp;quot;weight&amp;quot;=1%}} One {{% /fragment %}}
+{{% fragment &amp;quot;weight&amp;quot;=1%}} **Two** {{% /fragment %}}
+{{% fragment %}} Three {{% /fragment %}}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Press &lt;code&gt;Space&lt;/code&gt; to play!&lt;/p&gt;
+&lt;span class=&#34;fragment &#34; &gt;
+   One 
+&lt;/span&gt;
+&lt;span class=&#34;fragment &#34; &gt;
+   **Two** 
+&lt;/span&gt;
+&lt;span class=&#34;fragment &#34; &gt;
+   Three 
+&lt;/span&gt;
+&lt;hr&gt;
+&lt;p&gt;A fragment can accept two optional parameters:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;class&lt;/code&gt;: use a custom style (requires definition in custom CSS)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;weight&lt;/code&gt;: sets the order in which a fragment appears&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;speaker-notes&#34;&gt;Speaker Notes&lt;/h2&gt;
+&lt;p&gt;Add speaker notes to your presentation&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-markdown&#34;&gt;{{% speaker_note %}}
+- Only the speaker can read these notes
+- Press `S` key to view
+{{% /speaker_note %}}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Press the &lt;code&gt;S&lt;/code&gt; key to view the speaker notes!&lt;/p&gt;
+&lt;aside class=&#34;notes&#34;&gt;
+  &lt;ul&gt;
+&lt;li&gt;Only the speaker can read these notes&lt;/li&gt;
+&lt;li&gt;Press &lt;code&gt;S&lt;/code&gt; key to view&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;/aside&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;themes&#34;&gt;Themes&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;black: Black background, white text, blue links (default)&lt;/li&gt;
+&lt;li&gt;white: White background, black text, blue links&lt;/li&gt;
+&lt;li&gt;league: Gray background, white text, blue links&lt;/li&gt;
+&lt;li&gt;beige: Beige background, dark text, brown links&lt;/li&gt;
+&lt;li&gt;sky: Blue background, thin dark text, blue links&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;ul&gt;
+&lt;li&gt;night: Black background, thick white text, orange links&lt;/li&gt;
+&lt;li&gt;serif: Cappuccino background, gray text, brown links&lt;/li&gt;
+&lt;li&gt;simple: White background, black text, blue links&lt;/li&gt;
+&lt;li&gt;solarized: Cream-colored background, dark green text, blue links&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+
+&lt;section data-noprocess data-shortcode-slide
+  
+      
+      data-background-image=&#34;/img/boards.jpg&#34;
+  &gt;
+
+&lt;h2 id=&#34;custom-slide&#34;&gt;Custom Slide&lt;/h2&gt;
+&lt;p&gt;Customize the slide style and background&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-markdown&#34;&gt;{{&amp;lt; slide background-image=&amp;quot;/img/boards.jpg&amp;quot; &amp;gt;}}
+{{&amp;lt; slide background-color=&amp;quot;#0000FF&amp;quot; &amp;gt;}}
+{{&amp;lt; slide class=&amp;quot;my-style&amp;quot; &amp;gt;}}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;custom-css-example&#34;&gt;Custom CSS Example&lt;/h2&gt;
+&lt;p&gt;Let&amp;rsquo;s make headers navy colored.&lt;/p&gt;
+&lt;p&gt;Create &lt;code&gt;assets/css/reveal_custom.css&lt;/code&gt; with:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-css&#34;&gt;.reveal section h1,
+.reveal section h2,
+.reveal section h3 {
+  color: navy;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr&gt;
+&lt;h1 id=&#34;questions&#34;&gt;Questions?&lt;/h1&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://spectrum.chat/academic&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Ask&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://sourcethemes.com/academic/docs/managing-content/#create-slides&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Documentation&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

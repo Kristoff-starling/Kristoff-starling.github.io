@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Overview 该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。以下主要记录一些有趣的设计/性能调优经历。
+Designation 维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。
+由于 kfree() 只传入了要释放内存块的起始地址，而没有传入 size，所以我们应当在 kalloc() 的时候记录每个释放出去的内存块的大小。笔者最初的实现是维护了一个分配出去的内存块的链表，kfree() 到来时，在链表里查找给定的地址是否存在以及对应的大小。但这样效率太低，于是笔者使用了在地址前打魔数的方法。笔者定义了一个如下的 header：
+#define ALLOC_MAGIC 0x1234567; typedef struct __header_t { size_t sz; union { uintptr_t magic; struct __header_t *next; }; }header_t; 每个内存块前都有一个这样的 header。这个 header 的好处是：未分配内存和已分配内存可以共用这个 header，当内存块处于未分配状态时，内存块被放在链表中，union 字段存放的是下一个链表节点的地址；当内存块处于已分配状态时，union 字段存放魔数。一个 kfree() 地址来临时，只要查看其前一个 uintptr_t 中是不是 ALLOC_MAGIC，就能确定这个地址合不合法，再往前看就能获得内存块的 size。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/labs/lab01/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/labs/lab01/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/labs/lab01/">
+  <meta property="og:title" content="Lab 01: Physical Memory Manager | Academic">
+  <meta property="og:description" content="Overview 该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。以下主要记录一些有趣的设计/性能调优经历。
+Designation 维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。
+由于 kfree() 只传入了要释放内存块的起始地址，而没有传入 size，所以我们应当在 kalloc() 的时候记录每个释放出去的内存块的大小。笔者最初的实现是维护了一个分配出去的内存块的链表，kfree() 到来时，在链表里查找给定的地址是否存在以及对应的大小。但这样效率太低，于是笔者使用了在地址前打魔数的方法。笔者定义了一个如下的 header：
+#define ALLOC_MAGIC 0x1234567; typedef struct __header_t { size_t sz; union { uintptr_t magic; struct __header_t *next; }; }header_t; 每个内存块前都有一个这样的 header。这个 header 的好处是：未分配内存和已分配内存可以共用这个 header，当内存块处于未分配状态时，内存块被放在链表中，union 字段存放的是下一个链表节点的地址；当内存块处于已分配状态时，union 字段存放魔数。一个 kfree() 地址来临时，只要查看其前一个 uintptr_t 中是不是 ALLOC_MAGIC，就能确定这个地址合不合法，再往前看就能获得内存块的 size。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lab 01: Physical Memory Manager | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/labs/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/labs/lab00/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/labs/lab00/">Lab 00: amgame</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/nju-operating-system/labs/lab01/">Lab 01: pmm</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/labs/lab02/">Lab 02: kmt</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/labs/lab03/">Lab 03: uproc</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lab 01: Physical Memory Manager</h1>
+
+          <div class="article-style">
+            <h2 id="overview">Overview</h2>
+<p>该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。以下主要记录一些有趣的设计/性能调优经历。</p>
+<h2 id="designation">Designation</h2>
+<p>维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。</p>
+<p>由于 kfree() 只传入了要释放内存块的起始地址，而没有传入 size，所以我们应当在 kalloc() 的时候记录每个释放出去的内存块的大小。笔者最初的实现是维护了一个分配出去的内存块的链表，kfree() 到来时，在链表里查找给定的地址是否存在以及对应的大小。但这样效率太低，于是笔者使用了在地址前打魔数的方法。笔者定义了一个如下的 header：</p>
+<pre><code class="language-c">#define ALLOC_MAGIC 0x1234567;
+typedef struct __header_t {
+    size_t sz;
+    union {
+        uintptr_t magic;
+        struct __header_t *next;
+    };
+}header_t;
+</code></pre>
+<p>每个内存块前都有一个这样的 header。这个 header 的好处是：未分配内存和已分配内存可以共用这个 header，当内存块处于未分配状态时，内存块被放在链表中，union 字段存放的是下一个链表节点的地址；当内存块处于已分配状态时，union 字段存放魔数。一个 kfree() 地址来临时，只要查看其前一个 <code>uintptr_t</code> 中是不是 ALLOC_MAGIC，就能确定这个地址合不合法，再往前看就能获得内存块的 size。</p>
+<p>(注：使用 header 的方法有一个弱点：原本在堆区中 1B 的内存加上 header 后变得很大。此外，由于对齐的原因，我们无法将多个大小相同的内存块“挨在一起”存放在堆区中，中间有很多“洞”。)</p>
+<p>由于 pmm 会被并发地执行，所以访问共享数据结构要上锁。</p>
+<h2 id="defensive-programming">Defensive Programming</h2>
+<p>笔者认为以下的防御性编程是有意义的：</p>
+<ul>
+<li>在 kalloc(), kfree() 中加入足够的对地址性质，空间大小分析的 panic(), panic_on() 等，这有助于提前发现 failure。</li>
+<li>笔者实现的自旋锁中记录了当前拥有锁的 CPU 编号，这样在 acquire() 和 release() 前检查当前是否拥有锁，可以有效防御 AA-deadlock 和一些意料之外的情况。</li>
+<li>kalloc()/kfree() 结束时应该将对应内存区间 memset 成奇怪数值，这样后续使用时如果忘了清零/地址溢出，读到垃圾数据可以加快 failure 出现的速度，减少排查 bug 的时间。</li>
+</ul>
+<p>但以上防御性编程对效率有一定影响，因此笔者在提交 OJ 的版本中没有编译这些 (尤其是第三条) 防御性编程。</p>
+<h2 id="performance-tuning">Performance Tuning</h2>
+<p>该实验对效率有一定的要求，笔者主要使用 Linux perf 工具对代码的运行时间/并行度进行观测。本地 Workload 的信息为：$60%$ 的 128K 以内内存分配，$30%$ 的 pagesize 内存分配，$10%$ 的大内存分配。释放的频率和分配相仿。每个核做 400,000 次分配和回收。</p>
+<p>笔者做过如下优化：</p>
+<h3 id="fast-path">Fast Path</h3>
+<ul>
+<li>
+<p>将整个堆区分成 <code>cpu_count()</code> 份，每个 CPU 核只在自己的那一份的链表中 alloc() 和 free() (free 时根据地址还到相应的资源区中)，因为一个核的 kalloc() 可能在另一个核中 kfree()，所以即使分成了多份，访问数据结构依旧要上锁。如果本地资源不足，则从别的资源区偷资源。该做法有一定效率提升，但不明显。</p>
+</li>
+<li>
+<p>slab。笔者对 1KB 以下内存分配的每种大小都开了一个单独的链表，对 pagesize (4KB) 也开了一个链表。slab 的核心做法是：没有资源时走 slow path，从全局资源中批发很多小块串成链表；有资源时直接从链表头取一个小块。这里每次走 slow path 批发多少个小块是一个需要调整的参数，不同的参数会对效率和失败率产生影响。</p>
+<p>这里的一个细节是：笔者希望每个核从自己的 slab 中获取资源，释放时将资源释放到自己的 slab 中，这样 fast path 不需要上锁。但提交 OJ 发现 smp=2 时就会出现 low memory usage，这很可能是因为 OJ 上两个核的任务不对称，如一个核专门 kalloc()，一个核专门 kfree()，导致资源全部堆积在第二个核的 slab 里无法利用。因此笔者不得不对 slab 的访问上锁，本地 slab 没有资源时去偷别人的 slab 的资源。</p>
+</li>
+<li>
+<p>为了减少 slab 上的锁拥堵，笔者尝试了以下两种“玄学”优化：</p>
+<ul>
+<li>每个核 kalloc() 时随机一个 slab 取资源，kfree() 时随机一个 slab 还资源 (其实两个都随机和只随机一个效果是一样的)。该策略只需要访问一个 slab，比之前的偷资源策略要高效一些，且打破了”不对称任务“约束，不会 low memory usage。该优化在本地 workload 中显著减少了锁的拥堵程度。</li>
+<li>为了进一步减少锁的拥堵 (毕竟两个核随机到一个 slab 的概率还是不小的)，笔者给每个核选定一个 target slab (这是一个 permutation)，每个核向 target slab 索取资源，释放时归还到 target slab 中。为了避免“不对称任务”约束，每进行一定次数的分配后，shuffle 一下 target slab 的 permutation。该优化在本地的 workload 中相较前一种方法确实进一步减少了锁的拥堵程度，但没有看到明显的效率提升。</li>
+</ul>
+</li>
+</ul>
+<h3 id="slow-path">Slow Path</h3>
+<ul>
+<li>
+<p>为了防止 (可以避免的) 过于破碎的内存，链表中应当有合并机制，即插入一个节点后，将其与左右邻居比较，若端点重合则合并节点。</p>
+</li>
+<li>
+<p>OSTEP 中提到过 best/first/next fit 等多种寻找可用节点的策略，如果使用 first fit，一段时间后堆区的前部就会出现较多破碎内存，后部相对完整，使搜索相对较慢。next fit 理论上会有更好的表现，但笔者没有在本地测试中观测到明显的效率提升。</p>
+</li>
+<li>
+<p>为了进一步减少破碎内存，笔者使用如下策略：一个内存块如果被分配完后剩余空间过少 (小于一个阈值)，则不选择切分这个内存块，而是将整块给当前分配。这样可以减少链表中容量很小的内存块个数。该优化在本地 workload 中体现出了效果。</p>
+</li>
+<li>
+<p>在一次 alloc() 失败后，记录这次的需求大小，在下一次 free() 来临之前，如果再出现大于之前失败最小值的 alloc()，可以不遍历链表直接返回 NULL。注意 free() 之后要将记录变量清空。该优化在失败率比较高的 workload 中体现出了效果。</p>
+</li>
+<li>
+<p>笔者发现完全抛弃链表，只用一个全局指针维护堆区，对于一个分配寻找全局指针最近的下一个对齐点 (结合 slab，kfree() 直接放到 slab 中) 的方法不会在 OJ 中报 low memory usage。这样复杂的链表操作被大幅简化。该优化在本地 workload 中体现出巨大效果。(注：如果很小的内存 alloc 和很大的内存 alloc 交替出现，该方法会浪费很多内存。该方法属于用失败率换效率的一个尝试。)</p>
+</li>
+</ul>
+<p>即使笔者结合 Fast Path 和 Slow Path 中能想到的最优的实现，也无法通过旧版 OJ 上 <code>smp=8</code> 的测试用例。在本地 workload 下笔者的最优实现可以在 1.5s 到 2s 完成 8 核的所有任务。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/nju-operating-system/labs/lab00/" rel="next">Lab 00: AM Game</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/nju-operating-system/labs/lab02/" rel="prev">Lab 02: Kernel Multi-Threads</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/nju-operating-system/Labs/lab01.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

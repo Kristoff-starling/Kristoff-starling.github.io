@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="L1 一把大锁保平安策略：全局用一把锁，把所有需要保护的代码都用 atomic {} 框起来。
+#define atomic \ for (int __i = (lock(), 0); i &lt; 1; unlock(), __i&#43;&#43;) 这个 for 循环的语义如下：
+lock(); __i = 0;	// C语言逗号表达式总是取后面的值 check i &lt; 1 =&gt; yes body __i&#43;&#43;; unlock(); check i &lt; 1 =&gt; no, break 使用这个 atomic {} 我们要保证程序不能在 atomic 内部 break 或 return。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/lectures/lec22/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/lectures/lec22/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/lectures/lec22/">
+  <meta property="og:title" content="Lecture 22: OSLab Speedrun | Academic">
+  <meta property="og:description" content="L1 一把大锁保平安策略：全局用一把锁，把所有需要保护的代码都用 atomic {} 框起来。
+#define atomic \ for (int __i = (lock(), 0); i &lt; 1; unlock(), __i&#43;&#43;) 这个 for 循环的语义如下：
+lock(); __i = 0;	// C语言逗号表达式总是取后面的值 check i &lt; 1 =&gt; yes body __i&#43;&#43;; unlock(); check i &lt; 1 =&gt; no, break 使用这个 atomic {} 我们要保证程序不能在 atomic 内部 break 或 return。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 22: OSLab Speedrun | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec02/">02: OS上的程序</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec03/">03: 并发编程</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec04/">04: 理解并发</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec05/">05: 并发-互斥</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec06/">06: 并发-同步</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec07/">07: 并发-应用</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec08/">08: 并发bug</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec09/">09: OS的状态机</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec10/">10: 状态机应用</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec11/">11: OS的进程</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec12/">12: 地址空间</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec13/">13: 系统调用和 Shell</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec14/">14: LibC</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec15/">15: fork()</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec16/">16: 可执行文件</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec17/">17: 链接和加载</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec18/">18: xv6 概览</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec19/">19: 上下文切换</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec20/">20: 处理器调度</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec21/">21: OS设计</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec22/">22: OSLab速通</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec23/">23: 1Bit的存储</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec24/">24: I/O设备</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec25/">25: 设备驱动</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec26/">26: FS API</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec27/">27: FAT和UNIX文件系统</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec28/">28: 存储可靠性</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec29/">29: Xv6 FS</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec30/">30: 现代存储</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 22: OSLab Speedrun</h1>
+
+          <div class="article-style">
+            <h2 id="l1">L1</h2>
+<p>一把大锁保平安策略：全局用一把锁，把所有需要保护的代码都用 <code>atomic {}</code> 框起来。</p>
+<pre><code class="language-c">#define atomic \
+	for (int __i = (lock(), 0); i &lt; 1; unlock(), __i++)
+</code></pre>
+<p>这个 for 循环的语义如下：</p>
+<pre><code class="language-c">lock();
+__i = 0;	// C语言逗号表达式总是取后面的值
+check i &lt; 1 =&gt; yes
+body
+__i++;
+unlock();
+check i &lt; 1 =&gt; no, break
+</code></pre>
+<p>使用这个 <code>atomic {}</code> 我们要保证程序不能在 atomic 内部 break 或 return。</p>
+<blockquote>
+<p><strong>Programming Philosophy</strong></p>
+<p>在书写不是 performance bottle neck 的代码时，我们应该尽可能将代码写得简单，尽量不要写奇技淫巧，以牺牲可读性、可维护性为代价换取微不足道的性能。此外，我们应该在程序中添加足够的 assertion 来尽早抓取到 bug。</p>
+</blockquote>
+<h2 id="l2">L2</h2>
+<p>一个允许嵌套的大锁：</p>
+<pre><code class="language-c">int locked;
+void lock() {
+    int c = cpu_current();
+    bool i = ienabled();
+    
+    iset(false);
+    nest[c]++;
+    if (nest[c] == 1) {
+        intena[c] = i;
+        while (atomic_xchg(&amp;locked, 1));
+    }
+}
+void unlock() {
+    int c = cpu_current();
+    
+    nest[c]--;
+    if (nest[c] == 0) {
+        atomic_xchg(&amp;locked, 0);
+        if (intena[c]) iset(true);
+    }
+}
+</code></pre>
+<blockquote>
+<p><strong>Programming Philosophy</strong></p>
+<p>在写代码的过程中，在一行里写很多表达式，让一行变得很长是一种 bad practice。我们可以适时地用一些临时变量保存一些值，这样可以大幅提高代码的可读性和可维护性。</p>
+</blockquote>
+<p>线程创建：</p>
+<pre><code class="language-c">struct task {
+    Context ctx[4];
+    int nc;
+    int stk[STK_SZ];
+};
+struct percpu {
+    struct task *avail[NPROC];
+    int n, c;
+}percpu[MAX_CPU];
+struct task *kcreate(void *entry, void *arg, int cpu) {
+    struct task *t = kalloc(sizeof(struct task));
+    atomic {
+        t-&gt;ctx[0] = *kcontext((Area){&amp;t-&gt;stk, &amp;t-&gt;stk + STK_SZ}, entry, arg);
+        t-&gt;nc = 1;
+        percpu[cpu].avail[percpu[cpu].n++] = t;
+    }
+    return t;
+}
+</code></pre>
+<p>一个最简单的 round-robin 调度器：保存当前线程的上下文，切换到下一个线程，返回目标线程的上下文。</p>
+<pre><code class="language-c">#define CPU (&amp;percpu[cpu_current()])
+#define current (CPU-&gt;avail[CPU-&gt;c])
+
+Context *trap(Event ev, Context *ctx) {
+    current-&gt;ctx[current-&gt;nc++] = *ctx;
+    
+    atomic {
+        CPU-&gt;c = (CPU-&gt;c + 1) % (CPU -&gt; n);
+    }
+    assert(!ienabled());
+    
+    return &amp;(current-&gt;ctx[--current.nc]);
+}
+</code></pre>
+<p>信号量最简单的语义就是：在没有资源的时候 yield()。</p>
+<pre><code class="language-c">struct semaphore {
+    int count;
+}
+void sem_wait(sem_t *sem) {
+    bool succ = false;
+    while (!succ) {
+        atomic {
+            if (sem-&gt;count &gt; 0) {
+                sem-&gt;count--;
+                succ = true;
+            }
+        }
+        if (!succ) yield();
+    }
+}
+void sem_post(sem_t *sem) {
+    atomic {
+        sem-&gt;count++;
+    }
+}
+</code></pre>
+<blockquote>
+<p><strong>Programming Philosophy</strong></p>
+<p>上述的信号量实现是一个比较基础的实现。一个性能更好的实现是调用 sleep()，当前条件不满足的话就释放自旋锁并将自己加入一个等待队列，但这种实现就会引入更多可能错误的点。事实上，我们可以为各个模块都准备一份 functional 的代码 (非常简单，保证正确，类似于模型) 和一份注重性能的代码。当项目出现 bug 的时候，我们就将一个一个模块换回 dummy 的实现，从而快速定位问题。</p>
+</blockquote>
+<h2 id="l3">L3</h2>
+<p>ucreate 和 kcreate 结构差不多，这次我们使用 ucontext 创建初始上下文。我们假设代码段总是被加载到地址空间的开头。此外，现在 task 结构体中还需要加入一个地址空间 <code>AddrSpace as</code>。</p>
+<pre><code class="language-c">task_t *ucreate(int cpu) {
+    task_t *t = kalloc(sizeof(task_t));
+    atomic {
+        protect(&amp;t-&gt;as);
+        t-&gt;ctx[0] = *ucontext(&amp;t-&gt;as, (Area){&amp;(t-&gt;stk), &amp;(t-&gt;stk)+STK_SIZE}, &amp;t-&gt;as);
+        t-&gt;nc = 1;
+        percpu[cpu].avail[percpu[cpu].n++] = t;
+    }
+    return t;
+}
+</code></pre>
+<p>在 os_trap 中，我们要检查更多的事件，例如 page fault，syscall 等：</p>
+<pre><code class="language-c">switch (ev.event) {
+    case EVENT_PAGEFAULT: {
+        pagefault(ev, ctx);
+        break;
+    }
+    case EVENT_SYSCALL: {
+        assert(current-&gt;nc == 1);
+        current-&gt;ctx[0].GPRx = syscall(ctx);
+        break;
+    }
+    case EVENT_ERROR: {
+        panic();
+        break;
+    }
+    default: break;
+}
+</code></pre>
+<p>缺页异常我们的处理是在虚拟地址空间中为当前虚拟地址映射一个物理页面。此外如果缺少的是第一个页面 (即 init 进程的代码段) 我们要把代码段拷贝进来。</p>
+<pre><code class="language-c">void pgmap(task_t *t, void *va, void *pa) {
+    t-&gt;va[t-&gt;np] = va;
+    t-&gt;pa[t-&gt;np] = pa;
+    t-&gt;np++;
+   	map(&amp;t-&gt;as, va, pa, MMAP_READ | MMAP_WRITE);
+}
+void pagefault(Event e, Context *c) {
+    atomic {
+        AddrSpace *as = &amp;(current-&gt;as);
+        void *pa = kalloc(as-&gt;pgsize);
+        void *va = (void *)(e.ref &amp; ~(as-&gt;pgsize - 1L));
+        
+        if (va == as-&gt;area.start) memcpy(pa, _init, _init_len);
+		
+        pgmap(current, va, pa);
+    }
+}
+</code></pre>
+<p>处理各种系统调用：</p>
+<pre><code class="language-c">int syscall(Context *c) {
+    int ret = 0;
+    ise(true);
+    switch (c-&gt;GPRx) {
+        case SYS_kputc: {
+            putch(c-&gt;GPR1);
+            break;
+        }
+        case SYS_sleep: {
+            uint64_t wakeup = io_read(AM_TIMER_UPTIME).us + 1000000L * c-&gt;GPR1;
+            while (io_read(AM_TIMER_UPTIME).us &lt; wakeup) yield();
+        }
+        case SYS_fork: {
+            atomic {
+                struct task *t = ucreate(cpu_current());
+                
+                uintptr_t rsp0 = t-&gt;ctx[0].rsp0;
+                void *cr3 = t-&gt;ctx[0].cr3;
+                
+                t-&gt;ctx[0] = *c;
+                t-&gt;ctx[0].rsp0 = rsp0;
+                t-&gt;ctx[0].cr3 = cr3;	// 子进程的页表和内核栈不能复制父进程
+                t-&gt;ctx[0].GPRx = 0;		// 子进程的返回值应该是0
+                
+               	for (int i = 0; i &lt; current-&gt;np; i++) {
+                    int sz = current-&gt;as.pgsize;
+                    void *va = current-&gt;va[i];
+                    void *pa = current-&gt;pa[i];
+                    void *npa = kalloc(sz);
+                    memcpy(npa, pa, sz);
+                    pgmap(t, va, npa);
+                }
+            }
+        }
+    }
+    iset(false);
+}
+</code></pre>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/nju-operating-system/lectures/lec21/" rel="next">Lecture 21: OS Design</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/nju-operating-system/lectures/lec23/" rel="prev">Lecture 23: 1Bit Storage</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/nju-operating-system/Lectures/lec22.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

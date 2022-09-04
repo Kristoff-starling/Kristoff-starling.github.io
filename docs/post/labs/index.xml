@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>labs | Academic</title>
+    <link>/post/labs/</link>
+      <atom:link href="/post/labs/index.xml" rel="self" type="application/rss+xml" />
+    <description>labs</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>labs</title>
+      <link>/post/labs/</link>
+    </image>
+    
+    <item>
+      <title>lab0</title>
+      <link>/post/labs/lab0/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/post/labs/lab0/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

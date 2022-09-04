@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="我们是操作系统用户，但操作系统 API 并不是我们作为人类用户直接使用的，那么“我们”到底应该怎么使用操作系统？
+Shell 我们需要一个与人类交互的程序，这就是 Shell。之所以叫做 shell，是因为它就像包裹住操作系统内核的一层“壳”：它向内使用系统调用与内核交互，向外与人类用户交互。(Shell 不一定是命令行终端！现在的图形界面也是一种 graphical shell。)
+Shell 本质上是一门 “把用户指令翻译成系统调用的编程语言”。(在 CLI 时代这一点体现得更明显)
+Xv6 Shell 关于 -ffreestanding
+-ffreestanding Assert that compilation targets a freestanding environment. This implies -fno-builtin.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/lectures/lec13/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/lectures/lec13/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/lectures/lec13/">
+  <meta property="og:title" content="Lecture 13: System Calls and UNIX Shell | Academic">
+  <meta property="og:description" content="我们是操作系统用户，但操作系统 API 并不是我们作为人类用户直接使用的，那么“我们”到底应该怎么使用操作系统？
+Shell 我们需要一个与人类交互的程序，这就是 Shell。之所以叫做 shell，是因为它就像包裹住操作系统内核的一层“壳”：它向内使用系统调用与内核交互，向外与人类用户交互。(Shell 不一定是命令行终端！现在的图形界面也是一种 graphical shell。)
+Shell 本质上是一门 “把用户指令翻译成系统调用的编程语言”。(在 CLI 时代这一点体现得更明显)
+Xv6 Shell 关于 -ffreestanding
+-ffreestanding Assert that compilation targets a freestanding environment. This implies -fno-builtin."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 13: System Calls and UNIX Shell | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec02/">02: OS上的程序</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec03/">03: 并发编程</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec04/">04: 理解并发</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec05/">05: 并发-互斥</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec06/">06: 并发-同步</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec07/">07: 并发-应用</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec08/">08: 并发bug</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec09/">09: OS的状态机</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec10/">10: 状态机应用</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec11/">11: OS的进程</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec12/">12: 地址空间</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec13/">13: 系统调用和 Shell</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec14/">14: LibC</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec15/">15: fork()</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec16/">16: 可执行文件</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec17/">17: 链接和加载</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec18/">18: xv6 概览</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec19/">19: 上下文切换</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec20/">20: 处理器调度</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec21/">21: OS设计</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec22/">22: OSLab速通</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec23/">23: 1Bit的存储</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec24/">24: I/O设备</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec25/">25: 设备驱动</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec26/">26: FS API</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec27/">27: FAT和UNIX文件系统</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec28/">28: 存储可靠性</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec29/">29: Xv6 FS</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec30/">30: 现代存储</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 13: System Calls and UNIX Shell</h1>
+
+          <div class="article-style">
+            <blockquote>
+<p>我们是操作系统用户，但操作系统 API 并不是我们作为人类用户直接使用的，那么“我们”到底应该怎么使用操作系统？</p>
+</blockquote>
+<h2 id="shell">Shell</h2>
+<p>我们需要一个与人类交互的程序，这就是 Shell。之所以叫做 shell，是因为它就像包裹住操作系统内核的一层“壳”：它向内使用系统调用与内核交互，向外与人类用户交互。(Shell 不一定是命令行终端！现在的图形界面也是一种 graphical shell。)</p>
+<p>Shell 本质上是一门 “把用户指令翻译成系统调用的编程语言”。(在 CLI 时代这一点体现得更明显)</p>
+<h3 id="xv6-shell">Xv6 Shell</h3>
+<blockquote>
+<p>关于 <code>-ffreestanding</code></p>
+<blockquote>
+<p>-ffreestanding
+Assert that compilation targets a freestanding environment.  This implies -fno-builtin.  A
+freestanding environment is one in which the standard library may not exist, and program
+startup may not necessarily be at &ldquo;main&rdquo;.  The most obvious example is an OS kernel.  This is
+equivalent to -fno-hosted.</p>
+</blockquote>
+<p>以上是 man gcc 中关于 <code>-ffreestanding</code> 选项的说明。加上这个选项后，编译目标是一个类似于“裸机”的 freestanding 的环境。没有标准库，程序的入口不再是 main() 而是 _start()。</p>
+</blockquote>
+<p><code>sh-xv6.c</code> 是一个零依赖的参考 xv6-riscv 实现的 shell，可以使用 <code>-ffreestanding</code> 选项编译到 <code>.o</code> 文件并直接用 ld 链接。为了实现零依赖，<code>sh-xv6.c</code> 做出了如下的改动：</p>
+<ul>
+<li>
+<p><code>sh-xv6.c</code> 将 xv6 中的系统调用换成了如下利用 x86-64 syscall 指令的內联汇编代码：</p>
+<pre><code class="language-c">// Minimum runtime library
+long syscall(int num, ...) {
+  va_list ap;
+  va_start(ap, num);
+  register long a0 asm (&quot;rax&quot;) = num;
+  register long a1 asm (&quot;rdi&quot;) = va_arg(ap, long);
+  register long a2 asm (&quot;rsi&quot;) = va_arg(ap, long);
+  register long a3 asm (&quot;rdx&quot;) = va_arg(ap, long);
+  register long a4 asm (&quot;r10&quot;) = va_arg(ap, long);
+  va_end(ap);
+  asm volatile(&quot;syscall&quot;
+    : &quot;+r&quot;(a0) : &quot;r&quot;(a1), &quot;r&quot;(a2), &quot;r&quot;(a3), &quot;r&quot;(a4)
+    : &quot;memory&quot;, &quot;rcx&quot;, &quot;r8&quot;, &quot;r9&quot;, &quot;r11&quot;);
+  return a0;
+}
+</code></pre>
+<p>x86-64 系统调用的各个参数的安放位置可以通过 <code>man 2 syscall</code> 查阅。</p>
+</li>
+<li>
+<p><code>sh-xv6.c</code> 将 xv6 中所有的 malloc() 替换成了如下的 zalloc()：</p>
+<pre><code class="language-c">static char mem[4096], *freem = mem;
+
+void *zalloc(size_t sz) {
+  assert(freem + sz &lt; mem + sizeof(mem));
+  void *ret = freem;
+  freem += sz;
+  return ret;
+}
+</code></pre>
+<p>xv6 的写法中 malloc() 没有对应的 free()，这是因为命令总是在 fork 出的子进程上完成的，子进程结束时会自动释放分配的内存。因此 zalloc() 使用了一个 4KB 的数组来模拟堆区，只管分配不管释放，这样 zalloc() 的语义和 malloc() 是相同的 (注：fork() 的时候，父子进程的 mem[] 数组是互不影响的！)。</p>
+</li>
+</ul>
+<p>剩余的部分和 xv6 的 <code>sh.c</code> 基本无异，代价解读见 Xv6 源码解读手册。</p>
+<p>近距离观测 <code>sh-xv6.c</code> 的执行过程，我们有以下两种途径：</p>
+<ul>
+<li>
+<p>GDB。注意 GDB 默认追踪父进程，我们更希望关注子进程的行为，即指令执行的行为。可以通过 <code>set follow-fork-mode</code> <code>set follow-exec-mode</code> 等来修改 GDB 的追踪行为。</p>
+</li>
+<li>
+<p>strace。为了不将 shell 的输出和 strace 的输出混起来，我们可以这样做：使用命令</p>
+<pre><code class="language-bash">strace -f -o /tmp/strace.log  ./sh
+</code></pre>
+<p>将 strace 的输出打印到文件 <code>/tmp/strace.log</code> 中，<code>-f</code> 选项可以追踪所有子进程的系统调用。然后另开一个窗口执行</p>
+<pre><code class="language-bash">tail -f /tmp/strace.log
+</code></pre>
+<p>其中 <code>-f</code> 选项会 &ldquo;output appended data as the file grows&rdquo; (from <code>man tail</code>)。配合 Tmux，我们将获得良好的 strace 观测体验。</p>
+</li>
+</ul>
+<h3 id="the-shell-programming-language">The Shell Programming Language</h3>
+<p>使用 shell 本质上就是在编程。我们组合各种指令来完成复杂的任务。shell 提供基于文本替换的快速工作流的搭建：</p>
+<ul>
+<li>重定向：<code>cmd &gt; /dev/null</code></li>
+<li>顺序结构：<code>cmd1 ; cmd2</code> (两者都执行)，<code>cmd1 &amp;&amp; cmd2</code> (前者返回值为 0 才继续执行后者)，<code>cmd1 || cmd2</code> (前者返回值为 1 才继续执行后者) etc.</li>
+<li>管道：<code>cmd1 | cmd2</code></li>
+<li>预处理：<code>$()</code>  (将一个命令的输出作为另一个命令的参数)，<code>&lt;()</code> (将一个命令的输出重定向到一个文件，返回文件描述符作为另一个命令的参数) etc.</li>
+<li>环境变量</li>
+</ul>
+<p>现代 GUI 能完成的事情绝大多数 CLI 也能完成，比如在图形界面中，我们通过点&quot;叉&quot; “最小化” 来管理前后台任务，窗口。在 CLI 中我们也有 job control。在执行命令时，我们可以在后面加上 <code>&amp;</code> 使其在后台执行；对于一个正在前台运行的程序，我们可以通过 <code>ctrl+z</code> 将其暂时挂起，用 <code>bg %num</code> 将指定进程放到后台执行；对于在后台运行的程序，我们可以用 <code>fg %num</code> 将其拉到前台执行。</p>
+<hr>
+<p>UNIX shell 在自然语言、机器语言和1970s算力之间达到了一个优雅的平衡。但平衡意味着 UNIX shell 的设计也不是完美的。例如操作的优先级：</p>
+<pre><code class="language-bash">ls &gt; a.txt | cat
+</code></pre>
+<p>重定向和管道的优先级谁高？使用不同的 shell会得到不同的结果。(bash 不会打印到终端，zsh 会打印到终端 etc.)</p>
+<p>再例如文件名中的空格会带来很大的危险：如果使用命令 <code>vim &quot;a b.txt&quot;</code>，事实上我们连续打开了 <code>a</code> 和 <code>b.txt</code>，这与我们的预期不同。这本质上是因为空格具有二义性：它有可能是分隔指令的符号。(Windows 的 powershell 有 object stream pipe，在管道中传递的东西不再是文本而是对象，这使得所有的东西都是 strongly typed 的，可以避免上述问题。)</p>
+<p>再比如，有些行为的意义可能是难以理解的：</p>
+<pre><code class="language-bash">echo hello &gt; /etc/a.txt
+</code></pre>
+<p>无法执行，shell 会返回 permission denied。这时我们本能地在前面加上 sudo：</p>
+<pre><code class="language-bash">sudo echo hello &gt; /etc/a.txt
+</code></pre>
+<p>却发现仍然是 permission denied。联想 xv6-shell 中解析命令的机制，我们就不难理解这个问题的原因。shell 完成重定向输出的方法是：关闭 stdout 文件，打开 <code>/etc/a.txt</code> 文件 (其文件描述符绑定为 1)，然后执行左边的指令。也就是说，sudo 只修饰了左边的执行，打开文件的过程没有获得高权限，所以报错。</p>
+<h2 id="tty-and-job-control">TTY and Job Control</h2>
+<p>我们还有一些疑问：例如没有任何程序在读键盘输入的情况下为什么 Ctrl+C 可以退出程序？为什么在有些应用 (e.g. vim) 中 Ctrl+C 不能退出？如果当前程序 fork 出了多个进程，Ctrl+C 会退出所有程序吗？Tmux 为什么能管理多个窗口？</p>
+<p>答案是终端。终端是 UNIX 操作系统中的一类非常特别的设备。命令行中有工具 tty 可以查看连接到标准输入的终端文件名。如果我们在 Tmux 的不同窗口中使用 tty 命令，可以看到不同的窗口连接到了不同的终端设备。我们甚至可以做一些有趣的事情：在一个窗口中 <code>echo hello &gt; /dev/pts/other</code>，hello 将显示在另一个窗口中。</p>
+<blockquote>
+<p>为什么 <code>fork-printf.c</code> 可以根据标准输出对象的不同选择不同的 buffer mode？</p>
+</blockquote>
+<p>通过 strace 观察，可以看到程序使用了 fstat() 系统调用查看 1 号文件 (标准输出) 的信息。在有重定向的版本的系统调用序列中，ioctl() 系统调用返回了 ENOTTY。</p>
+<h3 id="session-process-group-and-signal">Session, Process Group and Signal</h3>
+<blockquote>
+<p>Ctrl+C 为什么能退出？</p>
+</blockquote>
+<p>简单来说，我们的终端负责识别 Ctrl+C 的按键组合，并给<strong>前台</strong>进程发送一个 SIGINT 信号。前台程序有自由决定如何处理这个 SIGINT 信号，绝大部分的程序会在接收到 SIGINT 信号后退出，但我们也可以自己写一个 signal handler：</p>
+<pre><code class="language-c">// signal-handler.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;unistd.h&gt;
+
+void handler(int signum) {
+  switch (signum) {
+    case SIGINT:
+      printf(&quot;Received SIGINT!\n&quot;);
+      break;
+    case SIGQUIT:
+      printf(&quot;Received SIGQUIT!\n&quot;);
+      exit(0);
+      break;
+  }
+}
+
+void cleanup() {
+  printf(&quot;atexit() cleanup\n&quot;);
+}
+
+int main() {
+  signal(SIGINT,  handler);
+  signal(SIGQUIT, handler);
+  atexit(cleanup);
+
+  while (1) {
+    char buf[4096];
+    int nread = read(STDIN_FILENO, buf, sizeof(buf));
+    buf[nread - 1] = '\0';
+    printf(&quot;[%d] Got: %s\n&quot;, getpid(), buf);
+    if (nread &lt; 0) {
+      perror(&quot;read&quot;);
+      exit(1);
+    }
+    sleep(1);
+  }
+}
+</code></pre>
+<p>上面的程序为 SIGINT 和 SIGQUIT 两个信号注册了处理函数。运行该程序，我们发现按下 Ctrl+C 时程序不会退出，而是输出 <code>Received SIGINT!</code>。</p>
+<p>这时有一个更有意思的问题：如果我们在 main() 函数开头执行一个 fork()，那么父子进程的标准输入和输出会连向同一个 tty，这时按下 Ctrl+C 终端会将 SIGINT 发送给哪个进程呢？经过实验我们发现：fork() 以后的 <code>signal-handler.c</code> 在输入字符时，两个进程会争抢输入数据，呈现各打印了一部分内容的现象；如果按下 Ctrl+C，会出现两个 <code>Received SIGINT!</code>。这说明 SIGINT 信号同时发送给了这两个进程。</p>
+<p>阅读 setpgid() 的手册，我们可以看到更系统的解读：</p>
+<p>当我们打开一个 shell 时，我们就创建了一个会话 (session)，这个会话有一个 controlling terminal。一个会话里面可以有若干个进程组 (process group) (注：shell 本身也是一个进程组，通常称为 session leader)，一个进程 fork() 得到的子进程和父进程同属一个进程组，execve() 不会改变一个进程所属的进程组。在任何时刻，一个会话里有且仅有一个前台 (foreground) 进程组，剩余的进程组都是后台进程组。当终端给会话发送一个信号时，前台进程组里的每个进程都会接收到这个信号。只有前台进程组中的进程可以从终端读取数据，如果后台进程尝试从终端读取数据，会接收到一个 SIGTTIN 信号，该信号会将后台进程挂起。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/nju-operating-system/lectures/lec12/" rel="next">Lecture 12: Address Space of Processes</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/nju-operating-system/lectures/lec14/" rel="prev">Lecture 14: C Library</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/nju-operating-system/Lectures/lec13.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

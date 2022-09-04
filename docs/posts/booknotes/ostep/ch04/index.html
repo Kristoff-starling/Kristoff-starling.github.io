@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="进程就是正在运行的程序。程序本身只是存储在硬盘上的指令和数据的集合，只有 OS 将其加载到内存中运行起来时程序才会发挥作用。
+通常操作系统上会运行多个程序 - 比 CPU 核个数更多的程序。但每个程序并不需要关心 CPU 当前是否可用，这是因为 OS 为进程虚拟化了 CPU。OS 的基本操作是运行一个进程，然后暂停它去运行一会儿另外一个进程，这是分是运行的基本思想。
+为了实现 CPU 的虚拟化，OS 既需要底层的机制，也需要上层的智慧。所谓机制 (mechanism) 指的是实现某个功能所需要的一些底层的方法或协议。比如操作系统为了实现进程的切换，必须要有上下文切换的机制。分时运行也是一种机制，被所有的现代操作系统采用。
+Time Sharing 和 Space Sharing
+Time Sharing 是 OS 共享资源的一种基本方式，即每个人用一会儿，然后把资源交给下一个人。Time sharing 不仅仅用在多个进程/线程共享 CPU 上，共享的资源都可以使用这种机制，比如网络连接。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/booknotes/ostep/ch04/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/booknotes/ostep/ch04/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/booknotes/ostep/ch04/">
+  <meta property="og:title" content="Chapter 04: The Abstraction: The Process | Academic">
+  <meta property="og:description" content="进程就是正在运行的程序。程序本身只是存储在硬盘上的指令和数据的集合，只有 OS 将其加载到内存中运行起来时程序才会发挥作用。
+通常操作系统上会运行多个程序 - 比 CPU 核个数更多的程序。但每个程序并不需要关心 CPU 当前是否可用，这是因为 OS 为进程虚拟化了 CPU。OS 的基本操作是运行一个进程，然后暂停它去运行一会儿另外一个进程，这是分是运行的基本思想。
+为了实现 CPU 的虚拟化，OS 既需要底层的机制，也需要上层的智慧。所谓机制 (mechanism) 指的是实现某个功能所需要的一些底层的方法或协议。比如操作系统为了实现进程的切换，必须要有上下文切换的机制。分时运行也是一种机制，被所有的现代操作系统采用。
+Time Sharing 和 Space Sharing
+Time Sharing 是 OS 共享资源的一种基本方式，即每个人用一会儿，然后把资源交给下一个人。Time sharing 不仅仅用在多个进程/线程共享 CPU 上，共享的资源都可以使用这种机制，比如网络连接。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Chapter 04: The Abstraction: The Process | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/booknotes/ostep/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/booknotes/ostep/ch02/">Chapters</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch02/">Chapter 02</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/booknotes/ostep/ch04/">Chapter 04</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch05/">Chapter 05</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch13/">Chapter 13</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch14/">Chapter 14</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch17/">Chapter 17</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch26/">Chapter 26</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch27/">Chapter 27</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch29/">Chapter 29</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch30/">Chapter 30</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch31/">Chapter 31</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch36/">Chapter 36</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch38/">Chapter 38</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/ch40/">Chapter 40</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/booknotes/ostep/hw26/">Homework</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/booknotes/ostep/hw26/">Homework 26</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/ostep/hw27/">Homework 27</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Chapter 04: The Abstraction: The Process</h1>
+
+          <div class="article-style">
+            <p>进程就是正在运行的程序。程序本身只是存储在硬盘上的指令和数据的集合，只有 OS 将其加载到内存中运行起来时程序才会发挥作用。</p>
+<p>通常操作系统上会运行多个程序 - 比 CPU 核个数更多的程序。但每个程序并不需要关心 CPU 当前是否可用，这是因为 OS 为进程虚拟化了 CPU。OS 的基本操作是运行一个进程，然后暂停它去运行一会儿另外一个进程，这是分是运行的基本思想。<!-- more --></p>
+<p>为了实现 CPU 的虚拟化，OS 既需要底层的机制，也需要上层的智慧。所谓<strong>机制 (mechanism)</strong> 指的是实现某个功能所需要的一些底层的方法或协议。比如操作系统为了实现进程的切换，必须要有上下文切换的机制。分时运行也是一种机制，被所有的现代操作系统采用。</p>
+<blockquote>
+<p><strong>Time Sharing 和 Space Sharing</strong></p>
+<p>Time Sharing 是 OS 共享资源的一种基本方式，即每个人用一会儿，然后把资源交给下一个人。Time sharing 不仅仅用在多个进程/线程共享 CPU 上，共享的资源都可以使用这种机制，比如网络连接。</p>
+<p>与 time sharing 互为补充的是 space sharing。磁盘就是一种 space sharing 的模型。</p>
+</blockquote>
+<p>在机制之上是策略。<strong>策略 (policy)</strong> 是操作系统做出决定的一些算法，比如如何调度各个进程就需要一个 scheduling policy，这里有多种可能性，比如根据优先级，根据历史运行时长等等 (如果说机制是 OS 必须的东西，那么策略影响的其实只是效率)。</p>
+<blockquote>
+<p><strong>区分机制和策略</strong></p>
+<p>我们可以这样区分机制和策略：机制回答的是一个 how question，比如“如何实现上下文切换？” 而策略回答的是一个 which question，比如“下一个用 CPU 的应该是哪个进程？”</p>
+<p>区分好机制和策略，我们在修改策略时就不必关注底层的机制，更利于模块化编程。</p>
+</blockquote>
+<h2 id="41-the-abstraction-a-process">4.1 The Abstraction: A Process</h2>
+<p>OS 为正在运行的程序提供的抽象是进程。进程中包括的内容当然是一个正在运行的程序所拥有的机器状态：</p>
+<ul>
+<li>Memory：每一个程序都有自己可以读写的内存区域，称为地址空间 (address space)。</li>
+<li>Regitsters：进程中应该有各个寄存器的信息，尤其是几个比较重要的寄存器：PC，stack pointer，frame pointer 等。</li>
+<li>I/O Information：程序要和可持久化存储设备打交道，因此进程会存储一些 I/O 相关信息，比如当前打开了哪些文件。</li>
+</ul>
+<h2 id="42-process-api">4.2 Process API</h2>
+<p>从抽象模型的角度，我们可以提出如下几类进程相关的 API：</p>
+<ul>
+<li>create：创建一个新的进程。</li>
+<li>destroy：虽然一个运行的程序结束时会自动退出，但我们仍然应该有 API 可以强制杀死一个进程。</li>
+<li>wait：等待一个进程结束。</li>
+<li>Miscellaneous Control：比如暂时挂起一个进程，或让一个进程继续运行。</li>
+<li>Status：访问一个进程的信息，比如总运行时长，现在处于什么状态 (running, suspended etc.) 等。</li>
+</ul>
+<h2 id="43-process-creation-a-little-more-detail">4.3 Process Creation: A Little More Detail</h2>
+<p>创建一个进程 (让一个程序跑起来) 通常要经过以下步骤：</p>
+<ul>
+<li>
+<p>将程序的代码和静态数据 (比如初始化过的全局变量) 加载到内存中。程序本身是以某种可执行文件的格式存放在硬盘上的 (比如 Linux 中默认使用 ELF)，文件会告诉 OS 应该把哪些代码加载到内存的哪些位置。</p>
+<p>早期的操作系统会 eagerly 地完成加载这个动作。但现代操作系统通常使用延迟加载：当程序真正要用到某一部分的代码/数据时再将数据从交换分区复制进来。</p>
+</li>
+<li>
+<p>为该程序准备一个 run-time stack。以 C 程序为例，程序通常在栈上存储局部变量，此外传给 main() 的参数也保存在栈上。</p>
+</li>
+<li>
+<p>OS 准备一些空间用作该程序的堆区。堆区负责为程序中的动态内存申请提供支持，即 malloc()/free()。</p>
+</li>
+<li>
+<p>做一些和 I/O 相关的准备工作，比如 UNIX 系统中默认为程序打开 stdin, stdout, stderr 三个文件。</p>
+</li>
+<li>
+<p>让 PC 跳转到该程序的入口地址，开始运行。</p>
+</li>
+</ul>
+<h2 id="44-process-state">4.4 Process State</h2>
+<p>进程的状态通常包括以下几种：</p>
+<ul>
+<li>Running：进程正在 CPU 上运行。</li>
+<li>Ready：程序可以运行，但当前不在 CPU 上。</li>
+<li>Blocked：程序因为做了某种操作使得当前还不能运行 (比如执行 I/O，正在等待数据返回)。</li>
+</ul>
+<p>下面的图很好地反映了三种状态的切换：</p>
+<pre><code class="language-mermaid">stateDiagram
+Running --&gt; Ready: Descheduled
+Ready --&gt; Running: Scheduled
+Running --&gt; Blocked: I/O Initiate
+Blocked --&gt; Ready: I/O Done
+</code></pre>
+<p>OS 的调度器有很多事情要决定：比如 process 1 因为 I/O 操作被阻塞时，是否需要将其他进程 process 2切换上来？如果 process 2 运行时 I/O 操作完成，process 1 从 blocked 变成 ready，那么 OS 是将 process 1 立刻请回来还是先做 process 2？……</p>
+<h2 id="45-data-structure">4.5 Data Structure</h2>
+<p>OS 中有很多维护信息的数据结构，比如对于进程我们应该有一个 process list，链表中的每个节点存储一个进程的相关信息，通常被称为 process control block (PCB)，再比如我们应该有上下文结构体用于 context switching。</p>
+<pre><code class="language-c">// the registers xv6 will save and restore
+// to stop and subsequently restart a process
+struct context {
+  int eip;
+  int esp;
+  int ebx;
+  int ecx;
+  int edx;
+  int esi;
+  int edi;
+  int ebp;
+};
+// the different states a process can be in
+enum proc_state { UNUSED, EMBRYO, SLEEPING,
+RUNNABLE, RUNNING, ZOMBIE };
+// the information xv6 tracks about each process
+// including its register context and state
+struct proc {
+  char *mem;                  // Start of process memory
+  uint sz;                    // Size of process memory
+  char *kstack;               // Bottom of kernel stack for this process
+  enum proc_state state;      // Process state
+  int pid;                    // Process ID
+  struct proc *parent;        // Parent process
+  void *chan;                 // If non-zero, sleeping on chan
+  int killed;                 // If non-zero, have been killed
+  struct file *ofile[NOFILE]; // Open files
+  struct inode *cwd;          // Current directory
+  struct context context;     // Switch here to run process
+  struct trapframe *tf;       // Trap frame for the current interrupt
+};
+</code></pre>
+<p>这是 xv6-x86 中的上下文结构体和 PCB。可以看到它存储了比之前提到的更多的一些信息，比如每个进程的内核栈地址，父进程，如果睡眠睡在了哪个地址上，kernel trap 的页面地址等。</p>
+<p>进程的状态也比之间提到的 ready, running, blocked 要多。一些很有用的状态包括 zombie，它表示一个程序已经运行结束，但相关的信息还没有被清空。这种状态可以让调用 wait() 的父进程去检查子进程的返回值是否符合要求。</p>
+<h2 id="46-summary">4.6 Summary</h2>
+<p>略。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/booknotes/ostep/ch02/" rel="next">Chapter 02: Introduction to Operating Systems</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/booknotes/ostep/ch05/" rel="prev">Chapter 05: Interlude: Process API</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/BookNotes/ostep/ch04.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

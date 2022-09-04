@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Summary of (extended) regular expression rules:
+At least one: $A^{&#43;}\triangleq AA^*$ Union: $A | B \triangleq A &#43; B$ Option: $A?\triangleq A&#43;\epsilon$ Range: $[a- z]\triangleq a&#43;b&#43;\cdots&#43;z$ Excluded range: $[$^$a- z]\triangleq$ complement of $[a- z]$ Lexical Specification The procedure of lexical analysis:">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/stanford-compiler/lectures/lec04/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/stanford-compiler/lectures/lec04/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/stanford-compiler/lectures/lec04/">
+  <meta property="og:title" content="Stanford-CS143 Lecture 04: Implementation of Lexical Analysis | Academic">
+  <meta property="og:description" content="Summary of (extended) regular expression rules:
+At least one: $A^{&#43;}\triangleq AA^*$ Union: $A | B \triangleq A &#43; B$ Option: $A?\triangleq A&#43;\epsilon$ Range: $[a- z]\triangleq a&#43;b&#43;\cdots&#43;z$ Excluded range: $[$^$a- z]\triangleq$ complement of $[a- z]$ Lexical Specification The procedure of lexical analysis:"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2022-08-10T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2022-08-10T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Stanford-CS143 Lecture 04: Implementation of Lexical Analysis | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/stanford-compiler/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/stanford-compiler/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/stanford-compiler/lectures/lec01/">Lecture 01</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/stanford-compiler/lectures/lec02/">Lecture 02</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/stanford-compiler/lectures/lec03/">Lecture 03</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/stanford-compiler/lectures/lec04/">Lecture 04</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/stanford-compiler/lectures/lec05/">Lecture 05</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/stanford-compiler/lectures/lec06/">Lecture 06</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Stanford-CS143 Lecture 04: Implementation of Lexical Analysis</h1>
+
+          <div class="article-style">
+            <p>Summary of (extended) regular expression rules:</p>
+<ul>
+<li>At least one: $A^{+}\triangleq AA^*$</li>
+<li>Union: $A | B \triangleq A + B$</li>
+<li>Option: $A?\triangleq A+\epsilon$</li>
+<li>Range: $[a- z]\triangleq a+b+\cdots+z$</li>
+<li>Excluded range: $[$^$a- z]\triangleq$ complement of $[a- z]$</li>
+</ul>
+<h2 id="lexical-specification">Lexical Specification</h2>
+<p>The procedure of lexical analysis:</p>
+<ol>
+<li>
+<p>Write a rexp for the lexemes of each token class, i.e., number, identifier, keywords etc.</p>
+</li>
+<li>
+<p>Construct $R$, matching all lexemes i.e. $R = R_1 + R_2 + \cdots$.</p>
+</li>
+<li>
+<p>Let input be $x_1x_2\cdots x_n$, for each $1\leq i\leq n$, check whether $x_1\cdots x_i\in L(R)$.</p>
+<blockquote>
+<p><strong>Which prefix to choose?</strong></p>
+<p>Sometimes we may have $x_1\cdots x_i\in L(R)$, $x_1\cdots x_j\in L(R)$ and $i\neq j$ (e.g. <code>==</code> and <code>=</code>). In this situation we follow the &ldquo;<strong>maximal munch</strong>&rdquo; principle, i.e., we always choose the longer one.</p>
+</blockquote>
+<blockquote>
+<p><strong>What if no rule matches?</strong></p>
+<p>Compilers should do error handling instead of crashing when there is an lexical error. A common way to handle this is to define an extra set $\text{Error}\triangleq \text{all strings}$ and give it the lowest priority.</p>
+</blockquote>
+</li>
+<li>
+<p>If success, then we know that $x_1\cdots x_i\in L(R_j)$ for some $j$.</p>
+<blockquote>
+<p><strong>Which token to choose?</strong></p>
+<p>Sometimes we may have $x_1\cdots x_i\in L(R_j)$, $x_1\cdots x_i\in L(R_k)$ and $j\neq k$. (e.g. <code>if</code> is a keyword, but it also satisfies the definition of identifiers). In this situation we choose the one with higher priority.</p>
+<p>(Actually, usually in the definition of identifiers keywords are explicitly excluded.)</p>
+</blockquote>
+</li>
+<li>
+<p>Remove $x_1\cdots x_i$ from input and go to (3).</p>
+</li>
+</ol>
+<h2 id="finite-automata">Finite Automata</h2>
+<p>A regular expression $R$ formally defines a set of strings $L(R)$. However, we need an implementation to identify that given a string $s$, whether $s\in L(R)$. Finite automata is a good implementation model.</p>
+<p>A finite automaton consists of</p>
+<ul>
+<li>An input alphabet $\Sigma$</li>
+<li>A finite set of states $S$</li>
+<li>A start state $n$</li>
+<li>A set of accepting states $F\subseteq S$</li>
+<li>A set of transitions $\text{state1}\overset{input}{\to}\text{state2}$</li>
+</ul>
+<p>Given an input string, If we reach the end of input and we&rsquo;re an accepting state, the automaton <strong>accept</strong> the string. The automaton <strong>reject</strong> a string if 1) we&rsquo;re not in an accepting state. 2) we get stuck (no transition).</p>
+<p>The language of a finite automaton is the set of accepted strings.</p>
+<p>Example: a finite automaton accepting strings with any number of 1 and a 0 at the end.</p>
+<pre><code class="language-mermaid">graph LR
+
+s1((A))
+s2(B)
+s1 --&gt; |0|s2
+s1 --&gt; |1|s1
+
+</code></pre>
+<p>There&rsquo;s a special transition called $\epsilon$ transition: $A\overset{\epsilon}{\to}B$. This transition doesn&rsquo;t consume any character, i.e., we can choose to go to $B$ from $A$ with no condition.</p>
+<p>There are 2 kinds of FA:</p>
+<ul>
+<li>
+<p><strong>Deterministic Finite Automata (DFA)</strong>:</p>
+<ul>
+<li>One transition per input label per state</li>
+<li>No $\epsilon$-moves</li>
+</ul>
+</li>
+<li>
+<p><strong>Nondeterministic Finite Automata (NFA)</strong>:</p>
+<ul>
+<li>Can have multiple transitions for one input label in a given state</li>
+<li>Can have $\epsilon$-moves</li>
+</ul>
+<p>Actually, the first condition is not essential because we can use $\epsilon$-moves to transform it into a normal one. Here&rsquo;s an example:</p>
+<pre><code class="language-mermaid">graph LR
+s1(1) --&gt; |1|s2(2)
+s1 --&gt; |1|s3(3)
+
+s4(1) --&gt; |e|s5(N/A)
+s4 --&gt; |e|s6(N/A)
+s5 --&gt; |1|s7(2)
+s6 --&gt; |1|s8(3)
+</code></pre>
+</li>
+</ul>
+<p>A crucial difference between DFA and NFA is that given an input, after receiving several characters, we&rsquo;re in a certain state in DFA while we may be in a set of possible states in NFA. An NFA accepts a string if there exists a path that reaches an accepting state.</p>
+<p>NFA, DFA and regular expressions have the equivalent power of representing languages. Usually DFA are faster to execute (there&rsquo;s no choice to consider), but NFA is much smaller (exponentially smaller).</p>
+<h2 id="regular-expressions-to-nfas">Regular Expressions to NFAs</h2>
+<p>Target: lexical specification $\to$ regular expressions $\to$ NFA $\to$ DFA $\to$ table-driven implementation of DFA</p>
+<p>The way we transform regular expressions to NFAs is to design an NFA for each RE rule.</p>
+<p>We denote the NFA for expression A as</p>
+<pre><code class="language-mermaid">graph LR
+s1((st)) --&gt; s2([A's NFA]) --&gt; s3[ed]
+</code></pre>
+<p>$\epsilon$:</p>
+<pre><code class="language-mermaid">graph LR
+s1((st)) --&gt; |e| s2[ed]
+</code></pre>
+<p>A character $a$:</p>
+<pre><code class="language-mermaid">graph LR
+s1((st)) --&gt; |a| s2[ed]
+</code></pre>
+<p>Rule $AB$:</p>
+<pre><code class="language-mermaid">graph LR
+s1((A's st)) --&gt; s2([A's NFA]) --&gt; s3(A's ed) --&gt;|e| s4(B's st) --&gt; s5([B's NFA]) --&gt; s6[B's ed]
+</code></pre>
+<p>Rule $A + B$:</p>
+<pre><code class="language-mermaid">graph LR
+s1((st)) --&gt; |e| s2(A's st)
+s1 --&gt; |e| s3(B's st)
+s2 --&gt; s4([A's NFA])
+s3 --&gt; s5([B's NFA])
+s4 --&gt; s6(A's ed)
+s5 --&gt; s7(B's ed)
+s6 --&gt; |e| s8[ed]
+s7 --&gt; |e| s8[ed]
+</code></pre>
+<p>Rule $A^*$:</p>
+<pre><code class="language-mermaid">graph LR
+s1((st)) --&gt; |e| s2(A's st) --&gt; s3([A's NFA]) --&gt; s4(A's ed) --&gt;|e| s5[ed]
+s4 --&gt; |e| s1
+s1 --&gt; |e| s5
+</code></pre>
+<p>An example: $(1+0)^*1$:</p>
+<p><img src="/img/stanford-compiler-lec4-2.png" alt="img"></p>
+<h2 id="nfa-to-dfa">NFA to DFA</h2>
+<p>An NFA may be in many states at any time. However, for a n-state NFA, there are at most $2^N-1$ different subsets of states, which is finite. That&rsquo;s the core idea of how to transform NFA to DFA.</p>
+<p>$\fbox{Definition}$ ($\epsilon$-closure) The $\epsilon$-closure of a node $q$ in NFA, denoted as $\epsilon\text{-closure}(q)$, is the set of nodes that can be reached from $q$ by walking through only $\epsilon$ edges. For example, in the NFA above, $\epsilon\text{-closure}(q_6)={q_0,q_1,q_2,q_4,q_7,q_8}$.</p>
+<p>$\fbox{Definition}$ For a set of states $X$ and a character $a$ in NFA, $a(X)\triangleq {y|\exists x\in X, x\overset{a}{\to}y}$.</p>
+<p>Components of an NFA:</p>
+<ul>
+<li>states: a set $S$.</li>
+<li>start: a state $s\in S$.</li>
+<li>final: a set $F\subseteq S$.</li>
+</ul>
+<p>Corresponding DFA:</p>
+<ul>
+<li>states: nonempty subsets of $S$.</li>
+<li>start: $\epsilon\text{-closure}(s)$.</li>
+<li>final: ${X\subseteq S|X\cap F\neq \emptyset}$.</li>
+<li>transitions: $X\overset{a}{\to}Y$ exists iff $Y=\epsilon\text{-closure}(a(X))$.</li>
+</ul>
+<p>An example: $(1+0)^*1$:</p>
+<img src="/img/stanford-compiler-lec4-1.png" alt="image-20220814145242811" style="zoom: 33%;" />
+<h2 id="implementing-finite-automata">Implementing Finite Automata</h2>
+<p>A DFA can be represented as a 2D table. States and input symbols are the two dimensions and the contents of the table are transition. Pseudocode can be written based on this:</p>
+<pre><code class="language-c++">i = 0;
+state = initial;
+while (input[i] != '\0') {    
+    state = table[state][input[i]];    
+    i++;
+}
+</code></pre>
+<p>If the table is too huge, we can directly use NFA: the table should add a column representing $\epsilon$ transitions and all the contents are set of states instead of states.</p>
+<p>Although NFA&rsquo;s table is more concise, the simulation is more expensive because we have to maintain a set of current states.</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/stanford-compiler/lectures/lec05/" rel="next">Stanford-CS143 Lecture 05: Introduction to Parsing</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/stanford-compiler/lectures/lec03/" rel="prev">Stanford-CS143 Lecture 03: Lexical Analysis</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Aug 10, 2022</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/stanford-compiler/Lectures/lec04.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

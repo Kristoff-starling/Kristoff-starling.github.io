@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="High Performance Computing HPC: 解决需要 massive computation 的任务。
+基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 &ldquo;join()&rdquo; 汇总一下 (涉及线程、机器、共享内存之间的通信)。
+HPC 可以实现的原因：数据的局部性。例如我们想利用 HPC 进行一团气体的运动模拟，那么我们可以将立方体容器内的气体切分成很多块，每个线程管一块。每个线程管理的气体绝大部分的运动都是本地的，我们只需要处理少部分的相邻块的气体分子交换即可。
+Example: Mandelbrot Set // mandelbrot.c #include &quot;thread.h&quot; #include &lt;math.h&gt; int NT; #define W 6400 #define H 6400 #define IMG_FILE &quot;.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/lectures/lec07/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/lectures/lec07/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/lectures/lec07/">
+  <meta property="og:title" content="Lecture 07: Concurrent Programming: Real World | Academic">
+  <meta property="og:description" content="High Performance Computing HPC: 解决需要 massive computation 的任务。
+基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 &ldquo;join()&rdquo; 汇总一下 (涉及线程、机器、共享内存之间的通信)。
+HPC 可以实现的原因：数据的局部性。例如我们想利用 HPC 进行一团气体的运动模拟，那么我们可以将立方体容器内的气体切分成很多块，每个线程管一块。每个线程管理的气体绝大部分的运动都是本地的，我们只需要处理少部分的相邻块的气体分子交换即可。
+Example: Mandelbrot Set // mandelbrot.c #include &quot;thread.h&quot; #include &lt;math.h&gt; int NT; #define W 6400 #define H 6400 #define IMG_FILE &quot;."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 07: Concurrent Programming: Real World | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec02/">02: OS上的程序</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec03/">03: 并发编程</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec04/">04: 理解并发</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec05/">05: 并发-互斥</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec06/">06: 并发-同步</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec07/">07: 并发-应用</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec08/">08: 并发bug</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec09/">09: OS的状态机</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec10/">10: 状态机应用</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec11/">11: OS的进程</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec12/">12: 地址空间</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec13/">13: 系统调用和 Shell</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec14/">14: LibC</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec15/">15: fork()</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec16/">16: 可执行文件</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec17/">17: 链接和加载</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec18/">18: xv6 概览</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec19/">19: 上下文切换</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec20/">20: 处理器调度</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec21/">21: OS设计</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec22/">22: OSLab速通</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec23/">23: 1Bit的存储</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec24/">24: I/O设备</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec25/">25: 设备驱动</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec26/">26: FS API</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec27/">27: FAT和UNIX文件系统</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec28/">28: 存储可靠性</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec29/">29: Xv6 FS</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec30/">30: 现代存储</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 07: Concurrent Programming: Real World</h1>
+
+          <div class="article-style">
+            <h2 id="high-performance-computing">High Performance Computing</h2>
+<p>HPC: 解决需要 massive computation 的任务。</p>
+<p>基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 &ldquo;join()&rdquo; 汇总一下 (涉及线程、机器、共享内存之间的通信)。</p>
+<p>HPC 可以实现的原因：数据的局部性。例如我们想利用 HPC 进行一团气体的运动模拟，那么我们可以将立方体容器内的气体切分成很多块，每个线程管一块。每个线程管理的气体绝大部分的运动都是本地的，我们只需要处理少部分的相邻块的气体分子交换即可。</p>
+<h3 id="example-mandelbrot-set">Example: Mandelbrot Set</h3>
+<pre><code class="language-c">// mandelbrot.c
+#include &quot;thread.h&quot;
+#include &lt;math.h&gt;
+
+int NT;
+#define W 6400
+#define H 6400
+#define IMG_FILE &quot;./mandelbrot.ppm&quot;
+
+static inline int belongs(int x, int y, int t) {
+  return x / (W / NT) == t;
+}
+
+int x[W][H];
+int volatile done = 0;
+
+void display(FILE *fp, int step) { 
+  static int rnd = 1;
+  int w = W / step, h = H / step;
+  // STFW: Portable Pixel Map
+  fprintf(fp, &quot;P6\n %d %d 255\n&quot;, w, h);
+  for (int j = 0; j &lt; H; j += step) {
+    for (int i = 0; i &lt; W; i += step) {
+      int n = x[i][j];
+      int r = 255 * pow((n - 80) / 800.0, 3);
+      int g = 255 * pow((n - 80) / 800.0, 0.7);
+      int b = 255 * pow((n - 80) / 800.0, 0.5);
+      fputc(r, fp); fputc(g, fp); fputc(b, fp);
+    }
+  }
+}
+
+void Tworker(int tid) {
+  for (int i = 0; i &lt; W; i++)
+    for (int j = 0; j &lt; H; j++)
+      if (belongs(i, j, tid - 1)) {
+        double a = 0, b = 0, c, d;
+        while ((c = a * a) + (d = b * b) &lt; 4 &amp;&amp; x[i][j]++ &lt; 880) {
+          b = 2 * a * b + j * 1024.0 / H * 8e-9 - 0.645411;
+          a = c - d + i * 1024.0 / W * 8e-9 + 0.356888;
+        }
+      }
+  done++;
+}
+
+void Tdisplay() {
+  float ms = 0;
+  while (1) {
+    FILE *fp = popen(&quot;viu -&quot;, &quot;w&quot;); assert(fp);
+    display(fp, W / 256);
+    pclose(fp);
+    if (done == NT) break;
+    usleep(1000000 / 5);
+    ms += 1000.0 / 5;
+  }
+  printf(&quot;Approximate render time: %.1lfs\n&quot;, ms / 1000);
+
+  FILE *fp = fopen(IMG_FILE, &quot;w&quot;); assert(fp);
+  display(fp, 2);
+  fclose(fp);
+}
+
+int main(int argc, char *argv[]) {
+  assert(argc == 2);
+  NT = atoi(argv[1]);
+  for (int i = 0; i &lt; NT; i++) {
+    create(Tworker);
+  }
+  create(Tdisplay);
+  join();
+  return 0;
+}
+</code></pre>
+<p>这段代码使用一些数学手法画出一幅清晰度很高，非常美观的分形图。代码中有一些有意思的小工具：</p>
+<ul>
+<li>
+<p>Tdisplay 线程中使用了 viu 命令行工具，它可以将一张图片以较低的分辨率打印在终端上，这可以在让我们看到图像生成的大致过程。我们可以看到该程序将画面切分成了多个部分，每个线程控制一个。</p>
+</li>
+<li>
+<p>Tdisplay 线程最终将像素信息输出到了一个 ppm (portable pixel map) 文件中。对于 C 语言来说，这是一种非常方便的输出图像的方式：只需要在文件开头输出</p>
+<pre><code class="language-c">P6
+W H COLOR // 宽，高，颜色数
+</code></pre>
+<p>然后一行一行地将每个点的 RGB 值输出即可。</p>
+</li>
+</ul>
+<h2 id="data-center">Data Center</h2>
+<p>多副本情况下的低延迟、高可靠性问题。这其中存在一些互相矛盾的点</p>
+<ul>
+<li>Availability - 数据在 data center 应该有多个副本，这样如果某个副本坏了，数据不会丢失。此外，为了各地地人可以快速读取，服务器会把本地城市 data center 的数据直接返回。</li>
+<li>Consistency - ”我在南京屏蔽我妈，我妈在广州也要响应这个屏蔽。” 不能因为图快而不同步地直接读取本地副本。</li>
+<li>Partition Tolerance</li>
+</ul>
+<p>这门课的问题：如何在一台计算机上既可能高效地处理并行请求？</p>
+<p>我们的工具：线程、协程</p>
+<ul>
+<li>线程：可以在操作系统的调度算法下进行切换，但线程切换很“重”：需要保存上下文，需要陷入内核 (privilege level 的改变)……</li>
+<li>协程：更轻量级的并发 (只要遵守 calling convention，切换时不需要保存那么多寄存器，不需要进操作系统)，但只有执行 co_yield() 才会切换，如果某个线程执行了很慢的 I/O 系统调用，剩下的协程就都在摸鱼。</li>
+</ul>
+<h3 id="goroutine">Goroutine</h3>
+<p>Go 是一门专门服务系统编程的语言。go 支持所谓的 goroutine: 在概念上它是线程，但它是使用类似于协程的原理实现的。每个 CPU 上只有一个线程，但这个线程下有多个 goroutine，每个 CPU 上有一个 Go worker 负责调度这些 goroutine。goroutine 切换的方式和协程相似，因此非常轻量级。对于某些会导致阻塞的系统调用 (如 sleep, rand)，go 会将他们改成 non-blocking 的版本，如果需要陷入内核进行长时间操作，它就会 yield 到另一个 goroutine 执行。这样，goroutine 将操作系统和 CPU 都利用到了100%。</p>
+<pre><code class="language-go">// Example from &quot;The Go Programming Language&quot;
+
+package main
+
+import (
+  &quot;fmt&quot;
+  &quot;time&quot;
+)
+
+func main() {
+  go spinner(100 * time.Millisecond)
+  const n = 45
+  fibN := fib(n) // slow
+  fmt.Printf(&quot;\rFibonacci(%d) = %d\n&quot;, n, fibN)
+}
+
+func spinner(delay time.Duration) {
+  for {
+    for _, r := range `-\|/` {
+      fmt.Printf(&quot;\r%c&quot;, r)
+      time.Sleep(delay)
+    }
+  }
+}
+
+func fib(x int) int {
+  if x &lt; 2 { return x }
+  return fib(x - 1) + fib(x - 2)
+}
+</code></pre>
+<p>在主函数中，我们使用 <code>go spinner</code> 创建了一个新的 goroutine。该程序可以一边计算 Fibinacci 数列，一边在 spinner 协程中打印旋转的进度条。</p>
+<p>绝大部分的并发问题都可以通过生产者-消费者模型来解决。Go 语言封装了生产者-消费者队列，提供了用于 goroutines 之间通信的 API：</p>
+<pre><code class="language-go">package main
+
+import &quot;fmt&quot;
+
+var stream = make(chan int, 10)
+const n = 4
+
+func produce() {
+  for i := 0; ; i++ {
+    fmt.Println(&quot;produce&quot;, i)
+    stream &lt;- i
+  }
+}
+
+func consume() {
+  for {
+    x := &lt;-stream
+    fmt.Println(&quot;consume&quot;, x)
+  }
+}
+
+func main() {
+  for i := 0; i &lt; n; i++ {
+    go produce()
+  }
+  consume()
+}
+</code></pre>
+<p><code>make(chan int, 10)</code> 定义了一个通道，并规定了其最大容量 (最大容量为 0 的 channel 可以用来同步)。生产者通过 <code>stream &lt;- i</code> 往队列里面加东西，消费者通过 <code>x := &lt;-stream</code> 从队列里面取东西。其内部的锁，睡眠等细节问题全部对程序员透明。</p>
+<h2 id="web-20">Web 2.0</h2>
+<p>在网页这种计算量、并发量都不大的场景下，我们使用的模型是单线程+事件模型。事件按照顺序执行，具有原子性 (减少了发生并发 bug 的可能)，遇到耗时的 API 就立刻返回 (结束一个事件)。</p>
+<p>为了代码的可维护性，描述流图的语言正在发展。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/nju-operating-system/lectures/lec06/" rel="next">Lecture 06: Concurrent Programming: Synchronization</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/nju-operating-system/lectures/lec08/" rel="prev">Lecture 08: Concurrent Bugs and Confrontation</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/nju-operating-system/Lectures/lec07.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

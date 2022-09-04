@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="fork() Semantics fork() 的语义是将当前进程的状态机完整地复制一份，这两个进程除了 fork() 的返回值以外全部相同。
+File Descriptors 我们这里关注文件描述符：根据 fork() 的语义，子进程和父进程会拥有相同的文件描述符 (文件描述符可以理解为指向操作系统对象的指针)。execve() 会重置状态机，但会继承原进程持有的所有操作系统对象。这个设计使我们在 UNIX shell 中可以利用管道技术，在 execve() 之前修改 stdin, stdout 以完成进程之间数据的传输。
+execve() 会无条件继承所有的对象吗？
+在 open() 的手册中，我们可以看到打开文件时有一个标志是 O_CLOEXEC，这样打开的文件在 execve() 的时候不会被继承。
+文件描述符其实不仅仅是指向对象的指针。我们在一个程序中写两句话">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/lectures/lec15/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/lectures/lec15/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/lectures/lec15/">
+  <meta property="og:title" content="Lecture 15: More about fork() | Academic">
+  <meta property="og:description" content="fork() Semantics fork() 的语义是将当前进程的状态机完整地复制一份，这两个进程除了 fork() 的返回值以外全部相同。
+File Descriptors 我们这里关注文件描述符：根据 fork() 的语义，子进程和父进程会拥有相同的文件描述符 (文件描述符可以理解为指向操作系统对象的指针)。execve() 会重置状态机，但会继承原进程持有的所有操作系统对象。这个设计使我们在 UNIX shell 中可以利用管道技术，在 execve() 之前修改 stdin, stdout 以完成进程之间数据的传输。
+execve() 会无条件继承所有的对象吗？
+在 open() 的手册中，我们可以看到打开文件时有一个标志是 O_CLOEXEC，这样打开的文件在 execve() 的时候不会被继承。
+文件描述符其实不仅仅是指向对象的指针。我们在一个程序中写两句话"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 15: More about fork() | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/nju-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec02/">02: OS上的程序</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec03/">03: 并发编程</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec04/">04: 理解并发</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec05/">05: 并发-互斥</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec06/">06: 并发-同步</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec07/">07: 并发-应用</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec08/">08: 并发bug</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec09/">09: OS的状态机</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec10/">10: 状态机应用</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec11/">11: OS的进程</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec12/">12: 地址空间</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec13/">13: 系统调用和 Shell</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec14/">14: LibC</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec15/">15: fork()</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec16/">16: 可执行文件</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec17/">17: 链接和加载</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec18/">18: xv6 概览</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec19/">19: 上下文切换</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec20/">20: 处理器调度</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec21/">21: OS设计</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec22/">22: OSLab速通</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec23/">23: 1Bit的存储</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec24/">24: I/O设备</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec25/">25: 设备驱动</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec26/">26: FS API</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec27/">27: FAT和UNIX文件系统</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec28/">28: 存储可靠性</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec29/">29: Xv6 FS</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/nju-operating-system/lectures/lec30/">30: 现代存储</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 15: More about fork()</h1>
+
+          <div class="article-style">
+            <h2 id="fork-semantics"><code>fork()</code> Semantics</h2>
+<p>fork() 的语义是将当前进程的状态机完整地复制一份，这两个进程除了 fork() 的返回值以外全部相同。</p>
+<h3 id="file-descriptors">File Descriptors</h3>
+<p>我们这里关注文件描述符：根据 fork() 的语义，子进程和父进程会拥有相同的文件描述符 (文件描述符可以理解为指向操作系统对象的指针)。execve() 会重置状态机，但会继承原进程持有的所有操作系统对象。这个设计使我们在 UNIX shell 中可以利用管道技术，在 execve() 之前修改 stdin, stdout 以完成进程之间数据的传输。<!-- more --></p>
+<blockquote>
+<p><strong>execve() 会无条件继承所有的对象吗？</strong></p>
+<p>在 open() 的手册中，我们可以看到打开文件时有一个标志是 O_CLOEXEC，这样打开的文件在 execve() 的时候不会被继承。</p>
+</blockquote>
+<p>文件描述符其实不仅仅是指向对象的指针。我们在一个程序中写两句话</p>
+<pre><code class="language-c">write(fd, &quot;Hello&quot;, 5);
+write(fd, &quot;World&quot;, 5);
+</code></pre>
+<p>我们得到的会是 &ldquo;HelloWorld&rdquo; 而不是 &ldquo;World&rdquo;，这说明文件描述符中还保存了一个对象当前的 offset。那么一个自然的问题是：如果我们 fork 出一个子线程，然后父子线程分别打印 Hello 和 World，我们会得到两个字符串还是一个字符串呢？我们可以写一个程序验证一下：</p>
+<pre><code class="language-c">// fork-fd.c
+#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;wait.h&gt;
+
+int main ()
+{
+    int fd = open(&quot;a.txt&quot;, O_RDWR | O_CREAT | O_TRUNC);
+    int rt = fork();
+    if (rt == 0)
+        write(fd, &quot;World&quot;, 5);
+    else
+        write(fd, &quot;Hello&quot;, 5);
+    wait(NULL);
+    if (rt == 0) write(fd, &quot;\n&quot;, 1);
+    return 0;
+}
+</code></pre>
+<p>该程序会输出 &ldquo;HelloWorld&rdquo; (或者 &ldquo;WorldHello&rdquo;)，而不是只有五个字符。这说明 fork 之后的两个进程后续仍然是共享文件偏移的。这样的设计显然符合一个“正常“的程序员的需求。查阅 dup() 系统调用的手册，我们可以看到 dup() 获得的新文件描述符和被复制的文件描述符也是共享文件偏移的。</p>
+<p>共享偏移对操作系统内核提出了较强的挑战。内核必须非常小心，保证对文件描述符的操作是原子的 (在 <code>man 2 write</code> 中可以看到 Linux 内核关于 file offset 的 bug 在内核 3.14 版本中才得到修复)。</p>
+<h3 id="copy-on-write-fork">Copy-on-write Fork</h3>
+<p>fork() 的语义是完整复制了状态机，但在实现层面，现代内核并不是立即复制所有的数据。fork() 有大量的场景都是为了启动一个新程序，即 fork() + execve() 的组合，这种情况下我们复制完的地址空间会立刻被新的程序镜像覆盖，复制工作就很浪费。</p>
+<p>现代内核普遍使用 copy-on-write fork (写时拷贝) 技术，即 fork() 时子进程完整复制父进程的页表，两者指向相同的页面，并暂时将页面的写权限去掉。这样之后如果父子进程读取数据，两者可以并行不悖。如果某个进程需要写数据，会因为没有写权限触发 page fault，内核的 page fault handler 发现这是一个 cow 页面，便会现场复制一个新的页面，让父子进程指向不同的页面，并把写权限恢复。</p>
+<p>cow fork 在实现层面还有一些细节，比如每个页面需要维护一个 reference count，之后对一个页面 malloc() 和 free() 的语义要做出一些修改，以及根据 ISA 确定如何在页表项中添加 cow 页面标志位等等。</p>
+<p>我们可以通过一个小程序感受 Linux 内核的 copy-on-write fork：</p>
+<pre><code class="language-c">// cow-test.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;string.h&gt;
+
+#define NPROC 1000
+#define MB 128
+#define SIZE (MB * (1 &lt;&lt; 20))
+
+#define xstr(s) str(s)
+#define str(s) #s
+
+int main() {
+  char *data = malloc(SIZE); // 128MB shared memory
+  memset(data, '_', SIZE);
+
+  for (int i = 0; i &lt; NPROC - 1; i++) {
+    if (fork() == 0) break;
+  }
+
+  // NPROC processes go here
+
+  asm volatile(&quot;.fill 1048576 * &quot; xstr(MB) &quot;, 1, 0x90&quot;); // 128MB shared code
+
+  unsigned int idx = 0;
+  int fd = open(&quot;/dev/urandom&quot;, O_RDONLY); assert(fd &gt; 0);
+  read(fd, &amp;idx, sizeof(idx));
+  close(fd);
+  idx %= 1048576 * MB;
+
+  data[idx] = '.';
+  printf(&quot;pid = %d, write data[%u]\n&quot;, getpid(), idx);
+
+  while (1) {
+    sleep(1); // not terminate
+  }
+}
+</code></pre>
+<p>在 <code>cow-test.c</code> 中，我们用 fork() 创建了 1000 个子进程，每个进程都有一个大小为 128M 的代码区 (都是 nop 指令)，每个进程还会随机挑选一个位置进行修改。编译后，我们的可执行文件大小就在 128M 左右。如果内核使用普通的 fork，这个程序运行到一半就会因内存不足而崩溃。但事实上 Linux 运行的很好。这证明了 Linux 中使用了 cow fork 策略。</p>
+<p>cow fork 策略的一个推论便是：想要统计一个程序运行时占用的内存空间是一个伪命题 (比如操作系统里的 libc 代码只有一份，不知道有多少程序的页表指向了它)。</p>
+<h2 id="state-machine-fork-and-magic">State Machine, <code>fork()</code> and Magic</h2>
+<p>fork() 可以完整复制状态机，这可以帮助我们完成很多炫酷的事情，比如开平行宇宙做 non-deterministic 的事情。</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;assert.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;errno.h&gt;
+#include &lt;sys/wait.h&gt;
+
+#define DEST  '+'
+#define EMPTY '.'
+
+struct move {
+  int x, y, ch;
+} moves[] = {
+  { 0, 1, '&gt;' },
+  { 1, 0, 'v' },
+  { 0, -1, '&lt;' },
+  { -1, 0, '^' },
+};
+
+char map[][512] = {
+  &quot;#######&quot;,
+  &quot;#.#.#+#&quot;,
+  &quot;#.....#&quot;,
+  &quot;#.....#&quot;,
+  &quot;#...#.#&quot;,
+  &quot;#######&quot;,
+  &quot;&quot;,
+};
+
+void display();
+
+void dfs(int x, int y) {
+  if (map[x][y] == DEST) {
+    display();
+  } else {
+    int nfork = 0;
+
+    for (struct move *m = moves; m &lt; moves + 4; m++) {
+      int x1 = x + m-&gt;x, y1 = y + m-&gt;y;
+      if (map[x1][y1] == DEST || map[x1][y1] == EMPTY) {
+        int pid = fork(); assert(pid &gt;= 0);
+        if (pid == 0) { // map[][] copied
+          map[x][y] = m-&gt;ch;
+          dfs(x1, y1);
+          exit(0); // clobbered map[][] discarded
+        } else {
+          nfork++;
+          waitpid(pid, NULL, 0); // wait here to serialize the search
+        }
+      }
+    }
+
+    while (nfork--) wait(NULL);
+  }
+}
+
+int main() {
+  dfs(1, 1);
+}
+
+void display() {
+  for (int i = 0; ; i++) {
+    for (const char *s = map[i]; *s; s++) {
+      switch (*s) {
+        case EMPTY: printf(&quot;   &quot;); break;
+        case DEST : printf(&quot; ○ &quot;); break;
+        case '&gt;'  : printf(&quot; → &quot;); break;
+        case '&lt;'  : printf(&quot; ← &quot;); break;
+        case '^'  : printf(&quot; ↑ &quot;); break;
+        case 'v'  : printf(&quot; ↓ &quot;); break;
+        default   : printf(&quot;▇▇▇&quot;); break;
+      }
+    }
+    printf(&quot;\n&quot;);
+    if (strlen(map[i]) == 0) break;
+  }
+  fflush(stdout);
+  sleep(1); // to see the effect of parallel search
+}
+</code></pre>
+<p><code>dfs-fork.c</code> 是一个走迷宫程序，不同于基本的 dfs 走迷宫，它的 dfs() 函数中每发现一个新的路，便会 fork 一个新的进程去做它，结尾处的 <code>sleep(1)</code> 用于模拟一个耗时很长的任务。现在的 <code>dfs-fork.c</code> 还不能做到并行，因为 dfs 函数中当前进程会 wait 一个分支的子进程结束才会探索下一个分支。但我们如果把 dfs 循环内的 wait 去掉，就可以观测到程序“秒”完成任务。</p>
+<p>fork() 相较于搜索-回溯还有一个好处：当我们探索一个分支失败时，我们不用一步一步撤回去，而是可以直接销毁当前进程，然后从之前保存的副本出发搜索新的分支。</p>
+<h3 id="parallel-universe-skipping-initialization">Parallel Universe: Skipping Initialization</h3>
+<p>以 NEMU 举例，我们可能需要运行很多个 benchmark，但 NEMU 的初始化过程很长，我们能不能只进行一次初始化，然后让多个 benchmark 共享这一次初始化呢？</p>
+<pre><code class="language-c">int main() {
+    nemu_init();
+    while (1) {
+        file = get_start_request();
+        if ((pid = fork()) == 0) {
+            load_file();
+            ...
+        }
+    }
+}
+</code></pre>
+<p>上面一段 C 代码大致实现了我们的想法。我们在 init() 结束后，每次 fork 一个子进程做一个 benchmark，就可以让多个 benchmark 共享初始化刚结束时的状态机了。</p>
+<p>类似的思想在实际中也有广泛应用：</p>
+<ul>
+<li>Zygote Process：zygote 是受精卵的意思，这是 Android 里的一个机制。Java 程序启动需要加载很多的 class node，这个过程很慢，但事实上现在的 Android app 基本都是秒起的。这是因为 Android 的一个 zygote process 完成所有的初始化工作，然后每开一个 app 直接在 zygote process 的基础上 fork，设置一些权限、用户 id 之后很快就可以开始执行 app 代码。</li>
+<li>Chrome site isolation：Chrome 的每个标签页都是一个独立的进程，这其中也有共享初始化资源的技术，这让 chrome 的速度变得很快。</li>
+<li>……</li>
+</ul>
+<h3 id="parallel-universe-backup-and-fault-tolerence">Parallel Universe: Backup and Fault-tolerence</h3>
+<p>有了平行宇宙，我们就有了犯错的底气：我们可以时不时地对状态机 fork，如果某个时刻程序 crash 了，我们就恢复最近一次保存的状态机副本；如果到了下一个存档点仍然没有 crash，我们在 fork 出新的存档的同时可以把上一份存档销毁。</p>
+<p>平行宇宙还可以为我们提供容错机制：比如有一些并发 bug 触发的概率很小。那么如果某一次不幸地触发了并发 bug，我们可以利用存档点回到过去，然后再跑一遍，说不定就绕过了 bug 可以继续执行了。</p>
+<h2 id="a-fork-in-the-road">A <code>fork()</code> in the Road</h2>
+<p>将状态机完整地复制一遍在早期是一件轻量级的事情，但现在随着系统中的机制越来越丰富，fork() 要做的事情越来越繁重：信号、线程、ptrace 等等。fork() 的语义也变得越来越复杂。比如：</p>
+<ul>
+<li>有了信号机制后，当操作系统给进程发送信号时，子进程是否也接收到这个信号？答案是子进程也会接收到信号，这就设计了 process group 等一系列概念。</li>
+<li>当线程加入后，fork 是把当前进程的所有线程复制，还是只复制执行 fork 的线程？答案是后者。</li>
+<li>……</li>
+</ul>
+<p>POSIX 给出的一个更安全的创建子进程的 API 是 posix_spawn()：</p>
+<pre><code class="language-c">int posix_spawn(pid_t *pid, const char *path,
+                       const posix_spawn_file_actions_t *file_actions,
+                       const posix_spawnattr_t *attrp,
+                       char *const argv[], char *const envp[]);
+</code></pre>
+<p>它有相当复杂的参数。这是一个非常明显的 fork 后时代设计的 API，它打包执行 fork 和 execve，将执行过程分为 fork, pre-exec 和 exec 三个阶段，并在 pre-exec 阶段对 signal handler, file action 等东西做一系列设置。</p>
+<p><em>A fork() in the Road</em> 一文中提出了 fork() 的七宗罪：</p>
+<ul>
+<li>Fork is no longer simple - 要考虑的机制越来越多；</li>
+<li>Fork doesn’t compose - 比如 <code>fork-printf.c</code>，将标准库中 buffer 的内容复制很可能不是程序员的初衷；</li>
+<li>Fork isn’t thread-safe</li>
+<li>Fork is insecure - fork() 出的子进程和父进程地址空间完全相同，打破了 ASLR；</li>
+<li>Fork is slow</li>
+<li>Fork doesn’t scale</li>
+<li>Fork encourages memory overcommit</li>
+</ul>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/nju-operating-system/lectures/lec14/" rel="next">Lecture 14: C Library</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/nju-operating-system/lectures/lec16/" rel="prev">Lecture 16: Executable Files</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/nju-operating-system/Lectures/lec15.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

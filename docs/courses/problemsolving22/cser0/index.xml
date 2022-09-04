@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>一个CSer应当掌握的基础技能合集 | Academic</title>
+    <link>/courses/problemsolving22/cser0/</link>
+      <atom:link href="/courses/problemsolving22/cser0/index.xml" rel="self" type="application/rss+xml" />
+    <description>一个CSer应当掌握的基础技能合集</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>一个CSer应当掌握的基础技能合集</title>
+      <link>/courses/problemsolving22/cser0/</link>
+    </image>
+    
+    <item>
+      <title>English</title>
+      <link>/courses/problemsolving22/cser0/english/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/courses/problemsolving22/cser0/english/</guid>
+      <description>&lt;p&gt;我们不得不承认在计算机科学方面，以美国为首的西方国家比我们先进很多，许多优秀的教材、课程、博文都是用英文撰写的 (比如你们将要学习的所有《问题求解》课程的教材)。因此，想要学好计算机，大家一定要趁早“逼迫”自己熟悉英语环境，尤其强化自己的英语阅读能力 (将来快速略读大段的英文手册很可能是你的工作/学习常态)。我们强烈建议你注意以下几个方面：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;不要依赖教材的中文翻译版本。&lt;/strong&gt; 将来大家学习的《算法导论》等教材是比较容易找到中文翻译版本的，但正如名著的翻译版时常体现不出名著本身的意境，翻译版的教材在很多细节上可能与原版有出入，影响大家的理解，也不利于大家熟悉一些英文术语。我们认为，英文阅读能力合格的标准之一便是阅读学术方面的英文材料和中文材料应该基本不存在速度差异。这个过程刚开始可能会比较痛苦，但随着学期深入大家一定能克服障碍。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;不要依赖百度等中文网站解决问题。&lt;/strong&gt; 在刚刚接触计算机以及学习算法的初级阶段，中文的博客 (以CSDN为主) 可以帮助大家解决一部分问题。但随着大家水平的提高，很多复杂的问题 (尤其是与系统配置，环境配置相关的问题) 在中文环境下很难找到契合的回答。这时推荐大家使用对应的英文关键字在 google/bing/stackoverflow 上搜索回答。&lt;/li&gt;
+&lt;li&gt;(如果我想到了会再添加)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;英语的学习和强化方法是一个见仁见智的问题。我们的建议是不要期待 &lt;em&gt;大学英语读写/大学英语视听说&lt;/em&gt; 能给你带来质的改变。提升语言能力的核心还是多读多听多说多写。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Typing</title>
+      <link>/courses/problemsolving22/cser0/typing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>/courses/problemsolving22/cser0/typing/</guid>
+      <description>&lt;p&gt;对于零基础的同学来说，键盘可能是十分陌生的。但大家既然选择了CS，计算机之于大家就应当相当于宝剑之于骑士，打字就应当像拿筷子吃饭一样熟练。如果你连&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;应当如何通过键盘敲出下划线 _ ？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这个问题都感到无从下手，那你一定要花一些功夫练习打字。&lt;/p&gt;
+&lt;p&gt;打字这件事很像投篮。能把球投进篮筐的姿势都是好姿势，同理打得快、准确率高的姿势也都是好姿势。但我们还是建议初学者打好基础，学习正规的十指布局。我们认为一个合格的CSer应当拥有200+cpm (character per minute) 的打字速度。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
