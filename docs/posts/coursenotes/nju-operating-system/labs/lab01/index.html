@@ -34,7 +34,7 @@ Designation 维护堆区的数据结构应该放在堆区里，所以我们不�
 #define ALLOC_MAGIC 0x1234567; typedef struct __header_t { size_t sz; union { uintptr_t magic; struct __header_t *next; }; }header_t; 每个内存块前都有一个这样的 header。这个 header 的好处是：未分配内存和已分配内存可以共用这个 header，当内存块处于未分配状态时，内存块被放在链表中，union 字段存放的是下一个链表节点的地址；当内存块处于已分配状态时，union 字段存放魔数。一个 kfree() 地址来临时，只要查看其前一个 uintptr_t 中是不是 ALLOC_MAGIC，就能确定这个地址合不合法，再往前看就能获得内存块的 size。">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/labs/lab01/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab01/">
 
   
 
@@ -221,7 +221,7 @@ Designation 维护堆区的数据结构应该放在堆区里，所以我们不�
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/labs/lab01/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab01/">
 
   
   
@@ -235,7 +235,7 @@ Designation 维护堆区的数据结构应该放在堆区里，所以我们不�
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/labs/lab01/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab01/">
   <meta property="og:title" content="Lab 01: Physical Memory Manager | Academic">
   <meta property="og:description" content="Overview 该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。以下主要记录一些有趣的设计/性能调优经历。
 Designation 维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。

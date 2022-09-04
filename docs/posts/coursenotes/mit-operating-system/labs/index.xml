@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Labs | Academic</title>
-    <link>/posts/coursenotes/mit-operating-system/labs/</link>
-      <atom:link href="/posts/coursenotes/mit-operating-system/labs/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/index.xml" rel="self" type="application/rss+xml" />
     <description>Labs</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Labs</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/</link>
     </image>
     
     <item>
       <title>MIT-6.S081 Lab 06: Copy-on-write fork</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab06/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab06/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Implement copy-on write (hard)&lt;/li&gt;
@@ -65,9 +65,9 @@ else
     
     <item>
       <title>MIT-6.S081 Lab 05: Lazy allocation</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab05/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab05/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Eliminate allocation from sbrk() (easy)&lt;/li&gt;
@@ -102,9 +102,9 @@ else
     
     <item>
       <title>MIT-6.S081 Lab 03: Page tables</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab03/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Print a page table (easy)&lt;/li&gt;
@@ -193,9 +193,9 @@ else
     
     <item>
       <title>MIT-6.S081 Lab 02: System calls</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab02/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab02/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; System call tracing (moderate)&lt;/li&gt;
@@ -251,9 +251,9 @@ entry(&amp;quot;exit&amp;quot;);
     
     <item>
       <title>MIT-6.S081 Lab 07: Multithreading</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab07/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab07/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Uthread: switching between threads (moderate)&lt;/li&gt;
@@ -289,9 +289,9 @@ entry(&amp;quot;exit&amp;quot;);
     
     <item>
       <title>MIT-6.S081 Lab 04: Traps</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab04/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; RISC-V assembly (easy)&lt;/li&gt;
@@ -395,9 +395,9 @@ int sigreturn(void);
     
     <item>
       <title>MIT-6.S081 Lab 01: Xv6 and Unix utilities</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab01/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab01/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; boot xv6 (easy)&lt;/li&gt;

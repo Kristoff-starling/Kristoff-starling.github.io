@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>一个CSer应当掌握的基础技能合集 | Academic</title>
-    <link>/courses/problemsolving22/cser0/</link>
-      <atom:link href="/courses/problemsolving22/cser0/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/</link>
+      <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/cser0/index.xml" rel="self" type="application/rss+xml" />
     <description>一个CSer应当掌握的基础技能合集</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>一个CSer应当掌握的基础技能合集</title>
-      <link>/courses/problemsolving22/cser0/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/</link>
     </image>
     
     <item>
       <title>English</title>
-      <link>/courses/problemsolving22/cser0/english/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/english/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/cser0/english/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/cser0/english/</guid>
       <description>&lt;p&gt;我们不得不承认在计算机科学方面，以美国为首的西方国家比我们先进很多，许多优秀的教材、课程、博文都是用英文撰写的 (比如你们将要学习的所有《问题求解》课程的教材)。因此，想要学好计算机，大家一定要趁早“逼迫”自己熟悉英语环境，尤其强化自己的英语阅读能力 (将来快速略读大段的英文手册很可能是你的工作/学习常态)。我们强烈建议你注意以下几个方面：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;不要依赖教材的中文翻译版本。&lt;/strong&gt; 将来大家学习的《算法导论》等教材是比较容易找到中文翻译版本的，但正如名著的翻译版时常体现不出名著本身的意境，翻译版的教材在很多细节上可能与原版有出入，影响大家的理解，也不利于大家熟悉一些英文术语。我们认为，英文阅读能力合格的标准之一便是阅读学术方面的英文材料和中文材料应该基本不存在速度差异。这个过程刚开始可能会比较痛苦，但随着学期深入大家一定能克服障碍。&lt;/li&gt;
@@ -29,9 +29,9 @@
     
     <item>
       <title>Typing</title>
-      <link>/courses/problemsolving22/cser0/typing/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/typing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/cser0/typing/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/cser0/typing/</guid>
       <description>&lt;p&gt;对于零基础的同学来说，键盘可能是十分陌生的。但大家既然选择了CS，计算机之于大家就应当相当于宝剑之于骑士，打字就应当像拿筷子吃饭一样熟练。如果你连&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;应当如何通过键盘敲出下划线 _ ？&lt;/p&gt;

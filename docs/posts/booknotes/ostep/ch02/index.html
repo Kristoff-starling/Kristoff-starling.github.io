@@ -33,7 +33,7 @@
 键入命令 ./cpu A &amp; ; ./cpu B &amp; ; ./cpu C &amp; ; .">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/booknotes/ostep/ch02/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/booknotes/ostep/ch02/">
 
   
 
@@ -220,7 +220,7 @@
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/booknotes/ostep/ch02/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/booknotes/ostep/ch02/">
 
   
   
@@ -234,7 +234,7 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/booknotes/ostep/ch02/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/booknotes/ostep/ch02/">
   <meta property="og:title" content="Chapter 02: Introduction to Operating Systems | Academic">
   <meta property="og:description" content="操作系统：为上层多个应用程序的正常运行提供支持。操作系统实现这一目的的重要方法是虚拟化：将硬件资源抽象成简单易用的虚拟资源。为了方便上层应用程序使用这些资源，操作系统会提供数百个系统调用。从这个角度来看，操作系统也很像一个标准库。
 2.1 Virtualizing The CPU cpu.c 的作用是每过一秒钟输出一次字符串。Spin(1) 表示等待一秒，其实现在 common.h 中，其中 GetTime() 是对系统调用 gettimeofday() 的进一步封装，返回系统启动以来的秒数。Spin() 会不断调用 GetTime()，直到间隔时间达到输入值 howlong。

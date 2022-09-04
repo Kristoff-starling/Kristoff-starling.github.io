@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Labs | Academic</title>
-    <link>/posts/coursenotes/nju-operating-system/labs/</link>
-      <atom:link href="/posts/coursenotes/nju-operating-system/labs/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/index.xml" rel="self" type="application/rss+xml" />
     <description>Labs</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 13 Dec 2020 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Labs</title>
-      <link>/posts/coursenotes/nju-operating-system/labs/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/</link>
     </image>
     
     <item>
       <title>Lab 00: AM Game</title>
-      <link>/posts/coursenotes/nju-operating-system/labs/lab00/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab00/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/labs/lab00/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab00/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的主要目的是在 abstract-machine 抽象的 bare-metal 上编写一个小游戏。笔者实现的小游戏是贪吃蛇。&lt;/p&gt;
 &lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;
@@ -65,9 +65,9 @@
     
     <item>
       <title>Lab 01: Physical Memory Manager</title>
-      <link>/posts/coursenotes/nju-operating-system/labs/lab01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab01/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/labs/lab01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab01/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。以下主要记录一些有趣的设计/性能调优经历。&lt;/p&gt;
 &lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;
@@ -137,9 +137,9 @@ typedef struct __header_t {
     
     <item>
       <title>Lab 02: Kernel Multi-Threads</title>
-      <link>/posts/coursenotes/nju-operating-system/labs/lab02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab02/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/labs/lab02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab02/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的主要内容是实现内核线程的调度。本实验报告主要记录一些有趣的设计和测试方法。&lt;/p&gt;
 &lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;
@@ -201,9 +201,9 @@ typedef struct __header_t {
     
     <item>
       <title>Lab 03: User Level Processes</title>
-      <link>/posts/coursenotes/nju-operating-system/labs/lab03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab03/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/labs/lab03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab03/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的主要内容是实现用户进程。用户进程可以理解为套上了虚拟内存的线程，因此我们需要引入 VME 系列的 API。本实验报告主要记录一些有趣的设计和遇到的 bug。&lt;/p&gt;
 &lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;

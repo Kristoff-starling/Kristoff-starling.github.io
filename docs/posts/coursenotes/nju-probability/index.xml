@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>NJU-22020170 Probability and Mathematical Statistics | Academic</title>
-    <link>/posts/coursenotes/nju-probability/</link>
-      <atom:link href="/posts/coursenotes/nju-probability/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/nju-probability/index.xml" rel="self" type="application/rss+xml" />
     <description>NJU-22020170 Probability and Mathematical Statistics</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 13 Dec 2020 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>NJU-22020170 Probability and Mathematical Statistics</title>
-      <link>/posts/coursenotes/nju-probability/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/</link>
     </image>
     
     <item>
       <title>Homework 1</title>
-      <link>/posts/coursenotes/nju-probability/hw1/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/hw1/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/hw1/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/hw1/</guid>
       <description>&lt;h2 id=&#34;problem-11&#34;&gt;Problem 1.1&lt;/h2&gt;
 &lt;p&gt;解：(1) $A_1\cap \overline{A_2}\cap \overline{A_3}$。&lt;/p&gt;
 &lt;p&gt;(2) $A_1\cup A_2\cup A_3$。&lt;/p&gt;
@@ -120,9 +120,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Homework 2</title>
-      <link>/posts/coursenotes/nju-probability/hw2/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/hw2/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/hw2/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/hw2/</guid>
       <description>&lt;h2 id=&#34;problem-21&#34;&gt;Problem 2.1&lt;/h2&gt;
 &lt;p&gt;解：
 $$
@@ -302,9 +302,9 @@ $$
     
     <item>
       <title>Lecture 01: Probability Space</title>
-      <link>/posts/coursenotes/nju-probability/lec01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec01/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec01/</guid>
       <description>&lt;p&gt;我们可以通过随机试验来研究随机现象。随机试验应当具有以下特点：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;相同条件下可重复；&lt;/li&gt;
@@ -372,9 +372,9 @@ $$
     
     <item>
       <title>Lecture 02: Classical Probability and Geometric Probability</title>
-      <link>/posts/coursenotes/nju-probability/lec02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec02/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec02/</guid>
       <description>&lt;h2 id=&#34;classical-probability&#34;&gt;Classical Probability&lt;/h2&gt;
 &lt;p&gt;古典概型的特点：&lt;/p&gt;
 &lt;ul&gt;
@@ -415,7 +415,7 @@ $$
 &lt;p&gt;【例】甲乙两人各在 1h 内随机一个时间点到达约会地点，先到的人最多等后到的人 15 分钟，求两人碰面的概率。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;解：用数对 $(x,y)$ 表示甲乙两人到达的时间，则两人可以碰面当且即当 $|x-y|\leq 15$，画图：&lt;/p&gt;
-&lt;img src=&#34;/img/NJU-22020170-02-01.png&#34; style=&#34;zoom: 50%;&#34; /&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/NJU-22020170-02-01.png&#34; style=&#34;zoom: 50%;&#34; /&gt;
 &lt;p&gt;因此碰面概率为 $\frac{60^2-45^2}{60^2}=\frac{7}{16}$。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;【例】 (蒲丰投针) 两平行线间距 $a$，向其投掷长度为 $l$ $(l&amp;lt;a)$ 的针，使针的中点在两平行线之间，求针与两条平行线中任意一条相交的概率。&lt;/p&gt;
@@ -447,9 +447,9 @@ $$
     
     <item>
       <title>Lecture 03: Conditional Probability and Bayes Formula</title>
-      <link>/posts/coursenotes/nju-probability/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec03/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec03/</guid>
       <description>&lt;h2 id=&#34;conditional-probability&#34;&gt;Conditional Probability&lt;/h2&gt;
 &lt;p&gt;“事件 $A$ 和 $B$ 同时发生的概率”与“ $B$ 发生的条件下，$A$ 发生的概率”不一定相等！&lt;/p&gt;
 &lt;ul&gt;
@@ -530,9 +530,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 04: Independence and Bernoulli Experiments</title>
-      <link>/posts/coursenotes/nju-probability/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec04/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec04/</guid>
       <description>&lt;h2 id=&#34;independence&#34;&gt;Independence&lt;/h2&gt;
 &lt;p&gt;【例】$a$ 个黑球，$b$ 个白球，分别在有放回、无放回的情况下计算：&lt;/p&gt;
 &lt;p&gt;(1) 第一次摸到黑球 (A)，第二次摸到黑球的概率 (B)。&lt;/p&gt;
@@ -616,9 +616,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 05: Random Variable and Distribution Function</title>
-      <link>/posts/coursenotes/nju-probability/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec05/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec05/</guid>
       <description>&lt;h2 id=&#34;definitions&#34;&gt;Definitions&lt;/h2&gt;
 &lt;p&gt;$\fbox{Definition 5.1}$ 设 $X:\Omega \rightarrow \mathbb{R}$，且对于任意 $\mathbb{R}$ 中的 Borel 集 $B$，$\{e|X(e)\in B\}\in \mathscr{F}$，则称 $X$ 是 $(\Omega, \mathscr F, P)$ 上的随机变量。&lt;/p&gt;
 &lt;p&gt;注：1. Borel 集是由所有的 $\{(a,b]|-\infty\leq a,b\leq +\infty\}$ 经过可数次交或并得到的集合。&lt;/p&gt;
@@ -716,9 +716,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 06: Continuous Random Variables</title>
-      <link>/posts/coursenotes/nju-probability/lec06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec06/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec06/</guid>
       <description>&lt;p&gt;$\fbox{Definition 6.1}$ 设存在一个非负的可积函数 $p(x)$，若 $X$ 的分布函数 $F(x)=\int_{-\infty}^xp(u)du$，则称 $X$ 为连续型随机变量，$p(x)$ 为密度函数。&lt;/p&gt;
 &lt;p&gt;根据定义，我们可以得到
 $$
@@ -851,9 +851,9 @@ $$
     
     <item>
       <title>Lecture 07: Distribution of Random Variable Function</title>
-      <link>/posts/coursenotes/nju-probability/lec07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec07/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec07/</guid>
       <description>&lt;p&gt;设 $X$ 是一个随机变量，函数 $g(x):\mathbb R\rightarrow \mathbb{R}$。构造随机变量 $Y$，当 $X=x$ 时，$Y=g(x)$，称 $Y$ 是 $X$ 的函数，记为 $Y=g(X)$。在已知 $X$ 的分布时，我们希望求出 $Y$ 的分布。&lt;/p&gt;
 &lt;h2 id=&#34;discrete-situation&#34;&gt;Discrete Situation&lt;/h2&gt;
 &lt;p&gt;设 $X$ 是一个离散型随机变量，其分布律为&lt;/p&gt;
@@ -968,9 +968,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 08: Mult-dimensional Random Variable</title>
-      <link>/posts/coursenotes/nju-probability/lec08/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec08/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec08/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec08/</guid>
       <description>&lt;h2 id=&#34;distribution-function-of-2-dimensional-random-variable&#34;&gt;Distribution Function of 2-Dimensional Random Variable&lt;/h2&gt;
 &lt;p&gt;$\fbox{Definition 8.1}$ 设 $X,Y$ 是定义在 $(\Omega, \mathscr F, P)$ 上的随机变量，则称 $(X,Y)$ 为 $(\Omega, \mathscr F, P)$ 上的&lt;strong&gt;二维随机变量&lt;/strong&gt;。对于任意 $x,y\in \mathbb R$，称
 $$
@@ -1109,9 +1109,9 @@ $$
     
     <item>
       <title>Lecture 09: 2-Dimensional Continuous Random Variable</title>
-      <link>/posts/coursenotes/nju-probability/lec09/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec09/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec09/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec09/</guid>
       <description>&lt;h2 id=&#34;examples-of-discrete-2-d-random-variable&#34;&gt;Examples of Discrete 2-D Random Variable&lt;/h2&gt;
 &lt;p&gt;【例】 (三项分布) 若二维离散型随机变量 $(X,Y)$ 的分布律为
 $$
@@ -1228,9 +1228,9 @@ $$
     
     <item>
       <title>Lecture 10: 2-Dimensional Normal Distribution and Random Variable Function</title>
-      <link>/posts/coursenotes/nju-probability/lec10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec10/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec10/</guid>
       <description>&lt;p&gt;$\fbox{Definition 10.1}$ 若二维随机变量 $(X,Y)$ 的联合密度为
 $$
 p(x,y)=\frac{1}{2\pi \sigma_1\sigma_2\sqrt{1-\rho^2}}e^{-\frac{1}{2(1-\rho^2)}[(\frac{x-\mu_1}{\sigma_1})^2-2\rho(\frac{x-\mu_1}{\sigma_1})(\frac{y-\mu_2}{\sigma_2})+(\frac{y-\mu_2}{\sigma_2})^2]}
@@ -1347,9 +1347,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 11: Examples of 2-Dimensional Random Variable Function</title>
-      <link>/posts/coursenotes/nju-probability/lec11/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec11/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec11/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec11/</guid>
       <description>&lt;p&gt;【例】 (顺序统计量, order statistics) 设 $X,Y$ 相互独立，分布函数分别为 $F_X(x)$ 和 $F_Y(y)$。令 $M=\max \{X,Y\}$，$N=\min \{X,Y\}$，现考虑 $M,N$ 的分布。
 $$
 \begin{align}
@@ -1464,9 +1464,9 @@ $$
     
     <item>
       <title> Lecture 12: More Examples of 2-Dimensional Random Variable Function</title>
-      <link>/posts/coursenotes/nju-probability/lec12/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec12/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec12/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec12/</guid>
       <description>&lt;p&gt;【例】 (差的分布) 设 $(X,Y)$ 的密度为 $p(x,y)$，考虑 $Z=X-Y$ 的分布：
 $$
 \begin{align}
@@ -1551,9 +1551,9 @@ $$
     
     <item>
       <title>Lecture 13: Mathematical Expectation</title>
-      <link>/posts/coursenotes/nju-probability/lec13/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec13/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec13/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec13/</guid>
       <description>&lt;h2 id=&#34;expectation-of-discrete-random-variables&#34;&gt;Expectation of Discrete Random Variables&lt;/h2&gt;
 &lt;p&gt;离散型随机变量的数学期望类似于“加权平均数”，但我们要将频率换成严格的概率。&lt;/p&gt;
 &lt;p&gt;$\fbox{Definition 13.1}$ 设离散型随机变量 $X$ 的分布律为 $P(X=x_i)=p_i,i=1,2,\cdots$。若级数 $\sum_{i=1}^\infty |x_i|p_i$ 收敛，则称
@@ -1788,9 +1788,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 14: Variance</title>
-      <link>/posts/coursenotes/nju-probability/lec14/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec14/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec14/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec14/</guid>
       <description>&lt;p&gt;我们希望衡量一个随机变量每个取值和平均值的差异，并且希望这个值是正数。因此我们引入方差的概念。&lt;/p&gt;
 &lt;p&gt;$\fbox{Definition 14.1}$ 设 $X$ 是一个随机变量。若 $E[|X|^2]$ 存在，则称
 $$
@@ -1937,9 +1937,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 15: Covariance and Correlation Coefficient</title>
-      <link>/posts/coursenotes/nju-probability/lec15/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec15/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec15/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec15/</guid>
       <description>&lt;p&gt;$\fbox{Theorem 15.1}$ (Chebyshev) 设随机变量 $X$ 的方差存在，则有
 $$
 \forall \varepsilon&amp;gt;0,P(|X-E[X]|&amp;gt;\varepsilon)\leq \frac{D(X)}{\varepsilon^2}
@@ -2144,9 +2144,9 @@ $$
     
     <item>
       <title> Lecture 16: Moment and Covariance Matrix</title>
-      <link>/posts/coursenotes/nju-probability/lec16/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec16/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec16/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec16/</guid>
       <description>&lt;h2 id=&#34;origin-moment-and-central-moment&#34;&gt;Origin Moment and Central Moment&lt;/h2&gt;
 &lt;p&gt;$\fbox{Definition 16.1}$ 设 $X$ 是随机变量，对正整数 $k$，若 $E[|X|^k]&amp;lt;+\infty$，则称 $E[X^k]$ 为 $X$ 的 $k$ 阶原点矩或 $k$ 阶矩；若 $E[|X-E[X]|^k]&amp;lt;+\infty$，则称 $E[(X-E[X])^k]$ 为 $X$ 的 $k$ 阶中心矩。&lt;/p&gt;
 &lt;p&gt;注：(1) 矩是对期望、方差的推广，1 阶原点矩就是期望，2 阶中心矩就是方差。&lt;/p&gt;
@@ -2259,9 +2259,9 @@ $$
     
     <item>
       <title>Lecture 21: Interval Estimation</title>
-      <link>/posts/coursenotes/nju-probability/lec21/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec21/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec21/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec21/</guid>
       <description>&lt;p&gt;$\fbox{Definition 21.1}$ 设 $\theta$ 是总体 $X$ 的未知参数，$X_1,\cdots, X_n$ 是来自 $X$ 的样本，若对于给定的 $0&amp;lt;\alpha&amp;lt;1$，存在两个统计量 $\hat\theta_1(X_1,\cdots, X_n)$ 和 $\hat\theta_2(X_1,\cdots, X_n)$，使得
 $$
 P(\hat\theta_1&amp;lt;\theta&amp;lt;\hat\theta_2)=1-\alpha
@@ -2421,9 +2421,9 @@ $$
     
     <item>
       <title>Lecture 22: Hypothesis Test</title>
-      <link>/posts/coursenotes/nju-probability/lec22/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec22/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec22/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec22/</guid>
       <description>&lt;p&gt;设总体 $X\sim N(\mu,\sigma^2)$，欲判断 $\mu$ 是否为某个给定的常数 $\mu_0$，我们将 $\mu=\mu_0$ ，记为 $H_0:\mu=\mu_0$，称为原假设或零假设。对应的，$H_1:\mu\neq \mu_0$ 称为备择假设或对立假设。
 $$
 H_0:\mu=\mu_0\qquad H_1:\mu\neq \mu_0
@@ -2529,9 +2529,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Moment Generating Function</title>
-      <link>/posts/coursenotes/nju-probability/mgf/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/mgf/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/mgf/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/mgf/</guid>
       <description>&lt;p&gt;矩母函数是快速求解高阶矩的利器。&lt;/p&gt;
 &lt;h2 id=&#34;definitions-and-properties&#34;&gt;Definitions and Properties&lt;/h2&gt;
 &lt;p&gt;$\fbox{Definition 1}$ ($k$ 阶矩) 设 $X$ 是一个概率密度为 $f$ 的随机变量。若 $X$ 是离散的，则它的 &lt;strong&gt;$k$ 阶矩&lt;/strong&gt; (记作 $\mu_k$) 定义为

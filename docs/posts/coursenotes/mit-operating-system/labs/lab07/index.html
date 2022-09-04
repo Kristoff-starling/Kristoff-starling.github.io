@@ -32,7 +32,7 @@
 struct thread { char stack[STACK_SIZE]; /* the thread&#39;s stack */ int state; /* FREE, RUNNING, RUNNABLE */ struct context *context; }; 其中 context 指针指向的地方用于存储和恢复寄存器现场，笔者的代码会利用堆栈低地址处的 sizeof(struct context) 的空间来存放这个 context。">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/mit-operating-system/labs/lab07/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab07/">
 
   
 
@@ -219,7 +219,7 @@ struct thread { char stack[STACK_SIZE]; /* the thread&#39;s stack */ int state; 
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/mit-operating-system/labs/lab07/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab07/">
 
   
   
@@ -233,7 +233,7 @@ struct thread { char stack[STACK_SIZE]; /* the thread&#39;s stack */ int state; 
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/mit-operating-system/labs/lab07/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab07/">
   <meta property="og:title" content="MIT-6.S081 Lab 07: Multithreading | Academic">
   <meta property="og:description" content="Progress Uthread: switching between threads (moderate) Using threads (moderate) Barrier (moderate) Uthread: Switching Between Threads (moderate) 该实验要实现一个“用户态协程库”，每个协程通过 yield() 函数主动让出 CPU 来让其他协程运行。笔者定义了如下的结构体：
 struct thread { char stack[STACK_SIZE]; /* the thread&#39;s stack */ int state; /* FREE, RUNNING, RUNNABLE */ struct context *context; }; 其中 context 指针指向的地方用于存储和恢复寄存器现场，笔者的代码会利用堆栈低地址处的 sizeof(struct context) 的空间来存放这个 context。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">

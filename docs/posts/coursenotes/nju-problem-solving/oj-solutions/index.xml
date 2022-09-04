@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Solutions to OJ | Academic</title>
-    <link>/posts/coursenotes/nju-problem-solving/oj-solutions/</link>
-      <atom:link href="/posts/coursenotes/nju-problem-solving/oj-solutions/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/index.xml" rel="self" type="application/rss+xml" />
     <description>Solutions to OJ</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 13 Dec 2020 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Solutions to OJ</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/</link>
     </image>
     
     <item>
       <title>问题求解 II - Final 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/ii-final/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/ii-final/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/ii-final/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/ii-final/</guid>
       <description>&lt;h2 id=&#34;a-为世界所有美好而战&#34;&gt;A. 为世界所有美好而战&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -59,9 +59,9 @@
     
     <item>
       <title>问题求解 III - 01 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-01/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-01/</guid>
       <description>&lt;h2 id=&#34;a-最短路1&#34;&gt;A. 最短路1&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -140,9 +140,9 @@
     
     <item>
       <title>问题求解 III - 02 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-02/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-02/</guid>
       <description>&lt;h2 id=&#34;a-最长路&#34;&gt;A. 最长路&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -230,9 +230,9 @@ $$ 由于我们不能确定转移的顺序，所以可以建图之后跑最短�
     
     <item>
       <title>问题求解 III - 03 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-03/</guid>
       <description>&lt;h2 id=&#34;a-拓扑排序&#34;&gt;A. 拓扑排序&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -278,9 +278,9 @@ $$ 由于我们不能确定转移的顺序，所以可以建图之后跑最短�
     
     <item>
       <title>问题求解 III - 04 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-04/</guid>
       <description>&lt;h2 id=&#34;a-acesrcs-bizarre-adventure&#34;&gt;A. Acesrc&amp;rsquo;s Bizarre Adventure&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -324,9 +324,9 @@ $$ 由于我们不能确定转移的顺序，所以可以建图之后跑最短�
     
     <item>
       <title>问题求解 III - 05 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/</guid>
       <description>&lt;h2 id=&#34;a-常系数线性递推&#34;&gt;A. 常系数线性递推&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -401,9 +401,9 @@ $$
     
     <item>
       <title>问题求解 III - 06 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-06/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-06/</guid>
       <description>&lt;h2 id=&#34;a-最大内切球&#34;&gt;A. 最大内切球&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -450,9 +450,9 @@ $$注意到该动态规划是线性递推，因此可以将 $f$ 和 $g$ 写成�
     
     <item>
       <title>问题求解 III - 07 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-07/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-07/</guid>
       <description>&lt;h2 id=&#34;a-多项式乘法模板&#34;&gt;A. 多项式乘法模板&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -498,9 +498,9 @@ $$
     
     <item>
       <title>问题求解 III - 10 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-10/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-10/</guid>
       <description>&lt;h2 id=&#34;a-加密&#34;&gt;A. 加密&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -551,9 +551,9 @@ LL quick_mul(LL x, LL y, LL m) {
     
     <item>
       <title>问题求解 IV - 02 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iv-02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iv-02/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iv-02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iv-02/</guid>
       <description>&lt;h2 id=&#34;a-majority-3-sat&#34;&gt;A. Majority 3-SAT&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -596,7 +596,7 @@ $$
 &lt;/ul&gt;
 &lt;h3 id=&#34;题解-3&#34;&gt;题解&lt;/h3&gt;
 &lt;p&gt;下面的讨论中我们假设 $m$ 是偶数。偶数给了我们这样一个好的性质：要么 $y$ 和 $m-y$ 都是偶数，要么 $y-1$ 和 $m+1-y$ 都是偶数，因此我们可以给出一个形如这样的哈密尔顿回路构造方法：&lt;/p&gt;
-&lt;img src=&#34;/img/PS4.2-SweepingRobot.JPEG&#34; alt=&#34;img&#34; style=&#34;zoom: 33%;&#34; /&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/PS4.2-SweepingRobot.JPEG&#34; alt=&#34;img&#34; style=&#34;zoom: 33%;&#34; /&gt;
 &lt;p&gt;（注：上图是 $y$ 是偶数的情况；如果 $y$ 是奇数则先向右走。）&lt;/p&gt;
 &lt;p&gt;为了代码书写的简便，我们可以先在旋转/翻转的地图上走出路径，然后再将路径逆旋转/翻转回去。这样代码量会减小很多。&lt;/p&gt;
 </description>
@@ -604,9 +604,9 @@ $$
     
     <item>
       <title>问题求解 IV - 03 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iv-03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iv-03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iv-03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iv-03/</guid>
       <description>&lt;h2 id=&#34;a-game&#34;&gt;A. Game&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;

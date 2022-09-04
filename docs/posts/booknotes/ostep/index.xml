@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Operating Systems: Three Easy Pieces | Academic</title>
-    <link>/posts/booknotes/ostep/</link>
-      <atom:link href="/posts/booknotes/ostep/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/booknotes/ostep/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/booknotes/ostep/index.xml" rel="self" type="application/rss+xml" />
     <description>Operating Systems: Three Easy Pieces</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 13 Dec 2020 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Operating Systems: Three Easy Pieces</title>
-      <link>/posts/booknotes/ostep/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/</link>
     </image>
     
     <item>
       <title>Chapter 02: Introduction to Operating Systems</title>
-      <link>/posts/booknotes/ostep/ch02/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch02/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch02/</guid>
       <description>&lt;p&gt;操作系统：为上层多个应用程序的正常运行提供支持。操作系统实现这一目的的重要方法是虚拟化：将硬件资源抽象成简单易用的虚拟资源。为了方便上层应用程序使用这些资源，操作系统会提供数百个系统调用。从这个角度来看，操作系统也很像一个标准库。&lt;/p&gt;
 &lt;!-- more --&gt;
 &lt;h2 id=&#34;21-virtualizing-the-cpu&#34;&gt;2.1 Virtualizing The CPU&lt;/h2&gt;
@@ -78,9 +78,9 @@ mov register, &amp;amp;counter
     
     <item>
       <title>Chapter 04: The Abstraction: The Process</title>
-      <link>/posts/booknotes/ostep/ch04/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch04/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch04/</guid>
       <description>&lt;p&gt;进程就是正在运行的程序。程序本身只是存储在硬盘上的指令和数据的集合，只有 OS 将其加载到内存中运行起来时程序才会发挥作用。&lt;/p&gt;
 &lt;p&gt;通常操作系统上会运行多个程序 - 比 CPU 核个数更多的程序。但每个程序并不需要关心 CPU 当前是否可用，这是因为 OS 为进程虚拟化了 CPU。OS 的基本操作是运行一个进程，然后暂停它去运行一会儿另外一个进程，这是分是运行的基本思想。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;p&gt;为了实现 CPU 的虚拟化，OS 既需要底层的机制，也需要上层的智慧。所谓&lt;strong&gt;机制 (mechanism)&lt;/strong&gt; 指的是实现某个功能所需要的一些底层的方法或协议。比如操作系统为了实现进程的切换，必须要有上下文切换的机制。分时运行也是一种机制，被所有的现代操作系统采用。&lt;/p&gt;
@@ -189,9 +189,9 @@ struct proc {
     
     <item>
       <title>Chapter 05: Interlude: Process API</title>
-      <link>/posts/booknotes/ostep/ch05/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch05/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch05/</guid>
       <description>&lt;h2 id=&#34;51-the-fork-system-call&#34;&gt;5.1 The &lt;code&gt;fork()&lt;/code&gt; System Call&lt;/h2&gt;
 &lt;p&gt;fork() 系统调用会创建一个和当前进程完全相同的子进程，这两个进程除了 fork() 的返回值不同，其他完全相同。fork() 在父进程中返回子进程的进程号，在子进程中返回 0，这可以用于区分两个进程。&lt;/p&gt;
 &lt;p&gt;
@@ -224,9 +224,9 @@ struct proc {
     
     <item>
       <title>Chapter 13: The Abstraction: The Address Space</title>
-      <link>/posts/booknotes/ostep/ch13/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch13/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch13/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch13/</guid>
       <description>&lt;h2 id=&#34;131-early-systems&#34;&gt;13.1 Early Systems&lt;/h2&gt;
 &lt;p&gt;早期的系统非常简单，操作系统没有为程序提供任何的抽象，整个计算机中只有一个物理地址空间，操作系统代码以及操作系统为程序提供的一些库函数存放在内存中，此外还有一个运行的程序，它可以使用剩下的内存。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;h2 id=&#34;132-multiprogramming-and-time-sharing&#34;&gt;13.2 Multiprogramming and Time Sharing&lt;/h2&gt;
@@ -274,9 +274,9 @@ location of stack : 0x7ffd13ff4374
     
     <item>
       <title>Chapter 14: Interlude: Memory API</title>
-      <link>/posts/booknotes/ostep/ch14/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch14/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch14/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch14/</guid>
       <description>&lt;h2 id=&#34;141-types-of-memory&#34;&gt;14.1 Types of Memory&lt;/h2&gt;
 &lt;p&gt;在一个 C 程序中，程序使用的内存有两种：&lt;/p&gt;
 &lt;ul&gt;
@@ -362,9 +362,9 @@ strcpy(dst, src);
     
     <item>
       <title>Chapter 17: Free Space Management</title>
-      <link>/posts/booknotes/ostep/ch17/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch17/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch17/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch17/</guid>
       <description>&lt;p&gt;动态大小的内存分配是比较困难的：随着反复的分配和释放，空闲内存会被切分成很多碎片，此时即使空闲空间的总量大于某个分配需求，分配也可能因为剩余空间过于碎片化而失败。因此，我们在管理空闲空间时要兼顾效率、空闲空间连续性、内存消耗等多方面因素。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;h2 id=&#34;171-assumptions&#34;&gt;17.1 Assumptions&lt;/h2&gt;
 &lt;p&gt;这里我们假设内存申请和释放的接口和 C 库中的 malloc()/free() 相同：&lt;/p&gt;
@@ -412,9 +412,9 @@ void free(void *ptr);
     
     <item>
       <title>Chapter 26: Concurrency: An Introduction</title>
-      <link>/posts/booknotes/ostep/ch26/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch26/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch26/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch26/</guid>
       <description>&lt;p&gt;一个多线程程序会有多个执行流，即有好几个 PC 并发/并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。&lt;/p&gt;
 &lt;p&gt;虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为 thread-local storage。&lt;/p&gt;
 &lt;!-- more --&gt;
@@ -462,9 +462,9 @@ mov %eax, (addr)
     
     <item>
       <title>Chapter 27: Interlude: Thread API</title>
-      <link>/posts/booknotes/ostep/ch27/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch27/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch27/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch27/</guid>
       <description>&lt;h2 id=&#34;271-thread-creation&#34;&gt;27.1 Thread Creation&lt;/h2&gt;
 &lt;p&gt;创建线程的 API 为&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int pthread_create(      pthread_t      *thread, 
@@ -571,9 +571,9 @@ int pthread_cond_signal(pthread_cond_t *cond);
     
     <item>
       <title>Chapter 29: Lock-based Concurrent Data Structures</title>
-      <link>/posts/booknotes/ostep/ch29/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch29/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch29/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch29/</guid>
       <description>&lt;h2 id=&#34;291-concurrent-counters&#34;&gt;29.1 Concurrent Counters&lt;/h2&gt;
 &lt;p&gt;一个最简单的 thread-safe 的计数器实现如下 (用锁保护每次读写)：&lt;/p&gt;
 &lt;!-- more --&gt;
@@ -726,9 +726,9 @@ int Hash_Lookup(hash_t *H, int key) {
     
     <item>
       <title>Chapter 30: Condition Variables</title>
-      <link>/posts/booknotes/ostep/ch30/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch30/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch30/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch30/</guid>
       <description>&lt;p&gt;很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：&lt;!-- more --&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;volatile int done = 0;
 
@@ -877,9 +877,9 @@ void free(void *ptr, int size) {
     
     <item>
       <title>Chapter 31: Semaphores</title>
-      <link>/posts/booknotes/ostep/ch31/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch31/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch31/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch31/</guid>
       <description>&lt;p&gt;信号量的概念最早由 Dijkstra 提出，它既可以作为锁使用也可以作为条件变量使用。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;h2 id=&#34;311-semaphores-a-definition&#34;&gt;31.1 Semaphores: A Definition&lt;/h2&gt;
 &lt;p&gt;使用一个信号量之前我们要定义其初始值：&lt;/p&gt;
@@ -1111,9 +1111,9 @@ void zem_post(zem_t *z) {
     
     <item>
       <title>Chapter 36: I/O Devices</title>
-      <link>/posts/booknotes/ostep/ch36/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch36/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch36/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch36/</guid>
       <description>&lt;p&gt;输入输出对于计算机来说非常重要：如果没有输入，计算机每次输出的都是相同的结果；如果没有输出，那我们让计算机运行程序的目的是什么呢？因此我们的问题是如何将 Input/Output 融入计算机系统。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;h2 id=&#34;361-system-architecture&#34;&gt;36.1 System Architecture&lt;/h2&gt;
 &lt;p&gt;一个经典的计算机系统的结构布局如下图所示：&lt;/p&gt;
@@ -1222,9 +1222,9 @@ void ide_intr() {
     
     <item>
       <title>Chapter 38: Redundant Arrays of Inexpensive Disks (RAIDs)</title>
-      <link>/posts/booknotes/ostep/ch38/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch38/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch38/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch38/</guid>
       <description>&lt;p&gt;我们对磁盘有三个维度的需求：我们希望它读写速度快 (I/O 操作速度慢，因而成为整个系统的速度瓶颈)，我们希望它容量大，我们还希望它可靠 (如果发生磁盘损坏，仍然能恢复数据)。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;p&gt;本章节主要介绍 Redundant Arrays of Inexpensive Disks (RAIDs) 技术，它的核心思想是用多块物理磁盘去构建一个大容量的，高速的，可靠性高的磁盘。对外来看，RAID 虚拟出了一块可读可写的磁盘；在其内部，RAID 由一个非常复杂的系统构成，包含了若干个物理磁盘和一个或多个用于控制的芯片，可以说 RAID 内部就是一个小型的计算机系统。&lt;/p&gt;
 &lt;p&gt;RAID 的优点在于：它可以通过多块磁盘并行的读写来提供很好的 performance；通过叠加磁盘的数量来获得 capacity；通过存储一部分的冗余数据来保证数据的 reliability。更重要的是，RAID 可以透明地提供这些优势，这里透明的意思是对于其他硬件/OS来说，RAID 看上去就像是一整块普通的磁盘。整个系统的其他部分不需要做任何修改就可以兼容 RAID。这一点极大地提升了 RAID 的可部署性 (deployability)。用户可以放心地将自己现有的磁盘更换成 RAID，不需要担心兼容问题。&lt;/p&gt;
@@ -1608,9 +1608,9 @@ Offset = A / numbre_of_disks;
     
     <item>
       <title>Chapter 40: File System Implementation</title>
-      <link>/posts/booknotes/ostep/ch40/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch40/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch40/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch40/</guid>
       <description>&lt;p&gt;文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;h2 id=&#34;401-the-way-to-think&#34;&gt;40.1 The Way To Think&lt;/h2&gt;
 &lt;p&gt;设计文件系统我们通常考虑两件事情：&lt;/p&gt;
@@ -1733,9 +1733,9 @@ sector = ((blk * blockSize) + inodeStartAddr) / sectorSize;
     
     <item>
       <title>Homework 26</title>
-      <link>/posts/booknotes/ostep/hw26/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/hw26/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/hw26/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/hw26/</guid>
       <description>&lt;h2 id=&#34;questions&#34;&gt;Questions&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;Let’s examine a simple program, “loop.s”. First, just read and understand it. Then, run it with these arguments (&lt;code&gt;./x86.py -p loop.s -t 1 -i 100 -R dx&lt;/code&gt;) This specifies a single thread, an interrupt every 100 instructions, and tracing of register %dx. What will %dx be during the run? Use the -c flag to check your answers; the answers, on the left, show the value of the register (or memory value) after the instruction on the right has run. &lt;!-- more --&gt;&lt;/li&gt;
@@ -1867,9 +1867,9 @@ halt
     
     <item>
       <title>Homework 27</title>
-      <link>/posts/booknotes/ostep/hw27/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/hw27/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/hw27/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/hw27/</guid>
       <description>&lt;h2 id=&#34;questions&#34;&gt;Questions&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;First build main-race.c. Examine the code so you can see the (hopefully obvious) data race in the code. Now run helgrind (by typing valgrind &amp;ndash;tool=helgrind main-race) to see how it reports the race. Does it

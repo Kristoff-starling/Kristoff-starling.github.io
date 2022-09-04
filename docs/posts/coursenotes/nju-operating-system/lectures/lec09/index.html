@@ -32,7 +32,7 @@
 CPU 只是一个周而复始的取值译码执行的东西，因此它马上会做的事情就是取出 0xfff0 处的指令并执行。0xfff0 处通常是一个跳转指令，PC 会跳转到固件代码执行。固件 (Firmware) 是硬件厂商写死在一块 ROM 上的代码，常见的固件程序有 BIOS 和 UEFI 两种，后者更加现代机制更加复杂，这里简介 Legacy BIOS 的过程：">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/lectures/lec09/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec09/">
 
   
 
@@ -219,7 +219,7 @@ CPU 只是一个周而复始的取值译码执行的东西，因此它马上会�
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/lectures/lec09/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec09/">
 
   
   
@@ -233,7 +233,7 @@ CPU 只是一个周而复始的取值译码执行的东西，因此它马上会�
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/lectures/lec09/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec09/">
   <meta property="og:title" content="Lecture 09: State Machine of OS | Academic">
   <meta property="og:description" content="Bare-metal &amp; Software 数字电路本身就是一个巨大的状态机。硬件厂商会保证 CPU reset 后处理器处在一个确定的状态，各个单元的固定的值会写在手册中。以 x86 为例，手册规定了 CPU reset 后 rip 的值会是 0xfff0，EFLAGS 的值为 0x2，当前硬件运行在 16-bit 模式中，不响应中断。
 CPU 只是一个周而复始的取值译码执行的东西，因此它马上会做的事情就是取出 0xfff0 处的指令并执行。0xfff0 处通常是一个跳转指令，PC 会跳转到固件代码执行。固件 (Firmware) 是硬件厂商写死在一块 ROM 上的代码，常见的固件程序有 BIOS 和 UEFI 两种，后者更加现代机制更加复杂，这里简介 Legacy BIOS 的过程："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">

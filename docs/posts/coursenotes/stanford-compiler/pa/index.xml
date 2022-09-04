@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Programming Assignments | Academic</title>
-    <link>/posts/coursenotes/stanford-compiler/pa/</link>
-      <atom:link href="/posts/coursenotes/stanford-compiler/pa/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/index.xml" rel="self" type="application/rss+xml" />
     <description>Programming Assignments</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Programming Assignments</title>
-      <link>/posts/coursenotes/stanford-compiler/pa/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/</link>
     </image>
     
     <item>
       <title>Stanford-CS143 PA0: Cool Programming</title>
-      <link>/posts/coursenotes/stanford-compiler/pa/pa0/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/pa0/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/pa/pa0/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/pa0/</guid>
       <description>&lt;p&gt;该入门实验的主要目的是熟悉 cool 语言的语法，为编译器编写打下基础。本实验的任务是用 cool 语言写一个简单的 stack machine，支持 &lt;code&gt;int&lt;/code&gt; &lt;code&gt;+&lt;/code&gt; &lt;code&gt;s&lt;/code&gt; &lt;code&gt;e&lt;/code&gt; &lt;code&gt;d&lt;/code&gt; 五种操作。&lt;/p&gt;
 &lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;
 &lt;p&gt;由于 cool 语言中没有开数组的功能，所以笔者使用链表来模拟这个栈数据结构。插入操作是新建一个链表节点插在 head 前面，&lt;code&gt;e&lt;/code&gt; 操作则是查看链表开头的若干个元素并执行相应操作。&lt;/p&gt;
@@ -54,9 +54,9 @@
     
     <item>
       <title>Stanford-CS143 PA1: Lexical Analysis</title>
-      <link>/posts/coursenotes/stanford-compiler/pa/pa1/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/pa1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/pa/pa1/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/pa1/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的目的是完成 cool compiler 的 lexical analysis 部分。课堂上讲解了用正则表达式描述词汇格式以及如何根据正则表达式生成 NFA，通过 NFA 转 DFA，再将 DFA 以二维表的形式存储下来。不过现在有成熟的工具可以完成正则表达式的 implementation，所以本实验中我们只需要考虑如何用正则表达式描述 cool 语言的词汇，不需要考虑自动机。&lt;/p&gt;
 &lt;p&gt;笔者选择了 C++ 版本的实验。本实验中我们使用 flex 工具来完成正则表达式的 implementation。我们识别出一个 token 后需要向 flex 生成的 &lt;code&gt;yylex()&lt;/code&gt; 函数返回 token 的编号 (在 &lt;code&gt;cool-parse.h&lt;/code&gt; 中定义)，如果当前 token 有额外的语义信息 (比如字符串，bool const) 则需要在 &lt;code&gt;coolyyval&lt;/code&gt; 这个 union 的相应字段中填写信息。&lt;/p&gt;

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Academic</title>
-    <link>/</link>
-      <atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/</link>
+      <atom:link href="https://kristoff-starling.github.io/index.xml" rel="self" type="application/rss+xml" />
     <description>Academic</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 01 Jun 2030 13:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Academic</title>
-      <link>/</link>
+      <link>https://kristoff-starling.github.io/</link>
     </image>
     
     <item>
       <title>Example Talk</title>
-      <link>/talk/example/</link>
+      <link>https://kristoff-starling.github.io/talk/example/</link>
       <pubDate>Sat, 01 Jun 2030 13:00:00 +0000</pubDate>
-      <guid>/talk/example/</guid>
+      <guid>https://kristoff-starling.github.io/talk/example/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     Click on the &lt;strong&gt;Slides&lt;/strong&gt; button above to view the built-in slides feature.
@@ -36,9 +36,9 @@
     
     <item>
       <title>Stanford-CS143 Lecture 06: Syntax-Directed Translation</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec06/</link>
       <pubDate>Tue, 23 Aug 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec06/</guid>
       <description>&lt;h2 id=&#34;error-handling&#34;&gt;Error Handling&lt;/h2&gt;
 &lt;p&gt;Purpose of the compiler:&lt;/p&gt;
 &lt;ul&gt;
@@ -162,9 +162,9 @@ In principle, grammars can be transformed to right recursive ones automatically.
     
     <item>
       <title>Stanford-CS143 Lecture 05: Introduction to Parsing</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec05/</link>
       <pubDate>Mon, 22 Aug 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec05/</guid>
       <description>&lt;p&gt;Regular expression is the weakest formal language. There are lots of languages that cannot be represented by regular expression. e.g. $\{(^i)^i:i\geq 1\}=\{(),(()), ((())),&amp;hellip;\}$ (the set of balanced parentheses).&lt;/p&gt;
 &lt;p&gt;The parser takes the output of lexer, i.e. sequence of tokens as input, and outputs the parse tree of the program.&lt;/p&gt;
 &lt;ul&gt;
@@ -296,9 +296,9 @@ along with declarations&lt;/p&gt;
     
     <item>
       <title>Flex Manual - Notes</title>
-      <link>/posts/manualnotes/flex/</link>
+      <link>https://kristoff-starling.github.io/posts/manualnotes/flex/</link>
       <pubDate>Sun, 14 Aug 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/manualnotes/flex/</guid>
+      <guid>https://kristoff-starling.github.io/posts/manualnotes/flex/</guid>
       <description>&lt;h2 id=&#34;3-introduction&#34;&gt;3. Introduction&lt;/h2&gt;
 &lt;p&gt;flex 是一个生成 scanner 的工具。flex 接受一个 &lt;code&gt;.flex&lt;/code&gt; 文件，&lt;code&gt;.flex&lt;/code&gt; 文件用于描述如何生成一个 scanner，由若干 rules 组成，每条规则都是一个正则表达式和一段 C 代码的二元组。flex 工具会输出一个 C 代码 &lt;code&gt;lex.yy.cc&lt;/code&gt;，该代码与 flex 的 runtime library 链接之后可以生成可执行文件。可执行文件执行时会分析输入的内容，如果某条规则的正则表达式与输入内容匹配则执行 rule 中定义的 C 代码。&lt;/p&gt;
 &lt;h2 id=&#34;4-some-simple-examples&#34;&gt;4. Some Simple Examples&lt;/h2&gt;
@@ -491,9 +491,9 @@ bar             something_else();
     
     <item>
       <title>Stanford-CS143 Lecture 04: Implementation of Lexical Analysis</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec04/</link>
       <pubDate>Wed, 10 Aug 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec04/</guid>
       <description>&lt;p&gt;Summary of (extended) regular expression rules:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;At least one: $A^{+}\triangleq AA^*$&lt;/li&gt;
@@ -622,7 +622,7 @@ s4 --&amp;gt; |e| s1
 s1 --&amp;gt; |e| s5
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;An example: $(1+0)^*1$:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/stanford-compiler-lec4-2.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/stanford-compiler-lec4-2.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;nfa-to-dfa&#34;&gt;NFA to DFA&lt;/h2&gt;
 &lt;p&gt;An NFA may be in many states at any time. However, for a n-state NFA, there are at most $2^N-1$ different subsets of states, which is finite. That&amp;rsquo;s the core idea of how to transform NFA to DFA.&lt;/p&gt;
 &lt;p&gt;$\fbox{Definition}$ ($\epsilon$-closure) The $\epsilon$-closure of a node $q$ in NFA, denoted as $\epsilon\text{-closure}(q)$, is the set of nodes that can be reached from $q$ by walking through only $\epsilon$ edges. For example, in the NFA above, $\epsilon\text{-closure}(q_6)={q_0,q_1,q_2,q_4,q_7,q_8}$.&lt;/p&gt;
@@ -641,7 +641,7 @@ s1 --&amp;gt; |e| s5
 &lt;li&gt;transitions: $X\overset{a}{\to}Y$ exists iff $Y=\epsilon\text{-closure}(a(X))$.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;An example: $(1+0)^*1$:&lt;/p&gt;
-&lt;img src=&#34;/img/stanford-compiler-lec4-1.png&#34; alt=&#34;image-20220814145242811&#34; style=&#34;zoom: 33%;&#34; /&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/stanford-compiler-lec4-1.png&#34; alt=&#34;image-20220814145242811&#34; style=&#34;zoom: 33%;&#34; /&gt;
 &lt;h2 id=&#34;implementing-finite-automata&#34;&gt;Implementing Finite Automata&lt;/h2&gt;
 &lt;p&gt;A DFA can be represented as a 2D table. States and input symbols are the two dimensions and the contents of the table are transition. Pseudocode can be written based on this:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;i = 0;
@@ -658,9 +658,9 @@ while (input[i] != &#39;\0&#39;) {
     
     <item>
       <title>Stanford-CS143 Lecture 03: Lexical Analysis</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec03/</link>
       <pubDate>Sun, 10 Jul 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec03/</guid>
       <description>&lt;p&gt;Token classes:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;In English: nouns, verbs, adjactives etc.&lt;/li&gt;
@@ -788,9 +788,9 @@ It&amp;rsquo;s worth notice that regular expressions defines the set of strings 
     
     <item>
       <title>Stanford-CS143 Lecture 02: Cool Overview</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec02/</link>
       <pubDate>Sun, 03 Jul 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec02/</guid>
       <description>&lt;p&gt;Cool (Classroom Object Oriented Language).&lt;/p&gt;
 &lt;p&gt;5 programming assignments (all the 4 layers should be plug compatible)&lt;/p&gt;
 &lt;ul&gt;
@@ -945,9 +945,9 @@ class Main inherits IO {
     
     <item>
       <title>Stanford-CS143 Lecture 01: Introduction</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec01/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec01/</guid>
       <description>&lt;p&gt;Interpreters: it takes in program and data and and immediately generates output (an on-line process).&lt;/p&gt;
 &lt;p&gt;Compilers: it takes in program and generates an executable (assembly/bytecode). The executable takes in data and generates output (an off-line process).&lt;/p&gt;
 &lt;h2 id=&#34;the-structure-of-compilers&#34;&gt;The Structure of Compilers&lt;/h2&gt;
@@ -1034,9 +1034,9 @@ class Main inherits IO {
     
     <item>
       <title>FAT Specification - Notes</title>
-      <link>/posts/manualnotes/fat/</link>
+      <link>https://kristoff-starling.github.io/posts/manualnotes/fat/</link>
       <pubDate>Tue, 14 Jun 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/manualnotes/fat/</guid>
+      <guid>https://kristoff-starling.github.io/posts/manualnotes/fat/</guid>
       <description>&lt;p&gt;
 &lt;a href=&#34;http://jyywiki.cn/pages/OS/manuals/MSFAT-spec.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Microsoft FAT Specification&lt;/a&gt; 的 local copy 见此处。以下是对该手册的精华部分的翻译和解读。&lt;/p&gt;
 &lt;h2 id=&#34;section-1-definitions-and-notations&#34;&gt;Section 1: Definitions and Notations&lt;/h2&gt;
@@ -1711,7 +1711,7 @@ else {
 &lt;p&gt;如果长名目录项中的校验和与其对应的短名目录项算出来不一致，我们就认为该长名目录项集合被损坏了。&lt;/p&gt;
 &lt;h3 id=&#34;73-example-illustrating-persistence-of-a-long-name&#34;&gt;7.3 Example illustrating persistence of a long name&lt;/h3&gt;
 &lt;p&gt;下面的图片以 &amp;ldquo;The quick brown.fox&amp;rdquo; 这个名字为例展示了长名的存储方法：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/FAT_LongDirent.png&#34; alt=&#34;LongDirent&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/FAT_LongDirent.png&#34; alt=&#34;LongDirent&#34;&gt;&lt;/p&gt;
 &lt;p&gt;长文件名不能超过 255 个字符 (不包括结尾的 NULL)。长文件名中的字符限制和短文件名基本一样 (见 Section 6.1)，一些额外的规则为：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
@@ -1736,9 +1736,9 @@ else {
     
     <item>
       <title>Lecture 01: Introduction</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec01/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec01/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;关于计算机信息&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;使用 &lt;code&gt;uname -a&lt;/code&gt; 命令可以查看操作系统，时间，硬件架构等。&lt;/p&gt;
@@ -1808,9 +1808,9 @@ else {
     
     <item>
       <title>Lecture 02: Programs on Operating Systems</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec02/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec02/</guid>
       <description>&lt;h2 id=&#34;digital-logic&#34;&gt;Digital Logic&lt;/h2&gt;
 &lt;p&gt;数字电路：&lt;/p&gt;
 &lt;ul&gt;
@@ -2100,9 +2100,9 @@ int main() {
     
     <item>
       <title>Lecture 03: Multiprocessor Programming</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec03/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec03/</guid>
       <description>&lt;p&gt;并发：一个计算机程序被分成了若干个部分，在不改变程序最终运行结果的情况下，这些部分被乱序地执行。并发执行的多个部分会共享资源。&lt;/p&gt;
 &lt;h2 id=&#34;state-machine&#34;&gt;State Machine&lt;/h2&gt;
 &lt;p&gt;在单线程视角中，C 程序的状态机包括全局变量，堆区，栈帧列表等。全局变量和堆区的内容是全局的，是所有函数共享的，理应作为共享资源；栈帧中的变量都是局部变量，栈帧与栈帧之间独立性较强，可以交给多个线程。&lt;/p&gt;
@@ -2548,9 +2548,9 @@ movl (y), %eax # --+
     
     <item>
       <title>Lecture 04: Understanding Concurrent Programs</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec04/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec04/</guid>
       <description>&lt;p&gt;互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。&lt;/p&gt;
 &lt;p&gt;对于 &lt;code&gt;sum.c&lt;/code&gt; ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-diff&#34;&gt;void Tsum()
@@ -2612,7 +2612,7 @@ retry:
 &lt;li&gt;……&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;一个完备的证明方法是画状态机。我们设置状态机 $(PC_1, PC_2, x, y, turn,status)$，六个状态分别表示 T1/T2 执行到第几行，T1/T2 的旗子有没有举起来，当前厕所门上写的是谁的名字，以及当前厕所状态。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/njuos-lec06.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/njuos-lec06.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我们还可以写一个小程序验证 Peterson：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#define BARRIER __sync_synchronize()	
 void critical_section() {
@@ -2705,9 +2705,9 @@ print(h.__next__())
     
     <item>
       <title>Lecture 05: Concurrent Programming: Mutex</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec05/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec05/</guid>
       <description>&lt;p&gt;从 high level 来看，我们希望实现如下的结构体和 API：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;typdef struct
 {
@@ -2889,9 +2889,9 @@ syscall(SYSCALL_unlock, &amp;amp;lk);	// 释放lk，并唤醒正在等待lk的�
     
     <item>
       <title>Lecture 06: Concurrent Programming: Synchronization</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec06/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec06/</guid>
       <description>&lt;p&gt;线程同步：在某个时间点共同达到互相已知的状态。(每个线程都有可能做自己的某个耗时很长的工作)&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;nnpy：等我洗完头就吃饭/等我打完游戏就吃饭。&lt;/li&gt;
@@ -3380,9 +3380,9 @@ void Twaiter() {
     
     <item>
       <title>Lecture 07: Concurrent Programming: Real World</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec07/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec07/</guid>
       <description>&lt;h2 id=&#34;high-performance-computing&#34;&gt;High Performance Computing&lt;/h2&gt;
 &lt;p&gt;HPC: 解决需要 massive computation 的任务。&lt;/p&gt;
 &lt;p&gt;基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 &amp;ldquo;join()&amp;rdquo; 汇总一下 (涉及线程、机器、共享内存之间的通信)。&lt;/p&gt;
@@ -3558,9 +3558,9 @@ func main() {
     
     <item>
       <title>Lecture 08: Concurrent Bugs and Confrontation</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec08/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec08/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec08/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec08/</guid>
       <description>&lt;p&gt;Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。&lt;/p&gt;
 &lt;h2 id=&#34;defensive-programming&#34;&gt;Defensive Programming&lt;/h2&gt;
 &lt;p&gt;一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。&lt;/p&gt;
@@ -3729,9 +3729,9 @@ while (xchg(&amp;amp;locked, 1)) {
     
     <item>
       <title>Lecture 09: State Machine of OS</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec09/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec09/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec09/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec09/</guid>
       <description>&lt;h2 id=&#34;bare-metal--software&#34;&gt;Bare-metal &amp;amp; Software&lt;/h2&gt;
 &lt;p&gt;数字电路本身就是一个巨大的状态机。硬件厂商会保证 CPU reset 后处理器处在一个确定的状态，各个单元的固定的值会写在手册中。以 x86 为例，手册规定了 CPU reset 后 rip 的值会是 0xfff0，EFLAGS 的值为 0x2，当前硬件运行在 16-bit 模式中，不响应中断。&lt;/p&gt;
 &lt;p&gt;CPU 只是一个周而复始的取值译码执行的东西，因此它马上会做的事情就是取出 0xfff0 处的指令并执行。0xfff0 处通常是一个跳转指令，PC 会跳转到固件代码执行。固件 (Firmware) 是硬件厂商写死在一块 ROM 上的代码，常见的固件程序有 BIOS 和 UEFI 两种，后者更加现代机制更加复杂，这里简介 Legacy BIOS 的过程：&lt;/p&gt;
@@ -3801,7 +3801,7 @@ gdb -x remote.gdb ; kill -9 $!
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;整个系统的状态机大致可以看成如下过程：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/njuos-lec09.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/njuos-lec09.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;code-abstractmachine&#34;&gt;Code: AbstractMachine&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Unix Philosophy&lt;/strong&gt;&lt;/p&gt;
@@ -3929,9 +3929,9 @@ $1 = {e_ident = &amp;quot;\177ELF\002\001\001\000\000\000\000\000\000\000\000&am
     
     <item>
       <title>Lecture 10: Application of State Machines</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec10/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec10/</guid>
       <description>&lt;h2 id=&#34;compilers-and-modern-cpu&#34;&gt;Compilers and Modern CPU&lt;/h2&gt;
 &lt;p&gt;编译器的作用是将源代码状态机 $S$ 转换为二进制代码状态机 $C$：$C=Compile(S)$。只要两者的可观测行为严格一致，编译器可以随意修改指令执行的顺序，甚至修改指令内容。&lt;/p&gt;
 &lt;p&gt;现代 CPU 本质上也是“编译器”：只要保证硬件状态机的可观测行为一致，它可以乱序执行，可以多发射，还可以将没有依赖关系的指令“并行”地执行，这就是指令级并行 (instruction level parallelism, ilp)。我们可以用一个例子感受超标量处理器 (CPI&amp;lt;1，平均每条指令所需的时钟周期小于 1) 的威力：&lt;/p&gt;
@@ -4058,9 +4058,9 @@ if (x &amp;gt; y)
     
     <item>
       <title>Lecture 11: Processes in Operating Systems</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec11/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec11/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec11/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec11/</guid>
       <description>&lt;p&gt;在 &lt;code&gt;thread-os.c&lt;/code&gt; 中，操作系统启动后会初始化若干个线程 (的状态机)，或者说加载若干个程序。真正的操作系统启动后会创建第一个进程。如果查看 Linux 的源码，我们可以看到：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;if (!try_to_run_init_process(&amp;quot;/sbin/init&amp;quot;) ||
 	    !try_to_run_init_process(&amp;quot;/etc/init&amp;quot;) ||
@@ -4131,7 +4131,7 @@ int main() {
 }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;运行这段程序，我们可以看到所有的 8 种可能的结果：进程号是 0 / 真实值。我们可以画出状态机中的一条路径来理解这个输出 (即不考虑多个进程时程序的 non-deterministic 行为，总是挑选可以继续执行的进程号最小的进程走下一步)：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/njuos-lec11.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/njuos-lec11.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;example-fork-printfc&#34;&gt;Example: &lt;code&gt;fork-printf.c&lt;/code&gt;&lt;/h3&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// fork-printf.c
 #include &amp;lt;stdio.h&amp;gt;
@@ -4278,9 +4278,9 @@ int main(int argc, char *argv[]) {
     
     <item>
       <title>Lecture 12: Address Space of Processes</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec12/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec12/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec12/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec12/</guid>
       <description>&lt;h2 id=&#34;address-space&#34;&gt;Address Space&lt;/h2&gt;
 &lt;p&gt;在 C 程序中，我们可以用指针访问任何可以访问的东西：比如 main() 函数的首地址，这个地址存储的内容就是 main() 的第一条指令。如果我们随便访问一个奇怪的地址，我们会得到段错误；如果我们往 main() 的首地址处写东西，我们也会得到段错误。&lt;/p&gt;
 &lt;p&gt;命令行工具 pmap 可以帮助我们观察一个进程的地址空间。我们以最小的程序 &lt;code&gt;minimal.S&lt;/code&gt; 为例，在 GDB 中调试时可以用 &lt;code&gt;info inferiors&lt;/code&gt; 查看进程号，并用 &lt;code&gt;pmap pid&lt;/code&gt; 来查看地址空间：&lt;/p&gt;
@@ -4606,9 +4606,9 @@ int main() {
     
     <item>
       <title>Lecture 13: System Calls and UNIX Shell</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec13/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec13/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec13/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec13/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;我们是操作系统用户，但操作系统 API 并不是我们作为人类用户直接使用的，那么“我们”到底应该怎么使用操作系统？&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4763,9 +4763,9 @@ int main() {
     
     <item>
       <title>Lecture 14: C Library</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec14/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec14/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec14/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec14/</guid>
       <description>&lt;p&gt;&lt;code&gt;sh-xv6.c&lt;/code&gt; 可以在 freestanding 的环境下直接运行：我们最终使用 &lt;code&gt;ld sh-xv6.o -o sh&lt;/code&gt; 生成二进制文件，这意味着二进制文件中有且仅有 &lt;code&gt;sh-xv6.o&lt;/code&gt; 中的函数。&lt;/p&gt;
 &lt;p&gt;我们平时在编写程序的时候显然不希望在 freestanding 的环境下编程——联想我们在 &lt;code&gt;sh-xv6.c&lt;/code&gt; 中，读取字符串都要用內联汇编的系统调用，这太糟糕了。我们自然而然地希望有一些封装好的库函数可以使用。&lt;/p&gt;
 &lt;h2 id=&#34;libc-overview&#34;&gt;Libc: Overview&lt;/h2&gt;
@@ -4906,9 +4906,9 @@ system(&amp;quot;echo hello world&amp;quot;);
     
     <item>
       <title>Lecture 15: More about fork()</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec15/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec15/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec15/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec15/</guid>
       <description>&lt;h2 id=&#34;fork-semantics&#34;&gt;&lt;code&gt;fork()&lt;/code&gt; Semantics&lt;/h2&gt;
 &lt;p&gt;fork() 的语义是将当前进程的状态机完整地复制一份，这两个进程除了 fork() 的返回值以外全部相同。&lt;/p&gt;
 &lt;h3 id=&#34;file-descriptors&#34;&gt;File Descriptors&lt;/h3&gt;
@@ -5128,9 +5128,9 @@ void display() {
     
     <item>
       <title>Lecture 16: Executable Files</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec16/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec16/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec16/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec16/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;本节课默认只有静态链接。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -5388,9 +5388,9 @@ struct symbol {uint32_t offset, const char *name;}
     
     <item>
       <title>Lecture 17: Linking and Loading</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec17/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec17/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec17/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec17/</guid>
       <description>&lt;h2 id=&#34;static-loader&#34;&gt;Static Loader&lt;/h2&gt;
 &lt;h3 id=&#34;loader-on-os&#34;&gt;Loader on OS&lt;/h3&gt;
 &lt;p&gt;可执行文件是一个描述了状态机的初始状态的数据结构。加载器根据可执行文件的描述设置好初始状态机。我们很容易写一个静态加载器：&lt;/p&gt;
@@ -6027,9 +6027,9 @@ static void dlload(struct symbol *sym) {
     
     <item>
       <title>Lecture 18: Xv6 Code Guide</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec18/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec18/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec18/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec18/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;Xv6 中的 &lt;code&gt;.d&lt;/code&gt; &lt;code&gt;.sym&lt;/code&gt; &lt;code&gt;.asm&lt;/code&gt; 文件是什么？&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -6065,9 +6065,9 @@ static void dlload(struct symbol *sym) {
     
     <item>
       <title>Lecture 19: Context Switching</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec19/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec19/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec19/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec19/</guid>
       <description>&lt;p&gt;如果我们的用户程序有死循环，计算机并不会被卡死——因为操作系统有进程调度；但操作系统有对整个计算机完全的掌控权，如果在操作系统代码中加一个死循环，那计算机就真的卡死了。&lt;/p&gt;
 &lt;h2 id=&#34;virtualization-of-cpus&#34;&gt;Virtualization of CPUs&lt;/h2&gt;
 &lt;p&gt;每一个进程都是一个状态机，其中有寄存器、内存，看内存的 &amp;ldquo;VR 眼镜&amp;rdquo; (页表) 等等。操作系统是一个状态机的管理者：它要维护各个进程的状态机，此外内核对应的状态机也归 OS 管理。正在运行的状态机的状态保存在硬件上 (CPU, DRAM)，其他未运行的进程的状态机以某种方式被暂存起来。&lt;/p&gt;
@@ -6079,9 +6079,9 @@ static void dlload(struct symbol *sym) {
     
     <item>
       <title>Lecture 20: Scheduling</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec20/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec20/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec20/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec20/</guid>
       <description>&lt;p&gt;处理器调度问题的简单假设 (1960s)：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;系统中有一个处理器&lt;/li&gt;
@@ -6204,9 +6204,9 @@ void low()    {mutex_lock();}
     
     <item>
       <title>Lecture 21: OS Design</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec21/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec21/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec21/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec21/</guid>
       <description>&lt;p&gt;操作系统的设计：一组对象+访问对象的 API；操作系统的实现：一个 C 程序完成上面的设计&lt;/p&gt;
 &lt;p&gt;我们关心的问题是：操作系统到底应该提供什么样的对象和 API？&lt;/p&gt;
 &lt;h2 id=&#34;monolithic-kernel&#34;&gt;Monolithic Kernel&lt;/h2&gt;
@@ -6257,9 +6257,9 @@ void low()    {mutex_lock();}
     
     <item>
       <title>Lecture 22: OSLab Speedrun</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec22/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec22/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec22/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec22/</guid>
       <description>&lt;h2 id=&#34;l1&#34;&gt;L1&lt;/h2&gt;
 &lt;p&gt;一把大锁保平安策略：全局用一把锁，把所有需要保护的代码都用 &lt;code&gt;atomic {}&lt;/code&gt; 框起来。&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#define atomic \
@@ -6462,9 +6462,9 @@ void pagefault(Event e, Context *c) {
     
     <item>
       <title>Lecture 23: 1Bit Storage</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec23/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec23/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec23/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec23/</guid>
       <description>&lt;p&gt;机器指令模型只有两种当前状态：寄存器和物理内存。这些状态在物理世界中应当有真实的对应。我们的需求是：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;可以寻址：比如可以根据编号访问某个单元格。&lt;/li&gt;
@@ -6551,9 +6551,9 @@ void pagefault(Event e, Context *c) {
     
     <item>
       <title>Lecture 24: I/O Devices</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec24/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec24/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec24/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec24/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;用户直接使用的其实并不是计算设备，而是 I/O 设备。CPU 只是一个无情的指令执行器，我们希望计算机可以感知外部世界的状态，并对外实施动作。&lt;/p&gt;
 &lt;p&gt;I/O 设备就是与 CPU 交换数据的一组接口。I/O 设备会提供“几条约定好功能的线”，CPU 与设备通过握手信号可以从线上读出或写入数据。通常来说，CPU 和 I/O 设备交互的数据主要有状态 (比如 CPU 查看打印机是否空闲)，指令 (比如 CPU 让显示屏发光) 和数据 (比如 CPU 告诉打印机应该打印什么)。&lt;/p&gt;
@@ -6709,9 +6709,9 @@ int main() {
     
     <item>
       <title>Lecture 25: Device Drivers</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec25/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec25/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec25/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec25/</guid>
       <description>&lt;p&gt;在操作系统眼里，I/O 设备 = 一组寄存器 + 一个控制协议。不同设备的控制协议千差万别，如果让软件直接和这些设备寄存器打交道，即使操作系统仔细地管理好访问权限，应用程序也很容易出错。所以我们的想法是：对不同的设备做一个抽象，使得上层应用可以通过尽可能统一的接口来访问设备。&lt;/p&gt;
 &lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;I/O 设备最基本的需求就是 read 和 write。UNIX 世界里的设备通常分为两种：&lt;/p&gt;
@@ -6971,9 +6971,9 @@ int main() {
     
     <item>
       <title>Lecture 26: File System API</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec26/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec26/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec26/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec26/</guid>
       <description>&lt;h2 id=&#34;why-file-system&#34;&gt;Why File System?&lt;/h2&gt;
 &lt;p&gt;如果设备直接将读/写/控制的接口暴露给应用程序，那么多个应用程序在并发地使用设备时很容易发生竞争。我们考虑下面的例子：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// printf-race.c
@@ -7101,9 +7101,9 @@ read(fd, buf, 512)
     
     <item>
       <title>Lecture 27: FAT and UNIX File System</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec27/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec27/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec27/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec27/</guid>
       <description>&lt;p&gt;数据结构课的一些潜藏的假设：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;random access memory，word addressing (不同于磁盘，磁盘是以块为单位访问的)&lt;/li&gt;
@@ -7154,9 +7154,9 @@ void bwrite(int id, const struct block *buf) {
     
     <item>
       <title>Lecture 28: Reliability of Persistent Storage</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec28/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec28/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec28/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec28/</guid>
       <description>&lt;p&gt;内存在掉电后丢失数据是可以被接受的，但在持久化存储设备上我们必须保证数据的可靠性。硬盘损坏虽然是小概率事件，但只要有大量的重复 (比如数据中心)，这类事情还是经常发生的。我们希望即使发生这样的事情，系统仍然能照常运转。&lt;/p&gt;
 &lt;h2 id=&#34;raid&#34;&gt;RAID&lt;/h2&gt;
 &lt;p&gt;Redundant Array of Inexpensive Disks 的核心思想是：把多个 (不可靠的) 虚拟磁盘虚拟成一块非常可靠且性能极高的虚拟磁盘。RAID 的虚拟化是一种“反向”的虚拟化：我们之前接触的虚拟化，比如进程把一个 CPU 分时虚拟成多个 virtual CPU，虚拟内存把一份内存通过 MMU 虚拟成多个 virtual address space，文件把一个物理设备虚拟成多个 virtual disk……而 RAID 是 $多\to 1$ 的虚拟化。&lt;/p&gt;
@@ -7175,7 +7175,7 @@ void bwrite(int id, const struct block *buf) {
 &lt;p&gt;但这个设计有一个微妙的缺陷：它应对随机读写的效果较差。假设我们有多次随机的写操作，我们会发现每次写操作都要奇偶校验盘 $D$ 中的数据进行修改。此外因为 $D_i=A_i\oplus B_i\oplus C_i$，所以我们还没法直接去修改 $D_i$，假设我们现在要修改 $A_1$，那么我们必须先 &lt;code&gt;bread(A1, D1)&lt;/code&gt;，然后 &lt;code&gt;D1^=A1&lt;/code&gt;，将 &lt;code&gt;A1&lt;/code&gt; 修改为 &lt;code&gt;A1&#39;&lt;/code&gt; 后，&lt;code&gt;D1&#39;=D1^A1&#39;&lt;/code&gt;，最后 &lt;code&gt;bwrite(A1, D1)&lt;/code&gt;。每次随机写 (不论是 $A,B,C$ 中的哪一个盘)，我们都要对 $D$ 一读一写，奇偶校验盘成为了性能瓶颈。&lt;/p&gt;
 &lt;h3 id=&#34;raid-5&#34;&gt;RAID-5&lt;/h3&gt;
 &lt;p&gt;RAID-5 的设计非常聪明：我们不用单独安排一块盘作为奇偶校验盘，我们可以把奇偶检验的信息分散到各各盘上去，每块盘上既有数据也有校验：&lt;/p&gt;
-&lt;img src=&#34;/img/raid5.png&#34; alt=&#34;RAID5&#34; style=&#34;zoom: 33%;&#34; /&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/raid5.png&#34; alt=&#34;RAID5&#34; style=&#34;zoom: 33%;&#34; /&gt;
 &lt;p&gt;在连续读写上，$n$ 块盘可以达到 $n-1$ 块的带宽 (每 $n$ 个 block 就有一个是冗余的校验 block)，在随机读上，由于每个盘都存储了数据，因此带宽接近 100%。在随机写上，校验信息的读写仍然是瓶颈，但由于校验信息的修改被平摊到了所有盘的头上，所以基本可以保证随着盘数量的增多效率提高，有 scalability。&lt;/p&gt;
 &lt;h2 id=&#34;crash-consistency&#34;&gt;Crash Consistency&lt;/h2&gt;
 &lt;p&gt;另一种 Fault model：磁盘并没有故障，但操作系统可能会 crash (比如掉电)。即使是文件系统中的简单操作也可能涉及若干个 block，如果我们在一轮操作的中途掉电，那么文件系统就会进入一个 inconsistent 的状态，这样的状态可能导致严重的错误或安全问题。磁盘本身无法直接支持原子操作 (all or nothing)，甚至为了效率它不会保证 bwrite 操作是按顺序进行的 (因此 block layer 还额外提供了 bflush 操作来保证数据落盘 (和并发中的 barrier(mfence) 是类似的) )。&lt;/p&gt;
@@ -7210,9 +7210,9 @@ void bwrite(int id, const struct block *buf) {
     
     <item>
       <title>Lecture 29: Xv6 File System Implementation</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec29/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec29/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec29/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec29/</guid>
       <description>&lt;h2 id=&#34;review&#34;&gt;Review&lt;/h2&gt;
 &lt;p&gt;文件系统 = 图书馆&lt;/p&gt;
 &lt;ul&gt;
@@ -7272,9 +7272,9 @@ gdb.execute(&#39;quit&#39;)
     
     <item>
       <title>Lecture 30: Modern Storage System</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec30/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec30/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec30/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec30/</guid>
       <description>&lt;h2 id=&#34;abilities-and-limitations-of-fs&#34;&gt;Abilities and Limitations of FS&lt;/h2&gt;
 &lt;p&gt;OJ 最简单的实现方式可以就是一个文件系统。比如 OS2022 课程的学生名单存放在 &lt;code&gt;/OS2022/students.csv&lt;/code&gt; 中，向 Lab1 提交的代码以一个压缩包的形式存放在 &lt;code&gt;/OS2022/L1/studentid/xxxxxxxx.tar.bz2&lt;/code&gt; 中。OJ 的前端和后端部署在不同的机器上，后端机器通过 ssh 连接前端，扫描文件系统寻找符合格式的提交拉回后台，评测以后发送一个 &lt;code&gt;.tar.bz2.result&lt;/code&gt; 文件给前端，前端就可以将评测结果显示出来。&lt;/p&gt;
 &lt;p&gt;使用文件系统的最大好处是简单：我们有海量的 UNIX 工具/标准库可以处理文件。比如查询某个同学的提交可以使用如下 python 代码：&lt;/p&gt;
@@ -7318,7 +7318,7 @@ COMMIT;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;例子：稍大型的 Online Judge&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;数据库需要保证 ACID - Atomicity, Consistency, Isolation, Durability。对于数千个连接的并发事务，数据库要在保证并发正确性的基础上提升查询效率。一个典型的简单应用场景是 Online Judge：&lt;/p&gt;
-&lt;center&gt;&lt;img src=&#34;/img/APIO-OJ.png&#34; alt=&#34;APIO-OJ&#34; style=&#34;zoom:33%;&#34; /&gt;&lt;/center&gt;
+&lt;center&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/APIO-OJ.png&#34; alt=&#34;APIO-OJ&#34; style=&#34;zoom:33%;&#34; /&gt;&lt;/center&gt;
 &lt;p&gt;比赛中 Online Judge 评测结果的即时性要求很高，因此我们要组建一个小的分布式系统来并行地评测多组数据。上图所示系统的工作原理是：100 个 worker 负责评测，supervisor 负责给 worker 分配任务 (supervisor 会不断 ping 各个 worker 以了解机器实时的状态)，所有的数据都存储在 database 中。supervisor 和所有的 worker 与数据库相连。当 Online Judge 前端接收到一个新的提交后，他会把文件存储到数据库中，supervisor 会指挥一个 worker 把源代码从数据库拉到本地编译，并将可执行文件传回数据库。接着 supervisor 指挥一部分 worker 从数据库中获取可执行文件 (这一瞬间会产生一个很大的带宽)，然后执行对应的测试数据，worker 将执行结果发送给数据库保存。最后前端从数据库中查询所有测试点的运行结果并显示在网页上。&lt;/p&gt;
 &lt;p&gt;从这个例子中我们可以看到数据库作为整个系统的存储枢纽，其可靠性，处理大量并发事务的效率等是整个系统能力的关键。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -7336,9 +7336,9 @@ COMMIT;
     
     <item>
       <title>Chapter 02: Introduction to Operating Systems</title>
-      <link>/posts/booknotes/ostep/ch02/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch02/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch02/</guid>
       <description>&lt;p&gt;操作系统：为上层多个应用程序的正常运行提供支持。操作系统实现这一目的的重要方法是虚拟化：将硬件资源抽象成简单易用的虚拟资源。为了方便上层应用程序使用这些资源，操作系统会提供数百个系统调用。从这个角度来看，操作系统也很像一个标准库。&lt;/p&gt;
 &lt;!-- more --&gt;
 &lt;h2 id=&#34;21-virtualizing-the-cpu&#34;&gt;2.1 Virtualizing The CPU&lt;/h2&gt;
@@ -7400,9 +7400,9 @@ mov register, &amp;amp;counter
     
     <item>
       <title>Chapter 04: The Abstraction: The Process</title>
-      <link>/posts/booknotes/ostep/ch04/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch04/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch04/</guid>
       <description>&lt;p&gt;进程就是正在运行的程序。程序本身只是存储在硬盘上的指令和数据的集合，只有 OS 将其加载到内存中运行起来时程序才会发挥作用。&lt;/p&gt;
 &lt;p&gt;通常操作系统上会运行多个程序 - 比 CPU 核个数更多的程序。但每个程序并不需要关心 CPU 当前是否可用，这是因为 OS 为进程虚拟化了 CPU。OS 的基本操作是运行一个进程，然后暂停它去运行一会儿另外一个进程，这是分是运行的基本思想。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;p&gt;为了实现 CPU 的虚拟化，OS 既需要底层的机制，也需要上层的智慧。所谓&lt;strong&gt;机制 (mechanism)&lt;/strong&gt; 指的是实现某个功能所需要的一些底层的方法或协议。比如操作系统为了实现进程的切换，必须要有上下文切换的机制。分时运行也是一种机制，被所有的现代操作系统采用。&lt;/p&gt;
@@ -7511,9 +7511,9 @@ struct proc {
     
     <item>
       <title>Chapter 05: Interlude: Process API</title>
-      <link>/posts/booknotes/ostep/ch05/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch05/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch05/</guid>
       <description>&lt;h2 id=&#34;51-the-fork-system-call&#34;&gt;5.1 The &lt;code&gt;fork()&lt;/code&gt; System Call&lt;/h2&gt;
 &lt;p&gt;fork() 系统调用会创建一个和当前进程完全相同的子进程，这两个进程除了 fork() 的返回值不同，其他完全相同。fork() 在父进程中返回子进程的进程号，在子进程中返回 0，这可以用于区分两个进程。&lt;/p&gt;
 &lt;p&gt;
@@ -7546,9 +7546,9 @@ struct proc {
     
     <item>
       <title>Chapter 13: The Abstraction: The Address Space</title>
-      <link>/posts/booknotes/ostep/ch13/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch13/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch13/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch13/</guid>
       <description>&lt;h2 id=&#34;131-early-systems&#34;&gt;13.1 Early Systems&lt;/h2&gt;
 &lt;p&gt;早期的系统非常简单，操作系统没有为程序提供任何的抽象，整个计算机中只有一个物理地址空间，操作系统代码以及操作系统为程序提供的一些库函数存放在内存中，此外还有一个运行的程序，它可以使用剩下的内存。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;h2 id=&#34;132-multiprogramming-and-time-sharing&#34;&gt;13.2 Multiprogramming and Time Sharing&lt;/h2&gt;
@@ -7596,9 +7596,9 @@ location of stack : 0x7ffd13ff4374
     
     <item>
       <title>Chapter 14: Interlude: Memory API</title>
-      <link>/posts/booknotes/ostep/ch14/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch14/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch14/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch14/</guid>
       <description>&lt;h2 id=&#34;141-types-of-memory&#34;&gt;14.1 Types of Memory&lt;/h2&gt;
 &lt;p&gt;在一个 C 程序中，程序使用的内存有两种：&lt;/p&gt;
 &lt;ul&gt;
@@ -7684,9 +7684,9 @@ strcpy(dst, src);
     
     <item>
       <title>Chapter 17: Free Space Management</title>
-      <link>/posts/booknotes/ostep/ch17/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch17/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch17/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch17/</guid>
       <description>&lt;p&gt;动态大小的内存分配是比较困难的：随着反复的分配和释放，空闲内存会被切分成很多碎片，此时即使空闲空间的总量大于某个分配需求，分配也可能因为剩余空间过于碎片化而失败。因此，我们在管理空闲空间时要兼顾效率、空闲空间连续性、内存消耗等多方面因素。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;h2 id=&#34;171-assumptions&#34;&gt;17.1 Assumptions&lt;/h2&gt;
 &lt;p&gt;这里我们假设内存申请和释放的接口和 C 库中的 malloc()/free() 相同：&lt;/p&gt;
@@ -7734,9 +7734,9 @@ void free(void *ptr);
     
     <item>
       <title>Chapter 26: Concurrency: An Introduction</title>
-      <link>/posts/booknotes/ostep/ch26/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch26/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch26/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch26/</guid>
       <description>&lt;p&gt;一个多线程程序会有多个执行流，即有好几个 PC 并发/并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。&lt;/p&gt;
 &lt;p&gt;虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为 thread-local storage。&lt;/p&gt;
 &lt;!-- more --&gt;
@@ -7784,9 +7784,9 @@ mov %eax, (addr)
     
     <item>
       <title>Chapter 27: Interlude: Thread API</title>
-      <link>/posts/booknotes/ostep/ch27/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch27/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch27/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch27/</guid>
       <description>&lt;h2 id=&#34;271-thread-creation&#34;&gt;27.1 Thread Creation&lt;/h2&gt;
 &lt;p&gt;创建线程的 API 为&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;int pthread_create(      pthread_t      *thread, 
@@ -7893,9 +7893,9 @@ int pthread_cond_signal(pthread_cond_t *cond);
     
     <item>
       <title>Chapter 29: Lock-based Concurrent Data Structures</title>
-      <link>/posts/booknotes/ostep/ch29/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch29/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch29/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch29/</guid>
       <description>&lt;h2 id=&#34;291-concurrent-counters&#34;&gt;29.1 Concurrent Counters&lt;/h2&gt;
 &lt;p&gt;一个最简单的 thread-safe 的计数器实现如下 (用锁保护每次读写)：&lt;/p&gt;
 &lt;!-- more --&gt;
@@ -8048,9 +8048,9 @@ int Hash_Lookup(hash_t *H, int key) {
     
     <item>
       <title>Chapter 30: Condition Variables</title>
-      <link>/posts/booknotes/ostep/ch30/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch30/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch30/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch30/</guid>
       <description>&lt;p&gt;很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：&lt;!-- more --&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;volatile int done = 0;
 
@@ -8199,9 +8199,9 @@ void free(void *ptr, int size) {
     
     <item>
       <title>Chapter 31: Semaphores</title>
-      <link>/posts/booknotes/ostep/ch31/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch31/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch31/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch31/</guid>
       <description>&lt;p&gt;信号量的概念最早由 Dijkstra 提出，它既可以作为锁使用也可以作为条件变量使用。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;h2 id=&#34;311-semaphores-a-definition&#34;&gt;31.1 Semaphores: A Definition&lt;/h2&gt;
 &lt;p&gt;使用一个信号量之前我们要定义其初始值：&lt;/p&gt;
@@ -8433,9 +8433,9 @@ void zem_post(zem_t *z) {
     
     <item>
       <title>Chapter 36: I/O Devices</title>
-      <link>/posts/booknotes/ostep/ch36/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch36/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch36/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch36/</guid>
       <description>&lt;p&gt;输入输出对于计算机来说非常重要：如果没有输入，计算机每次输出的都是相同的结果；如果没有输出，那我们让计算机运行程序的目的是什么呢？因此我们的问题是如何将 Input/Output 融入计算机系统。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;h2 id=&#34;361-system-architecture&#34;&gt;36.1 System Architecture&lt;/h2&gt;
 &lt;p&gt;一个经典的计算机系统的结构布局如下图所示：&lt;/p&gt;
@@ -8544,9 +8544,9 @@ void ide_intr() {
     
     <item>
       <title>Chapter 38: Redundant Arrays of Inexpensive Disks (RAIDs)</title>
-      <link>/posts/booknotes/ostep/ch38/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch38/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch38/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch38/</guid>
       <description>&lt;p&gt;我们对磁盘有三个维度的需求：我们希望它读写速度快 (I/O 操作速度慢，因而成为整个系统的速度瓶颈)，我们希望它容量大，我们还希望它可靠 (如果发生磁盘损坏，仍然能恢复数据)。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;p&gt;本章节主要介绍 Redundant Arrays of Inexpensive Disks (RAIDs) 技术，它的核心思想是用多块物理磁盘去构建一个大容量的，高速的，可靠性高的磁盘。对外来看，RAID 虚拟出了一块可读可写的磁盘；在其内部，RAID 由一个非常复杂的系统构成，包含了若干个物理磁盘和一个或多个用于控制的芯片，可以说 RAID 内部就是一个小型的计算机系统。&lt;/p&gt;
 &lt;p&gt;RAID 的优点在于：它可以通过多块磁盘并行的读写来提供很好的 performance；通过叠加磁盘的数量来获得 capacity；通过存储一部分的冗余数据来保证数据的 reliability。更重要的是，RAID 可以透明地提供这些优势，这里透明的意思是对于其他硬件/OS来说，RAID 看上去就像是一整块普通的磁盘。整个系统的其他部分不需要做任何修改就可以兼容 RAID。这一点极大地提升了 RAID 的可部署性 (deployability)。用户可以放心地将自己现有的磁盘更换成 RAID，不需要担心兼容问题。&lt;/p&gt;
@@ -8930,9 +8930,9 @@ Offset = A / numbre_of_disks;
     
     <item>
       <title>Chapter 40: File System Implementation</title>
-      <link>/posts/booknotes/ostep/ch40/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/ch40/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/ch40/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/ch40/</guid>
       <description>&lt;p&gt;文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。&lt;!-- more --&gt;&lt;/p&gt;
 &lt;h2 id=&#34;401-the-way-to-think&#34;&gt;40.1 The Way To Think&lt;/h2&gt;
 &lt;p&gt;设计文件系统我们通常考虑两件事情：&lt;/p&gt;
@@ -9055,9 +9055,9 @@ sector = ((blk * blockSize) + inodeStartAddr) / sectorSize;
     
     <item>
       <title>Homework 1</title>
-      <link>/posts/coursenotes/nju-probability/hw1/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/hw1/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/hw1/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/hw1/</guid>
       <description>&lt;h2 id=&#34;problem-11&#34;&gt;Problem 1.1&lt;/h2&gt;
 &lt;p&gt;解：(1) $A_1\cap \overline{A_2}\cap \overline{A_3}$。&lt;/p&gt;
 &lt;p&gt;(2) $A_1\cup A_2\cup A_3$。&lt;/p&gt;
@@ -9161,9 +9161,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Homework 2</title>
-      <link>/posts/coursenotes/nju-probability/hw2/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/hw2/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/hw2/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/hw2/</guid>
       <description>&lt;h2 id=&#34;problem-21&#34;&gt;Problem 2.1&lt;/h2&gt;
 &lt;p&gt;解：
 $$
@@ -9343,9 +9343,9 @@ $$
     
     <item>
       <title>Homework 26</title>
-      <link>/posts/booknotes/ostep/hw26/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/hw26/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/hw26/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/hw26/</guid>
       <description>&lt;h2 id=&#34;questions&#34;&gt;Questions&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;Let’s examine a simple program, “loop.s”. First, just read and understand it. Then, run it with these arguments (&lt;code&gt;./x86.py -p loop.s -t 1 -i 100 -R dx&lt;/code&gt;) This specifies a single thread, an interrupt every 100 instructions, and tracing of register %dx. What will %dx be during the run? Use the -c flag to check your answers; the answers, on the left, show the value of the register (or memory value) after the instruction on the right has run. &lt;!-- more --&gt;&lt;/li&gt;
@@ -9477,9 +9477,9 @@ halt
     
     <item>
       <title>Homework 27</title>
-      <link>/posts/booknotes/ostep/hw27/</link>
+      <link>https://kristoff-starling.github.io/posts/booknotes/ostep/hw27/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/booknotes/ostep/hw27/</guid>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/ostep/hw27/</guid>
       <description>&lt;h2 id=&#34;questions&#34;&gt;Questions&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;First build main-race.c. Examine the code so you can see the (hopefully obvious) data race in the code. Now run helgrind (by typing valgrind &amp;ndash;tool=helgrind main-race) to see how it reports the race. Does it
@@ -9563,9 +9563,9 @@ Lock at 0x10C080 was first observed
     
     <item>
       <title>问题求解 II - Final 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/ii-final/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/ii-final/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/ii-final/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/ii-final/</guid>
       <description>&lt;h2 id=&#34;a-为世界所有美好而战&#34;&gt;A. 为世界所有美好而战&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -9608,9 +9608,9 @@ Lock at 0x10C080 was first observed
     
     <item>
       <title>Lab 00: AM Game</title>
-      <link>/posts/coursenotes/nju-operating-system/labs/lab00/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab00/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/labs/lab00/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab00/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的主要目的是在 abstract-machine 抽象的 bare-metal 上编写一个小游戏。笔者实现的小游戏是贪吃蛇。&lt;/p&gt;
 &lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;
@@ -9659,9 +9659,9 @@ Lock at 0x10C080 was first observed
     
     <item>
       <title>Lab 01: Physical Memory Manager</title>
-      <link>/posts/coursenotes/nju-operating-system/labs/lab01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab01/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/labs/lab01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab01/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。以下主要记录一些有趣的设计/性能调优经历。&lt;/p&gt;
 &lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;
@@ -9731,9 +9731,9 @@ typedef struct __header_t {
     
     <item>
       <title>Lab 02: Kernel Multi-Threads</title>
-      <link>/posts/coursenotes/nju-operating-system/labs/lab02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab02/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/labs/lab02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab02/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的主要内容是实现内核线程的调度。本实验报告主要记录一些有趣的设计和测试方法。&lt;/p&gt;
 &lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;
@@ -9795,9 +9795,9 @@ typedef struct __header_t {
     
     <item>
       <title>Lab 03: User Level Processes</title>
-      <link>/posts/coursenotes/nju-operating-system/labs/lab03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab03/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/labs/lab03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab03/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的主要内容是实现用户进程。用户进程可以理解为套上了虚拟内存的线程，因此我们需要引入 VME 系列的 API。本实验报告主要记录一些有趣的设计和遇到的 bug。&lt;/p&gt;
 &lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;
@@ -9836,9 +9836,9 @@ x86_64-linux-gnu-objcopy -S -j .text* -j.rodata* -j .data* -j .bss* --set-sectio
     
     <item>
       <title>Lecture 01: Probability Space</title>
-      <link>/posts/coursenotes/nju-probability/lec01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec01/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec01/</guid>
       <description>&lt;p&gt;我们可以通过随机试验来研究随机现象。随机试验应当具有以下特点：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;相同条件下可重复；&lt;/li&gt;
@@ -9906,9 +9906,9 @@ $$
     
     <item>
       <title>Lecture 02: Classical Probability and Geometric Probability</title>
-      <link>/posts/coursenotes/nju-probability/lec02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec02/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec02/</guid>
       <description>&lt;h2 id=&#34;classical-probability&#34;&gt;Classical Probability&lt;/h2&gt;
 &lt;p&gt;古典概型的特点：&lt;/p&gt;
 &lt;ul&gt;
@@ -9949,7 +9949,7 @@ $$
 &lt;p&gt;【例】甲乙两人各在 1h 内随机一个时间点到达约会地点，先到的人最多等后到的人 15 分钟，求两人碰面的概率。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;解：用数对 $(x,y)$ 表示甲乙两人到达的时间，则两人可以碰面当且即当 $|x-y|\leq 15$，画图：&lt;/p&gt;
-&lt;img src=&#34;/img/NJU-22020170-02-01.png&#34; style=&#34;zoom: 50%;&#34; /&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/NJU-22020170-02-01.png&#34; style=&#34;zoom: 50%;&#34; /&gt;
 &lt;p&gt;因此碰面概率为 $\frac{60^2-45^2}{60^2}=\frac{7}{16}$。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;【例】 (蒲丰投针) 两平行线间距 $a$，向其投掷长度为 $l$ $(l&amp;lt;a)$ 的针，使针的中点在两平行线之间，求针与两条平行线中任意一条相交的概率。&lt;/p&gt;
@@ -9981,9 +9981,9 @@ $$
     
     <item>
       <title>Lecture 03: Conditional Probability and Bayes Formula</title>
-      <link>/posts/coursenotes/nju-probability/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec03/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec03/</guid>
       <description>&lt;h2 id=&#34;conditional-probability&#34;&gt;Conditional Probability&lt;/h2&gt;
 &lt;p&gt;“事件 $A$ 和 $B$ 同时发生的概率”与“ $B$ 发生的条件下，$A$ 发生的概率”不一定相等！&lt;/p&gt;
 &lt;ul&gt;
@@ -10064,9 +10064,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 04: Independence and Bernoulli Experiments</title>
-      <link>/posts/coursenotes/nju-probability/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec04/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec04/</guid>
       <description>&lt;h2 id=&#34;independence&#34;&gt;Independence&lt;/h2&gt;
 &lt;p&gt;【例】$a$ 个黑球，$b$ 个白球，分别在有放回、无放回的情况下计算：&lt;/p&gt;
 &lt;p&gt;(1) 第一次摸到黑球 (A)，第二次摸到黑球的概率 (B)。&lt;/p&gt;
@@ -10150,9 +10150,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 05: Random Variable and Distribution Function</title>
-      <link>/posts/coursenotes/nju-probability/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec05/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec05/</guid>
       <description>&lt;h2 id=&#34;definitions&#34;&gt;Definitions&lt;/h2&gt;
 &lt;p&gt;$\fbox{Definition 5.1}$ 设 $X:\Omega \rightarrow \mathbb{R}$，且对于任意 $\mathbb{R}$ 中的 Borel 集 $B$，$\{e|X(e)\in B\}\in \mathscr{F}$，则称 $X$ 是 $(\Omega, \mathscr F, P)$ 上的随机变量。&lt;/p&gt;
 &lt;p&gt;注：1. Borel 集是由所有的 $\{(a,b]|-\infty\leq a,b\leq +\infty\}$ 经过可数次交或并得到的集合。&lt;/p&gt;
@@ -10250,9 +10250,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 06: Continuous Random Variables</title>
-      <link>/posts/coursenotes/nju-probability/lec06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec06/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec06/</guid>
       <description>&lt;p&gt;$\fbox{Definition 6.1}$ 设存在一个非负的可积函数 $p(x)$，若 $X$ 的分布函数 $F(x)=\int_{-\infty}^xp(u)du$，则称 $X$ 为连续型随机变量，$p(x)$ 为密度函数。&lt;/p&gt;
 &lt;p&gt;根据定义，我们可以得到
 $$
@@ -10385,9 +10385,9 @@ $$
     
     <item>
       <title>Lecture 07: Distribution of Random Variable Function</title>
-      <link>/posts/coursenotes/nju-probability/lec07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec07/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec07/</guid>
       <description>&lt;p&gt;设 $X$ 是一个随机变量，函数 $g(x):\mathbb R\rightarrow \mathbb{R}$。构造随机变量 $Y$，当 $X=x$ 时，$Y=g(x)$，称 $Y$ 是 $X$ 的函数，记为 $Y=g(X)$。在已知 $X$ 的分布时，我们希望求出 $Y$ 的分布。&lt;/p&gt;
 &lt;h2 id=&#34;discrete-situation&#34;&gt;Discrete Situation&lt;/h2&gt;
 &lt;p&gt;设 $X$ 是一个离散型随机变量，其分布律为&lt;/p&gt;
@@ -10502,9 +10502,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 08: Mult-dimensional Random Variable</title>
-      <link>/posts/coursenotes/nju-probability/lec08/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec08/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec08/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec08/</guid>
       <description>&lt;h2 id=&#34;distribution-function-of-2-dimensional-random-variable&#34;&gt;Distribution Function of 2-Dimensional Random Variable&lt;/h2&gt;
 &lt;p&gt;$\fbox{Definition 8.1}$ 设 $X,Y$ 是定义在 $(\Omega, \mathscr F, P)$ 上的随机变量，则称 $(X,Y)$ 为 $(\Omega, \mathscr F, P)$ 上的&lt;strong&gt;二维随机变量&lt;/strong&gt;。对于任意 $x,y\in \mathbb R$，称
 $$
@@ -10643,9 +10643,9 @@ $$
     
     <item>
       <title>Lecture 09: 2-Dimensional Continuous Random Variable</title>
-      <link>/posts/coursenotes/nju-probability/lec09/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec09/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec09/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec09/</guid>
       <description>&lt;h2 id=&#34;examples-of-discrete-2-d-random-variable&#34;&gt;Examples of Discrete 2-D Random Variable&lt;/h2&gt;
 &lt;p&gt;【例】 (三项分布) 若二维离散型随机变量 $(X,Y)$ 的分布律为
 $$
@@ -10762,9 +10762,9 @@ $$
     
     <item>
       <title>Lecture 10: 2-Dimensional Normal Distribution and Random Variable Function</title>
-      <link>/posts/coursenotes/nju-probability/lec10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec10/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec10/</guid>
       <description>&lt;p&gt;$\fbox{Definition 10.1}$ 若二维随机变量 $(X,Y)$ 的联合密度为
 $$
 p(x,y)=\frac{1}{2\pi \sigma_1\sigma_2\sqrt{1-\rho^2}}e^{-\frac{1}{2(1-\rho^2)}[(\frac{x-\mu_1}{\sigma_1})^2-2\rho(\frac{x-\mu_1}{\sigma_1})(\frac{y-\mu_2}{\sigma_2})+(\frac{y-\mu_2}{\sigma_2})^2]}
@@ -10881,9 +10881,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 11: Examples of 2-Dimensional Random Variable Function</title>
-      <link>/posts/coursenotes/nju-probability/lec11/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec11/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec11/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec11/</guid>
       <description>&lt;p&gt;【例】 (顺序统计量, order statistics) 设 $X,Y$ 相互独立，分布函数分别为 $F_X(x)$ 和 $F_Y(y)$。令 $M=\max \{X,Y\}$，$N=\min \{X,Y\}$，现考虑 $M,N$ 的分布。
 $$
 \begin{align}
@@ -10998,9 +10998,9 @@ $$
     
     <item>
       <title> Lecture 12: More Examples of 2-Dimensional Random Variable Function</title>
-      <link>/posts/coursenotes/nju-probability/lec12/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec12/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec12/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec12/</guid>
       <description>&lt;p&gt;【例】 (差的分布) 设 $(X,Y)$ 的密度为 $p(x,y)$，考虑 $Z=X-Y$ 的分布：
 $$
 \begin{align}
@@ -11085,9 +11085,9 @@ $$
     
     <item>
       <title>Lecture 13: Mathematical Expectation</title>
-      <link>/posts/coursenotes/nju-probability/lec13/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec13/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec13/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec13/</guid>
       <description>&lt;h2 id=&#34;expectation-of-discrete-random-variables&#34;&gt;Expectation of Discrete Random Variables&lt;/h2&gt;
 &lt;p&gt;离散型随机变量的数学期望类似于“加权平均数”，但我们要将频率换成严格的概率。&lt;/p&gt;
 &lt;p&gt;$\fbox{Definition 13.1}$ 设离散型随机变量 $X$ 的分布律为 $P(X=x_i)=p_i,i=1,2,\cdots$。若级数 $\sum_{i=1}^\infty |x_i|p_i$ 收敛，则称
@@ -11322,9 +11322,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 14: Variance</title>
-      <link>/posts/coursenotes/nju-probability/lec14/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec14/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec14/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec14/</guid>
       <description>&lt;p&gt;我们希望衡量一个随机变量每个取值和平均值的差异，并且希望这个值是正数。因此我们引入方差的概念。&lt;/p&gt;
 &lt;p&gt;$\fbox{Definition 14.1}$ 设 $X$ 是一个随机变量。若 $E[|X|^2]$ 存在，则称
 $$
@@ -11471,9 +11471,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Lecture 15: Covariance and Correlation Coefficient</title>
-      <link>/posts/coursenotes/nju-probability/lec15/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec15/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec15/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec15/</guid>
       <description>&lt;p&gt;$\fbox{Theorem 15.1}$ (Chebyshev) 设随机变量 $X$ 的方差存在，则有
 $$
 \forall \varepsilon&amp;gt;0,P(|X-E[X]|&amp;gt;\varepsilon)\leq \frac{D(X)}{\varepsilon^2}
@@ -11678,9 +11678,9 @@ $$
     
     <item>
       <title> Lecture 16: Moment and Covariance Matrix</title>
-      <link>/posts/coursenotes/nju-probability/lec16/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec16/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec16/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec16/</guid>
       <description>&lt;h2 id=&#34;origin-moment-and-central-moment&#34;&gt;Origin Moment and Central Moment&lt;/h2&gt;
 &lt;p&gt;$\fbox{Definition 16.1}$ 设 $X$ 是随机变量，对正整数 $k$，若 $E[|X|^k]&amp;lt;+\infty$，则称 $E[X^k]$ 为 $X$ 的 $k$ 阶原点矩或 $k$ 阶矩；若 $E[|X-E[X]|^k]&amp;lt;+\infty$，则称 $E[(X-E[X])^k]$ 为 $X$ 的 $k$ 阶中心矩。&lt;/p&gt;
 &lt;p&gt;注：(1) 矩是对期望、方差的推广，1 阶原点矩就是期望，2 阶中心矩就是方差。&lt;/p&gt;
@@ -11793,9 +11793,9 @@ $$
     
     <item>
       <title>Lecture 21: Interval Estimation</title>
-      <link>/posts/coursenotes/nju-probability/lec21/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec21/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec21/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec21/</guid>
       <description>&lt;p&gt;$\fbox{Definition 21.1}$ 设 $\theta$ 是总体 $X$ 的未知参数，$X_1,\cdots, X_n$ 是来自 $X$ 的样本，若对于给定的 $0&amp;lt;\alpha&amp;lt;1$，存在两个统计量 $\hat\theta_1(X_1,\cdots, X_n)$ 和 $\hat\theta_2(X_1,\cdots, X_n)$，使得
 $$
 P(\hat\theta_1&amp;lt;\theta&amp;lt;\hat\theta_2)=1-\alpha
@@ -11955,9 +11955,9 @@ $$
     
     <item>
       <title>Lecture 22: Hypothesis Test</title>
-      <link>/posts/coursenotes/nju-probability/lec22/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec22/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/lec22/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec22/</guid>
       <description>&lt;p&gt;设总体 $X\sim N(\mu,\sigma^2)$，欲判断 $\mu$ 是否为某个给定的常数 $\mu_0$，我们将 $\mu=\mu_0$ ，记为 $H_0:\mu=\mu_0$，称为原假设或零假设。对应的，$H_1:\mu\neq \mu_0$ 称为备择假设或对立假设。
 $$
 H_0:\mu=\mu_0\qquad H_1:\mu\neq \mu_0
@@ -12063,9 +12063,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Moment Generating Function</title>
-      <link>/posts/coursenotes/nju-probability/mgf/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/mgf/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-probability/mgf/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-probability/mgf/</guid>
       <description>&lt;p&gt;矩母函数是快速求解高阶矩的利器。&lt;/p&gt;
 &lt;h2 id=&#34;definitions-and-properties&#34;&gt;Definitions and Properties&lt;/h2&gt;
 &lt;p&gt;$\fbox{Definition 1}$ ($k$ 阶矩) 设 $X$ 是一个概率密度为 $f$ 的随机变量。若 $X$ 是离散的，则它的 &lt;strong&gt;$k$ 阶矩&lt;/strong&gt; (记作 $\mu_k$) 定义为
@@ -12180,9 +12180,9 @@ $$
     
     <item>
       <title>MiniLab 01: Process Tree</title>
-      <link>/posts/coursenotes/nju-operating-system/minilabs/minilab01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/minilabs/minilab01/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/minilabs/minilab01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/minilabs/minilab01/</guid>
       <description>&lt;p&gt;该实验主要目的是实现一个精简版的 Linux pstree 命令行工具，以较为优美的方式打印当前系统中的进程树。&lt;/p&gt;
 &lt;h2 id=&#34;parse-args&#34;&gt;Parse args&lt;/h2&gt;
 &lt;p&gt;首先对输入的选项列表进行分析。笔者使用了 C 库函数 getopt_long()，它不仅可以帮助我们快速解析选项，还可以同时识别一个选项的长短版本 (使用 C 库提供的 option 结构体可以定义每种选项的长短版本以及是否需要参数等)，识别多个选吸纳更合并给出的格式 etc.。&lt;/p&gt;
@@ -12230,9 +12230,9 @@ getopt_long(argc, argv, &amp;quot;-npV&amp;quot;, table, NULL)
     
     <item>
       <title>MiniLab 02: Coroutine Library</title>
-      <link>/posts/coursenotes/nju-operating-system/minilabs/minilab02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/minilabs/minilab02/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/minilabs/minilab02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/minilabs/minilab02/</guid>
       <description>&lt;p&gt;本实验的主要目标是实现协程库 (lib coroutines)。很大程度上协程和线程非常相似，一个主要的区别是：线程可以响应中断，然后通过内核的调度器进行切换，而协程如果不主动 yield 则不会切换。&lt;/p&gt;
 &lt;h2 id=&#34;coroutine-struct&#34;&gt;Coroutine Struct&lt;/h2&gt;
 &lt;p&gt;协程之间共享内存，但各自有独立的运行时栈。笔者定义的协程结构体大致如下：&lt;/p&gt;
@@ -12307,9 +12307,9 @@ mov %rsp, %rbp
     
     <item>
       <title>MiniLab 03: Syscall Profiler</title>
-      <link>/posts/coursenotes/nju-operating-system/minilabs/minilab03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/minilabs/minilab03/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/minilabs/minilab03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/minilabs/minilab03/</guid>
       <description>&lt;p&gt;该实验的主要目标是利用 strace 系统调用实现一个性能监测器，实时输出当前进程运行耗时排名前 5 的系统调用。&lt;/p&gt;
 &lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的大体思路为：我们需要 fork 出一个子进程，让子进程用 strace 运行目标程序，并把 strace 的结果通过管道输送给父进程。本实验只允许使用 execve() 函数，不允许使用带有 p 的库函数，这意味着我们必须手动解析环境变量，将所有的路径一一加在 strace 的前面并调用 execve()，直到找到 strace 的确切位置为止 (如果成功执行，函数不会返回)。父进程负责不断从管道中读取 strace 的输出，解析出系统调用名和消耗的时间并添加到数据结构中，每隔一段时间输出一次。&lt;/p&gt;
@@ -12351,9 +12351,9 @@ dup(pipefd[0]);
     
     <item>
       <title>Lecture : Criterion of Estimator</title>
-      <link>/post/writing-technical-content-copy/</link>
+      <link>https://kristoff-starling.github.io/post/writing-technical-content-copy/</link>
       <pubDate>Fri, 12 Jul 2019 00:00:00 +0000</pubDate>
-      <guid>/post/writing-technical-content-copy/</guid>
+      <guid>https://kristoff-starling.github.io/post/writing-technical-content-copy/</guid>
       <description>&lt;h2 id=&#34;unbiasedness&#34;&gt;Unbiasedness&lt;/h2&gt;
 &lt;p&gt;$\fbox{Definition 20.1}$ 设 $\hat\theta(X_1,\cdots, X_n)$ 是 $\theta$ 的一个估计量。$\Theta$ 为 $\theta$ 的取值范围。如果对于任意 $\theta\in \Theta$，有
 $$
@@ -12486,9 +12486,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Writing technical content in Academic</title>
-      <link>/post/writing-technical-content/</link>
+      <link>https://kristoff-starling.github.io/post/writing-technical-content/</link>
       <pubDate>Fri, 12 Jul 2019 00:00:00 +0000</pubDate>
-      <guid>/post/writing-technical-content/</guid>
+      <guid>https://kristoff-starling.github.io/post/writing-technical-content/</guid>
       <description>&lt;p&gt;Academic is designed to give technical content creators a seamless experience. You can focus on the content and Academic handles the rest.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Highlight your code snippets, take notes on math classes, and draw diagrams from textual representation.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;On this page, you&amp;rsquo;ll find some examples of the types of technical content that can be rendered with Academic.&lt;/p&gt;
@@ -12722,9 +12722,9 @@ A Markdown aside is useful for displaying notices, hints, or definitions to your
     
     <item>
       <title>An example preprint / working paper</title>
-      <link>/publication/preprint/</link>
+      <link>https://kristoff-starling.github.io/publication/preprint/</link>
       <pubDate>Sun, 07 Apr 2019 00:00:00 +0000</pubDate>
-      <guid>/publication/preprint/</guid>
+      <guid>https://kristoff-starling.github.io/publication/preprint/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     Click the &lt;em&gt;Slides&lt;/em&gt; button above to demo Academic&amp;rsquo;s Markdown slides feature.
@@ -12737,9 +12737,9 @@ A Markdown aside is useful for displaying notices, hints, or definitions to your
     
     <item>
       <title>Display Jupyter Notebooks with Academic</title>
-      <link>/post/jupyter/</link>
+      <link>https://kristoff-starling.github.io/post/jupyter/</link>
       <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
-      <guid>/post/jupyter/</guid>
+      <guid>https://kristoff-starling.github.io/post/jupyter/</guid>
       <description>&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;from IPython.core.display import Image
 Image(&#39;https://www.python.org/static/community_logos/python-logo-master-v3-TM-flattened.png&#39;)
 &lt;/code&gt;&lt;/pre&gt;
@@ -12787,9 +12787,9 @@ date: 2019-09-01
     
     <item>
       <title>Slides</title>
-      <link>/slides/20220727/</link>
+      <link>https://kristoff-starling.github.io/slides/20220727/</link>
       <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
-      <guid>/slides/20220727/</guid>
+      <guid>https://kristoff-starling.github.io/slides/20220727/</guid>
       <description>&lt;h2 id=&#34;dl-library-fuzzing&#34;&gt;DL Library Fuzzing&lt;/h2&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;bug-report&#34;&gt;Bug Report&lt;/h2&gt;
@@ -12982,9 +12982,9 @@ const bool right_child_is_constant = IsReallyConstant(*mul_right_child);
     
     <item>
       <title>Slides</title>
-      <link>/slides/20220810/</link>
+      <link>https://kristoff-starling.github.io/slides/20220810/</link>
       <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
-      <guid>/slides/20220810/</guid>
+      <guid>https://kristoff-starling.github.io/slides/20220810/</guid>
       <description>&lt;h2 id=&#34;fuzzing-report&#34;&gt;Fuzzing Report&lt;/h2&gt;
 &lt;hr&gt;
 &lt;h2 id=&#34;documentation&#34;&gt;Documentation&lt;/h2&gt;
@@ -12997,9 +12997,9 @@ MXNet: Big sections categorized, small sections listed.
     
     <item>
       <title>Slides</title>
-      <link>/slides/example/</link>
+      <link>https://kristoff-starling.github.io/slides/example/</link>
       <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
-      <guid>/slides/example/</guid>
+      <guid>https://kristoff-starling.github.io/slides/example/</guid>
       <description>&lt;h1 id=&#34;create-slides-in-markdown-with-academic&#34;&gt;Create slides in Markdown with Academic&lt;/h1&gt;
 &lt;p&gt;
 &lt;a href=&#34;https://sourcethemes.com/academic/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Academic&lt;/a&gt; | 
@@ -13131,17 +13131,17 @@ $$&lt;/p&gt;
     
     <item>
       <title>External Project</title>
-      <link>/project/external-project/</link>
+      <link>https://kristoff-starling.github.io/project/external-project/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
-      <guid>/project/external-project/</guid>
+      <guid>https://kristoff-starling.github.io/project/external-project/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Internal Project</title>
-      <link>/project/internal-project/</link>
+      <link>https://kristoff-starling.github.io/project/internal-project/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
-      <guid>/project/internal-project/</guid>
+      <guid>https://kristoff-starling.github.io/project/internal-project/</guid>
       <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus. Vestibulum sit amet erat at nulla eleifend gravida.&lt;/p&gt;
 &lt;p&gt;Nullam vel molestie justo. Curabitur vitae efficitur leo. In hac habitasse platea dictumst. Sed pulvinar mauris dui, eget varius purus congue ac. Nulla euismod, lorem vel elementum dapibus, nunc justo porta mi, sed tempus est est vel tellus. Nam et enim eleifend, laoreet sem sit amet, elementum sem. Morbi ut leo congue, maximus velit ut, finibus arcu. In et libero cursus, rutrum risus non, molestie leo. Nullam congue quam et volutpat malesuada. Sed risus tortor, pulvinar et dictum nec, sodales non mi. Phasellus lacinia commodo laoreet. Nam mollis, erat in feugiat consectetur, purus eros egestas tellus, in auctor urna odio at nibh. Mauris imperdiet nisi ac magna convallis, at rhoncus ligula cursus.&lt;/p&gt;
 &lt;p&gt;Cras aliquam rhoncus ipsum, in hendrerit nunc mattis vitae. Duis vitae efficitur metus, ac tempus leo. Cras nec fringilla lacus. Quisque sit amet risus at ipsum pharetra commodo. Sed aliquam mauris at consequat eleifend. Praesent porta, augue sed viverra bibendum, neque ante euismod ante, in vehicula justo lorem ac eros. Suspendisse augue libero, venenatis eget tincidunt ut, malesuada at lorem. Donec vitae bibendum arcu. Aenean maximus nulla non pretium iaculis. Quisque imperdiet, nulla in pulvinar aliquet, velit quam ultrices quam, sit amet fringilla leo sem vel nunc. Mauris in lacinia lacus.&lt;/p&gt;
@@ -13152,9 +13152,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Academic: the website builder for Hugo</title>
-      <link>/post/getting-started/</link>
+      <link>https://kristoff-starling.github.io/post/getting-started/</link>
       <pubDate>Wed, 20 Apr 2016 00:00:00 +0000</pubDate>
-      <guid>/post/getting-started/</guid>
+      <guid>https://kristoff-starling.github.io/post/getting-started/</guid>
       <description>&lt;p&gt;&lt;strong&gt;Create a free website with Academic using Markdown, Jupyter, or RStudio. Choose a beautiful color theme and build anything with the Page Builder - over 40 &lt;em&gt;widgets&lt;/em&gt;, &lt;em&gt;themes&lt;/em&gt;, and &lt;em&gt;language packs&lt;/em&gt; included!&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&#34;https://academic-demo.netlify.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Check out the latest &lt;strong&gt;demo&lt;/strong&gt;&lt;/a&gt; of what you&amp;rsquo;ll get in less than 10 minutes, or 
@@ -13296,9 +13296,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>An example journal article</title>
-      <link>/publication/journal-article/</link>
+      <link>https://kristoff-starling.github.io/publication/journal-article/</link>
       <pubDate>Tue, 01 Sep 2015 00:00:00 +0000</pubDate>
-      <guid>/publication/journal-article/</guid>
+      <guid>https://kristoff-starling.github.io/publication/journal-article/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     Click the &lt;em&gt;Cite&lt;/em&gt; button above to demo the feature to enable visitors to import publication metadata into their reference management software.
@@ -13316,9 +13316,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>An example conference paper</title>
-      <link>/publication/conference-paper/</link>
+      <link>https://kristoff-starling.github.io/publication/conference-paper/</link>
       <pubDate>Mon, 01 Jul 2013 00:00:00 +0000</pubDate>
-      <guid>/publication/conference-paper/</guid>
+      <guid>https://kristoff-starling.github.io/publication/conference-paper/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     Click the &lt;em&gt;Cite&lt;/em&gt; button above to demo the feature to enable visitors to import publication metadata into their reference management software.
@@ -13336,9 +13336,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>UCB-CS61A Homework 01: Control</title>
-      <link>/posts/coursenotes/ucb-cs61a/homework/hw01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw01/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/homework/hw01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw01/</guid>
       <description>&lt;p&gt;值得一提的是下面两道题&lt;/p&gt;
 &lt;h2 id=&#34;q5-if-function-refactor&#34;&gt;Q5: If Function Refactor&lt;/h2&gt;
 &lt;p&gt;函数调用会先将所有的参数的值算出来再调用，因此会发生 ZeroDivisionError。&lt;/p&gt;
@@ -13353,9 +13353,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>UCB-CS61A Project 01: Hog</title>
-      <link>/posts/coursenotes/ucb-cs61a/projects/hog/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/projects/hog/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/projects/hog/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/projects/hog/</guid>
       <description>&lt;h2 id=&#34;phase-1-simulator&#34;&gt;Phase 1: Simulator&lt;/h2&gt;
 &lt;h3 id=&#34;problem-1&#34;&gt;Problem 1&lt;/h3&gt;
 &lt;p&gt;模拟扔骰子计算得分。唯一需要注意的是即使中间摇出了 1 也要将传入的摇骰子次数做完。因为摇骰子的 index 是一个全局变量，这次的不摇完会影响下一次的结果。&lt;/p&gt;
@@ -13428,9 +13428,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>MIT-6.S081 Lecture 01: Introduction and Examples</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec01/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec01/</guid>
       <description>&lt;h2 id=&#34;purposes-of-os&#34;&gt;Purposes of O/S&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Abstraction of hardware. Higher level interfaces and abstractions that applications can use can enhance convenience and portability (e.g. processes and file systems)&lt;/li&gt;
@@ -13638,9 +13638,9 @@ int main()
     
     <item>
       <title>UCB-CS61A Project 02: Cat</title>
-      <link>/posts/coursenotes/ucb-cs61a/projects/cat/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/projects/cat/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/projects/cat/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/projects/cat/</guid>
       <description>&lt;h2 id=&#34;phase-1-typing&#34;&gt;Phase 1: Typing&lt;/h2&gt;
 &lt;h3 id=&#34;problem-1&#34;&gt;Problem 1&lt;/h3&gt;
 &lt;p&gt;寻找第 k 个满足条件的字符串，注意这里的 k 是 0-base 的。&lt;/p&gt;
@@ -13686,9 +13686,9 @@ int main()
     
     <item>
       <title>UCB-CS61A Homework 02: Higher-Order Functions</title>
-      <link>/posts/coursenotes/ucb-cs61a/homework/hw02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw02/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/homework/hw02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw02/</guid>
       <description>&lt;p&gt;值得一提的是附加的思考题，对理解 lambda 表达式和函数的本质很有帮助：&lt;/p&gt;
 &lt;h2 id=&#34;q3-church-numerals&#34;&gt;Q3: Church Numerals&lt;/h2&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def zero(f):
@@ -13734,9 +13734,9 @@ def two(f):
     
     <item>
       <title>UCB-CS61A Lecture 03: Control</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec03/</guid>
       <description>&lt;h2 id=&#34;side-effects&#34;&gt;Side Effects&lt;/h2&gt;
 &lt;p&gt;一个函数如果没有显式地返回内容，那么它的返回值默认为 None。比如下面的程序会报 TypeError：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def square(x):
@@ -13755,9 +13755,9 @@ print(result + 1)
     
     <item>
       <title>MIT-6.S081 Lecture 03: OS Organization and System Calls</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec03/</guid>
       <description>&lt;h2 id=&#34;isolation&#34;&gt;Isolation&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;We want strong isolation between applications so that if there&amp;rsquo;s a bug in one application, the others will not be damaged.&lt;/li&gt;
@@ -13881,9 +13881,9 @@ syscall(void)
     
     <item>
       <title>UCB-CS61A Homework 03: Recursion, Tree Recursion</title>
-      <link>/posts/coursenotes/ucb-cs61a/homework/hw03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/homework/hw03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw03/</guid>
       <description>&lt;p&gt;值得一提的是下面几道题：&lt;/p&gt;
 &lt;h2 id=&#34;q1-num-eights&#34;&gt;Q1: Num Eights&lt;/h2&gt;
 &lt;p&gt;一个值得注意的 python 优先级问题：笔者刚开始写了一行&lt;/p&gt;
@@ -13905,9 +13905,9 @@ syscall(void)
     
     <item>
       <title>MIT-6.S081 Lecture 04: Page Tables</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec04/</guid>
       <description>&lt;h2 id=&#34;address-spaces&#34;&gt;Address Spaces&lt;/h2&gt;
 &lt;p&gt;Virtual memory helps realize memory isolation. The basic idea is simple: we want each process to have its own address space. The address spaces are independent.&lt;/p&gt;
 &lt;h2 id=&#34;paging-hardware&#34;&gt;Paging Hardware&lt;/h2&gt;
@@ -13927,9 +13927,9 @@ syscall(void)
     
     <item>
       <title>UCB-CS61A Lecture 04: Higher-Order Functions</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec04/</guid>
       <description>&lt;h2 id=&#34;higher-order-functions&#34;&gt;Higher-Order Functions&lt;/h2&gt;
 &lt;p&gt;以函数作为参数的，或者以函数作为返回值的函数被称为 higher-order function。例如&lt;/p&gt;
 &lt;p&gt;以函数作为参数：&lt;/p&gt;
@@ -13979,9 +13979,9 @@ def summation(n, term):
     
     <item>
       <title>MIT-6.S081 Lecture 05: RISC-V Calling Convention and Stack Frames</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec05/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec05/</guid>
       <description>&lt;h2 id=&#34;c-rightarrow-asm&#34;&gt;C $\rightarrow$ ASM&lt;/h2&gt;
 &lt;p&gt;A C program&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;int main () {
@@ -14103,9 +14103,9 @@ sum_then_double:
     
     <item>
       <title>UCB-CS61A Lecture 05: Environments</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec05/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec05/</guid>
       <description>&lt;h2 id=&#34;environments&#34;&gt;Environments&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;刚开始有一个 global frame，每发生一次函数调用，就会随之生成一个 local frame。&lt;/li&gt;
@@ -14151,9 +14151,9 @@ sum_then_double:
     
     <item>
       <title>MIT-6.S081 Lecture 06: Traps</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec06/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec06/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;When going into traps, we need to carefully change the hardware state so that isolation will not be broken. The hardware state of RISC-V machine includes:&lt;/p&gt;
 &lt;ul&gt;
@@ -14309,9 +14309,9 @@ p-&amp;gt;trapframe-&amp;gt;epc = r_sepc();
     
     <item>
       <title>MIT-6.S081 Lecture 07: Q&amp;A for Labs #1</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec07/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec07/</guid>
       <description>&lt;p&gt;The Q&amp;amp;A focuses on lab pgtbl. The lab contain few lines of code, but hard-to-debug problems. Harsh environment of kernel programming makes it more difficult.&lt;/p&gt;
 &lt;h2 id=&#34;task-01&#34;&gt;Task 01&lt;/h2&gt;
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;page table 0x0000000087f6e000
@@ -14437,9 +14437,9 @@ kvmmapuser(int pid, pagetable_t kpagetable, pagetable_t upagetable, uint64 newsz
     
     <item>
       <title>UCB-CS61A Lecture 07: Function Examples</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec07/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec07/</guid>
       <description>&lt;h2 id=&#34;decorators&#34;&gt;Decorators&lt;/h2&gt;
 &lt;p&gt;考虑如下的高阶函数 &lt;code&gt;trace()&lt;/code&gt; ：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def square(x):
@@ -14473,9 +14473,9 @@ func = ATTR(func)
     
     <item>
       <title>MIT-6.S081 Lecture 08: Page Faults</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec08/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec08/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec08/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec08/</guid>
       <description>&lt;p&gt;The benefits of virtual memory, besides offering isolation, include levels of indirection. We have already seen some interesting usage of mappings, such as trampoline page and guard page, but these mappings are relatively static. With the aid of page faults, the mappings become dynamic: when page faults occur, the kernel can change page table mappings. Combination of page table and page fault provides enormous amount of flexibility.&lt;/p&gt;
 &lt;p&gt;The kernel needs necessary information to handle with page faults:&lt;/p&gt;
 &lt;ul&gt;
@@ -14643,9 +14643,9 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
     
     <item>
       <title>MIT-6.S081 Lecture 09: Interrupts</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec09/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec09/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec09/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec09/</guid>
       <description>&lt;p&gt;Type &lt;code&gt;top&lt;/code&gt; in the command line and you can check the memory usage, processes information etc. in the terminal:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;top - 11:57:33 up 1 day,  1:04,  1 user,  load average: 0.21, 0.25, 0.32
 Tasks: 354 total,   1 running, 353 sleeping,   0 stopped,   0 zombie
@@ -14779,9 +14779,9 @@ getcmd(char *buf, int nbuf)
     
     <item>
       <title>UCB-CS61a Lecture 09: Tree Recursion</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec09/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec09/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec09/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec09/</guid>
       <description>&lt;p&gt;没有需要特别注意的知识点。&lt;/p&gt;
 &lt;p&gt;(注：这里的 tree recursion 指的不是在树上搜索的递归，而是一个函数在函数体内多次调用自己，整个调用构成了一棵树的情形，最经典的例子就是不带记忆化地递归计算斐波那契数列。)&lt;/p&gt;
 </description>
@@ -14789,9 +14789,9 @@ getcmd(char *buf, int nbuf)
     
     <item>
       <title>MIT-6.S081 Lecture 10: Multiprocessors and Locks</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec10/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec10/</guid>
       <description>&lt;p&gt;Applications may want multiple CPU cores, so the kernel must handle parallel system calls, e.g. carefully maintain shared data structure in parallel. We use locks to ensure correct sharing, but on the other hand, locks can limit performance.&lt;/p&gt;
 &lt;p&gt;The frequency of CPU clock gradually reaches a limit at 2010, which means that single thread performance cannot be optimized. However, the number of transistors keeps growing, so having multiple cores is our only choice to increase performance.&lt;/p&gt;
 &lt;h2 id=&#34;why-lock&#34;&gt;Why Lock?&lt;/h2&gt;
@@ -14893,9 +14893,9 @@ lock = 0;  //    |
     
     <item>
       <title>UCB-CS61A Lecture 10: Containers</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec10/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec10/</guid>
       <description>&lt;h2 id=&#34;list-comprehension&#34;&gt;List Comprehension&lt;/h2&gt;
 &lt;p&gt;通过一个已经存在的 list 创建一个新的 list。&lt;/p&gt;
 &lt;p&gt;完整的语法为：&lt;/p&gt;
@@ -14915,9 +14915,9 @@ lock = 0;  //    |
     
     <item>
       <title>UCB-CS61A Lecture 11: Sequences</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec11/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec11/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec11/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec11/</guid>
       <description>&lt;h2 id=&#34;copying&#34;&gt;Copying&lt;/h2&gt;
 &lt;p&gt;我们平时写的&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;listA = [0, 1, 2, 3]
@@ -14973,9 +14973,9 @@ lock = 0;  //    |
     
     <item>
       <title>MIT-6.S081 Lecture 11: Thread Switching</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec11/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec11/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec11/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec11/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;People want threads for the following reasons:&lt;/p&gt;
 &lt;ul&gt;
@@ -15156,9 +15156,9 @@ yield(void)
     
     <item>
       <title>UCB-CS61A Lecture 12: Data Abstraction</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec12/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec12/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec12/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec12/</guid>
       <description>&lt;h2 id=&#34;abstraction-barriers&#34;&gt;Abstraction Barriers&lt;/h2&gt;
 &lt;p&gt;抽象是一层一层的，好的程序设计应当只使用上一层抽象提供的接口，不应该跨层地去使用底层的接口。&lt;/p&gt;
 &lt;h2 id=&#34;dictionary&#34;&gt;Dictionary&lt;/h2&gt;
@@ -15190,9 +15190,9 @@ yield(void)
     
     <item>
       <title>UCB-CS61A Lecture 13: Trees</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec13/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec13/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec13/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec13/</guid>
       <description>&lt;h2 id=&#34;tree-data-abstraction&#34;&gt;Tree: Data Abstraction&lt;/h2&gt;
 &lt;p&gt;我们希望 tree 这个抽象数据类型提供如下的几个 API:&lt;/p&gt;
 &lt;ul&gt;
@@ -15231,9 +15231,9 @@ def is_leaf(tree):
     
     <item>
       <title>UCB-CS61A Lecture 14: Mutability</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec14/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec14/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec14/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec14/</guid>
       <description>&lt;h2 id=&#34;objects&#34;&gt;Objects&lt;/h2&gt;
 &lt;p&gt;对象 (object) 是一组数据和行为 (函数) 的集合。在 Python 中所有的 value 都是对象，对象有一系列属性 (attribute) 也有一系列方法 (method)。比如 Python 中的字符串可以通过索引的方式获取具体位置的数据，也可以使用 upper(), lower() 等方法对其进行操作。&lt;/p&gt;
 &lt;h2 id=&#34;list-mutation&#34;&gt;List Mutation&lt;/h2&gt;
@@ -15294,9 +15294,9 @@ True
     
     <item>
       <title>UCB-CS61A Lecture 15: Syntax</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec15/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec15/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec15/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec15/</guid>
       <description>&lt;h2 id=&#34;syntax-tree&#34;&gt;Syntax Tree&lt;/h2&gt;
 &lt;p&gt;中间的节点称为 non-terminal，叶子节点称为 terminal，一个 syntax tree 描述了一个句子的句法结构。&lt;/p&gt;
 &lt;p&gt;我们可以使用上一课中提到的嵌套列表的方法作为 syntax tree 这一抽象的实现：&lt;/p&gt;
@@ -15346,9 +15346,9 @@ tree_index = index_trees(trees)
     
     <item>
       <title>UCB-CS61A Lecture 16: Iterators</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec16/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec16/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec16/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec16/</guid>
       <description>&lt;h2 id=&#34;iterators&#34;&gt;Iterators&lt;/h2&gt;
 &lt;p&gt;迭代器 (iterator) 是一种对象，提供了对某个 itarable 的 sequential access。&lt;code&gt;iter(iterable)&lt;/code&gt; 会返回一个指向 iterable 第一个元素的 iterator，之后可以用 &lt;code&gt;next()&lt;/code&gt; 函数来查看后续的元素。&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;toppings = [&amp;quot;pineapple&amp;quot;, &amp;quot;pepper&amp;quot;, &amp;quot;mushroom&amp;quot;, &amp;quot;roasted red pepper&amp;quot;]
@@ -15408,9 +15408,9 @@ for n1, n2 in num_pairs:
     
     <item>
       <title>UCB-CS61A Lecture 17: Generators</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec17/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec17/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec17/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec17/</guid>
       <description>&lt;h2 id=&#34;generators&#34;&gt;Generators&lt;/h2&gt;
 &lt;p&gt;generator function 中不使用 return 返回结果，而使用 yield。generator 是一种 iterator，它通过 generator function 来逐个地获得结果。这里 generator function 可以理解为一个状态机，当遇到 yield 语句时，它会将自己的执行状态暂时封存起来并返回结果。下一次 generator 再次调用该函数时，generator function 将会从上一次 yield 后的第一条语句开始继续执行，直到遇到下一个 yield。如果没有遇到 yield 而是函数一直执行到结束，generator function 会返回一个 &lt;code&gt;StopIteration&lt;/code&gt; exception。&lt;/p&gt;
 &lt;p&gt;下面是一个例子：&lt;/p&gt;
@@ -15486,17 +15486,17 @@ list(h(2)) # [2, 3, 4]
     
     <item>
       <title>A testing paper</title>
-      <link>/publication/test-paper/</link>
+      <link>https://kristoff-starling.github.io/publication/test-paper/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/publication/test-paper/</guid>
+      <guid>https://kristoff-starling.github.io/publication/test-paper/</guid>
       <description></description>
     </item>
     
     <item>
       <title>English</title>
-      <link>/courses/problemsolving22/cser0/english/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/english/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/cser0/english/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/cser0/english/</guid>
       <description>&lt;p&gt;我们不得不承认在计算机科学方面，以美国为首的西方国家比我们先进很多，许多优秀的教材、课程、博文都是用英文撰写的 (比如你们将要学习的所有《问题求解》课程的教材)。因此，想要学好计算机，大家一定要趁早“逼迫”自己熟悉英语环境，尤其强化自己的英语阅读能力 (将来快速略读大段的英文手册很可能是你的工作/学习常态)。我们强烈建议你注意以下几个方面：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;不要依赖教材的中文翻译版本。&lt;/strong&gt; 将来大家学习的《算法导论》等教材是比较容易找到中文翻译版本的，但正如名著的翻译版时常体现不出名著本身的意境，翻译版的教材在很多细节上可能与原版有出入，影响大家的理解，也不利于大家熟悉一些英文术语。我们认为，英文阅读能力合格的标准之一便是阅读学术方面的英文材料和中文材料应该基本不存在速度差异。这个过程刚开始可能会比较痛苦，但随着学期深入大家一定能克服障碍。&lt;/li&gt;
@@ -15509,9 +15509,9 @@ list(h(2)) # [2, 3, 4]
     
     <item>
       <title>问题求解 III - 01 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-01/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-01/</guid>
       <description>&lt;h2 id=&#34;a-最短路1&#34;&gt;A. 最短路1&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -15590,9 +15590,9 @@ list(h(2)) # [2, 3, 4]
     
     <item>
       <title>问题求解 III - 02 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-02/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-02/</guid>
       <description>&lt;h2 id=&#34;a-最长路&#34;&gt;A. 最长路&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -15680,9 +15680,9 @@ $$ 由于我们不能确定转移的顺序，所以可以建图之后跑最短�
     
     <item>
       <title>问题求解 III - 03 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-03/</guid>
       <description>&lt;h2 id=&#34;a-拓扑排序&#34;&gt;A. 拓扑排序&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -15728,9 +15728,9 @@ $$ 由于我们不能确定转移的顺序，所以可以建图之后跑最短�
     
     <item>
       <title>问题求解 III - 04 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-04/</guid>
       <description>&lt;h2 id=&#34;a-acesrcs-bizarre-adventure&#34;&gt;A. Acesrc&amp;rsquo;s Bizarre Adventure&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -15774,9 +15774,9 @@ $$ 由于我们不能确定转移的顺序，所以可以建图之后跑最短�
     
     <item>
       <title>问题求解 III - 05 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/</guid>
       <description>&lt;h2 id=&#34;a-常系数线性递推&#34;&gt;A. 常系数线性递推&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -15851,9 +15851,9 @@ $$
     
     <item>
       <title>问题求解 III - 06 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-06/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-06/</guid>
       <description>&lt;h2 id=&#34;a-最大内切球&#34;&gt;A. 最大内切球&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -15900,9 +15900,9 @@ $$注意到该动态规划是线性递推，因此可以将 $f$ 和 $g$ 写成�
     
     <item>
       <title>问题求解 III - 07 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-07/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-07/</guid>
       <description>&lt;h2 id=&#34;a-多项式乘法模板&#34;&gt;A. 多项式乘法模板&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -15948,9 +15948,9 @@ $$
     
     <item>
       <title>问题求解 III - 10 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-10/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iii-10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-10/</guid>
       <description>&lt;h2 id=&#34;a-加密&#34;&gt;A. 加密&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -16001,9 +16001,9 @@ LL quick_mul(LL x, LL y, LL m) {
     
     <item>
       <title>问题求解 IV - 02 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iv-02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iv-02/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iv-02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iv-02/</guid>
       <description>&lt;h2 id=&#34;a-majority-3-sat&#34;&gt;A. Majority 3-SAT&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -16046,7 +16046,7 @@ $$
 &lt;/ul&gt;
 &lt;h3 id=&#34;题解-3&#34;&gt;题解&lt;/h3&gt;
 &lt;p&gt;下面的讨论中我们假设 $m$ 是偶数。偶数给了我们这样一个好的性质：要么 $y$ 和 $m-y$ 都是偶数，要么 $y-1$ 和 $m+1-y$ 都是偶数，因此我们可以给出一个形如这样的哈密尔顿回路构造方法：&lt;/p&gt;
-&lt;img src=&#34;/img/PS4.2-SweepingRobot.JPEG&#34; alt=&#34;img&#34; style=&#34;zoom: 33%;&#34; /&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/PS4.2-SweepingRobot.JPEG&#34; alt=&#34;img&#34; style=&#34;zoom: 33%;&#34; /&gt;
 &lt;p&gt;（注：上图是 $y$ 是偶数的情况；如果 $y$ 是奇数则先向右走。）&lt;/p&gt;
 &lt;p&gt;为了代码书写的简便，我们可以先在旋转/翻转的地图上走出路径，然后再将路径逆旋转/翻转回去。这样代码量会减小很多。&lt;/p&gt;
 </description>
@@ -16054,9 +16054,9 @@ $$
     
     <item>
       <title>问题求解 IV - 03 题解</title>
-      <link>/posts/coursenotes/nju-problem-solving/oj-solutions/iv-03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iv-03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-problem-solving/oj-solutions/iv-03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iv-03/</guid>
       <description>&lt;h2 id=&#34;a-game&#34;&gt;A. Game&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -16096,9 +16096,9 @@ $$
     
     <item>
       <title>MIT-6.S081 Lab 06: Copy-on-write fork</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab06/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab06/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Implement copy-on write (hard)&lt;/li&gt;
@@ -16147,9 +16147,9 @@ else
     
     <item>
       <title>MIT-6.S081 Lab 05: Lazy allocation</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab05/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab05/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Eliminate allocation from sbrk() (easy)&lt;/li&gt;
@@ -16184,9 +16184,9 @@ else
     
     <item>
       <title>MIT-6.S081 Lab 03: Page tables</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab03/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Print a page table (easy)&lt;/li&gt;
@@ -16275,9 +16275,9 @@ else
     
     <item>
       <title>MIT-6.S081 Lab 02: System calls</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab02/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab02/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; System call tracing (moderate)&lt;/li&gt;
@@ -16333,9 +16333,9 @@ entry(&amp;quot;exit&amp;quot;);
     
     <item>
       <title>MIT-6.S081 Lab 07: Multithreading</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab07/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab07/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; Uthread: switching between threads (moderate)&lt;/li&gt;
@@ -16371,9 +16371,9 @@ entry(&amp;quot;exit&amp;quot;);
     
     <item>
       <title>MIT-6.S081 Lab 04: Traps</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab04/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; RISC-V assembly (easy)&lt;/li&gt;
@@ -16477,9 +16477,9 @@ int sigreturn(void);
     
     <item>
       <title>MIT-6.S081 Lab 01: Xv6 and Unix utilities</title>
-      <link>/posts/coursenotes/mit-operating-system/labs/lab01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab01/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/labs/lab01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab01/</guid>
       <description>&lt;h2 id=&#34;progress&#34;&gt;Progress&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; boot xv6 (easy)&lt;/li&gt;
@@ -16591,17 +16591,17 @@ struct dirent
     
     <item>
       <title>lab0</title>
-      <link>/post/labs/lab0/</link>
+      <link>https://kristoff-starling.github.io/post/labs/lab0/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/post/labs/lab0/</guid>
+      <guid>https://kristoff-starling.github.io/post/labs/lab0/</guid>
       <description></description>
     </item>
     
     <item>
       <title>MIT-18.06 Lecture 01: The Geometric Interpretation of Equations</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec01/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec01/</guid>
       <description>&lt;p&gt;Consider 2 equations with 2 unknowns. Here&amp;rsquo;s an example:
 $$
 \begin{cases}
@@ -16618,7 +16618,7 @@ $$
 x\begin{bmatrix}2 \\-1\end{bmatrix}+y\begin{bmatrix}-1\\2\end{bmatrix}=\begin{bmatrix}0\\3\end{bmatrix}
 $$
 The column picture of the solution to the equations is shown below:&lt;/p&gt;
-&lt;img src=&#34;/img/mit1806-lec01.png&#34; alt=&#34;image-20210826223648690&#34; style=&#34;zoom:33%;&#34; /&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/mit1806-lec01.png&#34; alt=&#34;image-20210826223648690&#34; style=&#34;zoom:33%;&#34; /&gt;
 &lt;p&gt;Under the idea of linear combinations, the question&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Can I solve $A\mathbf{x}=\mathbf{b}$ for every $\mathbf{b}\in \mathbb{R}^n$ ?&lt;/p&gt;
@@ -16643,9 +16643,9 @@ which means that $A\mathbf{x}$ can be interpreted as the linear combinations of 
     
     <item>
       <title>MIT-18.06 Lecture 02: Elimination Matrices</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec02/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec02/</guid>
       <description>&lt;p&gt;Consider the 3 equations with 3 unknowns:
 $$
 \begin{cases}
@@ -16769,9 +16769,9 @@ we can simply write it as $E^{-1}\cdot E=I$. The matrix on the left is the &lt;s
     
     <item>
       <title>MIT-18.06 Lecture 03: Multiplication and Inverse Matrix</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec03/</guid>
       <description>&lt;p&gt;Suppose $AB=C$ and $A,B,C$ are matrices, the formula for calculating a single entry of $C$ is
 $$
 C_{i,j}=(row_i\space of\space A)\cdot(col_j\space of\space B)=\sum_{k=1}^nA_{i,k}B_{k,j}
@@ -16822,9 +16822,9 @@ The matrix on the right $\left[\begin{matrix}7 &amp;amp; -3\\-2 &amp;amp; 1\end{
     
     <item>
       <title>MIT-18.06 Lecture 04 - A’s LU Decomposition</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec04/</guid>
       <description>&lt;p&gt;What’s the inverse of $AB$, supposing $A$ and $B$​ are both invertible matrices? We can use $B^{-1}A^{-1}$ to check:
 $$
 \begin{align}
@@ -16894,9 +16894,9 @@ And for a column vector, say $\mathbf{b}$, the cost is approximately $n^2$.&lt;/
     
     <item>
       <title>MIT-18.06 Lecture 05: Permutation, Transpose and Vector Spaces</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec05/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec05/</guid>
       <description>&lt;p&gt;Now let&amp;rsquo;s allow row exchanges to come in during elimination, so we need permutation matrices.&lt;/p&gt;
 &lt;p&gt;Permutation matrices can be regarded as identity matrices with some rows exchanged. For $n\times n$ matrix, there are $n!$ kinds of permutation matrices (the identity matrix is a special permutation matrix).&lt;/p&gt;
 &lt;p&gt;An important property of permutation matrices is that
@@ -16938,9 +16938,9 @@ as an example, the columns of the matrix (i.e. two column vectors $\left(\begin{
     
     <item>
       <title>MIT-18.06 Lecture 06: Column Space, Null space</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec06/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec06/</guid>
       <description>&lt;p&gt;Suppose there are two vector spaces $S$ and $T$, their intersection $S\cap T$ is also a subspace.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Proof: suppose $v,w\in S\cap T$ are vectors, then consider a linear combination $av+bw$, since $v,w\in S$, $av+bw\in S$ , also we have $av+bw\in T$, so $av+bw\in S\cap T$, which proves the theorem.&lt;/p&gt;
@@ -16975,9 +16975,9 @@ There are four equations with three unknowns. The equations don&amp;rsquo;t nece
     
     <item>
       <title>MIT-18.06 Lecture 07: Computing Null Space, Pivot Variables and Special Solutions</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec07/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec07/</guid>
       <description>&lt;p&gt;We solve the equation $A\mathbf{x}=\mathbf{0}$ through elimination. Obviously, elimination won&amp;rsquo;t change the null space of $A$. For example, let
 $$
 A=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2\\2 &amp;amp; 4 &amp;amp; 6 &amp;amp; 8\\3 &amp;amp; 6 &amp;amp; 8 &amp;amp; 10\end{matrix}\right]
@@ -17019,9 +17019,9 @@ $N$ is $n\times (n-r)$ in size. (Here the $I$ may have the different size from t
     
     <item>
       <title>MIT-18.06 Lecture 08: Complete Solutions of Equations</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec08/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec08/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec08/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec08/</guid>
       <description>&lt;p&gt;Take an example:
 $$
 A\mathbf{x}=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2\\2 &amp;amp; 4 &amp;amp; 6 &amp;amp; 8\\3 &amp;amp; 6 &amp;amp; 8 &amp;amp; 10\end{matrix}\right]\left(\begin{matrix}x_1\\x_2\\x_3\end{matrix}\right)\left(\begin{matrix}b_1\\b_2\\b_3\end{matrix}\right)=\mathbf{b}
@@ -17067,9 +17067,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>MIT-18.06 Lecture 09: Linear Dependence, Basis and Dimension</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec09/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec09/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec09/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec09/</guid>
       <description>&lt;p&gt;suppose $A$ is $m\times n$ in size $(m&amp;lt;n)$, then the equation $A\mathbf{x}=\mathbf{0}$ has nonzero solutions because there will be at least one free variable.&lt;/p&gt;
 &lt;p&gt;Vectors $\mathbf{x_1},\mathbf{x_2},&amp;hellip;,\mathbf{x_n}$ are &lt;strong&gt;independent&lt;/strong&gt; if no combination gives zero vector. (except the zero combination)&lt;/p&gt;
 &lt;p&gt;i.e. for any $c_1,c_2,&amp;hellip;,c_n$, $\sum_{i=1}^n c_i\mathbf{x_i}\neq \mathbf{0}$ ($c_i$ are not all 0s). Otherwise they&amp;rsquo;re &lt;strong&gt;dependent&lt;/strong&gt;.&lt;/p&gt;
@@ -17108,9 +17108,9 @@ In fact, $span{\mathbf{x_1},\mathbf{x_2}}=N(A)$. We see that the dimension of $N
     
     <item>
       <title>MIT-18.06 Lecture 10: 4 Fundamental Subspaces</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec10/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec10/</guid>
       <description>&lt;p&gt;4 fundamental subspaces:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;column space $C(A)$.&lt;/li&gt;
@@ -17141,9 +17141,9 @@ We claim &lt;strong&gt;that the last $m-r$ row vectors of $E$ form a basis of $N
     
     <item>
       <title>PA0 - 世界诞生的前夜：开发环境配置</title>
-      <link>/posts/coursenotes/nju-ics/pa/pa0/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa0/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-ics/pa/pa0/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa0/</guid>
       <description>&lt;h2 id=&#34;实验进度&#34;&gt;实验进度&lt;/h2&gt;
 &lt;p&gt;我完成了所有安装任务，完成了必答题，并针对思考题和遇到的其他问题进行了资料搜索和思考。&lt;/p&gt;
 &lt;h2 id=&#34;必答题&#34;&gt;必答题&lt;/h2&gt;
@@ -17410,12 +17410,12 @@ iiiiiiiiiiiiiiiiiiiiiiiiijjjjjjjjjjjjjjjjjjjjjjjjj
 &lt;td style=&#34;text-align:center&#34;&gt;gd或god&lt;br&gt;&lt;code&gt;?&lt;/code&gt; 表示前一个字符重复零次或一次&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;`gd&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;god`&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;gd|god&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;gd或god&lt;br&gt;&lt;code&gt;|&lt;/code&gt; 表示或&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;`g(la&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;oo)d`&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;g(la|oo)d&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;glad/good&lt;br&gt;&lt;code&gt;()&lt;/code&gt; 里可以罗列若干个串并用 &lt;code&gt;|&lt;/code&gt; 分隔开&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;A(xyz)+B&lt;/code&gt;&lt;/td&gt;
@@ -17446,7 +17446,7 @@ iiiiiiiiiiiiiiiiiiiiiiiiijjjjjjjjjjjjjjjjjjjjjjjjj
 &lt;p&gt;对于这些特殊文件实现方式的一个简单解释是，例如 &lt;code&gt;/dev/null&lt;/code&gt; ,当内核接收到对这个文件的请求时，不需要进行任何真实的硬件操作，直接按照API返回写入成功即可。&lt;/p&gt;
 &lt;h4 id=&#34;makefile&#34;&gt;Makefile&lt;/h4&gt;
 &lt;p&gt;Makefile最简单的一点语法：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;要生成的文件名:依赖文件列表
+&lt;pre&gt;&lt;code class=&#34;language-makefile&#34;&gt;要生成的文件名:依赖文件列表
 	用于生成目标文件的命令序列
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;如果连续多次执行 &lt;code&gt;make&lt;/code&gt; ，会得到信息 &amp;lsquo;xxx is up to date&amp;rsquo;。这是 &lt;code&gt;make&lt;/code&gt; 程序智能管理的功能，如果目标文件已经存在且修改时间后于其依赖的所有文件，&lt;code&gt;make&lt;/code&gt; 会认为这个文件已经编译过了，不需要重新编译。&lt;/p&gt;
@@ -17482,9 +17482,9 @@ E: Unable to fetch some archives, maybe run apt-get update or try with --fix-mis
     
     <item>
       <title>Stanford-CS143 PA0: Cool Programming</title>
-      <link>/posts/coursenotes/stanford-compiler/pa/pa0/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/pa0/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/pa/pa0/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/pa0/</guid>
       <description>&lt;p&gt;该入门实验的主要目的是熟悉 cool 语言的语法，为编译器编写打下基础。本实验的任务是用 cool 语言写一个简单的 stack machine，支持 &lt;code&gt;int&lt;/code&gt; &lt;code&gt;+&lt;/code&gt; &lt;code&gt;s&lt;/code&gt; &lt;code&gt;e&lt;/code&gt; &lt;code&gt;d&lt;/code&gt; 五种操作。&lt;/p&gt;
 &lt;h2 id=&#34;designation&#34;&gt;Designation&lt;/h2&gt;
 &lt;p&gt;由于 cool 语言中没有开数组的功能，所以笔者使用链表来模拟这个栈数据结构。插入操作是新建一个链表节点插在 head 前面，&lt;code&gt;e&lt;/code&gt; 操作则是查看链表开头的若干个元素并执行相应操作。&lt;/p&gt;
@@ -17522,9 +17522,9 @@ E: Unable to fetch some archives, maybe run apt-get update or try with --fix-mis
     
     <item>
       <title>PA1 - 开天辟地的篇章：最简单的计算机</title>
-      <link>/posts/coursenotes/nju-ics/pa/pa1/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-ics/pa/pa1/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa1/</guid>
       <description>&lt;h2 id=&#34;实验进度&#34;&gt;实验进度&lt;/h2&gt;
 &lt;p&gt;我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。&lt;/p&gt;
 &lt;h2 id=&#34;必答题&#34;&gt;必答题&lt;/h2&gt;
@@ -17906,9 +17906,9 @@ while ( (o = getopt_long(argc, argv, &amp;quot;-bhl:d:p:&amp;quot;, table, NULL)
     
     <item>
       <title>Stanford-CS143 PA1: Lexical Analysis</title>
-      <link>/posts/coursenotes/stanford-compiler/pa/pa1/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/pa1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/pa/pa1/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/pa1/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;该实验的目的是完成 cool compiler 的 lexical analysis 部分。课堂上讲解了用正则表达式描述词汇格式以及如何根据正则表达式生成 NFA，通过 NFA 转 DFA，再将 DFA 以二维表的形式存储下来。不过现在有成熟的工具可以完成正则表达式的 implementation，所以本实验中我们只需要考虑如何用正则表达式描述 cool 语言的词汇，不需要考虑自动机。&lt;/p&gt;
 &lt;p&gt;笔者选择了 C++ 版本的实验。本实验中我们使用 flex 工具来完成正则表达式的 implementation。我们识别出一个 token 后需要向 flex 生成的 &lt;code&gt;yylex()&lt;/code&gt; 函数返回 token 的编号 (在 &lt;code&gt;cool-parse.h&lt;/code&gt; 中定义)，如果当前 token 有额外的语义信息 (比如字符串，bool const) 则需要在 &lt;code&gt;coolyyval&lt;/code&gt; 这个 union 的相应字段中填写信息。&lt;/p&gt;
@@ -17948,9 +17948,9 @@ while ( (o = getopt_long(argc, argv, &amp;quot;-bhl:d:p:&amp;quot;, table, NULL)
     
     <item>
       <title>PA2 - 简单复杂的机器: 冯诺依曼计算机系统</title>
-      <link>/posts/coursenotes/nju-ics/pa/pa2/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa2/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-ics/pa/pa2/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa2/</guid>
       <description>&lt;h2 id=&#34;实验进度&#34;&gt;实验进度&lt;/h2&gt;
 &lt;p&gt;我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。&lt;/p&gt;
 &lt;h2 id=&#34;必答题&#34;&gt;必答题&lt;/h2&gt;
@@ -18432,9 +18432,9 @@ ret
     
     <item>
       <title>PA3 - 穿越时空的旅程: 批处理系统</title>
-      <link>/posts/coursenotes/nju-ics/pa/pa3/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa3/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-ics/pa/pa3/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa3/</guid>
       <description>&lt;h2 id=&#34;实验进度&#34;&gt;实验进度&lt;/h2&gt;
 &lt;p&gt;我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。&lt;/p&gt;
 &lt;h2 id=&#34;必答题&#34;&gt;必答题&lt;/h2&gt;
@@ -18790,9 +18790,9 @@ logo:
     
     <item>
       <title>PA4 - 虚实交错的魔法: 分时多任务</title>
-      <link>/posts/coursenotes/nju-ics/pa/pa4/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa4/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-ics/pa/pa4/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa4/</guid>
       <description>&lt;h2 id=&#34;实验进度&#34;&gt;实验进度&lt;/h2&gt;
 &lt;p&gt;我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。&lt;/p&gt;
 &lt;h2 id=&#34;必答题&#34;&gt;必答题&lt;/h2&gt;
@@ -19152,9 +19152,9 @@ continue:
     
     <item>
       <title>Typing</title>
-      <link>/courses/problemsolving22/cser0/typing/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/typing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/cser0/typing/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/cser0/typing/</guid>
       <description>&lt;p&gt;对于零基础的同学来说，键盘可能是十分陌生的。但大家既然选择了CS，计算机之于大家就应当相当于宝剑之于骑士，打字就应当像拿筷子吃饭一样熟练。如果你连&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;应当如何通过键盘敲出下划线 _ ？&lt;/p&gt;
@@ -19166,9 +19166,9 @@ continue:
     
     <item>
       <title>分支</title>
-      <link>/courses/problemsolving22/c&#43;&#43;0/branch/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/branch/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/c&#43;&#43;0/branch/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/branch/</guid>
       <description>&lt;p&gt;很多时候我们需要根据某个条件决定去做事情1还是事情2,这就是分支。一个分支框架的格式如下：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;if (condition)
 {
@@ -19250,9 +19250,9 @@ int main ()
     
     <item>
       <title>基本框架</title>
-      <link>/courses/problemsolving22/c&#43;&#43;0/framework/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/framework/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/c&#43;&#43;0/framework/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/framework/</guid>
       <description>&lt;p&gt;一个最简单的 C++ 程序长成这样：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
 
@@ -19289,9 +19289,9 @@ int main ()
     
     <item>
       <title>循环</title>
-      <link>/courses/problemsolving22/c&#43;&#43;0/loop/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/c&#43;&#43;0/loop/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/</guid>
       <description>&lt;p&gt;假设我们现在要计算 $1+2+3+&amp;hellip;+10$，相信你已经有能力写出一段代码完成这个任务：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int sum;
 sum = 1;
@@ -19414,9 +19414,9 @@ while (s2)
     
     <item>
       <title>输入输出</title>
-      <link>/courses/problemsolving22/c&#43;&#43;0/io/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/io/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/c&#43;&#43;0/io/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/io/</guid>
       <description>&lt;p&gt;如果你使用的是 Dev-cpp，将基本框架中的程序拷贝到代码区并按下 F11，你会发现程序已经可以成功地运行了！不过跳出的黑色窗口中没有任何内容——因为我们的 main 函数中什么都没写。我们现在来尝试输出一行 &amp;ldquo;hello world!&amp;quot;：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
 

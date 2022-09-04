@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Lectures | Academic</title>
-    <link>/posts/coursenotes/nju-operating-system/lectures/</link>
-      <atom:link href="/posts/coursenotes/nju-operating-system/lectures/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/index.xml" rel="self" type="application/rss+xml" />
     <description>Lectures</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 13 Dec 2020 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Lectures</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/</link>
     </image>
     
     <item>
       <title>Lecture 01: Introduction</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec01/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec01/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;关于计算机信息&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;使用 &lt;code&gt;uname -a&lt;/code&gt; 命令可以查看操作系统，时间，硬件架构等。&lt;/p&gt;
@@ -86,9 +86,9 @@
     
     <item>
       <title>Lecture 02: Programs on Operating Systems</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec02/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec02/</guid>
       <description>&lt;h2 id=&#34;digital-logic&#34;&gt;Digital Logic&lt;/h2&gt;
 &lt;p&gt;数字电路：&lt;/p&gt;
 &lt;ul&gt;
@@ -378,9 +378,9 @@ int main() {
     
     <item>
       <title>Lecture 03: Multiprocessor Programming</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec03/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec03/</guid>
       <description>&lt;p&gt;并发：一个计算机程序被分成了若干个部分，在不改变程序最终运行结果的情况下，这些部分被乱序地执行。并发执行的多个部分会共享资源。&lt;/p&gt;
 &lt;h2 id=&#34;state-machine&#34;&gt;State Machine&lt;/h2&gt;
 &lt;p&gt;在单线程视角中，C 程序的状态机包括全局变量，堆区，栈帧列表等。全局变量和堆区的内容是全局的，是所有函数共享的，理应作为共享资源；栈帧中的变量都是局部变量，栈帧与栈帧之间独立性较强，可以交给多个线程。&lt;/p&gt;
@@ -826,9 +826,9 @@ movl (y), %eax # --+
     
     <item>
       <title>Lecture 04: Understanding Concurrent Programs</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec04/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec04/</guid>
       <description>&lt;p&gt;互斥 (mutual exclusion)：保证两个线程不能同时 (并发) 执行一段代码。&lt;/p&gt;
 &lt;p&gt;对于 &lt;code&gt;sum.c&lt;/code&gt; ，我们希望添加两个魔法函数 lock() 和 unlock()，使得魔法函数中间的代码具有互斥性：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-diff&#34;&gt;void Tsum()
@@ -890,7 +890,7 @@ retry:
 &lt;li&gt;……&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;一个完备的证明方法是画状态机。我们设置状态机 $(PC_1, PC_2, x, y, turn,status)$，六个状态分别表示 T1/T2 执行到第几行，T1/T2 的旗子有没有举起来，当前厕所门上写的是谁的名字，以及当前厕所状态。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/njuos-lec06.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/njuos-lec06.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
 &lt;p&gt;我们还可以写一个小程序验证 Peterson：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#define BARRIER __sync_synchronize()	
 void critical_section() {
@@ -983,9 +983,9 @@ print(h.__next__())
     
     <item>
       <title>Lecture 05: Concurrent Programming: Mutex</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec05/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec05/</guid>
       <description>&lt;p&gt;从 high level 来看，我们希望实现如下的结构体和 API：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;typdef struct
 {
@@ -1167,9 +1167,9 @@ syscall(SYSCALL_unlock, &amp;amp;lk);	// 释放lk，并唤醒正在等待lk的�
     
     <item>
       <title>Lecture 06: Concurrent Programming: Synchronization</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec06/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec06/</guid>
       <description>&lt;p&gt;线程同步：在某个时间点共同达到互相已知的状态。(每个线程都有可能做自己的某个耗时很长的工作)&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;nnpy：等我洗完头就吃饭/等我打完游戏就吃饭。&lt;/li&gt;
@@ -1658,9 +1658,9 @@ void Twaiter() {
     
     <item>
       <title>Lecture 07: Concurrent Programming: Real World</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec07/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec07/</guid>
       <description>&lt;h2 id=&#34;high-performance-computing&#34;&gt;High Performance Computing&lt;/h2&gt;
 &lt;p&gt;HPC: 解决需要 massive computation 的任务。&lt;/p&gt;
 &lt;p&gt;基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 &amp;ldquo;join()&amp;rdquo; 汇总一下 (涉及线程、机器、共享内存之间的通信)。&lt;/p&gt;
@@ -1836,9 +1836,9 @@ func main() {
     
     <item>
       <title>Lecture 08: Concurrent Bugs and Confrontation</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec08/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec08/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec08/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec08/</guid>
       <description>&lt;p&gt;Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。&lt;/p&gt;
 &lt;h2 id=&#34;defensive-programming&#34;&gt;Defensive Programming&lt;/h2&gt;
 &lt;p&gt;一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。&lt;/p&gt;
@@ -2007,9 +2007,9 @@ while (xchg(&amp;amp;locked, 1)) {
     
     <item>
       <title>Lecture 09: State Machine of OS</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec09/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec09/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec09/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec09/</guid>
       <description>&lt;h2 id=&#34;bare-metal--software&#34;&gt;Bare-metal &amp;amp; Software&lt;/h2&gt;
 &lt;p&gt;数字电路本身就是一个巨大的状态机。硬件厂商会保证 CPU reset 后处理器处在一个确定的状态，各个单元的固定的值会写在手册中。以 x86 为例，手册规定了 CPU reset 后 rip 的值会是 0xfff0，EFLAGS 的值为 0x2，当前硬件运行在 16-bit 模式中，不响应中断。&lt;/p&gt;
 &lt;p&gt;CPU 只是一个周而复始的取值译码执行的东西，因此它马上会做的事情就是取出 0xfff0 处的指令并执行。0xfff0 处通常是一个跳转指令，PC 会跳转到固件代码执行。固件 (Firmware) 是硬件厂商写死在一块 ROM 上的代码，常见的固件程序有 BIOS 和 UEFI 两种，后者更加现代机制更加复杂，这里简介 Legacy BIOS 的过程：&lt;/p&gt;
@@ -2079,7 +2079,7 @@ gdb -x remote.gdb ; kill -9 $!
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;整个系统的状态机大致可以看成如下过程：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/njuos-lec09.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/njuos-lec09.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;code-abstractmachine&#34;&gt;Code: AbstractMachine&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Unix Philosophy&lt;/strong&gt;&lt;/p&gt;
@@ -2207,9 +2207,9 @@ $1 = {e_ident = &amp;quot;\177ELF\002\001\001\000\000\000\000\000\000\000\000&am
     
     <item>
       <title>Lecture 10: Application of State Machines</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec10/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec10/</guid>
       <description>&lt;h2 id=&#34;compilers-and-modern-cpu&#34;&gt;Compilers and Modern CPU&lt;/h2&gt;
 &lt;p&gt;编译器的作用是将源代码状态机 $S$ 转换为二进制代码状态机 $C$：$C=Compile(S)$。只要两者的可观测行为严格一致，编译器可以随意修改指令执行的顺序，甚至修改指令内容。&lt;/p&gt;
 &lt;p&gt;现代 CPU 本质上也是“编译器”：只要保证硬件状态机的可观测行为一致，它可以乱序执行，可以多发射，还可以将没有依赖关系的指令“并行”地执行，这就是指令级并行 (instruction level parallelism, ilp)。我们可以用一个例子感受超标量处理器 (CPI&amp;lt;1，平均每条指令所需的时钟周期小于 1) 的威力：&lt;/p&gt;
@@ -2336,9 +2336,9 @@ if (x &amp;gt; y)
     
     <item>
       <title>Lecture 11: Processes in Operating Systems</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec11/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec11/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec11/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec11/</guid>
       <description>&lt;p&gt;在 &lt;code&gt;thread-os.c&lt;/code&gt; 中，操作系统启动后会初始化若干个线程 (的状态机)，或者说加载若干个程序。真正的操作系统启动后会创建第一个进程。如果查看 Linux 的源码，我们可以看到：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;if (!try_to_run_init_process(&amp;quot;/sbin/init&amp;quot;) ||
 	    !try_to_run_init_process(&amp;quot;/etc/init&amp;quot;) ||
@@ -2409,7 +2409,7 @@ int main() {
 }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;运行这段程序，我们可以看到所有的 8 种可能的结果：进程号是 0 / 真实值。我们可以画出状态机中的一条路径来理解这个输出 (即不考虑多个进程时程序的 non-deterministic 行为，总是挑选可以继续执行的进程号最小的进程走下一步)：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/njuos-lec11.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/njuos-lec11.png&#34; alt=&#34;pic&#34;&gt;&lt;/p&gt;
 &lt;h3 id=&#34;example-fork-printfc&#34;&gt;Example: &lt;code&gt;fork-printf.c&lt;/code&gt;&lt;/h3&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// fork-printf.c
 #include &amp;lt;stdio.h&amp;gt;
@@ -2556,9 +2556,9 @@ int main(int argc, char *argv[]) {
     
     <item>
       <title>Lecture 12: Address Space of Processes</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec12/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec12/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec12/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec12/</guid>
       <description>&lt;h2 id=&#34;address-space&#34;&gt;Address Space&lt;/h2&gt;
 &lt;p&gt;在 C 程序中，我们可以用指针访问任何可以访问的东西：比如 main() 函数的首地址，这个地址存储的内容就是 main() 的第一条指令。如果我们随便访问一个奇怪的地址，我们会得到段错误；如果我们往 main() 的首地址处写东西，我们也会得到段错误。&lt;/p&gt;
 &lt;p&gt;命令行工具 pmap 可以帮助我们观察一个进程的地址空间。我们以最小的程序 &lt;code&gt;minimal.S&lt;/code&gt; 为例，在 GDB 中调试时可以用 &lt;code&gt;info inferiors&lt;/code&gt; 查看进程号，并用 &lt;code&gt;pmap pid&lt;/code&gt; 来查看地址空间：&lt;/p&gt;
@@ -2884,9 +2884,9 @@ int main() {
     
     <item>
       <title>Lecture 13: System Calls and UNIX Shell</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec13/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec13/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec13/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec13/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;我们是操作系统用户，但操作系统 API 并不是我们作为人类用户直接使用的，那么“我们”到底应该怎么使用操作系统？&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3041,9 +3041,9 @@ int main() {
     
     <item>
       <title>Lecture 14: C Library</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec14/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec14/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec14/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec14/</guid>
       <description>&lt;p&gt;&lt;code&gt;sh-xv6.c&lt;/code&gt; 可以在 freestanding 的环境下直接运行：我们最终使用 &lt;code&gt;ld sh-xv6.o -o sh&lt;/code&gt; 生成二进制文件，这意味着二进制文件中有且仅有 &lt;code&gt;sh-xv6.o&lt;/code&gt; 中的函数。&lt;/p&gt;
 &lt;p&gt;我们平时在编写程序的时候显然不希望在 freestanding 的环境下编程——联想我们在 &lt;code&gt;sh-xv6.c&lt;/code&gt; 中，读取字符串都要用內联汇编的系统调用，这太糟糕了。我们自然而然地希望有一些封装好的库函数可以使用。&lt;/p&gt;
 &lt;h2 id=&#34;libc-overview&#34;&gt;Libc: Overview&lt;/h2&gt;
@@ -3184,9 +3184,9 @@ system(&amp;quot;echo hello world&amp;quot;);
     
     <item>
       <title>Lecture 15: More about fork()</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec15/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec15/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec15/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec15/</guid>
       <description>&lt;h2 id=&#34;fork-semantics&#34;&gt;&lt;code&gt;fork()&lt;/code&gt; Semantics&lt;/h2&gt;
 &lt;p&gt;fork() 的语义是将当前进程的状态机完整地复制一份，这两个进程除了 fork() 的返回值以外全部相同。&lt;/p&gt;
 &lt;h3 id=&#34;file-descriptors&#34;&gt;File Descriptors&lt;/h3&gt;
@@ -3406,9 +3406,9 @@ void display() {
     
     <item>
       <title>Lecture 16: Executable Files</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec16/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec16/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec16/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec16/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;本节课默认只有静态链接。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -3666,9 +3666,9 @@ struct symbol {uint32_t offset, const char *name;}
     
     <item>
       <title>Lecture 17: Linking and Loading</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec17/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec17/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec17/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec17/</guid>
       <description>&lt;h2 id=&#34;static-loader&#34;&gt;Static Loader&lt;/h2&gt;
 &lt;h3 id=&#34;loader-on-os&#34;&gt;Loader on OS&lt;/h3&gt;
 &lt;p&gt;可执行文件是一个描述了状态机的初始状态的数据结构。加载器根据可执行文件的描述设置好初始状态机。我们很容易写一个静态加载器：&lt;/p&gt;
@@ -4305,9 +4305,9 @@ static void dlload(struct symbol *sym) {
     
     <item>
       <title>Lecture 18: Xv6 Code Guide</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec18/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec18/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec18/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec18/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;Xv6 中的 &lt;code&gt;.d&lt;/code&gt; &lt;code&gt;.sym&lt;/code&gt; &lt;code&gt;.asm&lt;/code&gt; 文件是什么？&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -4343,9 +4343,9 @@ static void dlload(struct symbol *sym) {
     
     <item>
       <title>Lecture 19: Context Switching</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec19/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec19/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec19/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec19/</guid>
       <description>&lt;p&gt;如果我们的用户程序有死循环，计算机并不会被卡死——因为操作系统有进程调度；但操作系统有对整个计算机完全的掌控权，如果在操作系统代码中加一个死循环，那计算机就真的卡死了。&lt;/p&gt;
 &lt;h2 id=&#34;virtualization-of-cpus&#34;&gt;Virtualization of CPUs&lt;/h2&gt;
 &lt;p&gt;每一个进程都是一个状态机，其中有寄存器、内存，看内存的 &amp;ldquo;VR 眼镜&amp;rdquo; (页表) 等等。操作系统是一个状态机的管理者：它要维护各个进程的状态机，此外内核对应的状态机也归 OS 管理。正在运行的状态机的状态保存在硬件上 (CPU, DRAM)，其他未运行的进程的状态机以某种方式被暂存起来。&lt;/p&gt;
@@ -4357,9 +4357,9 @@ static void dlload(struct symbol *sym) {
     
     <item>
       <title>Lecture 20: Scheduling</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec20/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec20/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec20/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec20/</guid>
       <description>&lt;p&gt;处理器调度问题的简单假设 (1960s)：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;系统中有一个处理器&lt;/li&gt;
@@ -4482,9 +4482,9 @@ void low()    {mutex_lock();}
     
     <item>
       <title>Lecture 21: OS Design</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec21/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec21/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec21/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec21/</guid>
       <description>&lt;p&gt;操作系统的设计：一组对象+访问对象的 API；操作系统的实现：一个 C 程序完成上面的设计&lt;/p&gt;
 &lt;p&gt;我们关心的问题是：操作系统到底应该提供什么样的对象和 API？&lt;/p&gt;
 &lt;h2 id=&#34;monolithic-kernel&#34;&gt;Monolithic Kernel&lt;/h2&gt;
@@ -4535,9 +4535,9 @@ void low()    {mutex_lock();}
     
     <item>
       <title>Lecture 22: OSLab Speedrun</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec22/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec22/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec22/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec22/</guid>
       <description>&lt;h2 id=&#34;l1&#34;&gt;L1&lt;/h2&gt;
 &lt;p&gt;一把大锁保平安策略：全局用一把锁，把所有需要保护的代码都用 &lt;code&gt;atomic {}&lt;/code&gt; 框起来。&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#define atomic \
@@ -4740,9 +4740,9 @@ void pagefault(Event e, Context *c) {
     
     <item>
       <title>Lecture 23: 1Bit Storage</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec23/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec23/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec23/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec23/</guid>
       <description>&lt;p&gt;机器指令模型只有两种当前状态：寄存器和物理内存。这些状态在物理世界中应当有真实的对应。我们的需求是：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;可以寻址：比如可以根据编号访问某个单元格。&lt;/li&gt;
@@ -4829,9 +4829,9 @@ void pagefault(Event e, Context *c) {
     
     <item>
       <title>Lecture 24: I/O Devices</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec24/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec24/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec24/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec24/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;用户直接使用的其实并不是计算设备，而是 I/O 设备。CPU 只是一个无情的指令执行器，我们希望计算机可以感知外部世界的状态，并对外实施动作。&lt;/p&gt;
 &lt;p&gt;I/O 设备就是与 CPU 交换数据的一组接口。I/O 设备会提供“几条约定好功能的线”，CPU 与设备通过握手信号可以从线上读出或写入数据。通常来说，CPU 和 I/O 设备交互的数据主要有状态 (比如 CPU 查看打印机是否空闲)，指令 (比如 CPU 让显示屏发光) 和数据 (比如 CPU 告诉打印机应该打印什么)。&lt;/p&gt;
@@ -4987,9 +4987,9 @@ int main() {
     
     <item>
       <title>Lecture 25: Device Drivers</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec25/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec25/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec25/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec25/</guid>
       <description>&lt;p&gt;在操作系统眼里，I/O 设备 = 一组寄存器 + 一个控制协议。不同设备的控制协议千差万别，如果让软件直接和这些设备寄存器打交道，即使操作系统仔细地管理好访问权限，应用程序也很容易出错。所以我们的想法是：对不同的设备做一个抽象，使得上层应用可以通过尽可能统一的接口来访问设备。&lt;/p&gt;
 &lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;p&gt;I/O 设备最基本的需求就是 read 和 write。UNIX 世界里的设备通常分为两种：&lt;/p&gt;
@@ -5249,9 +5249,9 @@ int main() {
     
     <item>
       <title>Lecture 26: File System API</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec26/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec26/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec26/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec26/</guid>
       <description>&lt;h2 id=&#34;why-file-system&#34;&gt;Why File System?&lt;/h2&gt;
 &lt;p&gt;如果设备直接将读/写/控制的接口暴露给应用程序，那么多个应用程序在并发地使用设备时很容易发生竞争。我们考虑下面的例子：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;// printf-race.c
@@ -5379,9 +5379,9 @@ read(fd, buf, 512)
     
     <item>
       <title>Lecture 27: FAT and UNIX File System</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec27/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec27/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec27/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec27/</guid>
       <description>&lt;p&gt;数据结构课的一些潜藏的假设：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;random access memory，word addressing (不同于磁盘，磁盘是以块为单位访问的)&lt;/li&gt;
@@ -5432,9 +5432,9 @@ void bwrite(int id, const struct block *buf) {
     
     <item>
       <title>Lecture 28: Reliability of Persistent Storage</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec28/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec28/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec28/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec28/</guid>
       <description>&lt;p&gt;内存在掉电后丢失数据是可以被接受的，但在持久化存储设备上我们必须保证数据的可靠性。硬盘损坏虽然是小概率事件，但只要有大量的重复 (比如数据中心)，这类事情还是经常发生的。我们希望即使发生这样的事情，系统仍然能照常运转。&lt;/p&gt;
 &lt;h2 id=&#34;raid&#34;&gt;RAID&lt;/h2&gt;
 &lt;p&gt;Redundant Array of Inexpensive Disks 的核心思想是：把多个 (不可靠的) 虚拟磁盘虚拟成一块非常可靠且性能极高的虚拟磁盘。RAID 的虚拟化是一种“反向”的虚拟化：我们之前接触的虚拟化，比如进程把一个 CPU 分时虚拟成多个 virtual CPU，虚拟内存把一份内存通过 MMU 虚拟成多个 virtual address space，文件把一个物理设备虚拟成多个 virtual disk……而 RAID 是 $多\to 1$ 的虚拟化。&lt;/p&gt;
@@ -5453,7 +5453,7 @@ void bwrite(int id, const struct block *buf) {
 &lt;p&gt;但这个设计有一个微妙的缺陷：它应对随机读写的效果较差。假设我们有多次随机的写操作，我们会发现每次写操作都要奇偶校验盘 $D$ 中的数据进行修改。此外因为 $D_i=A_i\oplus B_i\oplus C_i$，所以我们还没法直接去修改 $D_i$，假设我们现在要修改 $A_1$，那么我们必须先 &lt;code&gt;bread(A1, D1)&lt;/code&gt;，然后 &lt;code&gt;D1^=A1&lt;/code&gt;，将 &lt;code&gt;A1&lt;/code&gt; 修改为 &lt;code&gt;A1&#39;&lt;/code&gt; 后，&lt;code&gt;D1&#39;=D1^A1&#39;&lt;/code&gt;，最后 &lt;code&gt;bwrite(A1, D1)&lt;/code&gt;。每次随机写 (不论是 $A,B,C$ 中的哪一个盘)，我们都要对 $D$ 一读一写，奇偶校验盘成为了性能瓶颈。&lt;/p&gt;
 &lt;h3 id=&#34;raid-5&#34;&gt;RAID-5&lt;/h3&gt;
 &lt;p&gt;RAID-5 的设计非常聪明：我们不用单独安排一块盘作为奇偶校验盘，我们可以把奇偶检验的信息分散到各各盘上去，每块盘上既有数据也有校验：&lt;/p&gt;
-&lt;img src=&#34;/img/raid5.png&#34; alt=&#34;RAID5&#34; style=&#34;zoom: 33%;&#34; /&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/raid5.png&#34; alt=&#34;RAID5&#34; style=&#34;zoom: 33%;&#34; /&gt;
 &lt;p&gt;在连续读写上，$n$ 块盘可以达到 $n-1$ 块的带宽 (每 $n$ 个 block 就有一个是冗余的校验 block)，在随机读上，由于每个盘都存储了数据，因此带宽接近 100%。在随机写上，校验信息的读写仍然是瓶颈，但由于校验信息的修改被平摊到了所有盘的头上，所以基本可以保证随着盘数量的增多效率提高，有 scalability。&lt;/p&gt;
 &lt;h2 id=&#34;crash-consistency&#34;&gt;Crash Consistency&lt;/h2&gt;
 &lt;p&gt;另一种 Fault model：磁盘并没有故障，但操作系统可能会 crash (比如掉电)。即使是文件系统中的简单操作也可能涉及若干个 block，如果我们在一轮操作的中途掉电，那么文件系统就会进入一个 inconsistent 的状态，这样的状态可能导致严重的错误或安全问题。磁盘本身无法直接支持原子操作 (all or nothing)，甚至为了效率它不会保证 bwrite 操作是按顺序进行的 (因此 block layer 还额外提供了 bflush 操作来保证数据落盘 (和并发中的 barrier(mfence) 是类似的) )。&lt;/p&gt;
@@ -5488,9 +5488,9 @@ void bwrite(int id, const struct block *buf) {
     
     <item>
       <title>Lecture 29: Xv6 File System Implementation</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec29/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec29/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec29/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec29/</guid>
       <description>&lt;h2 id=&#34;review&#34;&gt;Review&lt;/h2&gt;
 &lt;p&gt;文件系统 = 图书馆&lt;/p&gt;
 &lt;ul&gt;
@@ -5550,9 +5550,9 @@ gdb.execute(&#39;quit&#39;)
     
     <item>
       <title>Lecture 30: Modern Storage System</title>
-      <link>/posts/coursenotes/nju-operating-system/lectures/lec30/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec30/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-operating-system/lectures/lec30/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec30/</guid>
       <description>&lt;h2 id=&#34;abilities-and-limitations-of-fs&#34;&gt;Abilities and Limitations of FS&lt;/h2&gt;
 &lt;p&gt;OJ 最简单的实现方式可以就是一个文件系统。比如 OS2022 课程的学生名单存放在 &lt;code&gt;/OS2022/students.csv&lt;/code&gt; 中，向 Lab1 提交的代码以一个压缩包的形式存放在 &lt;code&gt;/OS2022/L1/studentid/xxxxxxxx.tar.bz2&lt;/code&gt; 中。OJ 的前端和后端部署在不同的机器上，后端机器通过 ssh 连接前端，扫描文件系统寻找符合格式的提交拉回后台，评测以后发送一个 &lt;code&gt;.tar.bz2.result&lt;/code&gt; 文件给前端，前端就可以将评测结果显示出来。&lt;/p&gt;
 &lt;p&gt;使用文件系统的最大好处是简单：我们有海量的 UNIX 工具/标准库可以处理文件。比如查询某个同学的提交可以使用如下 python 代码：&lt;/p&gt;
@@ -5596,7 +5596,7 @@ COMMIT;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;例子：稍大型的 Online Judge&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;数据库需要保证 ACID - Atomicity, Consistency, Isolation, Durability。对于数千个连接的并发事务，数据库要在保证并发正确性的基础上提升查询效率。一个典型的简单应用场景是 Online Judge：&lt;/p&gt;
-&lt;center&gt;&lt;img src=&#34;/img/APIO-OJ.png&#34; alt=&#34;APIO-OJ&#34; style=&#34;zoom:33%;&#34; /&gt;&lt;/center&gt;
+&lt;center&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/APIO-OJ.png&#34; alt=&#34;APIO-OJ&#34; style=&#34;zoom:33%;&#34; /&gt;&lt;/center&gt;
 &lt;p&gt;比赛中 Online Judge 评测结果的即时性要求很高，因此我们要组建一个小的分布式系统来并行地评测多组数据。上图所示系统的工作原理是：100 个 worker 负责评测，supervisor 负责给 worker 分配任务 (supervisor 会不断 ping 各个 worker 以了解机器实时的状态)，所有的数据都存储在 database 中。supervisor 和所有的 worker 与数据库相连。当 Online Judge 前端接收到一个新的提交后，他会把文件存储到数据库中，supervisor 会指挥一个 worker 把源代码从数据库拉到本地编译，并将可执行文件传回数据库。接着 supervisor 指挥一部分 worker 从数据库中获取可执行文件 (这一瞬间会产生一个很大的带宽)，然后执行对应的测试数据，worker 将执行结果发送给数据库保存。最后前端从数据库中查询所有测试点的运行结果并显示在网页上。&lt;/p&gt;
 &lt;p&gt;从这个例子中我们可以看到数据库作为整个系统的存储枢纽，其可靠性，处理大量并发事务的效率等是整个系统能力的关键。&lt;/p&gt;
 &lt;/blockquote&gt;

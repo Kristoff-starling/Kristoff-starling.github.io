@@ -32,7 +32,7 @@
 Lazy allocation (moderate) 在该部分需要做的修改和注意事项在课上基本讲过，可以参考 Lecture 08 的课堂笔记。总体来说，我们需要在 usertrap() 中识别出缺页异常并写一个缺页异常的处理函数：申请一个物理页面，将导致错误的虚拟地址所在的虚拟页面映射过去。此外，由于延迟分配的存在，我们在 uvmunmap() 时释放的不一定是已经映射过的地址，应当取消其中的一些 panic 语句。">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/mit-operating-system/labs/lab05/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab05/">
 
   
 
@@ -219,7 +219,7 @@ Lazy allocation (moderate) 在该部分需要做的修改和注意事项在课�
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/mit-operating-system/labs/lab05/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab05/">
 
   
   
@@ -233,7 +233,7 @@ Lazy allocation (moderate) 在该部分需要做的修改和注意事项在课�
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/mit-operating-system/labs/lab05/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/labs/lab05/">
   <meta property="og:title" content="MIT-6.S081 Lab 05: Lazy allocation | Academic">
   <meta property="og:description" content="Progress Eliminate allocation from sbrk() (easy) Lazy allocation (moderate) Lazytests and Usertests (moderate) Eliminate allocation from sbrk() (easy) 该部分要做的事情很简单：在 sbrk() 系统调用的处理函数中，不要分配内存，只修改进程的 sz 即可。由于我们只修改了 sz 而没有为新申请的空间绑定页面，所以当用户程序使用这块内存的时候 (load/store指令)，就会因为页表无法翻译虚拟地址而报 kernel panic。
 Lazy allocation (moderate) 在该部分需要做的修改和注意事项在课上基本讲过，可以参考 Lecture 08 的课堂笔记。总体来说，我们需要在 usertrap() 中识别出缺页异常并写一个缺页异常的处理函数：申请一个物理页面，将导致错误的虚拟地址所在的虚拟页面映射过去。此外，由于延迟分配的存在，我们在 uvmunmap() 时释放的不一定是已经映射过的地址，应当取消其中的一些 panic 语句。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">

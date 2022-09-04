@@ -34,7 +34,7 @@
 提高并行度。在一个多核处理器上，我们可以让多个线程每个占据一个 CPU 核，分摊一部分工作，从而达到并行提速的效果。 避免 I/O 操作阻塞程序。如果一个线程在等待 I/O 操作，CPU 可以通过线程切换让别的线程上 CPU 工作，这样就实现了等 I/O 和做其他事情同时进行。 26.2 An Example: Thread Creation t0.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/booknotes/ostep/ch26/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/booknotes/ostep/ch26/">
 
   
 
@@ -221,7 +221,7 @@
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/booknotes/ostep/ch26/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/booknotes/ostep/ch26/">
 
   
   
@@ -235,7 +235,7 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/booknotes/ostep/ch26/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/booknotes/ostep/ch26/">
   <meta property="og:title" content="Chapter 26: Concurrency: An Introduction | Academic">
   <meta property="og:description" content="一个多线程程序会有多个执行流，即有好几个 PC 并发/并行地取指执行，我们可以将其理解为多个进程，不过它们共享同一个地址空间。每个线程有自己的 PC 和一套寄存器，因此类似于进程切换，我们也需要线程切换。不过由于线程共享地址空间，所以线程切换时无需切换页表。
 虽然线程可以共享地址空间，但每个线程要有自己独立的栈。不同于单线程地址空间，多线程程序的地址空间中有多个栈，每个线程一个，这个线程栈也被称为 thread-local storage。

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Lectures | Academic</title>
-    <link>/posts/coursenotes/ucb-cs61a/lectures/</link>
-      <atom:link href="/posts/coursenotes/ucb-cs61a/lectures/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/index.xml" rel="self" type="application/rss+xml" />
     <description>Lectures</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Lectures</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/</link>
     </image>
     
     <item>
       <title>UCB-CS61A Lecture 03: Control</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec03/</guid>
       <description>&lt;h2 id=&#34;side-effects&#34;&gt;Side Effects&lt;/h2&gt;
 &lt;p&gt;一个函数如果没有显式地返回内容，那么它的返回值默认为 None。比如下面的程序会报 TypeError：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def square(x):
@@ -35,9 +35,9 @@ print(result + 1)
     
     <item>
       <title>UCB-CS61A Lecture 04: Higher-Order Functions</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec04/</guid>
       <description>&lt;h2 id=&#34;higher-order-functions&#34;&gt;Higher-Order Functions&lt;/h2&gt;
 &lt;p&gt;以函数作为参数的，或者以函数作为返回值的函数被称为 higher-order function。例如&lt;/p&gt;
 &lt;p&gt;以函数作为参数：&lt;/p&gt;
@@ -87,9 +87,9 @@ def summation(n, term):
     
     <item>
       <title>UCB-CS61A Lecture 05: Environments</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec05/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec05/</guid>
       <description>&lt;h2 id=&#34;environments&#34;&gt;Environments&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;刚开始有一个 global frame，每发生一次函数调用，就会随之生成一个 local frame。&lt;/li&gt;
@@ -135,9 +135,9 @@ def summation(n, term):
     
     <item>
       <title>UCB-CS61A Lecture 07: Function Examples</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec07/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec07/</guid>
       <description>&lt;h2 id=&#34;decorators&#34;&gt;Decorators&lt;/h2&gt;
 &lt;p&gt;考虑如下的高阶函数 &lt;code&gt;trace()&lt;/code&gt; ：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def square(x):
@@ -171,9 +171,9 @@ func = ATTR(func)
     
     <item>
       <title>UCB-CS61a Lecture 09: Tree Recursion</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec09/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec09/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec09/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec09/</guid>
       <description>&lt;p&gt;没有需要特别注意的知识点。&lt;/p&gt;
 &lt;p&gt;(注：这里的 tree recursion 指的不是在树上搜索的递归，而是一个函数在函数体内多次调用自己，整个调用构成了一棵树的情形，最经典的例子就是不带记忆化地递归计算斐波那契数列。)&lt;/p&gt;
 </description>
@@ -181,9 +181,9 @@ func = ATTR(func)
     
     <item>
       <title>UCB-CS61A Lecture 10: Containers</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec10/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec10/</guid>
       <description>&lt;h2 id=&#34;list-comprehension&#34;&gt;List Comprehension&lt;/h2&gt;
 &lt;p&gt;通过一个已经存在的 list 创建一个新的 list。&lt;/p&gt;
 &lt;p&gt;完整的语法为：&lt;/p&gt;
@@ -203,9 +203,9 @@ func = ATTR(func)
     
     <item>
       <title>UCB-CS61A Lecture 11: Sequences</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec11/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec11/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec11/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec11/</guid>
       <description>&lt;h2 id=&#34;copying&#34;&gt;Copying&lt;/h2&gt;
 &lt;p&gt;我们平时写的&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;listA = [0, 1, 2, 3]
@@ -261,9 +261,9 @@ func = ATTR(func)
     
     <item>
       <title>UCB-CS61A Lecture 12: Data Abstraction</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec12/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec12/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec12/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec12/</guid>
       <description>&lt;h2 id=&#34;abstraction-barriers&#34;&gt;Abstraction Barriers&lt;/h2&gt;
 &lt;p&gt;抽象是一层一层的，好的程序设计应当只使用上一层抽象提供的接口，不应该跨层地去使用底层的接口。&lt;/p&gt;
 &lt;h2 id=&#34;dictionary&#34;&gt;Dictionary&lt;/h2&gt;
@@ -295,9 +295,9 @@ func = ATTR(func)
     
     <item>
       <title>UCB-CS61A Lecture 13: Trees</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec13/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec13/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec13/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec13/</guid>
       <description>&lt;h2 id=&#34;tree-data-abstraction&#34;&gt;Tree: Data Abstraction&lt;/h2&gt;
 &lt;p&gt;我们希望 tree 这个抽象数据类型提供如下的几个 API:&lt;/p&gt;
 &lt;ul&gt;
@@ -336,9 +336,9 @@ def is_leaf(tree):
     
     <item>
       <title>UCB-CS61A Lecture 14: Mutability</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec14/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec14/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec14/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec14/</guid>
       <description>&lt;h2 id=&#34;objects&#34;&gt;Objects&lt;/h2&gt;
 &lt;p&gt;对象 (object) 是一组数据和行为 (函数) 的集合。在 Python 中所有的 value 都是对象，对象有一系列属性 (attribute) 也有一系列方法 (method)。比如 Python 中的字符串可以通过索引的方式获取具体位置的数据，也可以使用 upper(), lower() 等方法对其进行操作。&lt;/p&gt;
 &lt;h2 id=&#34;list-mutation&#34;&gt;List Mutation&lt;/h2&gt;
@@ -399,9 +399,9 @@ True
     
     <item>
       <title>UCB-CS61A Lecture 15: Syntax</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec15/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec15/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec15/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec15/</guid>
       <description>&lt;h2 id=&#34;syntax-tree&#34;&gt;Syntax Tree&lt;/h2&gt;
 &lt;p&gt;中间的节点称为 non-terminal，叶子节点称为 terminal，一个 syntax tree 描述了一个句子的句法结构。&lt;/p&gt;
 &lt;p&gt;我们可以使用上一课中提到的嵌套列表的方法作为 syntax tree 这一抽象的实现：&lt;/p&gt;
@@ -451,9 +451,9 @@ tree_index = index_trees(trees)
     
     <item>
       <title>UCB-CS61A Lecture 16: Iterators</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec16/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec16/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec16/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec16/</guid>
       <description>&lt;h2 id=&#34;iterators&#34;&gt;Iterators&lt;/h2&gt;
 &lt;p&gt;迭代器 (iterator) 是一种对象，提供了对某个 itarable 的 sequential access。&lt;code&gt;iter(iterable)&lt;/code&gt; 会返回一个指向 iterable 第一个元素的 iterator，之后可以用 &lt;code&gt;next()&lt;/code&gt; 函数来查看后续的元素。&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;toppings = [&amp;quot;pineapple&amp;quot;, &amp;quot;pepper&amp;quot;, &amp;quot;mushroom&amp;quot;, &amp;quot;roasted red pepper&amp;quot;]
@@ -513,9 +513,9 @@ for n1, n2 in num_pairs:
     
     <item>
       <title>UCB-CS61A Lecture 17: Generators</title>
-      <link>/posts/coursenotes/ucb-cs61a/lectures/lec17/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec17/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/lectures/lec17/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec17/</guid>
       <description>&lt;h2 id=&#34;generators&#34;&gt;Generators&lt;/h2&gt;
 &lt;p&gt;generator function 中不使用 return 返回结果，而使用 yield。generator 是一种 iterator，它通过 generator function 来逐个地获得结果。这里 generator function 可以理解为一个状态机，当遇到 yield 语句时，它会将自己的执行状态暂时封存起来并返回结果。下一次 generator 再次调用该函数时，generator function 将会从上一次 yield 后的第一条语句开始继续执行，直到遇到下一个 yield。如果没有遇到 yield 而是函数一直执行到结束，generator function 会返回一个 &lt;code&gt;StopIteration&lt;/code&gt; exception。&lt;/p&gt;
 &lt;p&gt;下面是一个例子：&lt;/p&gt;

@@ -35,7 +35,7 @@
 不要问一些直接 STFW/RTFM 就能轻松获得答案的知识性问题，他们通常具有 &ldquo;xxx是什么？&quot;“xxx怎么用” 等格式。 作为一个计算机界的后辈，你遇到的问题有极大的概率是已经有无数人遇到过的问题。一些经典的问题通常可以在 Stack Overflow 等知名平台上找到解答，所以你应该确保你的问题没有现成可查的解决方案。 你应该尽可能详细地刻画你的问题，比如写下你已经用过哪些方法但失败了，也可以贴一些截图。一方面，更详细的信息可以让别人更好地了解你的情况，提供帮助；另一方面，这可以体现你为了解决问题已经付出过你能力范围内的努力。 机器永远是对的，不要说“我觉得我的gcc有问题/我觉得我的电脑坏了”之类的话（这是我在帮助上“程序设计基础”课的同学解决问题时经常听到的话）。另外，你手上的源码有很大概率经过了很多人的验证，所以不要轻易宣布自己发现了 bug。 作为一个提问者你不能显得趾高气昂，在提问中适当使用委婉的词汇可以使你的态度更加诚恳，但也不用过度使用以至于语句冗余。 对于我们这样的初学者来说问题可能还没有领域之分，但在日后如果提出一些分类较细的问题，需要注意提问的平台是否合适。 总之，想要提出一个好的问题，你需要在遇到困难时先主动自己解决，尝试能力范围内可以使用的方法，并且在你的提问中展现这个过程。这样蕴含了你的思考的问题才是有价值的。">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-ics/pa/pa0/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa0/">
 
   
 
@@ -222,7 +222,7 @@
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-ics/pa/pa0/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa0/">
 
   
   
@@ -236,7 +236,7 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-ics/pa/pa0/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa0/">
   <meta property="og:title" content="PA0 - 世界诞生的前夜：开发环境配置 | Academic">
   <meta property="og:description" content="实验进度 我完成了所有安装任务，完成了必答题，并针对思考题和遇到的其他问题进行了资料搜索和思考。
 必答题 我按照实验要求编写了 hello.c 并编写 Makefile 文件进行编译，并且学习了 GDB 的使用。这些内容无法直接呈现，故省略。
@@ -784,12 +784,12 @@ iiiiiiiiiiiiiiiiiiiiiiiiijjjjjjjjjjjjjjjjjjjjjjjjj
 <td style="text-align:center">gd或god<br><code>?</code> 表示前一个字符重复零次或一次</td>
 </tr>
 <tr>
-<td style="text-align:center">`gd</td>
-<td style="text-align:center">god`</td>
+<td style="text-align:center"><code>gd|god</code></td>
+<td style="text-align:center">gd或god<br><code>|</code> 表示或</td>
 </tr>
 <tr>
-<td style="text-align:center">`g(la</td>
-<td style="text-align:center">oo)d`</td>
+<td style="text-align:center"><code>g(la|oo)d</code></td>
+<td style="text-align:center">glad/good<br><code>()</code> 里可以罗列若干个串并用 <code>|</code> 分隔开</td>
 </tr>
 <tr>
 <td style="text-align:center"><code>A(xyz)+B</code></td>
@@ -820,7 +820,7 @@ iiiiiiiiiiiiiiiiiiiiiiiiijjjjjjjjjjjjjjjjjjjjjjjjj
 <p>对于这些特殊文件实现方式的一个简单解释是，例如 <code>/dev/null</code> ,当内核接收到对这个文件的请求时，不需要进行任何真实的硬件操作，直接按照API返回写入成功即可。</p>
 <h4 id="makefile">Makefile</h4>
 <p>Makefile最简单的一点语法：</p>
-<pre><code>要生成的文件名:依赖文件列表
+<pre><code class="language-makefile">要生成的文件名:依赖文件列表
 	用于生成目标文件的命令序列
 </code></pre>
 <p>如果连续多次执行 <code>make</code> ，会得到信息 &lsquo;xxx is up to date&rsquo;。这是 <code>make</code> 程序智能管理的功能，如果目标文件已经存在且修改时间后于其依赖的所有文件，<code>make</code> 会认为这个文件已经编译过了，不需要重新编译。</p>

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Homework | Academic</title>
-    <link>/posts/coursenotes/ucb-cs61a/homework/</link>
-      <atom:link href="/posts/coursenotes/ucb-cs61a/homework/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/index.xml" rel="self" type="application/rss+xml" />
     <description>Homework</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Homework</title>
-      <link>/posts/coursenotes/ucb-cs61a/homework/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/</link>
     </image>
     
     <item>
       <title>UCB-CS61A Homework 01: Control</title>
-      <link>/posts/coursenotes/ucb-cs61a/homework/hw01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw01/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/homework/hw01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw01/</guid>
       <description>&lt;p&gt;值得一提的是下面两道题&lt;/p&gt;
 &lt;h2 id=&#34;q5-if-function-refactor&#34;&gt;Q5: If Function Refactor&lt;/h2&gt;
 &lt;p&gt;函数调用会先将所有的参数的值算出来再调用，因此会发生 ZeroDivisionError。&lt;/p&gt;
@@ -31,9 +31,9 @@
     
     <item>
       <title>UCB-CS61A Homework 02: Higher-Order Functions</title>
-      <link>/posts/coursenotes/ucb-cs61a/homework/hw02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw02/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/homework/hw02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw02/</guid>
       <description>&lt;p&gt;值得一提的是附加的思考题，对理解 lambda 表达式和函数的本质很有帮助：&lt;/p&gt;
 &lt;h2 id=&#34;q3-church-numerals&#34;&gt;Q3: Church Numerals&lt;/h2&gt;
 &lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def zero(f):
@@ -79,9 +79,9 @@ def two(f):
     
     <item>
       <title>UCB-CS61A Homework 03: Recursion, Tree Recursion</title>
-      <link>/posts/coursenotes/ucb-cs61a/homework/hw03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/ucb-cs61a/homework/hw03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw03/</guid>
       <description>&lt;p&gt;值得一提的是下面几道题：&lt;/p&gt;
 &lt;h2 id=&#34;q1-num-eights&#34;&gt;Q1: Num Eights&lt;/h2&gt;
 &lt;p&gt;一个值得注意的 python 优先级问题：笔者刚开始写了一行&lt;/p&gt;

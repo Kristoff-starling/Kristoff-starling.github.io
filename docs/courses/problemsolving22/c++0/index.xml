@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>C/C&#43;&#43;基础入门 | Academic</title>
-    <link>/courses/problemsolving22/c&#43;&#43;0/</link>
-      <atom:link href="/courses/problemsolving22/c++0/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/</link>
+      <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/c++0/index.xml" rel="self" type="application/rss+xml" />
     <description>C/C&#43;&#43;基础入门</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>C/C&#43;&#43;基础入门</title>
-      <link>/courses/problemsolving22/c&#43;&#43;0/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/</link>
     </image>
     
     <item>
       <title>分支</title>
-      <link>/courses/problemsolving22/c&#43;&#43;0/branch/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/branch/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/c&#43;&#43;0/branch/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/branch/</guid>
       <description>&lt;p&gt;很多时候我们需要根据某个条件决定去做事情1还是事情2,这就是分支。一个分支框架的格式如下：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;if (condition)
 {
@@ -98,9 +98,9 @@ int main ()
     
     <item>
       <title>基本框架</title>
-      <link>/courses/problemsolving22/c&#43;&#43;0/framework/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/framework/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/c&#43;&#43;0/framework/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/framework/</guid>
       <description>&lt;p&gt;一个最简单的 C++ 程序长成这样：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
 
@@ -137,9 +137,9 @@ int main ()
     
     <item>
       <title>循环</title>
-      <link>/courses/problemsolving22/c&#43;&#43;0/loop/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/c&#43;&#43;0/loop/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/</guid>
       <description>&lt;p&gt;假设我们现在要计算 $1+2+3+&amp;hellip;+10$，相信你已经有能力写出一段代码完成这个任务：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int sum;
 sum = 1;
@@ -262,9 +262,9 @@ while (s2)
     
     <item>
       <title>输入输出</title>
-      <link>/courses/problemsolving22/c&#43;&#43;0/io/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/io/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/courses/problemsolving22/c&#43;&#43;0/io/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/io/</guid>
       <description>&lt;p&gt;如果你使用的是 Dev-cpp，将基本框架中的程序拷贝到代码区并按下 F11，你会发现程序已经可以成功地运行了！不过跳出的黑色窗口中没有任何内容——因为我们的 main 函数中什么都没写。我们现在来尝试输出一行 &amp;ldquo;hello world!&amp;quot;：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
 

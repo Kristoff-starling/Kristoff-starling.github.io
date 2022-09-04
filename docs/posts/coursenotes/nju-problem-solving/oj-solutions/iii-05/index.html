@@ -31,7 +31,7 @@
   <meta name="description" content="A. 常系数线性递推 题面描述 给定递推式 $a_n=x_0&#43;\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。 $k\leq 60,p\leq 2\times 10^9$。 题解 令向量 $$ x_{n}= \left( \begin{matrix} a_n\\a_{n&#43;1}\\ \vdots\\a_{n&#43;k-1}\\x_0 \end{matrix} \right) $$ 则令 $$ A=\left[\begin{matrix}1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\0 &amp; 1 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; \vdots &amp; &amp; \vdots &amp; \vdots\\0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0\\ x_k &amp; x_{k-1} &amp; \dots &amp; x_1 &amp; 1\\0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1\end{matrix}\right] $$ 有 $$ Ax_n=x_{n&#43;1} $$ 因此只要求 $A^{p-k&#43;1}x_0$，即可求得 $a_p$。矩阵乘法可以用快速幂加速。总时间复杂度 $O(k^3logp)$。">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
 
   
 
@@ -218,7 +218,7 @@
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
 
   
   
@@ -232,7 +232,7 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
   <meta property="og:title" content="问题求解 III - 05 题解 | Academic">
   <meta property="og:description" content="A. 常系数线性递推 题面描述 给定递推式 $a_n=x_0&#43;\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。 $k\leq 60,p\leq 2\times 10^9$。 题解 令向量 $$ x_{n}= \left( \begin{matrix} a_n\\a_{n&#43;1}\\ \vdots\\a_{n&#43;k-1}\\x_0 \end{matrix} \right) $$ 则令 $$ A=\left[\begin{matrix}1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\0 &amp; 1 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; \vdots &amp; &amp; \vdots &amp; \vdots\\0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0\\ x_k &amp; x_{k-1} &amp; \dots &amp; x_1 &amp; 1\\0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1\end{matrix}\right] $$ 有 $$ Ax_n=x_{n&#43;1} $$ 因此只要求 $A^{p-k&#43;1}x_0$，即可求得 $a_p$。矩阵乘法可以用快速幂加速。总时间复杂度 $O(k^3logp)$。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">

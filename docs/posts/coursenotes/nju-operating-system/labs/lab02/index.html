@@ -34,7 +34,7 @@ Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模�
 经过 AM 中的一些代码后，上下文保存在了栈上的 Context 结构体中，进入 os-&gt;trap。">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/labs/lab02/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab02/">
 
   
 
@@ -221,7 +221,7 @@ Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模�
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/labs/lab02/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab02/">
 
   
   
@@ -235,7 +235,7 @@ Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模�
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/labs/lab02/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab02/">
   <meta property="og:title" content="Lab 02: Kernel Multi-Threads | Academic">
   <meta property="og:description" content="Overview 该实验的主要内容是实现内核线程的调度。本实验报告主要记录一些有趣的设计和测试方法。
 Designation spinlock 在 L2 中我们需要实现一个相较于 L1 更加精细的自旋锁。在引入了中断机制后，我们在临界区内需要关闭中断，否则一旦持有锁的线程被调度下了 CPU 一整个时间片就会卡住。我们需要小心地维护中断的嵌套。我们需要一个 per-cpu 的变量来记录中断嵌套的层数，在第一层的时候关闭中断，并在最后一层被解开时打开中断。

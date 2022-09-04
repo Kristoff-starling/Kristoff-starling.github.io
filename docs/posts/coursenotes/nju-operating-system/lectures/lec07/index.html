@@ -34,7 +34,7 @@ HPC 可以实现的原因：数据的局部性。例如我们想利用 HPC 进�
 Example: Mandelbrot Set // mandelbrot.c #include &quot;thread.h&quot; #include &lt;math.h&gt; int NT; #define W 6400 #define H 6400 #define IMG_FILE &quot;.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/lectures/lec07/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec07/">
 
   
 
@@ -221,7 +221,7 @@ Example: Mandelbrot Set // mandelbrot.c #include &quot;thread.h&quot; #include &
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/lectures/lec07/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec07/">
 
   
   
@@ -235,7 +235,7 @@ Example: Mandelbrot Set // mandelbrot.c #include &quot;thread.h&quot; #include &
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/lectures/lec07/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec07/">
   <meta property="og:title" content="Lecture 07: Concurrent Programming: Real World | Academic">
   <meta property="og:description" content="High Performance Computing HPC: 解决需要 massive computation 的任务。
 基本思路：计算图会分成若干层，每层会有很多要计算的节点。将每层的任务先分配到机器，机器里再分配到线程 (两级分解)，并行计算这些节点后，用一个 &ldquo;join()&rdquo; 汇总一下 (涉及线程、机器、共享内存之间的通信)。

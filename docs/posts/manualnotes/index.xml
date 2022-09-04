@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Manual Notes | Academic</title>
-    <link>/posts/manualnotes/</link>
-      <atom:link href="/posts/manualnotes/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/manualnotes/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/manualnotes/index.xml" rel="self" type="application/rss+xml" />
     <description>Manual Notes</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 14 Aug 2022 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Manual Notes</title>
-      <link>/posts/manualnotes/</link>
+      <link>https://kristoff-starling.github.io/posts/manualnotes/</link>
     </image>
     
     <item>
       <title>Flex Manual - Notes</title>
-      <link>/posts/manualnotes/flex/</link>
+      <link>https://kristoff-starling.github.io/posts/manualnotes/flex/</link>
       <pubDate>Sun, 14 Aug 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/manualnotes/flex/</guid>
+      <guid>https://kristoff-starling.github.io/posts/manualnotes/flex/</guid>
       <description>&lt;h2 id=&#34;3-introduction&#34;&gt;3. Introduction&lt;/h2&gt;
 &lt;p&gt;flex 是一个生成 scanner 的工具。flex 接受一个 &lt;code&gt;.flex&lt;/code&gt; 文件，&lt;code&gt;.flex&lt;/code&gt; 文件用于描述如何生成一个 scanner，由若干 rules 组成，每条规则都是一个正则表达式和一段 C 代码的二元组。flex 工具会输出一个 C 代码 &lt;code&gt;lex.yy.cc&lt;/code&gt;，该代码与 flex 的 runtime library 链接之后可以生成可执行文件。可执行文件执行时会分析输入的内容，如果某条规则的正则表达式与输入内容匹配则执行 rule 中定义的 C 代码。&lt;/p&gt;
 &lt;h2 id=&#34;4-some-simple-examples&#34;&gt;4. Some Simple Examples&lt;/h2&gt;
@@ -209,9 +209,9 @@ bar             something_else();
     
     <item>
       <title>FAT Specification - Notes</title>
-      <link>/posts/manualnotes/fat/</link>
+      <link>https://kristoff-starling.github.io/posts/manualnotes/fat/</link>
       <pubDate>Tue, 14 Jun 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/manualnotes/fat/</guid>
+      <guid>https://kristoff-starling.github.io/posts/manualnotes/fat/</guid>
       <description>&lt;p&gt;
 &lt;a href=&#34;http://jyywiki.cn/pages/OS/manuals/MSFAT-spec.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Microsoft FAT Specification&lt;/a&gt; 的 local copy 见此处。以下是对该手册的精华部分的翻译和解读。&lt;/p&gt;
 &lt;h2 id=&#34;section-1-definitions-and-notations&#34;&gt;Section 1: Definitions and Notations&lt;/h2&gt;
@@ -886,7 +886,7 @@ else {
 &lt;p&gt;如果长名目录项中的校验和与其对应的短名目录项算出来不一致，我们就认为该长名目录项集合被损坏了。&lt;/p&gt;
 &lt;h3 id=&#34;73-example-illustrating-persistence-of-a-long-name&#34;&gt;7.3 Example illustrating persistence of a long name&lt;/h3&gt;
 &lt;p&gt;下面的图片以 &amp;ldquo;The quick brown.fox&amp;rdquo; 这个名字为例展示了长名的存储方法：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/FAT_LongDirent.png&#34; alt=&#34;LongDirent&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/FAT_LongDirent.png&#34; alt=&#34;LongDirent&#34;&gt;&lt;/p&gt;
 &lt;p&gt;长文件名不能超过 255 个字符 (不包括结尾的 NULL)。长文件名中的字符限制和短文件名基本一样 (见 Section 6.1)，一些额外的规则为：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;

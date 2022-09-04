@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Lectures | Academic</title>
-    <link>/posts/coursenotes/mit-operating-system/lectures/</link>
-      <atom:link href="/posts/coursenotes/mit-operating-system/lectures/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/index.xml" rel="self" type="application/rss+xml" />
     <description>Lectures</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Lectures</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/</link>
     </image>
     
     <item>
       <title>MIT-6.S081 Lecture 01: Introduction and Examples</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec01/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec01/</guid>
       <description>&lt;h2 id=&#34;purposes-of-os&#34;&gt;Purposes of O/S&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Abstraction of hardware. Higher level interfaces and abstractions that applications can use can enhance convenience and portability (e.g. processes and file systems)&lt;/li&gt;
@@ -224,9 +224,9 @@ int main()
     
     <item>
       <title>MIT-6.S081 Lecture 03: OS Organization and System Calls</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec03/</guid>
       <description>&lt;h2 id=&#34;isolation&#34;&gt;Isolation&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;We want strong isolation between applications so that if there&amp;rsquo;s a bug in one application, the others will not be damaged.&lt;/li&gt;
@@ -350,9 +350,9 @@ syscall(void)
     
     <item>
       <title>MIT-6.S081 Lecture 04: Page Tables</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec04/</guid>
       <description>&lt;h2 id=&#34;address-spaces&#34;&gt;Address Spaces&lt;/h2&gt;
 &lt;p&gt;Virtual memory helps realize memory isolation. The basic idea is simple: we want each process to have its own address space. The address spaces are independent.&lt;/p&gt;
 &lt;h2 id=&#34;paging-hardware&#34;&gt;Paging Hardware&lt;/h2&gt;
@@ -372,9 +372,9 @@ syscall(void)
     
     <item>
       <title>MIT-6.S081 Lecture 05: RISC-V Calling Convention and Stack Frames</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec05/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec05/</guid>
       <description>&lt;h2 id=&#34;c-rightarrow-asm&#34;&gt;C $\rightarrow$ ASM&lt;/h2&gt;
 &lt;p&gt;A C program&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;int main () {
@@ -496,9 +496,9 @@ sum_then_double:
     
     <item>
       <title>MIT-6.S081 Lecture 06: Traps</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec06/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec06/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;When going into traps, we need to carefully change the hardware state so that isolation will not be broken. The hardware state of RISC-V machine includes:&lt;/p&gt;
 &lt;ul&gt;
@@ -654,9 +654,9 @@ p-&amp;gt;trapframe-&amp;gt;epc = r_sepc();
     
     <item>
       <title>MIT-6.S081 Lecture 07: Q&amp;A for Labs #1</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec07/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec07/</guid>
       <description>&lt;p&gt;The Q&amp;amp;A focuses on lab pgtbl. The lab contain few lines of code, but hard-to-debug problems. Harsh environment of kernel programming makes it more difficult.&lt;/p&gt;
 &lt;h2 id=&#34;task-01&#34;&gt;Task 01&lt;/h2&gt;
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;page table 0x0000000087f6e000
@@ -782,9 +782,9 @@ kvmmapuser(int pid, pagetable_t kpagetable, pagetable_t upagetable, uint64 newsz
     
     <item>
       <title>MIT-6.S081 Lecture 08: Page Faults</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec08/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec08/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec08/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec08/</guid>
       <description>&lt;p&gt;The benefits of virtual memory, besides offering isolation, include levels of indirection. We have already seen some interesting usage of mappings, such as trampoline page and guard page, but these mappings are relatively static. With the aid of page faults, the mappings become dynamic: when page faults occur, the kernel can change page table mappings. Combination of page table and page fault provides enormous amount of flexibility.&lt;/p&gt;
 &lt;p&gt;The kernel needs necessary information to handle with page faults:&lt;/p&gt;
 &lt;ul&gt;
@@ -952,9 +952,9 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
     
     <item>
       <title>MIT-6.S081 Lecture 09: Interrupts</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec09/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec09/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec09/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec09/</guid>
       <description>&lt;p&gt;Type &lt;code&gt;top&lt;/code&gt; in the command line and you can check the memory usage, processes information etc. in the terminal:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;top - 11:57:33 up 1 day,  1:04,  1 user,  load average: 0.21, 0.25, 0.32
 Tasks: 354 total,   1 running, 353 sleeping,   0 stopped,   0 zombie
@@ -1088,9 +1088,9 @@ getcmd(char *buf, int nbuf)
     
     <item>
       <title>MIT-6.S081 Lecture 10: Multiprocessors and Locks</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec10/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec10/</guid>
       <description>&lt;p&gt;Applications may want multiple CPU cores, so the kernel must handle parallel system calls, e.g. carefully maintain shared data structure in parallel. We use locks to ensure correct sharing, but on the other hand, locks can limit performance.&lt;/p&gt;
 &lt;p&gt;The frequency of CPU clock gradually reaches a limit at 2010, which means that single thread performance cannot be optimized. However, the number of transistors keeps growing, so having multiple cores is our only choice to increase performance.&lt;/p&gt;
 &lt;h2 id=&#34;why-lock&#34;&gt;Why Lock?&lt;/h2&gt;
@@ -1192,9 +1192,9 @@ lock = 0;  //    |
     
     <item>
       <title>MIT-6.S081 Lecture 11: Thread Switching</title>
-      <link>/posts/coursenotes/mit-operating-system/lectures/lec11/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec11/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-operating-system/lectures/lec11/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-operating-system/lectures/lec11/</guid>
       <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;People want threads for the following reasons:&lt;/p&gt;
 &lt;ul&gt;

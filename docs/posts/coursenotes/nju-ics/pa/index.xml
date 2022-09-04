@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Programming Assignments | Academic</title>
-    <link>/posts/coursenotes/nju-ics/pa/</link>
-      <atom:link href="/posts/coursenotes/nju-ics/pa/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/index.xml" rel="self" type="application/rss+xml" />
     <description>Programming Assignments</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Programming Assignments</title>
-      <link>/posts/coursenotes/nju-ics/pa/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/</link>
     </image>
     
     <item>
       <title>PA0 - 世界诞生的前夜：开发环境配置</title>
-      <link>/posts/coursenotes/nju-ics/pa/pa0/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa0/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-ics/pa/pa0/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa0/</guid>
       <description>&lt;h2 id=&#34;实验进度&#34;&gt;实验进度&lt;/h2&gt;
 &lt;p&gt;我完成了所有安装任务，完成了必答题，并针对思考题和遇到的其他问题进行了资料搜索和思考。&lt;/p&gt;
 &lt;h2 id=&#34;必答题&#34;&gt;必答题&lt;/h2&gt;
@@ -283,12 +283,12 @@ iiiiiiiiiiiiiiiiiiiiiiiiijjjjjjjjjjjjjjjjjjjjjjjjj
 &lt;td style=&#34;text-align:center&#34;&gt;gd或god&lt;br&gt;&lt;code&gt;?&lt;/code&gt; 表示前一个字符重复零次或一次&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;`gd&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;god`&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;gd|god&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;gd或god&lt;br&gt;&lt;code&gt;|&lt;/code&gt; 表示或&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;`g(la&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;oo)d`&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;g(la|oo)d&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;glad/good&lt;br&gt;&lt;code&gt;()&lt;/code&gt; 里可以罗列若干个串并用 &lt;code&gt;|&lt;/code&gt; 分隔开&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;A(xyz)+B&lt;/code&gt;&lt;/td&gt;
@@ -319,7 +319,7 @@ iiiiiiiiiiiiiiiiiiiiiiiiijjjjjjjjjjjjjjjjjjjjjjjjj
 &lt;p&gt;对于这些特殊文件实现方式的一个简单解释是，例如 &lt;code&gt;/dev/null&lt;/code&gt; ,当内核接收到对这个文件的请求时，不需要进行任何真实的硬件操作，直接按照API返回写入成功即可。&lt;/p&gt;
 &lt;h4 id=&#34;makefile&#34;&gt;Makefile&lt;/h4&gt;
 &lt;p&gt;Makefile最简单的一点语法：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;要生成的文件名:依赖文件列表
+&lt;pre&gt;&lt;code class=&#34;language-makefile&#34;&gt;要生成的文件名:依赖文件列表
 	用于生成目标文件的命令序列
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;如果连续多次执行 &lt;code&gt;make&lt;/code&gt; ，会得到信息 &amp;lsquo;xxx is up to date&amp;rsquo;。这是 &lt;code&gt;make&lt;/code&gt; 程序智能管理的功能，如果目标文件已经存在且修改时间后于其依赖的所有文件，&lt;code&gt;make&lt;/code&gt; 会认为这个文件已经编译过了，不需要重新编译。&lt;/p&gt;
@@ -355,9 +355,9 @@ E: Unable to fetch some archives, maybe run apt-get update or try with --fix-mis
     
     <item>
       <title>PA1 - 开天辟地的篇章：最简单的计算机</title>
-      <link>/posts/coursenotes/nju-ics/pa/pa1/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-ics/pa/pa1/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa1/</guid>
       <description>&lt;h2 id=&#34;实验进度&#34;&gt;实验进度&lt;/h2&gt;
 &lt;p&gt;我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。&lt;/p&gt;
 &lt;h2 id=&#34;必答题&#34;&gt;必答题&lt;/h2&gt;
@@ -739,9 +739,9 @@ while ( (o = getopt_long(argc, argv, &amp;quot;-bhl:d:p:&amp;quot;, table, NULL)
     
     <item>
       <title>PA2 - 简单复杂的机器: 冯诺依曼计算机系统</title>
-      <link>/posts/coursenotes/nju-ics/pa/pa2/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa2/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-ics/pa/pa2/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa2/</guid>
       <description>&lt;h2 id=&#34;实验进度&#34;&gt;实验进度&lt;/h2&gt;
 &lt;p&gt;我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。&lt;/p&gt;
 &lt;h2 id=&#34;必答题&#34;&gt;必答题&lt;/h2&gt;
@@ -1223,9 +1223,9 @@ ret
     
     <item>
       <title>PA3 - 穿越时空的旅程: 批处理系统</title>
-      <link>/posts/coursenotes/nju-ics/pa/pa3/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa3/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-ics/pa/pa3/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa3/</guid>
       <description>&lt;h2 id=&#34;实验进度&#34;&gt;实验进度&lt;/h2&gt;
 &lt;p&gt;我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。&lt;/p&gt;
 &lt;h2 id=&#34;必答题&#34;&gt;必答题&lt;/h2&gt;
@@ -1581,9 +1581,9 @@ logo:
     
     <item>
       <title>PA4 - 虚实交错的魔法: 分时多任务</title>
-      <link>/posts/coursenotes/nju-ics/pa/pa4/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa4/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/nju-ics/pa/pa4/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa4/</guid>
       <description>&lt;h2 id=&#34;实验进度&#34;&gt;实验进度&lt;/h2&gt;
 &lt;p&gt;我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。&lt;/p&gt;
 &lt;h2 id=&#34;必答题&#34;&gt;必答题&lt;/h2&gt;

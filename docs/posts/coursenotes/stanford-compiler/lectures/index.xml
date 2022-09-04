@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Lectures | Academic</title>
-    <link>/posts/coursenotes/stanford-compiler/lectures/</link>
-      <atom:link href="/posts/coursenotes/stanford-compiler/lectures/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/index.xml" rel="self" type="application/rss+xml" />
     <description>Lectures</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 23 Aug 2022 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Lectures</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/</link>
     </image>
     
     <item>
       <title>Stanford-CS143 Lecture 06: Syntax-Directed Translation</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec06/</link>
       <pubDate>Tue, 23 Aug 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec06/</guid>
       <description>&lt;h2 id=&#34;error-handling&#34;&gt;Error Handling&lt;/h2&gt;
 &lt;p&gt;Purpose of the compiler:&lt;/p&gt;
 &lt;ul&gt;
@@ -140,9 +140,9 @@ In principle, grammars can be transformed to right recursive ones automatically.
     
     <item>
       <title>Stanford-CS143 Lecture 05: Introduction to Parsing</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec05/</link>
       <pubDate>Mon, 22 Aug 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec05/</guid>
       <description>&lt;p&gt;Regular expression is the weakest formal language. There are lots of languages that cannot be represented by regular expression. e.g. $\{(^i)^i:i\geq 1\}=\{(),(()), ((())),&amp;hellip;\}$ (the set of balanced parentheses).&lt;/p&gt;
 &lt;p&gt;The parser takes the output of lexer, i.e. sequence of tokens as input, and outputs the parse tree of the program.&lt;/p&gt;
 &lt;ul&gt;
@@ -274,9 +274,9 @@ along with declarations&lt;/p&gt;
     
     <item>
       <title>Stanford-CS143 Lecture 04: Implementation of Lexical Analysis</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec04/</link>
       <pubDate>Wed, 10 Aug 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec04/</guid>
       <description>&lt;p&gt;Summary of (extended) regular expression rules:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;At least one: $A^{+}\triangleq AA^*$&lt;/li&gt;
@@ -405,7 +405,7 @@ s4 --&amp;gt; |e| s1
 s1 --&amp;gt; |e| s5
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;An example: $(1+0)^*1$:&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/stanford-compiler-lec4-2.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://kristoff-starling.github.io/img/stanford-compiler-lec4-2.png&#34; alt=&#34;img&#34;&gt;&lt;/p&gt;
 &lt;h2 id=&#34;nfa-to-dfa&#34;&gt;NFA to DFA&lt;/h2&gt;
 &lt;p&gt;An NFA may be in many states at any time. However, for a n-state NFA, there are at most $2^N-1$ different subsets of states, which is finite. That&amp;rsquo;s the core idea of how to transform NFA to DFA.&lt;/p&gt;
 &lt;p&gt;$\fbox{Definition}$ ($\epsilon$-closure) The $\epsilon$-closure of a node $q$ in NFA, denoted as $\epsilon\text{-closure}(q)$, is the set of nodes that can be reached from $q$ by walking through only $\epsilon$ edges. For example, in the NFA above, $\epsilon\text{-closure}(q_6)={q_0,q_1,q_2,q_4,q_7,q_8}$.&lt;/p&gt;
@@ -424,7 +424,7 @@ s1 --&amp;gt; |e| s5
 &lt;li&gt;transitions: $X\overset{a}{\to}Y$ exists iff $Y=\epsilon\text{-closure}(a(X))$.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;An example: $(1+0)^*1$:&lt;/p&gt;
-&lt;img src=&#34;/img/stanford-compiler-lec4-1.png&#34; alt=&#34;image-20220814145242811&#34; style=&#34;zoom: 33%;&#34; /&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/stanford-compiler-lec4-1.png&#34; alt=&#34;image-20220814145242811&#34; style=&#34;zoom: 33%;&#34; /&gt;
 &lt;h2 id=&#34;implementing-finite-automata&#34;&gt;Implementing Finite Automata&lt;/h2&gt;
 &lt;p&gt;A DFA can be represented as a 2D table. States and input symbols are the two dimensions and the contents of the table are transition. Pseudocode can be written based on this:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;i = 0;
@@ -441,9 +441,9 @@ while (input[i] != &#39;\0&#39;) {
     
     <item>
       <title>Stanford-CS143 Lecture 03: Lexical Analysis</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec03/</link>
       <pubDate>Sun, 10 Jul 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec03/</guid>
       <description>&lt;p&gt;Token classes:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;In English: nouns, verbs, adjactives etc.&lt;/li&gt;
@@ -571,9 +571,9 @@ It&amp;rsquo;s worth notice that regular expressions defines the set of strings 
     
     <item>
       <title>Stanford-CS143 Lecture 02: Cool Overview</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec02/</link>
       <pubDate>Sun, 03 Jul 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec02/</guid>
       <description>&lt;p&gt;Cool (Classroom Object Oriented Language).&lt;/p&gt;
 &lt;p&gt;5 programming assignments (all the 4 layers should be plug compatible)&lt;/p&gt;
 &lt;ul&gt;
@@ -728,9 +728,9 @@ class Main inherits IO {
     
     <item>
       <title>Stanford-CS143 Lecture 01: Introduction</title>
-      <link>/posts/coursenotes/stanford-compiler/lectures/lec01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec01/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/stanford-compiler/lectures/lec01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec01/</guid>
       <description>&lt;p&gt;Interpreters: it takes in program and data and and immediately generates output (an on-line process).&lt;/p&gt;
 &lt;p&gt;Compilers: it takes in program and generates an executable (assembly/bytecode). The executable takes in data and generates output (an off-line process).&lt;/p&gt;
 &lt;h2 id=&#34;the-structure-of-compilers&#34;&gt;The Structure of Compilers&lt;/h2&gt;

@@ -33,7 +33,7 @@ Designation ucontext() 由于笔者在 L2 中选择了通过汇编执行栈切�
 幸运的是，笔者发现 AM 中 trap64.S 中的汇编函数 __am_iret() 是有 label 的，这意味着笔者只需要抄写一些 AM 的头文件，就可以调用 __am_iret() 来完成用户态的返回。 笔者最终的代码是这样权衡的：">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/labs/lab03/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab03/">
 
   
 
@@ -220,7 +220,7 @@ Designation ucontext() 由于笔者在 L2 中选择了通过汇编执行栈切�
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/labs/lab03/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab03/">
 
   
   
@@ -234,7 +234,7 @@ Designation ucontext() 由于笔者在 L2 中选择了通过汇编执行栈切�
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/labs/lab03/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab03/">
   <meta property="og:title" content="Lab 03: User Level Processes | Academic">
   <meta property="og:description" content="Overview 该实验的主要内容是实现用户进程。用户进程可以理解为套上了虚拟内存的线程，因此我们需要引入 VME 系列的 API。本实验报告主要记录一些有趣的设计和遇到的 bug。
 Designation ucontext() 由于笔者在 L2 中选择了通过汇编执行栈切换和执行流切换的操作，因此在 L3 的开始要做一些额外的改进。在 L2 中没有虚拟内存和页表切换的概念，因此第一次进入一个线程的时候我们可以很容易地通过一个內联汇编的 wrapper call 直接跳转到线程代码执行。但引入了用户进程后，初始上下文结构体的创建变得比较困难，返回用户态也需要做更多的事情 (比如页表切换，弹栈等)，因此笔者希望使用 AM 的 API。这就产生了一些矛盾。

@@ -34,7 +34,7 @@ $\fbox{Theorem 10.2}$ 若 $(X,Y)\sim N(\mu_1,\mu_2,\sigma_1^2,\sigma_2^2,\rho)$�
 $$ \begin{align} p_X(x)&amp;=\int_{-\infty}^{&#43;\infty}p(x,y)dy\\ &amp;=\frac{1}{2\pi \sigma_1\sigma_2\sqrt{1-\rho^2}}e^{-\frac{1}{2(1-\rho^2)}\left(\frac{x-\mu_1}{\sigma_1}\right)^2}\int_{-\infty}^{&#43;\infty}e^{-\frac{1}{2}\left[\left(\frac{y-\mu_2}{\sigma_2\sqrt {1-\rho^2}}\right)^2-\frac{2\rho}{1-\rho^2}\left(\frac{x-\mu_1}{\sigma_1}\right)\left(\frac{y-\mu_2}{\sigma_2}\right)\right]}dy\\ &amp;\overset{配方}{=} \frac{1}{2\pi \sigma_1\sigma_2\sqrt{1-\rho^2}}e^{-\frac{1}{2(1-\rho^2)}\left(\frac{x-\mu_1}{\sigma_1}\right)^2}\int_{-\infty}^{&#43;\infty}e^{-\frac{1}{2}\left[\left(\frac{y-\mu_2}{\sigma_2\sqrt {1-\rho^2}}\right)^2-\frac{2\rho}{1-\rho^2}\left(\frac{x-\mu_1}{\sigma_1}\right)\left(\frac{y-\mu_2}{\sigma_2}\right)&#43;\left(\frac{x-\mu_1}{\sigma_1\sqrt{1-\rho^2}}\right)^2\right]&#43;\frac{1}{2}\frac{\rho^2(x-\mu_1)^2}{\sigma_1^2(1-\rho^2)}}dy\\ &amp;=\frac{1}{2\pi \sigma_1\sigma_2\sqrt{1-\rho^2}}e^{-\frac{1}{2}(\frac{x-\mu_1}{\sigma_1})^2}\int_{-\infty}^{&#43;\infty}e^{-\frac{1}{2}\left(\frac{y-\mu_2}{\sigma_2 \sqrt{1-\rho^2}}-\frac{\rho (x-\mu_1)}{\sigma_1 \sqrt{1-\rho^2}}\right)^2}dy\\ &amp;\overset{u=\frac{y-\mu_2}{\sigma_1\sqrt{1-\rho^2}}-\frac{\rho(x-\mu_1)}{\sigma_1\sqrt{1-\rho^2}}}{=}\frac{1}{2\pi \sigma_1 \sigma_2 \sqrt{1-\rho^2}}e^{\frac{1}{2}\left(\frac{x-\mu_1}{\sigma_1}\right)^2}\int_{-\infty}^{&#43;\infty}e^{-\frac{1}{2}u^2}d(\sigma_2\sqrt{1-\rho^2}u)\\ &amp;=\frac{1}{2\pi \sigma_1}e^{-\frac{1}{2}\left(\frac{x-\mu_1}{\sigma_1}\right)^2}\int_{-\infty}^{&#43;\infty}e^{-\frac{u^2}{2}}du\\ &amp;=\frac{1}{\sqrt{2\pi}\sigma_1}e^{-\frac{1}{2}\left(\frac{x-\mu_1}{\sigma_1}\right)^2} \end{align} $$">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-probability/lec10/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec10/">
 
   
 
@@ -221,7 +221,7 @@ $$ \begin{align} p_X(x)&amp;=\int_{-\infty}^{&#43;\infty}p(x,y)dy\\ &amp;=\frac{
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-probability/lec10/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec10/">
 
   
   
@@ -235,7 +235,7 @@ $$ \begin{align} p_X(x)&amp;=\int_{-\infty}^{&#43;\infty}p(x,y)dy\\ &amp;=\frac{
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-probability/lec10/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-probability/lec10/">
   <meta property="og:title" content="Lecture 10: 2-Dimensional Normal Distribution and Random Variable Function | Academic">
   <meta property="og:description" content="$\fbox{Definition 10.1}$ 若二维随机变量 $(X,Y)$ 的联合密度为 $$ p(x,y)=\frac{1}{2\pi \sigma_1\sigma_2\sqrt{1-\rho^2}}e^{-\frac{1}{2(1-\rho^2)}[(\frac{x-\mu_1}{\sigma_1})^2-2\rho(\frac{x-\mu_1}{\sigma_1})(\frac{y-\mu_2}{\sigma_2})&#43;(\frac{y-\mu_2}{\sigma_2})^2]} $$ 其中 $\mu_1,\mu_2\in \mathbb R$，$\sigma_1,\sigma_2&gt;0$，$|\rho|&lt;1$，则称 $(X,Y)$ 服从二维正态分布。记为 $(X,Y)\sim N(\mu_1,\mu_2,\sigma_1^2,\sigma_2^2,\rho)$ (这里的每个参数都有具体含义)。
 $\fbox{Theorem 10.2}$ 若 $(X,Y)\sim N(\mu_1,\mu_2,\sigma_1^2,\sigma_2^2,\rho)$，则其边缘分布为 $X\sim N(\mu_1,\sigma_1^2)$，$Y\sim N(\mu_2,\sigma_2^2)$。

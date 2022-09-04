@@ -33,7 +33,7 @@
 #include &lt;stdio.h&gt; #include &lt;time.h&gt; #define LOOP 1000000000ul __attribute__((noinline)) void loop() { for (long i = 0; i &lt; LOOP; i&#43;&#43;) { asm volatile( &quot;mov $1, %%rax;&quot; &quot;mov $1, %%rdi;&quot; &quot;mov $1, %%rsi;&quot; &quot;mov $1, %%rdx;&quot; &quot;mov $1, %%rcx;&quot; &quot;mov $1, %%r10;&quot; &quot;mov $1, %%r8;&quot; &quot;mov $1, %%r9;&quot; :::&quot;rax&quot;, &quot;rdi&quot;, &quot;rsi&quot;, &quot;rdx&quot;, &quot;rcx&quot;, &quot;r10&quot;, &quot;r8&quot;, &quot;r9&quot;); } } int main() { clock_t st = clock(); loop(); clock_t ed = clock(); double inst = LOOP * (8 &#43; 2) / 1000000000; double ips = inst / ((ed - st) * 1.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/lectures/lec10/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec10/">
 
   
 
@@ -220,7 +220,7 @@
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/lectures/lec10/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec10/">
 
   
   
@@ -234,7 +234,7 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/lectures/lec10/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec10/">
   <meta property="og:title" content="Lecture 10: Application of State Machines | Academic">
   <meta property="og:description" content="Compilers and Modern CPU 编译器的作用是将源代码状态机 $S$ 转换为二进制代码状态机 $C$：$C=Compile(S)$。只要两者的可观测行为严格一致，编译器可以随意修改指令执行的顺序，甚至修改指令内容。
 现代 CPU 本质上也是“编译器”：只要保证硬件状态机的可观测行为一致，它可以乱序执行，可以多发射，还可以将没有依赖关系的指令“并行”地执行，这就是指令级并行 (instruction level parallelism, ilp)。我们可以用一个例子感受超标量处理器 (CPI&lt;1，平均每条指令所需的时钟周期小于 1) 的威力：

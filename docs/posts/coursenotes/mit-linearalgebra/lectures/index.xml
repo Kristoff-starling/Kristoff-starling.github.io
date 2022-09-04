@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Lectures | Academic</title>
-    <link>/posts/coursenotes/mit-linearalgebra/lectures/</link>
-      <atom:link href="/posts/coursenotes/mit-linearalgebra/lectures/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/index.xml" rel="self" type="application/rss+xml" />
     <description>Lectures</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Lectures</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/</link>
     </image>
     
     <item>
       <title>MIT-18.06 Lecture 01: The Geometric Interpretation of Equations</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec01/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec01/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec01/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec01/</guid>
       <description>&lt;p&gt;Consider 2 equations with 2 unknowns. Here&amp;rsquo;s an example:
 $$
 \begin{cases}
@@ -33,7 +33,7 @@ $$
 x\begin{bmatrix}2 \\-1\end{bmatrix}+y\begin{bmatrix}-1\\2\end{bmatrix}=\begin{bmatrix}0\\3\end{bmatrix}
 $$
 The column picture of the solution to the equations is shown below:&lt;/p&gt;
-&lt;img src=&#34;/img/mit1806-lec01.png&#34; alt=&#34;image-20210826223648690&#34; style=&#34;zoom:33%;&#34; /&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/mit1806-lec01.png&#34; alt=&#34;image-20210826223648690&#34; style=&#34;zoom:33%;&#34; /&gt;
 &lt;p&gt;Under the idea of linear combinations, the question&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Can I solve $A\mathbf{x}=\mathbf{b}$ for every $\mathbf{b}\in \mathbb{R}^n$ ?&lt;/p&gt;
@@ -58,9 +58,9 @@ which means that $A\mathbf{x}$ can be interpreted as the linear combinations of 
     
     <item>
       <title>MIT-18.06 Lecture 02: Elimination Matrices</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec02/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec02/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec02/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec02/</guid>
       <description>&lt;p&gt;Consider the 3 equations with 3 unknowns:
 $$
 \begin{cases}
@@ -184,9 +184,9 @@ we can simply write it as $E^{-1}\cdot E=I$. The matrix on the left is the &lt;s
     
     <item>
       <title>MIT-18.06 Lecture 03: Multiplication and Inverse Matrix</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec03/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec03/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec03/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec03/</guid>
       <description>&lt;p&gt;Suppose $AB=C$ and $A,B,C$ are matrices, the formula for calculating a single entry of $C$ is
 $$
 C_{i,j}=(row_i\space of\space A)\cdot(col_j\space of\space B)=\sum_{k=1}^nA_{i,k}B_{k,j}
@@ -237,9 +237,9 @@ The matrix on the right $\left[\begin{matrix}7 &amp;amp; -3\\-2 &amp;amp; 1\end{
     
     <item>
       <title>MIT-18.06 Lecture 04 - A’s LU Decomposition</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec04/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec04/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec04/</guid>
       <description>&lt;p&gt;What’s the inverse of $AB$, supposing $A$ and $B$​ are both invertible matrices? We can use $B^{-1}A^{-1}$ to check:
 $$
 \begin{align}
@@ -309,9 +309,9 @@ And for a column vector, say $\mathbf{b}$, the cost is approximately $n^2$.&lt;/
     
     <item>
       <title>MIT-18.06 Lecture 05: Permutation, Transpose and Vector Spaces</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec05/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec05/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec05/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec05/</guid>
       <description>&lt;p&gt;Now let&amp;rsquo;s allow row exchanges to come in during elimination, so we need permutation matrices.&lt;/p&gt;
 &lt;p&gt;Permutation matrices can be regarded as identity matrices with some rows exchanged. For $n\times n$ matrix, there are $n!$ kinds of permutation matrices (the identity matrix is a special permutation matrix).&lt;/p&gt;
 &lt;p&gt;An important property of permutation matrices is that
@@ -353,9 +353,9 @@ as an example, the columns of the matrix (i.e. two column vectors $\left(\begin{
     
     <item>
       <title>MIT-18.06 Lecture 06: Column Space, Null space</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec06/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec06/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec06/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec06/</guid>
       <description>&lt;p&gt;Suppose there are two vector spaces $S$ and $T$, their intersection $S\cap T$ is also a subspace.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Proof: suppose $v,w\in S\cap T$ are vectors, then consider a linear combination $av+bw$, since $v,w\in S$, $av+bw\in S$ , also we have $av+bw\in T$, so $av+bw\in S\cap T$, which proves the theorem.&lt;/p&gt;
@@ -390,9 +390,9 @@ There are four equations with three unknowns. The equations don&amp;rsquo;t nece
     
     <item>
       <title>MIT-18.06 Lecture 07: Computing Null Space, Pivot Variables and Special Solutions</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec07/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec07/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec07/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec07/</guid>
       <description>&lt;p&gt;We solve the equation $A\mathbf{x}=\mathbf{0}$ through elimination. Obviously, elimination won&amp;rsquo;t change the null space of $A$. For example, let
 $$
 A=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2\\2 &amp;amp; 4 &amp;amp; 6 &amp;amp; 8\\3 &amp;amp; 6 &amp;amp; 8 &amp;amp; 10\end{matrix}\right]
@@ -434,9 +434,9 @@ $N$ is $n\times (n-r)$ in size. (Here the $I$ may have the different size from t
     
     <item>
       <title>MIT-18.06 Lecture 08: Complete Solutions of Equations</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec08/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec08/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec08/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec08/</guid>
       <description>&lt;p&gt;Take an example:
 $$
 A\mathbf{x}=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2\\2 &amp;amp; 4 &amp;amp; 6 &amp;amp; 8\\3 &amp;amp; 6 &amp;amp; 8 &amp;amp; 10\end{matrix}\right]\left(\begin{matrix}x_1\\x_2\\x_3\end{matrix}\right)\left(\begin{matrix}b_1\\b_2\\b_3\end{matrix}\right)=\mathbf{b}
@@ -482,9 +482,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>MIT-18.06 Lecture 09: Linear Dependence, Basis and Dimension</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec09/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec09/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec09/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec09/</guid>
       <description>&lt;p&gt;suppose $A$ is $m\times n$ in size $(m&amp;lt;n)$, then the equation $A\mathbf{x}=\mathbf{0}$ has nonzero solutions because there will be at least one free variable.&lt;/p&gt;
 &lt;p&gt;Vectors $\mathbf{x_1},\mathbf{x_2},&amp;hellip;,\mathbf{x_n}$ are &lt;strong&gt;independent&lt;/strong&gt; if no combination gives zero vector. (except the zero combination)&lt;/p&gt;
 &lt;p&gt;i.e. for any $c_1,c_2,&amp;hellip;,c_n$, $\sum_{i=1}^n c_i\mathbf{x_i}\neq \mathbf{0}$ ($c_i$ are not all 0s). Otherwise they&amp;rsquo;re &lt;strong&gt;dependent&lt;/strong&gt;.&lt;/p&gt;
@@ -523,9 +523,9 @@ In fact, $span{\mathbf{x_1},\mathbf{x_2}}=N(A)$. We see that the dimension of $N
     
     <item>
       <title>MIT-18.06 Lecture 10: 4 Fundamental Subspaces</title>
-      <link>/posts/coursenotes/mit-linearalgebra/lectures/lec10/</link>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec10/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>/posts/coursenotes/mit-linearalgebra/lectures/lec10/</guid>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/mit-linearalgebra/lectures/lec10/</guid>
       <description>&lt;p&gt;4 fundamental subspaces:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;column space $C(A)$.&lt;/li&gt;

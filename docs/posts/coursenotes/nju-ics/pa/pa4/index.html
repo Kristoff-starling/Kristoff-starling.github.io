@@ -34,7 +34,7 @@
 每一条指令执行结束时，nemu 的 cpu_exec() 中都会调用 timer_interrupt() 函数来检查 CPU 的 INTR 引脚有没有被拉高。如果被拉高了说明有设备发出了中断请求（在 PA 中只有时钟中断请求），此时 CPU 会将 mstatus 寄存器的 MIE 位置零（防止中断嵌套），然后进入 nanos-lite 的中断/异常处理程序 trap.">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-ics/pa/pa4/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa4/">
 
   
 
@@ -221,7 +221,7 @@
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-ics/pa/pa4/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa4/">
 
   
   
@@ -235,7 +235,7 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-ics/pa/pa4/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-ics/pa/pa4/">
   <meta property="og:title" content="PA4 - 虚实交错的魔法: 分时多任务 | Academic">
   <meta property="og:description" content="实验进度 我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。
 必答题 分时多任务的具体过程 请结合代码, 解释分页机制和硬件中断是如何支撑仙剑奇侠传和hello程序在我们的计算机系统(Nanos-lite, AM, NEMU)中分时运行的.

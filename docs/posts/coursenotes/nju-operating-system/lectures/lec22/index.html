@@ -33,7 +33,7 @@
 lock(); __i = 0;	// C语言逗号表达式总是取后面的值 check i &lt; 1 =&gt; yes body __i&#43;&#43;; unlock(); check i &lt; 1 =&gt; no, break 使用这个 atomic {} 我们要保证程序不能在 atomic 内部 break 或 return。">
 
   
-  <link rel="alternate" hreflang="en-us" href="/posts/coursenotes/nju-operating-system/lectures/lec22/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec22/">
 
   
 
@@ -220,7 +220,7 @@ lock(); __i = 0;	// C语言逗号表达式总是取后面的值 check i &lt; 1 =
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="/posts/coursenotes/nju-operating-system/lectures/lec22/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec22/">
 
   
   
@@ -234,7 +234,7 @@ lock(); __i = 0;	// C语言逗号表达式总是取后面的值 check i &lt; 1 =
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="/posts/coursenotes/nju-operating-system/lectures/lec22/">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec22/">
   <meta property="og:title" content="Lecture 22: OSLab Speedrun | Academic">
   <meta property="og:description" content="L1 一把大锁保平安策略：全局用一把锁，把所有需要保护的代码都用 atomic {} 框起来。
 #define atomic \ for (int __i = (lock(), 0); i &lt; 1; unlock(), __i&#43;&#43;) 这个 for 循环的语义如下：
