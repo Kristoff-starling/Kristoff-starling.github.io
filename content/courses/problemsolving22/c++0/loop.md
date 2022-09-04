@@ -60,7 +60,7 @@ int main ()
         sum += n;
         n--; // "n--" is equal to "n = n - 1"
     }
-    std::cout << sum << endl;
+    std::cout << sum << '\n';
     return 0;
 }
 ```
@@ -126,7 +126,7 @@ int main ()
     std::cin >> n;
     for (int i = 1; i <= n; i++)
         sum += i; // 别忘了单条语句可以不用{}包裹起来
-    std::cout << sum << endl;
+    std::cout << sum << '\n';
     return 0;
 }
 ```
@@ -142,7 +142,7 @@ int main ()
     std::cin >> n;
     for ( ;n != 0; n--)
         sum = sum + n;
-    std::cout << sum << endl;
+    std::cout << sum << '\n';
     return 0;
 }
 ```

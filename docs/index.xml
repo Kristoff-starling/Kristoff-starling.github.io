@@ -19195,9 +19195,9 @@ int main ()
     std::cin &amp;gt;&amp;gt; a &amp;gt;&amp;gt; b;
     sum = a + b;
     if (sum % 2 == 1)
-        std::cout &amp;lt;&amp;lt; &amp;quot;odd&amp;quot; &amp;lt;&amp;lt; endl;
+        std::cout &amp;lt;&amp;lt; &amp;quot;odd&amp;quot; &amp;lt;&amp;lt; &#39;\n&#39;;
     else
-        std::cout &amp;lt;&amp;lt; &amp;quot;even&amp;quot; &amp;lt;&amp;lt; endl;
+        std::cout &amp;lt;&amp;lt; &amp;quot;even&amp;quot; &amp;lt;&amp;lt; &#39;\n&#39;;
     return 0;
 }
 &lt;/code&gt;&lt;/pre&gt;
@@ -19331,7 +19331,7 @@ int main ()
         sum += n;
         n--; // &amp;quot;n--&amp;quot; is equal to &amp;quot;n = n - 1&amp;quot;
     }
-    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; endl;
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; &#39;\n&#39;;
     return 0;
 }
 &lt;/code&gt;&lt;/pre&gt;
@@ -19379,7 +19379,7 @@ int main ()
     std::cin &amp;gt;&amp;gt; n;
     for (int i = 1; i &amp;lt;= n; i++)
         sum += i; // 别忘了单条语句可以不用{}包裹起来
-    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; endl;
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; &#39;\n&#39;;
     return 0;
 }
 &lt;/code&gt;&lt;/pre&gt;
@@ -19391,7 +19391,7 @@ int main ()
     std::cin &amp;gt;&amp;gt; n;
     for ( ;n != 0; n--)
         sum = sum + n;
-    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; endl;
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; &#39;\n&#39;;
     return 0;
 }
 &lt;/code&gt;&lt;/pre&gt;
@@ -19422,11 +19422,11 @@ while (s2)
 
 int main ()
 {
-    std::cout &amp;lt;&amp;lt; &amp;quot;Hello World&amp;quot; &amp;lt;&amp;lt; endl; // don&#39;t forget to add &#39;;&#39; at the end!
+    std::cout &amp;lt;&amp;lt; &amp;quot;Hello World&amp;quot; &amp;lt;&amp;lt; &#39;\n&#39;; // don&#39;t forget to add &#39;;&#39; at the end!
     return 0;
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;cout&lt;/code&gt; 是一个&lt;strong&gt;对象 (object)&lt;/strong&gt;，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &amp;ldquo;cout&amp;rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 &lt;code&gt;&amp;lt;&amp;lt;&lt;/code&gt; 就像箭头一样指明了数据的流向，“Hello World&amp;rdquo; 和代表换行符的 &amp;ldquo;endl&amp;rdquo; 依次流入 &amp;ldquo;cout&amp;rdquo; 并被显示出来，这就是 &lt;code&gt;cout&lt;/code&gt; 的用法，颇有象形文字的智慧。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;cout&lt;/code&gt; 是一个&lt;strong&gt;对象 (object)&lt;/strong&gt;，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &amp;ldquo;cout&amp;rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 &lt;code&gt;&amp;lt;&amp;lt;&lt;/code&gt; 就像箭头一样指明了数据的流向，“Hello World&amp;rdquo; 和代表换行符的 &amp;ldquo;\n&amp;rdquo; 依次流入 &amp;ldquo;cout&amp;rdquo; 并被显示出来，这就是 &lt;code&gt;cout&lt;/code&gt; 的用法，颇有象形文字的智慧。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;std::&lt;/code&gt; 这个前缀是什么意思？&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;std&lt;/code&gt; 是一个&lt;strong&gt;命名空间 (namespace)&lt;/strong&gt;。对于初学者来说命名空间的概念太过复杂了，你可以把它当作“头文件”来理解：&lt;code&gt;std&lt;/code&gt; 中有很多函数/对象/&amp;hellip;可以供我们使用。在使用它们时，为了让计算机知道这个函数/对象/&amp;hellip;来自于 &lt;code&gt;std&lt;/code&gt;，我们要前面加上 &lt;code&gt;std::&lt;/code&gt; 这个前缀。&lt;/p&gt;
@@ -19444,7 +19444,7 @@ int main ()
     int a, b, sum;
     std::cin &amp;gt;&amp;gt; a &amp;gt;&amp;gt; b; // don&#39;t forget the &amp;quot;std::&amp;quot; prefix!
     sum = a + b;
-    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; endl;
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; &#39;\n&#39;;
     return 0;
 }
 &lt;/code&gt;&lt;/pre&gt;

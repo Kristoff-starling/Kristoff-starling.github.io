@@ -18,12 +18,12 @@ menu:
 
 int main ()
 {
-    std::cout << "Hello World" << endl; // don't forget to add ';' at the end!
+    std::cout << "Hello World" << '\n'; // don't forget to add ';' at the end!
     return 0;
 }
 ```
 
-`cout` 是一个**对象 (object)**，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 "cout" 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 `<<` 就像箭头一样指明了数据的流向，“Hello World" 和代表换行符的 "endl" 依次流入 "cout" 并被显示出来，这就是 `cout` 的用法，颇有象形文字的智慧。
+`cout` 是一个**对象 (object)**，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 "cout" 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 `<<` 就像箭头一样指明了数据的流向，“Hello World" 和代表换行符的 "\n" 依次流入 "cout" 并被显示出来，这就是 `cout` 的用法，颇有象形文字的智慧。
 
 > **`std::` 这个前缀是什么意思？**
 > 
@@ -48,7 +48,7 @@ int main ()
     int a, b, sum;
     std::cin >> a >> b; // don't forget the "std::" prefix!
     sum = a + b;
-    std::cout << sum << endl;
+    std::cout << sum << '\n';
     return 0;
 }
 ```

@@ -46,9 +46,9 @@ int main ()
     std::cin >> a >> b;
     sum = a + b;
     if (sum % 2 == 1)
-        std::cout << "odd" << endl;
+        std::cout << "odd" << '\n';
     else
-        std::cout << "even" << endl;
+        std::cout << "even" << '\n';
     return 0;
 }
 ```
