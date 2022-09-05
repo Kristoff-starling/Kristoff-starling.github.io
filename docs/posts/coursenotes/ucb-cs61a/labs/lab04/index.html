@@ -28,10 +28,11 @@
   
     
   
-  <meta name="description" content="Undergrad @ NJU">
+  <meta name="description" content="下面的两道题是比较有意思的：
+Q1: WWPD: Journey to the Center of the Earch &gt;&gt;&gt; def crust(): ... print(&quot;70km&quot;) ... def mantle(): ... print(&quot;2900km&quot;) ... def core(): ... print(&quot;5300km&quot;) ... return mantle() ... return core .">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab04/">
 
   
 
@@ -43,6 +44,9 @@
   
 
   
+  
+  
+  <script src="/js/mathjax-config.js"></script>
   
 
   
@@ -174,9 +178,9 @@
 
       
       
-        
-      
 
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
       
     
       
@@ -210,14 +214,12 @@
 
 
   
-  <link rel="alternate" href="/posts/coursenotes/ucb-cs61a/index.xml" type="application/rss+xml" title="Academic">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab04/">
 
   
   
@@ -231,11 +233,13 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/">
-  <meta property="og:title" content="UCB-CS61A Structure and Interpretation of Computer Programs | Academic">
-  <meta property="og:description" content="Undergrad @ NJU"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab04/">
+  <meta property="og:title" content="UCB-CS61A Lab 04: Recursion, Tree Recursion, Python Lists | Academic">
+  <meta property="og:description" content="下面的两道题是比较有意思的：
+Q1: WWPD: Journey to the Center of the Earch &gt;&gt;&gt; def crust(): ... print(&quot;70km&quot;) ... def mantle(): ... print(&quot;2900km&quot;) ... def core(): ... print(&quot;5300km&quot;) ... return mantle() ... return core ."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
+    
     
   
 
@@ -243,17 +247,19 @@
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>UCB-CS61A Structure and Interpretation of Computer Programs | Academic</title>
+
+
+  <title>UCB-CS61A Lab 04: Recursion, Tree Recursion, Python Lists | Academic</title>
 
 </head>
 
@@ -424,307 +430,195 @@
 
   
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-  
-  
-    
-  
-<div class="universal-wrapper pt-3">
-  <h1>UCB-CS61A Structure and Interpretation of Computer Programs</h1>
-
-  
-
-  
-</div>
-
-
-
-<div class="universal-wrapper">
-
-  
-
-  
-  
-    
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
       
 
 
 
 
 
-
-
-
-
-
-<div class="card-simple">
-
   
     
-
-
-<div class="article-metadata">
-
-  
   
 
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Jan 1, 0001
-  </span>
-  
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
 
   
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
 
+<nav class="collapse docs-links" id="docs-nav">
   
 
   
   
   
-
   
-  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/ucb-cs61a/labs/">Overview</a>
 
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/homework/">Homework</a>
-  </h3>
-
-  
-
-  
-
-</div>
-
-    
-  
-    
-      
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Jan 1, 0001
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/labs/">Labs</a>
-  </h3>
-
-  
-  <div class="article-style">
-    <p>Table of Contents Lab 01: Variables &amp; Functions, Control Lab 02: Higher-Order Function, Lambda Expressions Lab 04: Recursion, Tree Recursion, Python Lists Lab 05: Python Lists, Trees Lab 06: Mutability and Iterators </p>
   </div>
   
-
-  
-
-</div>
-
-    
-  
-    
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/ucb-cs61a/labs/lab01/">Contents</a>
+    <ul class="nav docs-sidenav">
       
-
-
-
-
-
-
-
-
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab01/">Lab 01</a>
+      </li>
       
-    
-    Jan 1, 0001
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/lectures/">Lectures</a>
-  </h3>
-
-  
-
-  
-
-</div>
-
-    
-  
-    
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab02/">Lab 02</a>
+      </li>
       
-
-
-
-
-
-
-
-
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
+      <li class="active">
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab04/">Lab 04</a>
+      </li>
       
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab05/">Lab 05</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab06/">Lab 06</a>
+      </li>
+      
+    </ul>
     
-    Jan 1, 0001
-  </span>
-  
 
+  </div>
   
+  
+</nav>
 
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/projects/">Projects</a>
-  </h3>
-
-  
-
-  
-
-</div>
+    </div>
 
     
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>UCB-CS61A Lab 04: Recursion, Tree Recursion, Python Lists</h1>
+
+          <div class="article-style">
+            <p>下面的两道题是比较有意思的：</p>
+<h2 id="q1-wwpd-journey-to-the-center-of-the-earch">Q1: WWPD: Journey to the Center of the Earch</h2>
+<pre><code class="language-python">&gt;&gt;&gt; def crust():
+...     print(&quot;70km&quot;)
+...     def mantle():
+...          print(&quot;2900km&quot;)
+...          def core():
+...               print(&quot;5300km&quot;)
+...               return mantle()
+...          return core
+...     return mantle
+&gt;&gt;&gt; drill = crust
+&gt;&gt;&gt; drill = drill()
+______
+
+&gt;&gt;&gt; drill = drill()
+______
+
+&gt;&gt;&gt; drill = drill()
+______
+
+&gt;&gt;&gt; drill()
+______
+</code></pre>
+<p>值得注意的是第三次和第四次调用 <code>drill()</code> 的区别。两次调用的 <code>drill()</code> 都是 <code>core()</code> 这个函数，它们首先会输出 &ldquo;5300km&rdquo;，然后调用 <code>mantle()</code> 之后输出 &ldquo;2900km&rdquo;，最后返回函数 <code>core()</code>。但第一次的语句是一个赋值语句，赋值语句的返回值是 None，第二次的语句是一个单纯的调用，所以最后函数的返回值 &ldquo;Function&hellip;&rdquo; 也会被打印出来。</p>
+<h2 id="q7-riffle-shuffle">Q7: Riffle Shuffle</h2>
+<p>这道题有一点小难度，因为 list comprehension 中不能带有 else，所以我们要想出一种统一的方法来根据下标从数组中取数。我们可以利用 <code>i % 2</code> 的结果参与运算：</p>
+<pre><code class="language-python">return [deck[i // 2 + (i % 2) * len(deck) // 2] for i in range(len(deck))]
+</code></pre>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
   
-
   
-
-
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/ucb-cs61a/labs/lab02/" rel="next">UCB-CS61A Lab 02: Higher-Order Functions, Lambda Expressions</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/ucb-cs61a/labs/lab05/" rel="prev">UCB-CS61A Lab 05: Python Lists, Trees</a>
+  </div>
+  
 </div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/ucb-cs61a/Labs/lab04.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
 
       
 
@@ -783,6 +677,11 @@
 
     
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
 
     
     
@@ -835,31 +734,6 @@
 
 
   
-  
-  <div class="container">
-    <footer class="site-footer">
-  
-
-  <p class="powered-by">
-    
-
-    Powered by the
-    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
-    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
-
-    
-    <span class="float-right" aria-hidden="true">
-      <a href="#" class="back-to-top">
-        <span class="button_icon">
-          <i class="fas fa-chevron-up fa-2x"></i>
-        </span>
-      </a>
-    </span>
-    
-  </p>
-</footer>
-
-  </div>
   
 
   

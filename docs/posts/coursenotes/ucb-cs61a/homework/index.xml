@@ -101,5 +101,18 @@ def two(f):
 </description>
     </item>
     
+    <item>
+      <title>UCB-CS61a Homework 04: Data Abstraction, Trees</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw04/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw04/</guid>
+      <description>&lt;p&gt;本章没有特别值得一提的题目，主要就是两点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;和树相关的操作使用递归可以让代码变得简洁。&lt;/li&gt;
+&lt;li&gt;注意 data abstraction，不要越层使用 API。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
   </channel>
 </rss>

@@ -28,10 +28,12 @@
   
     
   
-  <meta name="description" content="Undergrad @ NJU">
+  <meta name="description" content="return and print def what_prints(): print(&#39;Hello World!&#39;) return &#39;Exiting this function.&#39; print(&#39;61A is awesome!&#39;) 该程序的运行结果是
+&gt;&gt;&gt; what_prints() Hello World! &#39;Exiting this function.&#39; 注意 print 的结果是不带引号的，return 的结果是带引号的。
+Boolean Operators 如果多个语句用 AND 连接，那么 python 会执行到第一个为假的表达式，后面的不再执行，这就是短路 (short circuiting)。此时即使后面写了执行会导致 Error 的语句也不会 crash。OR 同理。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab01/">
 
   
 
@@ -43,6 +45,9 @@
   
 
   
+  
+  
+  <script src="/js/mathjax-config.js"></script>
   
 
   
@@ -174,9 +179,9 @@
 
       
       
-        
-      
 
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
       
     
       
@@ -210,14 +215,12 @@
 
 
   
-  <link rel="alternate" href="/posts/coursenotes/ucb-cs61a/index.xml" type="application/rss+xml" title="Academic">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab01/">
 
   
   
@@ -231,11 +234,14 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/">
-  <meta property="og:title" content="UCB-CS61A Structure and Interpretation of Computer Programs | Academic">
-  <meta property="og:description" content="Undergrad @ NJU"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab01/">
+  <meta property="og:title" content="UCB-CS61A Lab 01: Variables &amp; Functions, Control | Academic">
+  <meta property="og:description" content="return and print def what_prints(): print(&#39;Hello World!&#39;) return &#39;Exiting this function.&#39; print(&#39;61A is awesome!&#39;) 该程序的运行结果是
+&gt;&gt;&gt; what_prints() Hello World! &#39;Exiting this function.&#39; 注意 print 的结果是不带引号的，return 的结果是带引号的。
+Boolean Operators 如果多个语句用 AND 连接，那么 python 会执行到第一个为假的表达式，后面的不再执行，这就是短路 (short circuiting)。此时即使后面写了执行会导致 Error 的语句也不会 crash。OR 同理。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
+    
     
   
 
@@ -243,17 +249,19 @@
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>UCB-CS61A Structure and Interpretation of Computer Programs | Academic</title>
+
+
+  <title>UCB-CS61A Lab 01: Variables &amp; Functions, Control | Academic</title>
 
 </head>
 
@@ -424,307 +432,220 @@
 
   
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-  
-  
-    
-  
-<div class="universal-wrapper pt-3">
-  <h1>UCB-CS61A Structure and Interpretation of Computer Programs</h1>
-
-  
-
-  
-</div>
-
-
-
-<div class="universal-wrapper">
-
-  
-
-  
-  
-    
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
       
 
 
 
 
 
-
-
-
-
-
-<div class="card-simple">
-
   
     
-
-
-<div class="article-metadata">
-
-  
   
 
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Jan 1, 0001
-  </span>
-  
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
 
   
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
 
+<nav class="collapse docs-links" id="docs-nav">
   
 
   
   
   
-
   
-  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/ucb-cs61a/labs/">Overview</a>
 
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/homework/">Homework</a>
-  </h3>
-
-  
-
-  
-
-</div>
-
-    
-  
-    
-      
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Jan 1, 0001
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/labs/">Labs</a>
-  </h3>
-
-  
-  <div class="article-style">
-    <p>Table of Contents Lab 01: Variables &amp; Functions, Control Lab 02: Higher-Order Function, Lambda Expressions Lab 04: Recursion, Tree Recursion, Python Lists Lab 05: Python Lists, Trees Lab 06: Mutability and Iterators </p>
   </div>
   
-
-  
-
-</div>
-
-    
-  
-    
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/ucb-cs61a/labs/lab01/">Contents</a>
+    <ul class="nav docs-sidenav">
       
-
-
-
-
-
-
-
-
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
+      <li class="active">
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab01/">Lab 01</a>
+      </li>
       
-    
-    Jan 1, 0001
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/lectures/">Lectures</a>
-  </h3>
-
-  
-
-  
-
-</div>
-
-    
-  
-    
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab02/">Lab 02</a>
+      </li>
       
-
-
-
-
-
-
-
-
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab04/">Lab 04</a>
+      </li>
       
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab05/">Lab 05</a>
+      </li>
+      
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab06/">Lab 06</a>
+      </li>
+      
+    </ul>
     
-    Jan 1, 0001
-  </span>
-  
 
+  </div>
   
+  
+</nav>
 
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/projects/">Projects</a>
-  </h3>
-
-  
-
-  
-
-</div>
+    </div>
 
     
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>UCB-CS61A Lab 01: Variables &amp; Functions, Control</h1>
+
+          <div class="article-style">
+            <h2 id="return-and-print"><code>return</code> and <code>print</code></h2>
+<pre><code class="language-python">def what_prints():
+    print('Hello World!')
+    return 'Exiting this function.'
+    print('61A is awesome!')
+</code></pre>
+<p>该程序的运行结果是</p>
+<pre><code class="language-python">&gt;&gt;&gt; what_prints()
+Hello World!
+'Exiting this function.'
+</code></pre>
+<p>注意 <strong>print 的结果是不带引号的，return 的结果是带引号的</strong>。</p>
+<h2 id="boolean-operators">Boolean Operators</h2>
+<p>如果多个语句用 AND 连接，那么 python 会执行到第一个为假的表达式，后面的不再执行，这就是<strong>短路 (short circuiting)</strong>。此时即使后面写了执行会导致 Error 的语句也不会 crash。OR 同理。</p>
+<pre><code class="language-python">&gt;&gt;&gt; 1 / 0
+ZeroDivisionError
+&gt;&gt;&gt; True or (1 / 0)
+True
+</code></pre>
+<p>逻辑表达式总是会返回<strong>最后一个元素</strong>，该规则在短路情况下同样适用，下面是一些例子：</p>
+<pre><code class="language-python">&gt;&gt;&gt; True and 13
+13
+&gt;&gt;&gt; not 10
+False
+&gt;&gt;&gt; False or []
+[]
+&gt;&gt;&gt; 0 or False or 2 or 1 / 0
+2
+</code></pre>
+<p><code>0</code> <code>[]</code> <code>None</code> 也会被视为 False，但如果对一个 True 的东西取 not，返回结果只可能是 False。</p>
+<h2 id="debugging">Debugging</h2>
+<h3 id="traceback-message">Traceback Message</h3>
+<p>Traceback Message 类似于 GDB 的回溯顺序，实际的函数调用顺序是从下往上的。</p>
+<h3 id="debugging-techniques">Debugging Techniques</h3>
+<h4 id="running-doctests">Running doctests</h4>
+<p>python3 的 <code>-m</code> 选项提供 doctest 功能：我们可以把简单的测试用例写在源代码中。例如</p>
+<pre><code class="language-python"># square.py
+def square(x):
+	&quot;&quot;&quot;
+	&gt;&gt;&gt; square(4)
+	16
+	&quot;&quot;&quot;
+    return x * x
+</code></pre>
+<p>用一对 <code>&quot;&quot;&quot;</code> 括起来的注释内容中可以书写测试用例，测试用例的写法类似于 python 的交互界面，在 <code>&gt;&gt;&gt;</code> 后写下要执行的语句，并另起一行写下期望的结果。使用</p>
+<pre><code class="language-bash">python3 -m doctest square.py
+</code></pre>
+<p>进行测试，如果程序运行的结果和期望结果不同 python 会报错。</p>
+<p>如果使用 <code>-v</code> 选项，python 不仅会报错，还会将通过的测试用例的信息也显示出来。</p>
+<h4 id="interactive-debugging">Interactive Debugging</h4>
+<p>使用一个交互式的 REPL 是 debug 的好方式。假设当前我们要 debug <code>file.py</code> 这个程序，使用命令</p>
+<pre><code class="language-bash">python3 -i file.py
+</code></pre>
+<p>可以打开一个 python 的 REPL，它已经执行了 <code>file.py</code> 中的所有定义，我们可以输入任意的命令进行测试。</p>
+<h4 id="using-ok">Using ok</h4>
+<pre><code class="language-bash">python3 ok -q MODULE_NAME -i
+</code></pre>
+<p>可以打开 REPL。</p>
+<pre><code class="language-bash">python3 ok q MODULE_NAME --trace
+</code></pre>
+<p>可以打开程序的可视化窗口。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
   
-
   
-
-
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/posts/coursenotes/ucb-cs61a/labs/lab02/" rel="prev">UCB-CS61A Lab 02: Higher-Order Functions, Lambda Expressions</a>
+  </div>
+  
 </div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/ucb-cs61a/Labs/lab01.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
 
       
 
@@ -783,6 +704,11 @@
 
     
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
 
     
     
@@ -835,31 +761,6 @@
 
 
   
-  
-  <div class="container">
-    <footer class="site-footer">
-  
-
-  <p class="powered-by">
-    
-
-    Powered by the
-    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
-    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
-
-    
-    <span class="float-right" aria-hidden="true">
-      <a href="#" class="back-to-top">
-        <span class="button_icon">
-          <i class="fas fa-chevron-up fa-2x"></i>
-        </span>
-      </a>
-    </span>
-    
-  </p>
-</footer>
-
-  </div>
   
 
   

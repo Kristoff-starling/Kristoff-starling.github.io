@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Labs | Academic</title>
+    <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/index.xml" rel="self" type="application/rss+xml" />
+    <description>Labs</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Labs</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/</link>
+    </image>
+    
+    <item>
+      <title>UCB-CS61A Lab 01: Variables &amp; Functions, Control</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab01/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab01/</guid>
+      <description>&lt;h2 id=&#34;return-and-print&#34;&gt;&lt;code&gt;return&lt;/code&gt; and &lt;code&gt;print&lt;/code&gt;&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def what_prints():
+    print(&#39;Hello World!&#39;)
+    return &#39;Exiting this function.&#39;
+    print(&#39;61A is awesome!&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;该程序的运行结果是&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; what_prints()
+Hello World!
+&#39;Exiting this function.&#39;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意 &lt;strong&gt;print 的结果是不带引号的，return 的结果是带引号的&lt;/strong&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;boolean-operators&#34;&gt;Boolean Operators&lt;/h2&gt;
+&lt;p&gt;如果多个语句用 AND 连接，那么 python 会执行到第一个为假的表达式，后面的不再执行，这就是&lt;strong&gt;短路 (short circuiting)&lt;/strong&gt;。此时即使后面写了执行会导致 Error 的语句也不会 crash。OR 同理。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; 1 / 0
+ZeroDivisionError
+&amp;gt;&amp;gt;&amp;gt; True or (1 / 0)
+True
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;逻辑表达式总是会返回&lt;strong&gt;最后一个元素&lt;/strong&gt;，该规则在短路情况下同样适用，下面是一些例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; True and 13
+13
+&amp;gt;&amp;gt;&amp;gt; not 10
+False
+&amp;gt;&amp;gt;&amp;gt; False or []
+[]
+&amp;gt;&amp;gt;&amp;gt; 0 or False or 2 or 1 / 0
+2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;0&lt;/code&gt; &lt;code&gt;[]&lt;/code&gt; &lt;code&gt;None&lt;/code&gt; 也会被视为 False，但如果对一个 True 的东西取 not，返回结果只可能是 False。&lt;/p&gt;
+&lt;h2 id=&#34;debugging&#34;&gt;Debugging&lt;/h2&gt;
+&lt;h3 id=&#34;traceback-message&#34;&gt;Traceback Message&lt;/h3&gt;
+&lt;p&gt;Traceback Message 类似于 GDB 的回溯顺序，实际的函数调用顺序是从下往上的。&lt;/p&gt;
+&lt;h3 id=&#34;debugging-techniques&#34;&gt;Debugging Techniques&lt;/h3&gt;
+&lt;h4 id=&#34;running-doctests&#34;&gt;Running doctests&lt;/h4&gt;
+&lt;p&gt;python3 的 &lt;code&gt;-m&lt;/code&gt; 选项提供 doctest 功能：我们可以把简单的测试用例写在源代码中。例如&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;# square.py
+def square(x):
+	&amp;quot;&amp;quot;&amp;quot;
+	&amp;gt;&amp;gt;&amp;gt; square(4)
+	16
+	&amp;quot;&amp;quot;&amp;quot;
+    return x * x
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;用一对 &lt;code&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/code&gt; 括起来的注释内容中可以书写测试用例，测试用例的写法类似于 python 的交互界面，在 &lt;code&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/code&gt; 后写下要执行的语句，并另起一行写下期望的结果。使用&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;python3 -m doctest square.py
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;进行测试，如果程序运行的结果和期望结果不同 python 会报错。&lt;/p&gt;
+&lt;p&gt;如果使用 &lt;code&gt;-v&lt;/code&gt; 选项，python 不仅会报错，还会将通过的测试用例的信息也显示出来。&lt;/p&gt;
+&lt;h4 id=&#34;interactive-debugging&#34;&gt;Interactive Debugging&lt;/h4&gt;
+&lt;p&gt;使用一个交互式的 REPL 是 debug 的好方式。假设当前我们要 debug &lt;code&gt;file.py&lt;/code&gt; 这个程序，使用命令&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;python3 -i file.py
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以打开一个 python 的 REPL，它已经执行了 &lt;code&gt;file.py&lt;/code&gt; 中的所有定义，我们可以输入任意的命令进行测试。&lt;/p&gt;
+&lt;h4 id=&#34;using-ok&#34;&gt;Using ok&lt;/h4&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;python3 ok -q MODULE_NAME -i
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以打开 REPL。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;python3 ok q MODULE_NAME --trace
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以打开程序的可视化窗口。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lab 02: Higher-Order Functions, Lambda Expressions</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab02/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab02/</guid>
+      <description>&lt;p&gt;没有需要特别注意的知识点和题目。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lab 04: Recursion, Tree Recursion, Python Lists</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab04/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab04/</guid>
+      <description>&lt;p&gt;下面的两道题是比较有意思的：&lt;/p&gt;
+&lt;h2 id=&#34;q1-wwpd-journey-to-the-center-of-the-earch&#34;&gt;Q1: WWPD: Journey to the Center of the Earch&lt;/h2&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; def crust():
+...     print(&amp;quot;70km&amp;quot;)
+...     def mantle():
+...          print(&amp;quot;2900km&amp;quot;)
+...          def core():
+...               print(&amp;quot;5300km&amp;quot;)
+...               return mantle()
+...          return core
+...     return mantle
+&amp;gt;&amp;gt;&amp;gt; drill = crust
+&amp;gt;&amp;gt;&amp;gt; drill = drill()
+______
+
+&amp;gt;&amp;gt;&amp;gt; drill = drill()
+______
+
+&amp;gt;&amp;gt;&amp;gt; drill = drill()
+______
+
+&amp;gt;&amp;gt;&amp;gt; drill()
+______
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;值得注意的是第三次和第四次调用 &lt;code&gt;drill()&lt;/code&gt; 的区别。两次调用的 &lt;code&gt;drill()&lt;/code&gt; 都是 &lt;code&gt;core()&lt;/code&gt; 这个函数，它们首先会输出 &amp;ldquo;5300km&amp;rdquo;，然后调用 &lt;code&gt;mantle()&lt;/code&gt; 之后输出 &amp;ldquo;2900km&amp;rdquo;，最后返回函数 &lt;code&gt;core()&lt;/code&gt;。但第一次的语句是一个赋值语句，赋值语句的返回值是 None，第二次的语句是一个单纯的调用，所以最后函数的返回值 &amp;ldquo;Function&amp;hellip;&amp;rdquo; 也会被打印出来。&lt;/p&gt;
+&lt;h2 id=&#34;q7-riffle-shuffle&#34;&gt;Q7: Riffle Shuffle&lt;/h2&gt;
+&lt;p&gt;这道题有一点小难度，因为 list comprehension 中不能带有 else，所以我们要想出一种统一的方法来根据下标从数组中取数。我们可以利用 &lt;code&gt;i % 2&lt;/code&gt; 的结果参与运算：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;return [deck[i // 2 + (i % 2) * len(deck) // 2] for i in range(len(deck))]
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lab 05: Python Lists, Trees</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab05/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab05/</guid>
+      <description>&lt;h2 id=&#34;data-abstraction&#34;&gt;Data Abstraction&lt;/h2&gt;
+&lt;p&gt;data abstraction 中通常包括以下两类函数：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;constructors: 用于构建数据结构。&lt;/li&gt;
+&lt;li&gt;selectors: 用于从数据结构中提取信息。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;本实验的题目不算太难，充分利用树的递归性可以写出既简洁又满足 abstraction barrier 的代码。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Lab 06: Mutability and Iterators</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab06/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab06/</guid>
+      <description>&lt;h2 id=&#34;list-api&#34;&gt;List API&lt;/h2&gt;
+&lt;p&gt;一些重要的 API 的补充说明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;list.pop(index=-1)&lt;/code&gt; 的作用是弹出 &lt;code&gt;list[index]&lt;/code&gt; 这个元素，没有填写参数默认为 -1。该 method 的返回值是弹出的元素的值。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;list.remove(x)&lt;/code&gt; 删除 list 中的第一个元素 x。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;list.insert(index, obj)&lt;/code&gt; 的作用是在 index 为 &lt;code&gt;index&lt;/code&gt; 的元素前面添加元素 obj (即插入完元素后 obj 的下标是 index)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;list.append()&lt;/code&gt; 的返回值是 None。 一道例题很好地展现了这个特性：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;&amp;gt;&amp;gt;&amp;gt; lst = [1, 2, 3]
+&amp;gt;&amp;gt;&amp;gt; lst.extend(lst.append(4), list.append(5))
+&amp;gt;&amp;gt;&amp;gt; lst
+[1, 2, 3, None, None]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;iterators&#34;&gt;Iterators&lt;/h2&gt;
+&lt;p&gt;两个值得注意的细节：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果一个 iterater &lt;code&gt;iter&lt;/code&gt; 在 for 循环中被使用，例如 &lt;code&gt;for x in iter&lt;/code&gt;，那么 for 循环结束时 iter 的值是被改变了的，再调用 &lt;code&gt;next()&lt;/code&gt; 会得到 StopIteration。&lt;/li&gt;
+&lt;li&gt;使用 &lt;code&gt;list(iter)&lt;/code&gt; 获得列表的话会修改 iter 的位置，所以如果只想取前 n 个元素且保证 iter 的位置，不能使用 &lt;code&gt;list(iter)[:n]&lt;/code&gt; 的方式。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -28,10 +28,14 @@
   
     
   
-  <meta name="description" content="Undergrad @ NJU">
+  <meta name="description" content="List API 一些重要的 API 的补充说明：
+list.pop(index=-1) 的作用是弹出 list[index] 这个元素，没有填写参数默认为 -1。该 method 的返回值是弹出的元素的值。
+list.remove(x) 删除 list 中的第一个元素 x。
+list.insert(index, obj) 的作用是在 index 为 index 的元素前面添加元素 obj (即插入完元素后 obj 的下标是 index)
+list.append() 的返回值是 None。 一道例题很好地展现了这个特性：">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab06/">
 
   
 
@@ -43,6 +47,9 @@
   
 
   
+  
+  
+  <script src="/js/mathjax-config.js"></script>
   
 
   
@@ -174,9 +181,9 @@
 
       
       
-        
-      
 
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
       
     
       
@@ -210,14 +217,12 @@
 
 
   
-  <link rel="alternate" href="/posts/coursenotes/ucb-cs61a/index.xml" type="application/rss+xml" title="Academic">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab06/">
 
   
   
@@ -231,11 +236,16 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/">
-  <meta property="og:title" content="UCB-CS61A Structure and Interpretation of Computer Programs | Academic">
-  <meta property="og:description" content="Undergrad @ NJU"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/labs/lab06/">
+  <meta property="og:title" content="UCB-CS61A Lab 06: Mutability and Iterators | Academic">
+  <meta property="og:description" content="List API 一些重要的 API 的补充说明：
+list.pop(index=-1) 的作用是弹出 list[index] 这个元素，没有填写参数默认为 -1。该 method 的返回值是弹出的元素的值。
+list.remove(x) 删除 list 中的第一个元素 x。
+list.insert(index, obj) 的作用是在 index 为 index 的元素前面添加元素 obj (即插入完元素后 obj 的下标是 index)
+list.append() 的返回值是 None。 一道例题很好地展现了这个特性："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
+    
     
   
 
@@ -243,17 +253,19 @@
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>UCB-CS61A Structure and Interpretation of Computer Programs | Academic</title>
+
+
+  <title>UCB-CS61A Lab 06: Mutability and Iterators | Academic</title>
 
 </head>
 
@@ -424,307 +436,187 @@
 
   
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-  
-  
-    
-  
-<div class="universal-wrapper pt-3">
-  <h1>UCB-CS61A Structure and Interpretation of Computer Programs</h1>
-
-  
-
-  
-</div>
-
-
-
-<div class="universal-wrapper">
-
-  
-
-  
-  
-    
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
       
 
 
 
 
 
-
-
-
-
-
-<div class="card-simple">
-
   
     
-
-
-<div class="article-metadata">
-
-  
   
 
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Jan 1, 0001
-  </span>
-  
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
 
   
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
 
+<nav class="collapse docs-links" id="docs-nav">
   
 
   
   
   
-
   
-  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/ucb-cs61a/labs/">Overview</a>
 
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/homework/">Homework</a>
-  </h3>
-
-  
-
-  
-
-</div>
-
-    
-  
-    
-      
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Jan 1, 0001
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/labs/">Labs</a>
-  </h3>
-
-  
-  <div class="article-style">
-    <p>Table of Contents Lab 01: Variables &amp; Functions, Control Lab 02: Higher-Order Function, Lambda Expressions Lab 04: Recursion, Tree Recursion, Python Lists Lab 05: Python Lists, Trees Lab 06: Mutability and Iterators </p>
   </div>
   
-
-  
-
-</div>
-
-    
-  
-    
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/coursenotes/ucb-cs61a/labs/lab01/">Contents</a>
+    <ul class="nav docs-sidenav">
       
-
-
-
-
-
-
-
-
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab01/">Lab 01</a>
+      </li>
       
-    
-    Jan 1, 0001
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/lectures/">Lectures</a>
-  </h3>
-
-  
-
-  
-
-</div>
-
-    
-  
-    
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab02/">Lab 02</a>
+      </li>
       
-
-
-
-
-
-
-
-
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab04/">Lab 04</a>
+      </li>
       
+      <li >
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab05/">Lab 05</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/coursenotes/ucb-cs61a/labs/lab06/">Lab 06</a>
+      </li>
+      
+    </ul>
     
-    Jan 1, 0001
-  </span>
-  
 
+  </div>
   
+  
+</nav>
 
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/posts/coursenotes/ucb-cs61a/projects/">Projects</a>
-  </h3>
-
-  
-
-  
-
-</div>
+    </div>
 
     
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>UCB-CS61A Lab 06: Mutability and Iterators</h1>
+
+          <div class="article-style">
+            <h2 id="list-api">List API</h2>
+<p>一些重要的 API 的补充说明：</p>
+<ul>
+<li>
+<p><code>list.pop(index=-1)</code> 的作用是弹出 <code>list[index]</code> 这个元素，没有填写参数默认为 -1。该 method 的返回值是弹出的元素的值。</p>
+</li>
+<li>
+<p><code>list.remove(x)</code> 删除 list 中的第一个元素 x。</p>
+</li>
+<li>
+<p><code>list.insert(index, obj)</code> 的作用是在 index 为 <code>index</code> 的元素前面添加元素 obj (即插入完元素后 obj 的下标是 index)</p>
+</li>
+<li>
+<p><code>list.append()</code> 的返回值是 None。 一道例题很好地展现了这个特性：</p>
+<pre><code class="language-python">&gt;&gt;&gt; lst = [1, 2, 3]
+&gt;&gt;&gt; lst.extend(lst.append(4), list.append(5))
+&gt;&gt;&gt; lst
+[1, 2, 3, None, None]
+</code></pre>
+</li>
+</ul>
+<h2 id="iterators">Iterators</h2>
+<p>两个值得注意的细节：</p>
+<ul>
+<li>如果一个 iterater <code>iter</code> 在 for 循环中被使用，例如 <code>for x in iter</code>，那么 for 循环结束时 iter 的值是被改变了的，再调用 <code>next()</code> 会得到 StopIteration。</li>
+<li>使用 <code>list(iter)</code> 获得列表的话会修改 iter 的位置，所以如果只想取前 n 个元素且保证 iter 的位置，不能使用 <code>list(iter)[:n]</code> 的方式。</li>
+</ul>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
   
-
   
-
-
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/coursenotes/ucb-cs61a/labs/lab05/" rel="next">UCB-CS61A Lab 05: Python Lists, Trees</a>
+  </div>
+  
+  
 </div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/CourseNotes/ucb-cs61a/Labs/lab06.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
 
       
 
@@ -783,6 +675,11 @@
 
     
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
 
     
     
@@ -835,31 +732,6 @@
 
 
   
-  
-  <div class="container">
-    <footer class="site-footer">
-  
-
-  <p class="powered-by">
-    
-
-    Powered by the
-    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
-    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
-
-    
-    <span class="float-right" aria-hidden="true">
-      <a href="#" class="back-to-top">
-        <span class="button_icon">
-          <i class="fas fa-chevron-up fa-2x"></i>
-        </span>
-      </a>
-    </span>
-    
-  </p>
-</footer>
-
-  </div>
   
 
   
