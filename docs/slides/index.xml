@@ -203,17 +203,122 @@ const bool right_child_is_constant = IsReallyConstant(*mul_right_child);
     
     <item>
       <title>Slides</title>
-      <link>https://kristoff-starling.github.io/slides/20220810/</link>
+      <link>https://kristoff-starling.github.io/slides/20220907/</link>
       <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/slides/20220810/</guid>
-      <description>&lt;h2 id=&#34;fuzzing-report&#34;&gt;Fuzzing Report&lt;/h2&gt;
+      <guid>https://kristoff-starling.github.io/slides/20220907/</guid>
+      <description>&lt;h2 id=&#34;atheris-automation&#34;&gt;Atheris Automation&lt;/h2&gt;
 &lt;hr&gt;
-&lt;h2 id=&#34;documentation&#34;&gt;Documentation&lt;/h2&gt;
+&lt;h2 id=&#34;methodology&#34;&gt;Methodology&lt;/h2&gt;
 &lt;hr&gt;
-&lt;p align=left&gt;
-PyTorch: Big sections categorized, small sections listed.
-MXNet: Big sections categorized, small sections listed.
-&lt;/p&gt;</description>
+&lt;ul&gt;
+&lt;li&gt;Use FreeFuzz&amp;rsquo;s tests as templates&lt;/li&gt;
+&lt;li&gt;Substitute concrete values with appropriate functions
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;arg_1 = 56          --&amp;gt; arg_1 = fh.get_int()
+arg_1 = [-1.0, 6.0] --&amp;gt; arg_1 = fh.get_float_list()
+padding = &#39;VALID&#39;   --&amp;gt; padding = fh.get_string(type=padding)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;An Example:
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def TestOneInput(data):
+    fh = FuzzingHelper(data)
+    arg_0_tensor = fh.get_random_tensor(
+        shape=None,
+        dtype_set=[tf.float16, tf.float32, tf.float64, 
+                   tf.int32, tf.int64],
+        min_size=1,
+        max_size=8)
+    arg_0 = tf.identity(arg_0_tensor)
+    dtype = tf.float16
+    _ = tf.cast(arg_0,dtype=dtype,)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p align=left&gt;Issue: lots of APIs contains hidden specifications.&lt;/p&gt;
+&lt;p align=left&gt;Example: tf.nn.conv2d()&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Specification:
+&lt;ul&gt;
+&lt;li&gt;The input tensor may have rank 4 or higher.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;padding&lt;/code&gt; should be in &lt;code&gt;{&#39;VALID&#39;, &#39;SAME&#39;}&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;A dummy test such as
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;arg_0 = fh.get_random_tensor()
+arg_1 = fh.get_random_tensor()
+strides = fh.get_int()
+padding = fh.get_string()
+_ = tf.nn.conv2d(arg_0,arg_1,strides=strides,padding=padding,)
+&lt;/code&gt;&lt;/pre&gt;
+will fail.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p align=left&gt;Solution: use FreeFuzz to find specifications through trials and errors.&lt;/p&gt;
+&lt;p align=left&gt;Example:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Goal: Identify whether the API accepts negative inputs.&lt;/li&gt;
+&lt;li&gt;Steps:
+&lt;ul&gt;
+&lt;li&gt;Obtain a valid FreeFuzz test.&lt;/li&gt;
+&lt;li&gt;Substitute the argument with &amp;ldquo;-1&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Execute the modified tests and try to catch exceptions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;int/float&lt;/code&gt;: value range&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int/float&lt;/code&gt; list: length, negative value&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;string&lt;/code&gt;: special names (reduction/padding/activation/channel)&lt;/li&gt;
+&lt;li&gt;Tensor: dtype, shape(length, value range)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p align=left&gt;Sometimes, two lists/tensors are required to have the same length/dimension. In this situation, we analyze the structure of an invocation and try to add restrictions on arguments on the same level.
+&lt;hr&gt;
+&lt;h2 id=&#34;results&#34;&gt;Results&lt;/h2&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;success-rate&#34;&gt;Success Rate&lt;/h3&gt;
+&lt;p align=left&gt;(Here success means that the test terminates without &#34;InvalidArgument&#34; errors.)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Before specification learning: &amp;lt;50%&lt;/li&gt;
+&lt;li&gt;After specification learning: 478/533, 89.6%&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;coverage&#34;&gt;Coverage&lt;/h3&gt;
+&lt;p align=left&gt;5 untrivial APIs were selected for coverage test:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;tf.random.stateless_parameterized_truncated_normal&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tf.optimizers.schedules.ExponentialDecay&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tf.keras.layers.SpatialDropout3D&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tf.keras.layers.Convolution3DTranspose&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tf.keras.initializers.LecunNormal&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p align=left&gt;150 tests were generated for each API&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;coverage-1&#34;&gt;Coverage&lt;/h3&gt;
+&lt;p align=left&gt;The dummy test&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import tensorflow as tf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p align=left&gt;covers 70005 lines. Besides that,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;FreeFuzz&amp;rsquo;s tests cover 1151 lines.&lt;/li&gt;
+&lt;li&gt;Atheris&amp;rsquo;s tests cover 1040 lines.&lt;/li&gt;
+&lt;li&gt;1038 of which are common.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;current-problems&#34;&gt;Current Problems&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;We cannot learn complicated specifications through simple experiments.
+&lt;ul&gt;
+&lt;li&gt;FreeFuzz itself is not very stable: some tests rely on random seeds to run normally.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;We haven&amp;rsquo;t found bugs through these tests.
+&lt;ul&gt;
+&lt;li&gt;Some OOM bugs have been caught but it seems that they are false positive bugs due to my local machine limitations.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
     </item>
     
     <item>

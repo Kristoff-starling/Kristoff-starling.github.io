@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Volume 1: Logical Foundations | Academic</title>
+    <link>https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/index.xml" rel="self" type="application/rss+xml" />
+    <description>Volume 1: Logical Foundations</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Volume 1: Logical Foundations</title>
+      <link>https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/</link>
+    </image>
+    
+    <item>
+      <title>Functional Programming in Coq</title>
+      <link>https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/basics/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/basics/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#introduction&#34;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#data-and-functions&#34;&gt;Data and Functions&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#enumerated-types&#34;&gt;Enumerated Types&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#days-of-the-week&#34;&gt;Days of the Week&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#booleans&#34;&gt;Booleans&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#types&#34;&gt;Types&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#new-types-from-old&#34;&gt;New Types from Old&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#module&#34;&gt;Module&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#tuples&#34;&gt;Tuples&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#numbers&#34;&gt;Numbers&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#proof-by-simplification&#34;&gt;Proof by Simplification&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#proof-by-rewriting&#34;&gt;Proof by Rewriting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#proof-by-case-analysis&#34;&gt;Proof by Case Analysis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#fixpoints-and-structural-recursion-optional&#34;&gt;Fixpoints and Structural Recursion (Optional)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercises&#34;&gt;Exercises&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-nandb&#34;&gt;Exercise: 1 star, standard (nandb)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-andb3&#34;&gt;Exercise: 1 star, standard (andb3)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-factorial&#34;&gt;Exercise: 1 star, standard (factorial)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-ltb&#34;&gt;Exercise: 1 star, standard (ltb)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-plus_id_exercise&#34;&gt;Exercise: 1 star, standard (plus_id_exercise)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-mult_n_1&#34;&gt;Exercise: 1 star, standard (mult_n_1)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-andb_true_elim2&#34;&gt;Exercise: 2 stars, standard (andb_true_elim2)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-zero_nbeq_plus_1&#34;&gt;Exercise: 1 star, standard (zero_nbeq_plus_1)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-optional-decreasing&#34;&gt;Exercise: 2 stars, standard, optional (decreasing)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-identity_fn_applied_twice&#34;&gt;Exercise: 1 star, standard (identity_fn_applied_twice)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-negation_fn_applied_twice&#34;&gt;Exercise: 1 star, standard (negation_fn_applied_twice)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-optional-andb_eq_orb&#34;&gt;Exercise: 3 stars, standard, optional (andb_eq_orb)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-binary&#34;&gt;Exercise: 3 stars, standard (binary)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;函数式编程 (functional programming) 的思想来自于：如果一个过程或方法没有副作用，那么我们只关心它如何将输入映射到输出，即这个过程/方法是一个数学函数的具体实现。函数式编程的另一个想法是：所有的函数都应当被当作 first-classs value：函数可以作为参数，可以作为返回值，就像普通的数据一样。&lt;/p&gt;
+&lt;h2 id=&#34;data-and-functions&#34;&gt;Data and Functions&lt;/h2&gt;
+&lt;h3 id=&#34;enumerated-types&#34;&gt;Enumerated Types&lt;/h3&gt;
+&lt;p&gt;Coq 的一个显著特点在于：它的内置 features 非常的少。例如除了一些最基本的类型 (如 boolean, integer, strings)，其他的类型都可以由用户自己通过基本类型来定义。&lt;/p&gt;
+&lt;h3 id=&#34;days-of-the-week&#34;&gt;Days of the Week&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive day : Type := 
+  | monday
+  | tuesday
+  | wednesday
+  | thursday
+  | friday
+  | saturday
+  | sunday.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这段代码定义了一个叫 &lt;code&gt;day&lt;/code&gt; 的数据类型，它的成员有 7 个。基于这个类型，我们可以书写一些函数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition next_weekday (d : day) : day :=
+  match d with
+  | monday =&amp;gt; tuesday
+  | tuesday =&amp;gt; wednesday
+  | wednesday =&amp;gt; thursday
+  | thursday =&amp;gt; friday
+  | friday =&amp;gt; monday
+  | saturday =&amp;gt; monday
+  | sunday =&amp;gt; monday
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这段代码显式地给出了函数参数和返回值的类型。事实上 Coq 支持 type inference，但为了阅读方便这里还是写上了。&lt;/p&gt;
+&lt;p&gt;定义了函数之后，我们可以利用 &lt;code&gt;Compute&lt;/code&gt; 命令来计算一些使用了这个函数的表达式，例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Compute (next_weekday friday).
+(* ==&amp;gt; monday: day *)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们还可以通过 Coq Example 来给出一个 assertion：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Example test_next_weekday:
+  (next_weekday (next_weekday saturday)) = tuesday.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样的一个 Example 是需要证明的。一个合法的证明如下 (tactic 的意义见后文)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Proof.
+  simpl.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;booleans&#34;&gt;Booleans&lt;/h3&gt;
+&lt;p&gt;类似地我们可以定义 bool 类型，以及 negation, and, or 三个运算函数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive bool : Type :=
+  | true
+  | false.
+
+Definition negb (b : bool) : bool :=
+  match b with
+  | true =&amp;gt; false
+  | false =&amp;gt; true
+  end.
+
+Definition andb (b1 : bool) (b2 : bool) : bool :=
+  match b1 with
+  | true =&amp;gt; b2
+  | false =&amp;gt; false
+  end.
+
+Definition orb (b1 : bool) (b2 : bool) : bool :=
+  match b1 with
+  | true =&amp;gt; true
+  | false =&amp;gt; b2
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们可以使用 &lt;code&gt;Notation&lt;/code&gt; 命令来通过已有的 definitions 定义新符号：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Notation &amp;quot;x &amp;amp;&amp;amp; y&amp;quot; := (andb x y).
+Notation &amp;quot;x || y&amp;quot; := (orb x y).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在 Coq 中我们也可以使用条件分支语句，下面是用条件分支语句描述 and, or, neg 的例子 ( if-then-else 的折行是比较随意的)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition negb&#39; (b : bool) : bool :=
+  if b then false
+  else true.
+
+Definition andb&#39; (b1 : bool) (b2 : bool) : bool :=
+  if b1 then b2 else false.
+
+Definition orb&#39; (b1 : bool) (b2 : bool) : bool :=
+  if b1 then 
+    true
+  else
+    b2.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Coq 的条件分支语句比一般编程语言的语句的功能更 general 一些：对于只有两个 constructor 的类型，&lt;code&gt;if X&lt;/code&gt; 可以表示如果 X 等于第一个 constructor，这里只是因为 bool 类型的第一个 constructor 正好是 true 所以看上去和一般编程语言没有区别。&lt;/p&gt;
+&lt;h3 id=&#34;types&#34;&gt;Types&lt;/h3&gt;
+&lt;p&gt;Coq 中的每个表达式都有类型，我们可以使用 &lt;code&gt;Check&lt;/code&gt; 命令来打印一个表达式的类型：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Check true.
+(* ==&amp;gt; true: bool *)
+Check (negb true) : bool.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二种写法相当于一个 assertion，如果类型正确 Coq 不会有反应，如果错误 Coq 会报错。&lt;/p&gt;
+&lt;p&gt;在 Coq 中，函数也是有类型的：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Check negb : bool -&amp;gt; bool.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;new-types-from-old&#34;&gt;New Types from Old&lt;/h3&gt;
+&lt;p&gt;我们之前定义的类型都是 enumerated types，即这些定义显式地列举了一个有穷的元素集合，这些元素被称为 constructor。下面的一个更复杂的例子中出现了 constructor 带有参数的用法：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive rgb : Type :=
+  | red
+  | blue
+  | green.
+Inductive color : Type :=
+  | black
+  | white
+  | primary (p : rgb).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里我们引出 constructor expression 的概念：constructor expression 指的是以符合定义的方式将一个 constructor apply 到零个或多个 constructor expression 上。这里的 red, blue, black, white, primary red 等都是 constructor expression。&lt;/p&gt;
+&lt;p&gt;这里 color 类型描述了属于 color 这个集合的 constructor expression 的三种形式：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;black&lt;/li&gt;
+&lt;li&gt;white&lt;/li&gt;
+&lt;li&gt;如果 p 是一个属于 rgb 的 constructor expression，那么 primary p 就是属于 color 的 constructor expression。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;我们仍然可以用 pattern matching 的方式来定义函数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition isred (c : color) : bool :=
+  match c with
+  | black =&amp;gt; false
+  | white =&amp;gt; false
+  | pattern red =&amp;gt; true
+  | pattern _ =&amp;gt; false
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里出现了一个新用法：wildcard pattern &lt;code&gt;_&lt;/code&gt; 是通配符，在这里可以匹配所有不是 red 的其他情形。&lt;/p&gt;
+&lt;h3 id=&#34;module&#34;&gt;Module&lt;/h3&gt;
+&lt;p&gt;Coq 提供一套 module system：如果我们将一个定义 &lt;code&gt;foo&lt;/code&gt; 包含在了 &lt;code&gt;Module X&lt;/code&gt; 和 &lt;code&gt;End X&lt;/code&gt; 之间，那么在模块外我们想要使用 &lt;code&gt;foo&lt;/code&gt; 时就要写成 &lt;code&gt;X.foo&lt;/code&gt; 而不是直接 &lt;code&gt;foo&lt;/code&gt;。module system 让我们可以不用太担心名字重复的问题。&lt;/p&gt;
+&lt;h3 id=&#34;tuples&#34;&gt;Tuples&lt;/h3&gt;
+&lt;p&gt;一个拥有多个参数的 constructor 可以用来表示 tuple，下面的例子展示了一个 nybble (half byte) 类型：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive bit : Type :=
+  | B0
+  | B1
+
+Inductive nybble: Type :=
+  | bits (b0, b1, b2, b3 : bit).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;同样地我们可以使用 pattern matching 的方式书写函数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition all_zero (nb : nybble) : bool :=	
+  match nb with:
+  | (bits B0 B0 B0 B0) =&amp;gt; true
+  | (bits _ _ _ _	) =&amp;gt; false
+  end.
+  
+Compute (all_zero(bits B1 B0 B1 B0))
+(* ===&amp;gt; false : bool *)
+Compute (all_zero(bits B0 B0 B0 B0))
+(* ===&amp;gt; true : bool *)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;numbers&#34;&gt;Numbers&lt;/h3&gt;
+&lt;p&gt;之前我们定义的 type 都是有穷集合，而自然数集是一个无穷集合，因此我们在这里使用归纳的方法，根据自然数在朴素集合论中的定义方式给出自然数的定义：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive nat : Type :=
+  | O
+  | S (n : nat).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;该定义的意思是：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;O&lt;/code&gt; 是一个属于 nat 集合的 constructor expression。&lt;/li&gt;
+&lt;li&gt;如果 &lt;code&gt;n&lt;/code&gt; 是一个属于 nat 集合的 constructor expression，那么 &lt;code&gt;S n&lt;/code&gt; 也属于 nat 集合。&lt;/li&gt;
+&lt;li&gt;除了以上两条，没有别的 constructor expression 在 nat 集合中。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;值得注意的是：这里的 &lt;code&gt;O&lt;/code&gt; 和 &lt;code&gt;S&lt;/code&gt; 没有任何实际的含义，我们可以用任意别的字符/单词来替换它们。&lt;/p&gt;
+&lt;p&gt;下面展示两个函数：&lt;code&gt;pred&lt;/code&gt; 和 &lt;code&gt;minustwo&lt;/code&gt;，值得学习的是其中 pattern matching 的方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition pred (n : nat) : nat :=
+  match n with:
+  | O =&amp;gt; O
+  | S n&#39; =&amp;gt; n&#39;
+  end.
+
+Definition minustwo (n : nat) : nat :=
+  match n with:
+  | O =&amp;gt; O
+  | S O =&amp;gt; O
+  | S (S n&#39;) =&amp;gt; n&#39;
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;由于自然数是一种非常普遍的数据类型，所以 Coq 内置了一些解析和打印自然数的小魔法：&lt;code&gt;O&lt;/code&gt; 会被输出为 0，&lt;code&gt;S O&lt;/code&gt; 会被输出为 1，依次类推。此外我们给函数传递参数的时候也可以直接使用阿拉伯数字而不是形式化的 &lt;code&gt;S ... S O&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Compute (minustwo 4).
+(* ===&amp;gt; 2 : nat *)
+Check (S (S (S (S O)))).
+(* ===&amp;gt; 4 : nat *)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们在定义自然数时使用的 constructor S 和函数 &lt;code&gt;pred&lt;/code&gt; &lt;code&gt;minustwo&lt;/code&gt; 在类型上是一样的，&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Check S : nat -&amp;gt; nat.
+Check pred : nat -&amp;gt; nat.
+Check minustwo : nat -&amp;gt; nat.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但 &lt;code&gt;S&lt;/code&gt; 和其他两者有着本质的区别：&lt;code&gt;pred&lt;/code&gt; 和 &lt;code&gt;minustwo&lt;/code&gt; 是通过计算规则的方式定义的，例如 &lt;code&gt;pred 4&lt;/code&gt; 和 3 没有本质区别；但 &lt;code&gt;S&lt;/code&gt; 只是一个表示数的方式，正如十进制用 0~9 这 10 个字符表示数字一样，在我们的归纳系统中我们使用 S 和 O 这两个字符表示数字，S 本身不包含任何的计算功能。&lt;/p&gt;
+&lt;p&gt;接下来我们考虑一些更加复杂的关于 number 的函数。例如判断一个数是否是偶数：对于这个问题我们无法通过 pattern matching 的方法直接给出答案，因为偶数有无穷多个。我们只能使用递归的方式：首先规定 O 是偶数，然后对于整数 n 不断 -2 来判断奇偶性。这类需要使用递归的函数应当使用 &lt;code&gt;Fixpoint&lt;/code&gt; 而不是 &lt;code&gt;Definition&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint even (n : nat) : bool :=
+  match n with
+  | O =&amp;gt; true
+  | S O =&amp;gt; false
+  | S (S n&#39;) =&amp;gt; even n&#39;
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下面我们来定义加法，这是一个多参数的函数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint plus (n : nat) (m : nat) : nat :=
+  match n with
+  | O =&amp;gt; m
+  | S n&#39; =&amp;gt; S (plus n&#39; m)
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;加法的归纳思路十分巧妙，将第一个加数的 S 施加到结果上，直到第一个加数为 0。下面是 Coq 计算 &lt;code&gt;plus 2 3&lt;/code&gt; 的化简流程：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;(*      [plus 3 2]
+   i.e. [plus (S (S (S O))) (S (S O))]
+    ==&amp;gt; [S (plus (S (S O)) (S (S O)))]
+          by the second clause of the [match]
+    ==&amp;gt; [S (S (plus (S O) (S (S O))))]
+          by the second clause of the [match]
+    ==&amp;gt; [S (S (S (plus O (S (S O)))))]
+          by the second clause of the [match]
+    ==&amp;gt; [S (S (S (S (S O))))]
+          by the first clause of the [match]
+   i.e. [5]  *)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;函数的多个参数如果类型一样也可以合并了写，例如下面的这个减法的例子&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint minus (n m : nat) : nat :=
+  match n, m with
+  | O   , _ =&amp;gt; O
+  | _   , O =&amp;gt; n
+  | S n&#39;, S m&#39; =&amp;gt; minus n&#39;, m&#39;
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个减法的思路也十分巧妙：不断将被减数和减数同时减少，直到有一个是 0 为止。&lt;/p&gt;
+&lt;p&gt;我们可以为加法、减法、乘法 (代码省略) 添加符号：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Notation &amp;quot;x + y&amp;quot; := (plus x y) (at level 50, left associativity) : nat_scope.
+Notation &amp;quot;x - y&amp;quot; := (minus x y) (at level 50, left associativity) : nat_scope.
+Notation &amp;quot;x * y&amp;quot; := (mult x y) (at level 40, left associativity) : nat_scope.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;More about Notations&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这里出现了三个新的内容：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;level 后面可以跟一个 0~100 的数值，这个数值规定了该运算的优先级，数字越小优先级越大。上面的例子中 + 和 - 优先级相同，乘法优先级更高，因此 &lt;code&gt;a + b * c&lt;/code&gt; 等价于 &lt;code&gt;a + (b * c)&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;associativity 有 left, right, no 三种，描述了该符号的结合性。例如 + 是左结合的意味着 &lt;code&gt;a + b + c&lt;/code&gt; 等价于 &lt;code&gt;(a + b) + c&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;每个符号有其 notation scope。Coq 的解释器会根据上下文自动分析符号的作用域。比如在 &lt;code&gt;S(0x0)&lt;/code&gt; 中 &lt;code&gt;x&lt;/code&gt; 会被认定为 nat_scope，而在 &lt;code&gt;bool x bool&lt;/code&gt; 中 &lt;code&gt;x&lt;/code&gt; 就会被认定为 type_scope。有些情况下我们需要显式地帮助 Coq 解释器确定 scope，我们可以使用 &lt;code&gt;%&lt;/code&gt; 语法：例如 &lt;code&gt;(x+y)%nat&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;除了符号有 notation scope，数字也可以指定 scope，例如 &lt;code&gt;0%nat&lt;/code&gt; 和 &lt;code&gt;0%Z&lt;/code&gt; 一个是自然数 0，一个是整数 0，它们来自不同的标准库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;接下来再展示一个给两个数比大小的函数 (在 Coq 中，一切都得自己定义)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint leb (n m : nat) : bool :=
+  match n with
+  | O =&amp;gt; true
+  | S n&#39; =&amp;gt;
+      match m with
+      | O =&amp;gt; false
+      | S m&#39; =&amp;gt; leb n&#39; m&#39;
+      end
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当然，我们也可以用像减法那样的语法，这里主要想展示的是 match 的嵌套使用。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Notation &amp;quot;x =? y&amp;quot; := (eqb x y) (at level 70) : nat_scope.
+Notation &amp;quot;x &amp;lt;=? y&amp;quot; := (leb x y) (at level 70) : nat_scope.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里区分一下 &lt;code&gt;=&lt;/code&gt; 和 &lt;code&gt;=?&lt;/code&gt; ：&lt;code&gt;x = y&lt;/code&gt; 是一个命题 (proposition)，给出这样一个 claim 是需要证明的；而 &lt;code&gt;x =? y&lt;/code&gt; 是一个表达式，可以直接计算出 true/false。&lt;/p&gt;
+&lt;h2 id=&#34;proof-by-simplification&#34;&gt;Proof by Simplification&lt;/h2&gt;
+&lt;p&gt;我们已经有了一系列定义和函数，接下来我们可以证明一些定理。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem plus_O_n: forall n : nat, 0 + n = n.
+Proof.
+  intros n.
+  simpl. reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们对定理和证明中的一些元素做一点说明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 Coq 中，&lt;code&gt;Example&lt;/code&gt; &lt;code&gt;Theorem&lt;/code&gt; &lt;code&gt;Lemma&lt;/code&gt; &lt;code&gt;Fact&lt;/code&gt; &lt;code&gt;Remark&lt;/code&gt; 没有本质区别。&lt;/li&gt;
+&lt;li&gt;在定理中我们使用了全称量词 &lt;code&gt;forall&lt;/code&gt;。联想人类在证明的时候，我们对于这类定理通常会写下“对于任意自然数n&amp;hellip;” 从而在接下来的证明中把 n 当作一个“具体”的数使用。在 Coq 中我们可以通过 &lt;code&gt;intros&lt;/code&gt; 来完成这一步骤。值得注意的是这里 &lt;code&gt;intros&lt;/code&gt; 后面其实可以使用任意符号，不一定要和命题中的 n 保持一致。&lt;/li&gt;
+&lt;li&gt;在本证明以及上面的所有证明中，用于化简的 &lt;code&gt;simpl&lt;/code&gt; 其实都是不需要的，因为 &lt;code&gt;reflexivity&lt;/code&gt; 自带了化简功能，这里有意显式地写出 &lt;code&gt;simpl&lt;/code&gt; 是为了能更好地看到证明化简的中间过程。值得一提的是 &lt;code&gt;reflexivity&lt;/code&gt; 的化简功能比 &lt;code&gt;simpl&lt;/code&gt; 更强大：它还可以将复杂定义展开。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这里的关键词 &lt;code&gt;intros&lt;/code&gt; &lt;code&gt;simpl&lt;/code&gt; &lt;code&gt;reflexivity&lt;/code&gt; 都是 tactic。tactic 指的是证明过程中用于推进证明过程，检验结果正确的一些命令。&lt;/p&gt;
+&lt;h2 id=&#34;proof-by-rewriting&#34;&gt;Proof by Rewriting&lt;/h2&gt;
+&lt;p&gt;下面的这个定理比之前的要更加复杂和有趣一些：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem plus_id_example : forall n m : nat,
+  n = m -&amp;gt; 
+  n + n = m + m
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个定理中出现了蕴含关系符。由于 n 和 m 都是任意整数，我们无法直接通过简单的化简来证明最后的等式。但我们注意到在 &lt;code&gt;n = m&lt;/code&gt; 的假设下我们可以将等式中的 n 都用 m 来代替。在 Coq 中 &lt;code&gt;rewrite&lt;/code&gt; 这个 tactic 负责进行这种替换。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Proof.
+  intros n m.
+  intros H.
+  rewrite -&amp;gt; H.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二行的 &lt;code&gt;intros H&lt;/code&gt; 表示我们将 &lt;code&gt;n = m&lt;/code&gt; 这条假设加入到上下文中，并给其命名为 H。第三条语句表示利用假设 H 将目标中的等式左侧的内容替换成等式右侧的内容。&lt;code&gt;rewrite&lt;/code&gt; 中的 &lt;code&gt;-&amp;gt;&lt;/code&gt; 表示用 RHS 替换 LHS，如果写成 &lt;code&gt;&amp;lt;-&lt;/code&gt; 则是用 LHS 替换 RHS。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Check&lt;/code&gt; 命令不仅可以检查类型，还可以打印一个定理的内容。下面两个定理是在标准库中证明过的：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Check mult_n_O.
+(* ===&amp;gt; forall n : nat, 0 = n * 0 *)
+Check mult_n_Sm.
+(* ===&amp;gt; forall n m : nat, n * m + n = n * S m *)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;rewrite&lt;/code&gt; tactic 除了可以利用命题中的假设等式进行替换，还可以利用已经证明的定理进行替换，例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem mult_n_0_m_0 : forall p q : nat,
+  (p * 0) + (q * 0) = 0.
+Proof.
+  intros p q.
+  rewrite &amp;lt;- mult_n_O.
+  rewrite &amp;lt;- mult_n_O.
+  reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;证明中连续两次利用 &lt;code&gt;mult_n_O&lt;/code&gt; 定理进行替换，每次执行替换时 Coq 的解释器会自动在目标等式中寻找定理的 instance。&lt;/p&gt;
+&lt;h2 id=&#34;proof-by-case-analysis&#34;&gt;Proof by Case Analysis&lt;/h2&gt;
+&lt;p&gt;有的时候我们不得不分情况讨论。这里首先给出一个分情况讨论的证明过程的例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem negb_involutive : forall b : bool,
+  negb (negb b) = b.
+Proof.
+  intros b. destruct b eqn:E
+  - reflexivity.
+  - reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;命题中的 &lt;code&gt;b&lt;/code&gt; 由于是一个不确定的变量，无法直接化简，我们需要分情况讨论 &lt;code&gt;b = true&lt;/code&gt; 和 &lt;code&gt;b = false&lt;/code&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;destruct&lt;/code&gt; 这个 tactic 用于分类讨论，它可以针对所有 inductively 定义的数据类型使用。使用 &lt;code&gt;destruct&lt;/code&gt; 相当于分别将 b 看作它定义中的第一，第二……个 constructor，作出 assumption 并创建若干个 subgoal。这里对于 bool 类型相当于分别假设 &lt;code&gt;b = true&lt;/code&gt; 和 &lt;code&gt;b = false&lt;/code&gt;。作出假设后，&lt;code&gt;destruct&lt;/code&gt; 会顺手把假设的内容 &amp;ldquo;rewrite&amp;rdquo; 进去。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;eqn:E&lt;/code&gt; 负责给做出的假设命名，之后可以通过 &lt;code&gt;E&lt;/code&gt; 来使用这个假设。这一步不是必要的，但这是一个好的习惯。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-&lt;/code&gt; 称为 bullet，负责划分各个 subgoal 的证明过程。bullet 不是必要的，如果省略，Coq 会将你的按照 subgoal 的顺序将你的证明过程一一代入。但使用 bullet 会使你的证明过程结构更清晰、更可读。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;下面是一个稍复杂的例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem plus_1_neq_0_firsttry : forall n : nat,
+  (n + 1) =? 0 = false.
+Proof.
+  intros n.
+  simpl. (* does nothing! *)
+Abort.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们直接使用 &lt;code&gt;simpl&lt;/code&gt; 无法化简这个式子。这里值的注意的一点是：如果我们要证明的命题是 &lt;code&gt;(1 + n) =? 0 = false&lt;/code&gt;，那么 &lt;code&gt;simpl&lt;/code&gt; 就管用了，因为 &lt;code&gt;1 + n &lt;/code&gt; 会被计算成 &lt;code&gt;S n&lt;/code&gt;，&lt;code&gt;S n =? 0&lt;/code&gt; 可以直接判定为 false。这里无法计算是因为我们定义的加法是针对第一个参数进行递归的，而第一个参数是一个无法确定具体值的 &lt;code&gt;n&lt;/code&gt;，所以 &lt;code&gt;simpl&lt;/code&gt; 无法化简。&lt;/p&gt;
+&lt;p&gt;我们分类讨论的策略是看 &lt;code&gt;n&lt;/code&gt; 是 &lt;code&gt;O&lt;/code&gt; 还是 &lt;code&gt;S n&#39;&lt;/code&gt;。这里给出证明过程：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem plus_1_neg_0 : forall n : nat,
+  (n + 1) ?= 0 = false.
+Proof.
+  intros n. destruct n as [| n&#39;] eqn:E.
+  - reflexivity.
+  - reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里新出现了 &lt;code&gt;[| n&#39;]&lt;/code&gt;。和上一个例子不同，自然数的定义的第二个 constructor 是带参数的，因此我们要用一对中括号 &lt;code&gt;[]&lt;/code&gt; 给出每一个 constructor 的参数列表，不同 constructor 的参数列表之间用 &lt;code&gt;|&lt;/code&gt; 隔开 (自然数的第一个 constructor 是 &lt;code&gt;O&lt;/code&gt; 没有参数，因此 &lt;code&gt;|&lt;/code&gt; 左边留空)。如果没有用 &lt;code&gt;[]&lt;/code&gt; 显式地说明参数的名称，Coq 会自动分配参数名，但自动分配的参数名可能会很奇怪，从而影响后续的证明。&lt;/p&gt;
+&lt;p&gt;分类讨论可以嵌套进行，例如下面的证明 and 运算满足交换律的过程：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem andb_commutative: forall b c : bool, andb b c = andb c b.
+Proof.
+  intros b c. destruct b eqn Eb.
+  - destruct c eqn:Ec.
+    + reflexivity.
+    + reflexivity.
+  - destruct c eqn:Ec.
+    + reflexivity.
+    + reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;不同层级必须使用不同的 bullet。可以使用的 bullet 有 &lt;code&gt;-&lt;/code&gt; &lt;code&gt;+&lt;/code&gt; &lt;code&gt;*&lt;/code&gt; 以及它们的重复版本 (如 &lt;code&gt;--&lt;/code&gt; &lt;code&gt;***&lt;/code&gt; 等)。除了 bullet 我们还可以使用大括号来框出证明的层次，大括号是可以嵌套的，例如&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;{ destruct c eqn:Ec.
+  { reflexivity. }
+  { reflexivity. } }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;大括号和 bullet 还可以混合使用：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;{ destruct c eqn:Ec.
+  - reflexivity.
+  - reflexivity. }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;很多时候我们使用完 &lt;code&gt;intros&lt;/code&gt; 后立刻就要开始分情况讨论，Coq 为我们准备了更加紧凑方便的语法。下面是两个例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem plus_1_neq_0&#39; : forall n : nat,
+  (n + 1) =? 0  = false.
+Proof.
+  intros [|n].
+  - reflexivity.
+  - refiexivity.
+Qed.
+
+Theorem andb_commutative&#39;&#39;: forall b c : nat, andb b c = andb c b.
+Proof.
+  intros [] [].
+  - reflexivity.
+  - reflexivity.
+  - reflexivity.
+  - reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这种简洁语法的缺点在于我们无法给分情况讨论时做出的假设等式命名 (即 &lt;code&gt;eqn:E&lt;/code&gt; 的部分)。&lt;/p&gt;
+&lt;h2 id=&#34;fixpoints-and-structural-recursion-optional&#34;&gt;Fixpoints and Structural Recursion (Optional)&lt;/h2&gt;
+&lt;p&gt;回想加法的定义，我们对第一个加数不断 -1 递归。这样的结构递归保证了我们的参数会越来越小，因此不论输入什么参数计算都一定可以终止。&lt;/p&gt;
+&lt;p&gt;Coq 要求所有 Fixpoint 类型的函数的参数都要不断变小，从而保证函数一定可以终止。事实上，有的时候存在一些可以终止的合法函数不满足这个性质 (比如如果我们以 5 和 6 为基准定义偶数，那么 0, 1, 2, 3, 4 就得往上加，从而 Coq 报错)。&lt;/p&gt;
+&lt;h2 id=&#34;exercises&#34;&gt;Exercises&lt;/h2&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-nandb&#34;&gt;Exercise: 1 star, standard (nandb)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition nandb (b1:bool) (b2:bool) : bool :=
+  match b1, b2 with
+  | true, true =&amp;gt; false
+  | true, false =&amp;gt; true
+  | false, true =&amp;gt; true
+  | false, false =&amp;gt; true
+  end.
+
+Example test_nandb1:               (nandb true false) = true.
+Proof. simpl. reflexivity. Qed. 
+Example test_nandb2:               (nandb false false) = true.
+Proof. simpl. reflexivity. Qed.
+Example test_nandb3:               (nandb false true) = true.
+Proof. simpl. reflexivity. Qed.
+Example test_nandb4:               (nandb true true) = false.
+Proof. simpl. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-andb3&#34;&gt;Exercise: 1 star, standard (andb3)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition andb3 (b1:bool) (b2:bool) (b3:bool) : bool :=
+  (b1 &amp;amp;&amp;amp; b2) &amp;amp;&amp;amp; b3.
+
+Example test_andb31:                 (andb3 true true true) = true.
+Proof. reflexivity. Qed.
+Example test_andb32:                 (andb3 false true true) = false.
+Proof. reflexivity. Qed.
+Example test_andb33:                 (andb3 true false true) = false.
+Proof. reflexivity. Qed.
+Example test_andb34:                 (andb3 true true false) = false.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注：如果 definition 中没有使用 match 语法，则证明过程中使用 &lt;code&gt;simpl.&lt;/code&gt; 并不能简化证明过程，这时直接使用 &lt;code&gt;reflexivity.&lt;/code&gt; 即可。&lt;/p&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-factorial&#34;&gt;Exercise: 1 star, standard (factorial)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint factorial (n : nat) : nat :=
+  match n with
+  | O =&amp;gt; S O
+  | S n&#39; =&amp;gt; mult n (factorial n&#39;)
+  end.
+
+Example test_factorial1:          (factorial 3) = 6.
+Proof. simpl. reflexivity. Qed.
+Example test_factorial2:          (factorial 5) = (mult 10 12).
+Proof. simpl. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-ltb&#34;&gt;Exercise: 1 star, standard (ltb)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition ltb (n m : nat) : bool :=
+  negb (m &amp;lt;=? n).
+
+Notation &amp;quot;x &amp;lt;? y&amp;quot; := (ltb x y) (at level 70) : nat_scope.
+
+Example test_ltb1:             (ltb 2 2) = false.
+Proof. reflexivity. Qed.
+Example test_ltb2:             (ltb 2 4) = true.
+Proof. reflexivity. Qed.
+Example test_ltb3:             (ltb 4 2) = false.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-plus_id_exercise&#34;&gt;Exercise: 1 star, standard (plus_id_exercise)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem plus_id_exercise : forall n m o : nat,
+  n = m -&amp;gt; m = o -&amp;gt; n + m = m + o.
+Proof.
+  intros n m o.
+  intros H1.
+  intros H2.
+  rewrite -&amp;gt; H1.
+  rewrite -&amp;gt; H2.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里需要注意第一条假设使用时的替换方向：如果反过来把等式中的 m 用 n 代替，由于没有 n 和 o 的直接关系，证明就被卡住了。&lt;/p&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-mult_n_1&#34;&gt;Exercise: 1 star, standard (mult_n_1)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem mult_n_1 : forall p : nat,
+  p * 1 = p.
+Proof.
+  intros p.
+  rewrite &amp;lt;- mult_n_Sm.
+  rewrite &amp;lt;- mult_n_O.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-2-stars-standard-andb_true_elim2&#34;&gt;Exercise: 2 stars, standard (andb_true_elim2)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem andb_true_elim2 : forall b c : bool,
+  andb b c = true -&amp;gt; c = true.
+Proof.
+  intros b c. destruct c eqn:Ec.
+  - reflexivity.
+  - destruct b eqn:Eb.
+    + intros H.
+      rewrite &amp;lt;- H.
+      reflexivity.
+    + intros H.
+      rewrite &amp;lt;- H.
+      reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;本题的一个有意思的点在于如何处理 contradiction：我们对 c 分情况讨论的时候会发现如果 &lt;code&gt;c = false&lt;/code&gt; 那么假设条件不可能成立，会导出 &lt;code&gt;false = true&lt;/code&gt;。对于人类来说这就已经结束了，但在 Coq 中我们需要利用这条规则继续做 rewrite (&lt;code&gt;false = true&lt;/code&gt; 的情况下天地大同了)，直到导出等式两边相等。&lt;/p&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-zero_nbeq_plus_1&#34;&gt;Exercise: 1 star, standard (zero_nbeq_plus_1)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem zero_nbeq_plus_1 : forall n : nat,
+  0 =? (n + 1) = false.
+Proof.
+  intros [|n&#39;].
+  - reflexivity.
+  - reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里值得一提的是为何在 &lt;code&gt;n = S n&#39;&lt;/code&gt; 时 reflexivity 可以直接算出结果。此时我们的 subgoal 是证明 &lt;code&gt;0 =? (S n&#39; + 1) = false&lt;/code&gt;。根据加法的第二条规则，我们有 &lt;code&gt;S n&#39; + 1 = S (n&#39; + 1)&lt;/code&gt;。根据 &lt;code&gt;=?&lt;/code&gt; 的规则又有第一个参数为 0 第二个参数满足 &lt;code&gt;S n&lt;/code&gt; 形式时可以直接判定为 false。因此 &lt;code&gt;false = false&lt;/code&gt; 就证出来了。&lt;/p&gt;
+&lt;h3 id=&#34;exercise-2-stars-standard-optional-decreasing&#34;&gt;Exercise: 2 stars, standard, optional (decreasing)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt; Fixpoint error_func (n : nat) : nat :=
+  match n with
+  | O =&amp;gt; error_func (S n)
+  | S O =&amp;gt; S O
+  | S n&#39; =&amp;gt; S (error_func n&#39;)
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-identity_fn_applied_twice&#34;&gt;Exercise: 1 star, standard (identity_fn_applied_twice)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem identity_fn_applied_twice :
+  forall (f : bool -&amp;gt; bool),
+  (forall (x : bool), f x = x) -&amp;gt;
+  forall (b : bool), f (f b) = b.
+Proof.
+  intros f.
+  intros H.
+  intros b.
+  rewrite -&amp;gt; H.
+  rewrite -&amp;gt; H.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-negation_fn_applied_twice&#34;&gt;Exercise: 1 star, standard (negation_fn_applied_twice)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem negation_fn_applied_twice :
+  forall (f : bool -&amp;gt; bool),
+  (forall (x : bool), f x = negb x) -&amp;gt;
+  forall (b : bool), f (f b) = b.
+Proof.
+  intros f H b.
+  rewrite -&amp;gt; H.
+  rewrite -&amp;gt; H.
+  destruct b eqn:E.
+  - reflexivity.
+  - reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-optional-andb_eq_orb&#34;&gt;Exercise: 3 stars, standard, optional (andb_eq_orb)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem andb_eq_orb :
+  forall (b c : bool),
+  (andb b c = orb b c) -&amp;gt;
+  b = c.
+Proof.
+  intros [].
+  - simpl.
+    intros c H.
+    rewrite -&amp;gt; H.
+    reflexivity.
+  - simpl.
+    intros c H.
+    rewrite &amp;lt;- H.
+    reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;本题最暴力的做法就是对 b, c 的四种情况分类讨论。但这样不是很聪明，根据 &lt;code&gt;andb&lt;/code&gt; 和 &lt;code&gt;orb&lt;/code&gt; 的定义，一旦 b 的值确定，表达式的结果是可以用 true, false, c 来表示的，因此我们只要对 b 讨论就可以直接得出 c 的值，这样做简洁很多。&lt;/p&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-binary&#34;&gt;Exercise: 3 stars, standard (binary)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint incr (m:bin) : bin :=
+  match m with
+  | Z =&amp;gt; B1 Z
+  | B0 m&#39; =&amp;gt; B1 m&#39;
+  | B1 m&#39; =&amp;gt; B0 (incr m&#39;)
+  end.
+
+Fixpoint bin_to_nat (m : bin) : nat := 
+  match m with
+  | Z =&amp;gt; O
+  | B0 m&#39; =&amp;gt; (bin_to_nat m&#39;) * 2
+  | B1 m&#39; =&amp;gt; (bin_to_nat m&#39;) * 2 + 1
+  end.
+
+Example test_bin_incr1 : (incr (B1 Z)) = B0 (B1 Z).
+Proof. reflexivity. Qed.
+
+Example test_bin_incr2 : (incr (B0 (B1 Z))) = B1 (B1 Z).
+Proof. reflexivity. Qed.
+
+Example test_bin_incr3 : (incr (B1 (B1 Z))) = B0 (B0 (B1 Z)).
+Proof. reflexivity. Qed.
+
+Example test_bin_incr4 : bin_to_nat (B0 (B1 Z)) = 2.
+Proof. reflexivity. Qed.
+
+Example test_bin_incr5 :
+        bin_to_nat (incr (B1 Z)) = 1 + bin_to_nat (B1 Z).
+Proof. reflexivity. Qed.
+
+Example test_bin_incr6 :
+        bin_to_nat (incr (incr (B1 Z))) = 2 + bin_to_nat (B1 Z).
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

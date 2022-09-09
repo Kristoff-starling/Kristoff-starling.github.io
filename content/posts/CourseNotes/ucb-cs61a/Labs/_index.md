@@ -5,6 +5,7 @@ weight: 1
 title: "Labs"
 draft: false
 type: docs
+summary: Labs include WWPD problems which focus on student's understanding of Python execution procedure and coding prlblems which focus on student's programming skills.
 
 menu:
     cs61a-lab:
@@ -21,3 +22,4 @@ view: 3
 * Lab 04: Recursion, Tree Recursion, Python Lists
 * Lab 05: Python Lists, Trees
 * Lab 06: Mutability and Iterators
+* Lab 07: Object-Oriented Programming

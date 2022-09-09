@@ -102,7 +102,7 @@ def two(f):
     </item>
     
     <item>
-      <title>UCB-CS61a Homework 04: Data Abstraction, Trees</title>
+      <title>UCB-CS61A Homework 04: Data Abstraction, Trees</title>
       <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw04/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw04/</guid>
@@ -111,6 +111,15 @@ def two(f):
 &lt;li&gt;和树相关的操作使用递归可以让代码变得简洁。&lt;/li&gt;
 &lt;li&gt;注意 data abstraction，不要越层使用 API。&lt;/li&gt;
 &lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>UCB-CS61A Homework 05: Iterators and Generators</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw05/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/homework/hw05/</guid>
+      <description>&lt;p&gt;没有值的特别注意的题目。递归地使用 generator function 是一个难点，但只要掌握了普通就可以进行类比。&lt;/p&gt;
 </description>
     </item>
     

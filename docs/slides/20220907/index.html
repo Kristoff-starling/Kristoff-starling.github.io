@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  
+  
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/slides/20220907/">
+
+  <title>Slides | Academic</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/css/reveal.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/css/theme/serif.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous">
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/reveal_custom.min.css">
+
+  
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/css/print/pdf.css' : 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+
+</head>
+<body>
+
+  
+<div class="reveal">
+  <div class="slides">
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    <section>
+    
+      <h2 id="atheris-automation">Atheris Automation</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h2 id="methodology">Methodology</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<ul>
+<li>Use FreeFuzz&rsquo;s tests as templates</li>
+<li>Substitute concrete values with appropriate functions
+<pre><code class="language-python">arg_1 = 56          --&gt; arg_1 = fh.get_int()
+arg_1 = [-1.0, 6.0] --&gt; arg_1 = fh.get_float_list()
+padding = 'VALID'   --&gt; padding = fh.get_string(type=padding)
+</code></pre>
+</li>
+<li>An Example:
+<pre><code class="language-python">def TestOneInput(data):
+    fh = FuzzingHelper(data)
+    arg_0_tensor = fh.get_random_tensor(
+        shape=None,
+        dtype_set=[tf.float16, tf.float32, tf.float64, 
+                   tf.int32, tf.int64],
+        min_size=1,
+        max_size=8)
+    arg_0 = tf.identity(arg_0_tensor)
+    dtype = tf.float16
+    _ = tf.cast(arg_0,dtype=dtype,)
+</code></pre>
+</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<p align=left>Issue: lots of APIs contains hidden specifications.</p>
+<p align=left>Example: tf.nn.conv2d()</p>
+<ul>
+<li>Specification:
+<ul>
+<li>The input tensor may have rank 4 or higher.</li>
+<li><code>padding</code> should be in <code>{'VALID', 'SAME'}</code></li>
+</ul>
+</li>
+<li>A dummy test such as
+<pre><code class="language-python">arg_0 = fh.get_random_tensor()
+arg_1 = fh.get_random_tensor()
+strides = fh.get_int()
+padding = fh.get_string()
+_ = tf.nn.conv2d(arg_0,arg_1,strides=strides,padding=padding,)
+</code></pre>
+will fail.</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<p align=left>Solution: use FreeFuzz to find specifications through trials and errors.</p>
+<p align=left>Example:</p>
+<ul>
+<li>Goal: Identify whether the API accepts negative inputs.</li>
+<li>Steps:
+<ul>
+<li>Obtain a valid FreeFuzz test.</li>
+<li>Substitute the argument with &ldquo;-1&rdquo;.</li>
+<li>Execute the modified tests and try to catch exceptions.</li>
+</ul>
+</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<ul>
+<li><code>int/float</code>: value range</li>
+<li><code>int/float</code> list: length, negative value</li>
+<li><code>string</code>: special names (reduction/padding/activation/channel)</li>
+<li>Tensor: dtype, shape(length, value range)</li>
+</ul>
+<p align=left>Sometimes, two lists/tensors are required to have the same length/dimension. In this situation, we analyze the structure of an invocation and try to add restrictions on arguments on the same level.
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h2 id="results">Results</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="success-rate">Success Rate</h3>
+<p align=left>(Here success means that the test terminates without "InvalidArgument" errors.)</p>
+<ul>
+<li>Before specification learning: &lt;50%</li>
+<li>After specification learning: 478/533, 89.6%</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="coverage">Coverage</h3>
+<p align=left>5 untrivial APIs were selected for coverage test:</p>
+<ul>
+<li><code>tf.random.stateless_parameterized_truncated_normal</code></li>
+<li><code>tf.optimizers.schedules.ExponentialDecay</code></li>
+<li><code>tf.keras.layers.SpatialDropout3D</code></li>
+<li><code>tf.keras.layers.Convolution3DTranspose</code></li>
+<li><code>tf.keras.initializers.LecunNormal</code></li>
+</ul>
+<p align=left>150 tests were generated for each API</p>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="coverage-1">Coverage</h3>
+<p align=left>The dummy test</p>
+<pre><code class="language-python">import tensorflow as tf
+</code></pre>
+<p align=left>covers 70005 lines. Besides that,</p>
+<ul>
+<li>FreeFuzz&rsquo;s tests cover 1151 lines.</li>
+<li>Atheris&rsquo;s tests cover 1040 lines.</li>
+<li>1038 of which are common.</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="current-problems">Current Problems</h3>
+<ul>
+<li>We cannot learn complicated specifications through simple experiments.
+<ul>
+<li>FreeFuzz itself is not very stable: some tests rely on random seeds to run normally.</li>
+</ul>
+</li>
+<li>We haven&rsquo;t found bugs through these tests.
+<ul>
+<li>Some OOM bugs have been caught but it seems that they are false positive bugs due to my local machine limitations.</li>
+</ul>
+</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+  </div>
+</div>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/js/reveal.min.js"></script>
+
+  <script>
+    window.revealPlugins = { dependencies: [
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/zoom-js/zoom.js', async: true },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/math/math.js', async: true },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/print-pdf/print-pdf.js', async: true },
+      
+      { src: '\/js\/vendor\/reveal.js\/plugin\/notes\/notes.js', async: true }
+    ]};
+
+    let revealDefaults = { center: true, controls: true, history: true, progress: true, transition: 'slide', mouseWheel: true };
+    let revealOptions = Object.assign({}, revealDefaults, revealPlugins);
+    Reveal.initialize(revealOptions);
+  </script>
+
+</body>
+</html>
