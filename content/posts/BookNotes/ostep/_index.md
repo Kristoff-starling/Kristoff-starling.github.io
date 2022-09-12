@@ -6,6 +6,8 @@ title: "Operating Systems: Three Easy Pieces"
 draft: false
 type: docs
 
+summary: "The book is centered around three conceptual pieces that are fundamental to operating systems: virtualization, concurrency, and persistence. In understanding the conceptual, you will also learn the practical, including how an operating system does things like schedule the CPU, manage memory, and store files persistently."
+
 menu:
     ostep:
         name: Overview
