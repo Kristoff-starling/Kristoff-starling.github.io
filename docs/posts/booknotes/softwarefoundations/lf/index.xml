@@ -1132,5 +1132,674 @@ Qed.
 </description>
     </item>
     
+    <item>
+      <title>Woring with Structured Data</title>
+      <link>https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/lists/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/lists/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#pairs-of-numbers&#34;&gt;Pairs of Numbers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#lists-of-numbers&#34;&gt;Lists of Numbers&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#repeat&#34;&gt;Repeat&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#length&#34;&gt;Length&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#append&#34;&gt;Append&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#head-ant-tail&#34;&gt;Head ant Tail&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#bags-via-lists&#34;&gt;Bags via Lists&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#reasoning-about-lists&#34;&gt;Reasoning About Lists&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#induction-on-lists&#34;&gt;Induction on Lists&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#reversing-a-list&#34;&gt;Reversing a List&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#search&#34;&gt;Search&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#options&#34;&gt;Options&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#partial-maps&#34;&gt;Partial Maps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercises&#34;&gt;Exercises&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-snd_fst_is_swap&#34;&gt;Exercise: 1 star, standard (snd_fst_is_swap)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-optional-fst_swap_is_snd&#34;&gt;Exercise: 1 star, standard, optional (fst_swap_is_snd)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-especially-useful-list_funs&#34;&gt;Exercise: 2 stars, standard, especially useful (list_funs)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-advanced-alternate&#34;&gt;Exercise: 3 stars, advanced (alternate)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-especially-useful-bag_functions&#34;&gt;Exercise: 3 stars, standard, especially useful (bag_functions)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-optional-bag_more_functions&#34;&gt;Exercise: 3 stars, standard, optional (bag_more_functions)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-especially-useful-add_inc_count&#34;&gt;Exercise: 2 stars, standard, especially useful (add_inc_count)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-list_exercises&#34;&gt;Exercise: 3 stars, standard (list_exercises)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-eqblist&#34;&gt;Exercise: 2 stars, standard (eqblist)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-count_member_nonzero&#34;&gt;Exercise: 1 star, standard (count_member_nonzero)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-advanced-remove_does_not_increase_count&#34;&gt;Exercise: 3 stars, advanced (remove_does_not_increase_count)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-optional-bag_count_sum&#34;&gt;Exercise: 3 stars, standard, optional (bag_count_sum)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-advanced-involution_injective&#34;&gt;Exercise: 3 stars, advanced (involution_injective)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-advanced-rev_injective&#34;&gt;Exercise: 2 stars, advanced (rev_injective)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-hd_error&#34;&gt;Exercise: 2 stars, standard (hd_error)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-optional-option_elim_hd&#34;&gt;Exercise: 1 star, standard, optional (option_elim_hd)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-eqb_id_refl&#34;&gt;Exercise: 1 star, standard (eqb_id_refl)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-update_eq&#34;&gt;Exercise: 1 star, standard (update_eq)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-update_neq&#34;&gt;Exercise: 1 star, standard (update_neq)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;pairs-of-numbers&#34;&gt;Pairs of Numbers&lt;/h2&gt;
+&lt;p&gt;我们可以定义一个 pair 类型：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive natprod : Type := 
+  | pair (n1 n2 : nat).
+Notation &amp;quot;( x, y )&amp;quot; := (pair x y).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以及一些辅助函数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition fst (p : natprod) : nat :=
+  match p with
+  | (x, y) =&amp;gt; x
+  end.
+Definition snd (p : natprod) : nat :=
+  match p with
+  | (x, y) =&amp;gt; y
+  end.
+Definition swap_pair(p : natprod) : nat :=
+  match p with
+  | (x, y) =&amp;gt; (y, x)
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里值得注意的是在 pattern matching 中的 &lt;code&gt;(x, y)&lt;/code&gt; 和 &lt;code&gt;x, y&lt;/code&gt; 是不一样的：前者匹配的是一个 pair 类型，而后者匹配了两个东西。&lt;/p&gt;
+&lt;p&gt;下面看一个有意思的证明题：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem surjective_pairing : forall p : natprod, p = (fst p, snd p).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们无法通过 &lt;code&gt;simpl&lt;/code&gt; 直接证明该题，因为 p 的具体内容不知道，&lt;code&gt;fst p&lt;/code&gt; &lt;code&gt;snd p&lt;/code&gt; 无法化简。一个好的方法是使用 &lt;code&gt;destruct&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Proof.
+  intros p. destruct p as [n m].
+  simpl. reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里的 destruct 不是用来分类讨论，而是其字面意思：给 &lt;code&gt;p&lt;/code&gt; 一个形式，从而解构它。&lt;/p&gt;
+&lt;h2 id=&#34;lists-of-numbers&#34;&gt;Lists of Numbers&lt;/h2&gt;
+&lt;p&gt;我们定义一个链表类型：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive natlist : Type :=
+  | nil
+  | cons (n : nat) (l : natlist).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;简单来说，每一个 natlist 类型的变量要么是 nil，要么是一个自然数和另一个 natlist。下面的一些 notation 让表示链表变得简单：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Notation &amp;quot;x :: l&amp;quot; := (cons x l)
+                     (at level 60, right associativity).
+Notation &amp;quot;[ ]&amp;quot; := nil.
+Notation &amp;quot;[ x ; .. ; y]&amp;quot; := (cons x .. (cons y nil) ..).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里值得注意两点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;::&lt;/code&gt; 应当是右结合的，即 &lt;code&gt;1 :: 2 :: 3&lt;/code&gt; 等价于 &lt;code&gt;1 :: (2 :: 3)&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;::&lt;/code&gt; 的优先级低于加减法，即 &lt;code&gt;1 + 2 :: 3&lt;/code&gt; 等价于 &lt;code&gt;(1 + 2) :: 3&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;repeat&#34;&gt;Repeat&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;repeat&lt;/code&gt; 函数接收两个参数 &lt;code&gt;n&lt;/code&gt; 和 &lt;code&gt;count&lt;/code&gt;，返回一个长度为 &lt;code&gt;count&lt;/code&gt;，每个节点都是 &lt;code&gt;n&lt;/code&gt; 的链表：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint repeat (n count : nat) -&amp;gt; natlist :=
+  match count with
+  | O =&amp;gt; nil
+  | S count&#39; =&amp;gt; n :: (repeat n count&#39;)
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;length&#34;&gt;Length&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;length&lt;/code&gt; 函数接收一个参数 &lt;code&gt;l&lt;/code&gt;，返回链表 &lt;code&gt;l&lt;/code&gt; 的长度。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint length (l : natlist) -&amp;gt; nat :=
+  match l with
+  | nil =&amp;gt; 0
+  | h :: t =&amp;gt; 1 + (length t)
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;append&#34;&gt;Append&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;app&lt;/code&gt; 函数用于把两个链表连接起来。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint app (l1 l2 : natlist) -&amp;gt; natlist :=
+  match l1 with
+  | nil =&amp;gt; l2
+  | h :: t =&amp;gt; h :: (app t l2)
+  end.
+
+Notation &amp;quot;x ++ y&amp;quot; := (app x y)
+                     (right associativity, at level 60).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;head-ant-tail&#34;&gt;Head ant Tail&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;hd&lt;/code&gt; 函数返回链表的第一个元素，&lt;code&gt;tl&lt;/code&gt; 函数返回链条除了第一个元素以外的后面的部分。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition hd (default : nat) (l : natlist) -&amp;gt; nat :=
+  match hd with
+  | nil =&amp;gt; default
+  | h :: t =&amp;gt; h
+  end.
+Definition tl (l : natlist) -&amp;gt; natlist :=
+  match tl with
+  | nil =&amp;gt; nil
+  | h :: t =&amp;gt; t
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;bags-via-lists&#34;&gt;Bags via Lists&lt;/h3&gt;
+&lt;p&gt;这里的 bag 指的是 multiset。我们可以用链表模拟 multiset。&lt;/p&gt;
+&lt;h2 id=&#34;reasoning-about-lists&#34;&gt;Reasoning About Lists&lt;/h2&gt;
+&lt;p&gt;List 的 match 定义让我们可以对于很多比较简单的命题直接使用 &lt;code&gt;reflexivity&lt;/code&gt; 或者分类讨论解决。但稍复杂的问题还是要借助归纳法。&lt;/p&gt;
+&lt;h3 id=&#34;induction-on-lists&#34;&gt;Induction on Lists&lt;/h3&gt;
+&lt;p&gt;对于链表的归纳法和对于自然数的归纳法没有本质区别。只要使用 &lt;code&gt;Inductive&lt;/code&gt; 的方式定义的类型都可以使用归纳法进行证明。下面是 &lt;code&gt;++&lt;/code&gt; 具有结合律的一段证明：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem app_assoc : forall l1 l2 l3 : natlist,
+  (l1 ++ l2) ++ l3 = l1 ++ (l2 ++ l3).
+Proof.
+  intros l1 l2 l3. induction l1 as [| n l1&#39; IHl&#39;].
+  - (* l1 = nil *)
+    reflexivity.
+  - (* l1 = cons n l1&#39; *)
+    simpl. rewrite IHl&#39;. reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;reversing-a-list&#34;&gt;Reversing a List&lt;/h3&gt;
+&lt;p&gt;考虑如下的翻转链表的函数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint rev (l : natlist) : natlist :=
+  match l with
+  | nil =&amp;gt; nil
+  | h :: t =&amp;gt; (rev t) ++ [h]
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下面我们尝试证明链表翻转后长度不变：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem rev_length : forall l : natlist, length (rev l) = length l.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果直接使用数学归纳法证明，在 successor case 中，我们会被 &lt;code&gt;length(rev l&#39; ++ [n]) = S (length (rev l&#39;))&lt;/code&gt; 这个结论卡住。因此我们需要先证明一个引理：链表结合后的长度等于结合前两个链表的长度之和。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem app_length : forall l1 l2 : natlist, length (l1 ++ l2) = (length l1) + (length l2).
+Proof.
+  intros l1 l2. induction l1 as [| n l1&#39; IHl1&#39;].
+  - reflexivity.
+  - simpl. rewrite IHl1&#39;. reflexivity.
+Qed.
+
+Theorem rev_length : forall l : natlist, length (rev l) = length l.
+Proof.
+  intros l. induction l as [| n l&#39; IHl&#39;].
+  - reflexivity.
+  - simpl. rewrite app_length.
+    simpl. rewrite IHl&#39;. rewrite add_comm.
+    reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;search&#34;&gt;Search&lt;/h3&gt;
+&lt;p&gt;我们在证明的时候时常要使用之前证明过的引理，但使用这些引理需要知道它们的名字，如果现场不记得名字，可以使用 &lt;code&gt;Search name&lt;/code&gt; 的方式来查找，Coq 会输出所有名字中带有 name 的引理。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Search&lt;/code&gt; tactic 还支持更加丰富的查找功能，例如&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Search (_ + _ = _ + _) inside Induction. 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;会在 Induction 模块中寻找符合上述形式的定理。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Search (?x + ?y = ?y + ?x).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;几乎可以直接锁定到加法交换律。这里变量前加一个 &lt;code&gt;?&lt;/code&gt; 表示这是搜索时使用的 pattern，而不是在当前环境中要求存在的变量。&lt;/p&gt;
+&lt;h2 id=&#34;options&#34;&gt;Options&lt;/h2&gt;
+&lt;p&gt;这一章节讲述了 error handling 的重要性。假设我们要写一个函数返回链表的第 n 个元素，我们必须要考虑如果链表的长度小于 n 应当返回什么，如果我们这样写代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint nth_bad (l : natlist) (n : nat) : nat :=
+  match l with
+  | nil =&amp;gt; 42
+  | a :: l&#39; =&amp;gt; match n with
+               | 0 ⇒ a
+               | S n&#39; ⇒ nth_bad l&#39; n&#39;
+               end
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;那么如果函数返回了 42，我们必须再检查一遍链表才能确定究竟是链表太短了还是第 n 个元素正好是 42。一个好的方法是重新定义返回类型，在 error 时返回一个特殊的东西：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive natoption : Type :=
+  | Some (n : nat)
+  | None.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint nth_error (l : natlist) (n : nat) : natoption :=
+  match l with
+  | nil =&amp;gt; None
+  | a :: l&#39; =&amp;gt; match n with
+               | O ⇒ Some a
+               | S n&#39; ⇒ nth_error l&#39; n&#39;
+               end
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;之后我们还可以根据具体的情境来选择不同的不可能出现的值作为返回值：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition option_elim (d : nat) (o : natoption) : nat :=
+  match o with
+  | Some n&#39; =&amp;gt; n&#39;
+  | None =&amp;gt; d
+  end.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;partial-maps&#34;&gt;Partial Maps&lt;/h2&gt;
+&lt;p&gt;这一章介绍了用 Coq 定义 map 这一数据结构。map 本质上就是 key-value pair 的集合。这里我们先为 key 定义一个单独的类型 (没有什么特殊的作用，只是为了封装一下好看)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive id : Type :=
+  | Id (n : nat)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;接下来我们定义 partial map:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive partial_map : Type :=
+  | empty
+  | record (i : id) (v : nat) (m : partial_map)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;该定义的意思是：partial map 要么是 empty (空集)，要么是一个 key-value pair 接上另一个 partial map。&lt;/p&gt;
+&lt;p&gt;下面的 update 函数可以完成向 partial map 中添加一个 key-value pair 的功能：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition update (d : partial_map) (x : id) (value : nat) -&amp;gt; partial_map :=
+  record x value d.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;find 函数可以查询 partial map 中是否存在某个 id，并返回对应的 value：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint find (x : id) (d : partial_map) : natoption :=
+  match d with
+  | empty =&amp;gt; None.
+  | y v d&#39; =&amp;gt; if eqb_id x y
+              then Some v
+              else find x d&#39;
+  end.s
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;exercises&#34;&gt;Exercises&lt;/h2&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-snd_fst_is_swap&#34;&gt;Exercise: 1 star, standard (snd_fst_is_swap)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem snd_fst_is_swap : forall (p : natprod),
+  (snd p, fst p) = swap_pair p.
+Proof.
+  intros p. destruct p as [n m].
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-optional-fst_swap_is_snd&#34;&gt;Exercise: 1 star, standard, optional (fst_swap_is_snd)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem fst_swap_is_snd : forall (p : natprod),
+  fst (swap_pair p) = snd p.
+Proof.
+  intros p. destruct p as [n m].
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-2-stars-standard-especially-useful-list_funs&#34;&gt;Exercise: 2 stars, standard, especially useful (list_funs)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint nonzeros (l:natlist) : natlist :=
+  match l with
+  | nil =&amp;gt; nil
+  | O :: t =&amp;gt; nonzeros t
+  | S n :: t =&amp;gt; S n :: (nonzeros t)
+  end.
+
+Example test_nonzeros:
+  nonzeros [0;1;0;2;3;0;0] = [1;2;3].
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint oddmembers (l:natlist) : natlist :=
+  match l with
+  | nil =&amp;gt; nil
+  | h :: t =&amp;gt; if (even h) then (oddmembers t) else (h :: (oddmembers t))
+  end.
+
+Example test_oddmembers:
+  oddmembers [0;1;0;2;3;0;0] = [1;3].
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition countoddmembers (l:natlist) : nat :=
+  length (oddmembers l).
+
+Example test_countoddmembers1:
+  countoddmembers [1;0;3;1;4;5] = 4.
+Proof. reflexivity. Qed.
+
+Example test_countoddmembers2:
+  countoddmembers [0;2;4] = 0.
+Proof. reflexivity. Qed.
+
+Example test_countoddmembers3:
+  countoddmembers nil = 0.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-advanced-alternate&#34;&gt;Exercise: 3 stars, advanced (alternate)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint alternate (l1 l2 : natlist) : natlist :=
+  match l1, l2 with
+  | nil, nil =&amp;gt; nil
+  | nil, _ =&amp;gt; l2
+  | _, nil =&amp;gt; l1
+  | h1 :: t1, h2 :: t2 =&amp;gt; h1 :: h2 :: (alternate t1 t2)
+  end.
+
+Example test_alternate1:
+  alternate [1;2;3] [4;5;6] = [1;4;2;5;3;6].
+Proof. reflexivity. Qed.
+
+Example test_alternate2:
+  alternate [1] [4;5;6] = [1;4;5;6].
+Proof. reflexivity. Qed.
+
+Example test_alternate3:
+  alternate [1;2;3] [4] = [1;4;2;3].
+Proof. reflexivity. Qed.
+
+Example test_alternate4:
+  alternate [] [20;30] = [20;30].
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-especially-useful-bag_functions&#34;&gt;Exercise: 3 stars, standard, especially useful (bag_functions)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint count (v : nat) (s : bag) : nat :=
+  match s with
+  | nil =&amp;gt; 0
+  | h :: t =&amp;gt; if (v =? h) then 1 + (count v t) else (count v t)
+  end.
+
+Example test_count1:              count 1 [1;2;3;1;4;1] = 3.
+Proof. reflexivity. Qed.
+Example test_count2:              count 6 [1;2;3;1;4;1] = 0.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition sum : bag -&amp;gt; bag -&amp;gt; bag := app.
+
+Example test_sum1:              count 1 (sum [1;2;3] [1;4;1]) = 3.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里可以注意一下不显式给出参数名称的定义函数的方法。在这种情况下，我们只能把一个参数类型和返回值类型相同的函数赋给当前函数。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition add (v : nat) (s : bag) : bag := v :: s.
+
+Example test_add1:                count 1 (add 1 [1;4;1]) = 3.
+Proof. reflexivity. Qed.
+Example test_add2:                count 5 (add 1 [1;4;1]) = 0.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint member (v : nat) (s : bag) : bool :=
+  match s with
+  | nil =&amp;gt; false
+  | h :: t =&amp;gt; if (v =? h) then true else (member v t)
+  end.
+
+Example test_member1:             member 1 [1;4;1] = true.
+Proof. reflexivity. Qed.
+Example test_member2:             member 2 [1;4;1] = false.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-optional-bag_more_functions&#34;&gt;Exercise: 3 stars, standard, optional (bag_more_functions)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint remove_one (v : nat) (s : bag) : bag :=
+  match s with
+  | nil =&amp;gt; nil
+  | h :: t =&amp;gt; if (h =? v) then t else (h :: (remove_one v t))
+  end.
+
+Example test_remove_one1:
+  count 5 (remove_one 5 [2;1;5;4;1]) = 0.
+Proof. reflexivity. Qed.
+
+Example test_remove_one2:
+  count 5 (remove_one 5 [2;1;4;1]) = 0.
+Proof. reflexivity. Qed.
+
+Example test_remove_one3:
+  count 4 (remove_one 5 [2;1;4;5;1;4]) = 2.
+Proof. reflexivity. Qed.
+
+Example test_remove_one4:
+  count 5 (remove_one 5 [2;1;5;4;5;1;4]) = 1.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint remove_all (v:nat) (s:bag) : bag :=
+  match s with
+  | nil =&amp;gt; nil
+  | h :: t =&amp;gt; if (h =? v) then (remove_all v t) else (h :: (remove_all v t))
+  end.
+
+Example test_remove_all1:  count 5 (remove_all 5 [2;1;5;4;1]) = 0.
+Proof. reflexivity. Qed.
+Example test_remove_all2:  count 5 (remove_all 5 [2;1;4;1]) = 0.
+Proof. reflexivity. Qed.
+Example test_remove_all3:  count 4 (remove_all 5 [2;1;4;5;1;4]) = 2.
+Proof. reflexivity. Qed.
+Example test_remove_all4:  count 5 (remove_all 5 [2;1;5;4;5;1;4;5;1;4]) = 0.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint included (s1 : bag) (s2 : bag) : bool :=
+  match s1 with
+  | nil =&amp;gt; true
+  | h :: t =&amp;gt; if ((count h s2) =? 0) then
+                false
+              else
+                included t (remove_one h s2)
+  end.
+
+Example test_included1:              included [1;2] [2;1;4;1] = true.
+Proof. reflexivity. Qed.
+Example test_included2:              included [1;2;2] [2;1;4;1] = false.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-2-stars-standard-especially-useful-add_inc_count&#34;&gt;Exercise: 2 stars, standard, especially useful (add_inc_count)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem add_inc_count : forall (v : nat) (s : bag),
+  count v (add v s) = 1 + count v s.
+Proof.
+  intros. 
+  simpl.
+  rewrite eqb_refl. (* n =? n = true *)
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-list_exercises&#34;&gt;Exercise: 3 stars, standard (list_exercises)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem app_nil_r : forall l : natlist,
+  l ++ [] = l.
+Proof.
+  intros l. induction l as [| n l&#39; IHl&#39;].
+  - reflexivity.
+  - simpl. rewrite IHl&#39;. reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem rev_app_distr: forall l1 l2 : natlist,
+  rev (l1 ++ l2) = rev l2 ++ rev l1.
+Proof.
+  intros l1 l2.
+  induction l1 as [|n l1&#39; IHl1&#39;].
+  - rewrite app_nil_r. reflexivity.
+  - simpl. 
+    rewrite IHl1&#39;. 
+    rewrite app_assoc. 
+    reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem rev_involutive : forall l : natlist,
+  rev (rev l) = l.
+Proof.
+  intros l.
+  induction l as [| n l&#39; IHl&#39;].
+  - reflexivity.
+  - simpl. 
+    rewrite rev_app_distr.
+    rewrite IHl&#39;.
+    reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem app_assoc4 : forall l1 l2 l3 l4 : natlist,
+  l1 ++ (l2 ++ (l3 ++ l4)) = ((l1 ++ l2) ++ l3) ++ l4.
+Proof.
+  intros l1 l2 l3 l4.
+  rewrite app_assoc.
+  rewrite app_assoc.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Lemma nonzeros_app : forall l1 l2 : natlist,
+  nonzeros (l1 ++ l2) = (nonzeros l1) ++ (nonzeros l2).
+Proof.
+  intros l1 l2.
+  induction l1 as [| n l1&#39; IHl1&#39;].
+  - reflexivity.
+  - destruct n as [| n&#39;] eqn:N.
+    + simpl. rewrite IHl1&#39;. reflexivity.
+    + simpl. rewrite IHl1&#39;. reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-2-stars-standard-eqblist&#34;&gt;Exercise: 2 stars, standard (eqblist)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Fixpoint eqblist (l1 l2 : natlist) : bool :=
+  match l1, l2 with
+  | nil, nil =&amp;gt; true
+  | nil, _ =&amp;gt; false
+  | _, nil =&amp;gt; false
+  | h1 :: t1, h2 :: t2 =&amp;gt;
+    if (h1 =? h2) then (eqblist t1 t2) else false
+  end.
+
+Example test_eqblist1 :
+  (eqblist nil nil = true).
+Proof. reflexivity. Qed.
+
+Example test_eqblist2 :
+  eqblist [1;2;3] [1;2;3] = true.
+Proof. reflexivity. Qed.
+
+Example test_eqblist3 :
+  eqblist [1;2;3] [1;2;4] = false.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem eqblist_refl : forall l:natlist,
+  true = eqblist l l.
+Proof.
+  intros l.
+  induction l as [| n l&#39; IHl&#39;].
+  - (* l = nil *)
+    reflexivity.
+  - (* l = con n l&#39; *)
+    simpl. 
+    rewrite eqb_refl. (* n =? n = true *)
+    rewrite IHl&#39;.
+    reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-count_member_nonzero&#34;&gt;Exercise: 1 star, standard (count_member_nonzero)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem count_member_nonzero : forall (s : bag),
+  1 &amp;lt;=? (count 1 (1 :: s)) = true.
+Proof.
+  intros s.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-advanced-remove_does_not_increase_count&#34;&gt;Exercise: 3 stars, advanced (remove_does_not_increase_count)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem remove_does_not_increase_count: forall (s : bag),
+  (count 0 (remove_one 0 s)) &amp;lt;=? (count 0 s) = true.
+Proof.
+  intros s.
+  induction s as [| n s&#39; IHs&#39;].
+  - reflexivity.
+  - destruct n as [| n&#39;] eqn:N.
+    + simpl.
+      rewrite leb_n_Sn.
+      reflexivity.
+    + simpl.
+      rewrite IHs&#39;.
+      reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-optional-bag_count_sum&#34;&gt;Exercise: 3 stars, standard, optional (bag_count_sum)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem count_sum : forall (v : nat) (l1 l2 : bag),
+  count v l1 + count v l2 = count v (sum l1 l2).
+Proof.
+  intros v l1 l2.
+  induction l1 as [| n l1&#39; IHl1&#39;].
+  - reflexivity.
+  - simpl.
+    destruct (v =? n) as [].
+    + simpl. rewrite IHl1&#39;. reflexivity.
+    + rewrite IHl1&#39;. reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这题一个值得注意的细节是：我们不方便利用 destruct 直接去讨论 n 是否等于 v，但我们可以通过讨论 &lt;code&gt;v =? n&lt;/code&gt; 是 true 还是 false 来实现这一需求。&lt;/p&gt;
+&lt;h3 id=&#34;exercise-3-stars-advanced-involution_injective&#34;&gt;Exercise: 3 stars, advanced (involution_injective)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem involution_injective : forall (f : nat -&amp;gt; nat),
+    (forall n : nat, n = f (f n)) -&amp;gt; (forall n1 n2 : nat, f n1 = f n2 -&amp;gt; n1 = n2).
+Proof.
+  intros f H1 n1 n2 H2.
+  rewrite H1.
+  rewrite &amp;lt;- H2.
+  rewrite &amp;lt;- H1.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-2-stars-advanced-rev_injective&#34;&gt;Exercise: 2 stars, advanced (rev_injective)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem rev_injective : forall (l1 l2 : natlist),
+  rev l1 = rev l2 -&amp;gt; l1 = l2.
+Proof.
+  intros l1 l2 H.
+  rewrite &amp;lt;- rev_involutive.
+  rewrite &amp;lt;- H.
+  rewrite rev_involutive.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;该定理的证明具有一定的技巧性。如果直接对某个链表使用归纳法会比较繁琐。这里利用 involutive 定理 &lt;code&gt;l = rev (rev l)&lt;/code&gt;先把 &lt;code&gt;l2&lt;/code&gt; 换成 &lt;code&gt;rev (rev l2)&lt;/code&gt;，再利用条件把 &lt;code&gt;rev l2&lt;/code&gt; 换成 &lt;code&gt;rev l1&lt;/code&gt;，最后换一个方向利用 involutive 完成证明。&lt;/p&gt;
+&lt;h3 id=&#34;exercise-2-stars-standard-hd_error&#34;&gt;Exercise: 2 stars, standard (hd_error)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition hd_error (l : natlist) : natoption :=
+  match l with
+  | nil =&amp;gt; None
+  | h :: t =&amp;gt; (Some h)
+  end.
+
+Example test_hd_error1 : hd_error [] = None.
+Proof. reflexivity. Qed.
+
+Example test_hd_error2 : hd_error [1] = Some 1.
+Proof. reflexivity. Qed.
+
+Example test_hd_error3 : hd_error [5;6] = Some 5.
+Proof. reflexivity. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-optional-option_elim_hd&#34;&gt;Exercise: 1 star, standard, optional (option_elim_hd)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem option_elim_hd : forall (l:natlist) (default:nat),
+  hd default l = option_elim default (hd_error l).
+Proof.
+  intros l d.
+  destruct l as [| h l&#39;] eqn:L.
+  - reflexivity.
+  - reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-eqb_id_refl&#34;&gt;Exercise: 1 star, standard (eqb_id_refl)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem eqb_id_refl : forall x, eqb_id x x = true.
+Proof.
+  intros x.
+  destruct x as [n].
+  simpl.
+  rewrite eqb_refl.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-update_eq&#34;&gt;Exercise: 1 star, standard (update_eq)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem update_eq :
+  forall (d : partial_map) (x : id) (v: nat),
+    find x (update d x v) = Some v.
+Proof.
+  intros d x v.
+  simpl.
+  destruct x as [x&#39;].
+  simpl.
+  rewrite eqb_refl.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-update_neq&#34;&gt;Exercise: 1 star, standard (update_neq)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem update_neq :
+  forall (d : partial_map) (x y : id) (o: nat),
+    eqb_id x y = false -&amp;gt; find x (update d y o) = find x d.
+Proof.
+  intros d x y o H.
+  simpl.
+  rewrite H.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
   </channel>
 </rss>
