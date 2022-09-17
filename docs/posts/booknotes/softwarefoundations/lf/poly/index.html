@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Polymorphism Polymorphic Lists Type Annotation Inference Type Argument Synthesis Implicit Arguments Supplying Type Arguments Explicitly Polymorphic Pairs Polymorphic Options Functions as Data Higher-Order Functions Filter Anonymous Functions Maps Fold Functions That Construct Functions Exercises Exercise: 2 stars, standard, optional (mumble_grumble) Exercise: 1 star, standard, optional (combine_checks) Exercise: 2 stars, standard, especially useful (split) Exercise: 1 star, standard, optional (hd_error_poly) Exercise: 2 stars, standard (filter_even_gt7) Exercise: 3 stars, standard (partition) Exercise: 3 stars, standard (map_rev) Exercise: 2 stars, standard, especially useful (flat_map) Exercise: 1 star, standard, optional (fold_types_different) Exercise: 2 stars, standard (fold_length) Exercise: 3 stars, standard (fold_map) Exercise: 2 stars, advanced (currying) Church Numerals (Advanced) Exercise: 2 stars, advanced (church_scc) Exercise: 3 stars, advanced (church_plus) Exercise: 3 stars, advanced (church_mult) Exercise: 3 stars, advanced (church_exp) 这一章节我们主要关注函数式编程的两个基本概念：多态 (polymorphism)，即对函数操作的对象的类型进行抽象；高阶函数，即将函数本身看作数据。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/poly/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/poly/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Academic">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/poly/">
+  <meta property="og:title" content="Polymorphism and Higher-Order Functions | Academic">
+  <meta property="og:description" content="Polymorphism Polymorphic Lists Type Annotation Inference Type Argument Synthesis Implicit Arguments Supplying Type Arguments Explicitly Polymorphic Pairs Polymorphic Options Functions as Data Higher-Order Functions Filter Anonymous Functions Maps Fold Functions That Construct Functions Exercises Exercise: 2 stars, standard, optional (mumble_grumble) Exercise: 1 star, standard, optional (combine_checks) Exercise: 2 stars, standard, especially useful (split) Exercise: 1 star, standard, optional (hd_error_poly) Exercise: 2 stars, standard (filter_even_gt7) Exercise: 3 stars, standard (partition) Exercise: 3 stars, standard (map_rev) Exercise: 2 stars, standard, especially useful (flat_map) Exercise: 1 star, standard, optional (fold_types_different) Exercise: 2 stars, standard (fold_length) Exercise: 3 stars, standard (fold_map) Exercise: 2 stars, advanced (currying) Church Numerals (Advanced) Exercise: 2 stars, advanced (church_scc) Exercise: 3 stars, advanced (church_plus) Exercise: 3 stars, advanced (church_mult) Exercise: 3 stars, advanced (church_exp) 这一章节我们主要关注函数式编程的两个基本概念：多态 (polymorphism)，即对函数操作的对象的类型进行抽象；高阶函数，即将函数本身看作数据。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Polymorphism and Higher-Order Functions | Academic</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Academic</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Courses</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/literature"><span>Literature</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      <li class="nav-item">
+        <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/booknotes/softwarefoundations/lf/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/posts/booknotes/softwarefoundations/lf/basics/">Chapters</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/posts/booknotes/softwarefoundations/lf/basics/">01: Basics</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/softwarefoundations/lf/induction/">02: Induction</a>
+      </li>
+      
+      <li >
+        <a href="/posts/booknotes/softwarefoundations/lf/lists/">03: Lists</a>
+      </li>
+      
+      <li class="active">
+        <a href="/posts/booknotes/softwarefoundations/lf/poly/">04: Poly</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Polymorphism and Higher-Order Functions</h1>
+
+          <div class="article-style">
+            <ul>
+<li>
+<a href="#polymorphism">Polymorphism</a>
+<ul>
+<li>
+<a href="#polymorphic-lists">Polymorphic Lists</a>
+<ul>
+<li>
+<a href="#type-annotation-inference">Type Annotation Inference</a></li>
+<li>
+<a href="#type-argument-synthesis">Type Argument Synthesis</a></li>
+<li>
+<a href="#implicit-arguments">Implicit Arguments</a></li>
+<li>
+<a href="#supplying-type-arguments-explicitly">Supplying Type Arguments Explicitly</a></li>
+</ul>
+</li>
+<li>
+<a href="#polymorphic-pairs">Polymorphic Pairs</a></li>
+<li>
+<a href="#polymorphic-options">Polymorphic Options</a></li>
+</ul>
+</li>
+<li>
+<a href="#functions-as-data">Functions as Data</a>
+<ul>
+<li>
+<a href="#higher-order-functions">Higher-Order Functions</a></li>
+<li>
+<a href="#filter">Filter</a></li>
+<li>
+<a href="#anonymous-functions">Anonymous Functions</a></li>
+<li>
+<a href="#maps">Maps</a></li>
+<li>
+<a href="#fold">Fold</a></li>
+<li>
+<a href="#functions-that-construct-functions">Functions That Construct Functions</a></li>
+</ul>
+</li>
+<li>
+<a href="#exercises">Exercises</a>
+<ul>
+<li>
+<a href="#exercise-2-stars-standard-optional-mumble_grumble">Exercise: 2 stars, standard, optional (mumble_grumble)</a></li>
+<li>
+<a href="#exercise-1-star-standard-optional-combine_checks">Exercise: 1 star, standard, optional (combine_checks)</a></li>
+<li>
+<a href="#exercise-2-stars-standard-especially-useful-split">Exercise: 2 stars, standard, especially useful (split)</a></li>
+<li>
+<a href="#exercise-1-star-standard-optional-hd_error_poly">Exercise: 1 star, standard, optional (hd_error_poly)</a></li>
+<li>
+<a href="#exercise-2-stars-standard-filter_even_gt7">Exercise: 2 stars, standard (filter_even_gt7)</a></li>
+<li>
+<a href="#exercise-3-stars-standard-partition">Exercise: 3 stars, standard (partition)</a></li>
+<li>
+<a href="#exercise-3-stars-standard-map_rev">Exercise: 3 stars, standard (map_rev)</a></li>
+<li>
+<a href="#exercise-2-stars-standard-especially-useful-flat_map">Exercise: 2 stars, standard, especially useful (flat_map)</a></li>
+<li>
+<a href="#exercise-1-star-standard-optional-fold_types_different">Exercise: 1 star, standard, optional (fold_types_different)</a></li>
+<li>
+<a href="#exercise-2-stars-standard-fold_length">Exercise: 2 stars, standard (fold_length)</a></li>
+<li>
+<a href="#exercise-3-stars-standard-fold_map">Exercise: 3 stars, standard (fold_map)</a></li>
+<li>
+<a href="#exercise-2-stars-advanced-currying">Exercise: 2 stars, advanced (currying)</a></li>
+<li>
+<a href="#church-numerals-advanced">Church Numerals (Advanced)</a>
+<ul>
+<li>
+<a href="#exercise-2-stars-advanced-church_scc">Exercise: 2 stars, advanced (church_scc)</a></li>
+<li>
+<a href="#exercise-3-stars-advanced-church_plus">Exercise: 3 stars, advanced (church_plus)</a></li>
+<li>
+<a href="#exercise-3-stars-advanced-church_mult">Exercise: 3 stars, advanced (church_mult)</a></li>
+<li>
+<a href="#exercise-3-stars-advanced-church_exp">Exercise: 3 stars, advanced (church_exp)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>这一章节我们主要关注函数式编程的两个基本概念：多态 (polymorphism)，即对函数操作的对象的类型进行抽象；高阶函数，即将函数本身看作数据。</p>
+<h2 id="polymorphism">Polymorphism</h2>
+<h3 id="polymorphic-lists">Polymorphic Lists</h3>
+<p>上一章节中我们定义的列表只能处理自然数。在真正的程序中列表中的元素类型是丰富的，甚至可以有 list of lists。我们不可能对每种类型都定义一种列表——因为我们不仅要定义类型，还要将列表相关的所有定理对每种类型都证明一遍，这几乎是不可能的。</p>
+<p>基于以上需求，Coq 支持了 polymorphic 的 inductive type definition。比如下面是一个多态的 list 类型：</p>
+<pre><code class="language-plaintext">Inductive list (X : Type) : Type :=
+  | nil
+  | cons (x : X) (l : list X).
+</code></pre>
+<p>多态的本质很简单：我们之前定义的类型以归纳的方式描述了一个集合，现在 list 是一个 Type -&gt; Type 的函数：</p>
+<pre><code class="language-plaintext">Check list: Type -&gt; Type
+</code></pre>
+<p>它接收一个类型 X 作为参数，返回 list X 这个类型，“list X” 类型是一个包含了所有由 X 类型元素构成的链表的集合。</p>
+<p>list 定义中的类型 X 会自动成为 constructor 的参数——即现在 nil 和 con 都是多态 constructor，以后使用它们时需要在后面写上类型。例如：</p>
+<pre><code class="language-plaintext">Check (cons nat 3 (nil nat)) : list nat.
+</code></pre>
+<p>nil 和 cons 的类型也都是从 Type 映射到 list X 的“函数”：</p>
+<pre><code class="language-plaintext">Check nil : forall X : Type, list X.
+Check cons: forall X : Type, X -&gt; list X -&gt; list X.
+</code></pre>
+<p>有了多态的列表定义后，我们可以把之前写的函数也改成多态的。下面以 repeat 为例：</p>
+<pre><code class="language-plaintext">Fixpoint repeat (X : Type) (x : X) (count : nat) : list X :=
+  match count with
+  | 0 =&gt; nil X
+  | S count' =&gt; cons X x (repeat X x count')
+  end.
+</code></pre>
+<h4 id="type-annotation-inference">Type Annotation Inference</h4>
+<p>如果我们在书写函数时不显式声明参数的类型，例如</p>
+<pre><code class="language-plaintext">Fixpoint repeat' X x count : list X :=
+  match count with
+  | 0 =&gt; nil X
+  | S count' =&gt; cons X x (repeat X x count')
+  end.
+</code></pre>
+<p>我们会发现 <code>Check repeat</code> 和 <code>Check repeat'</code> 的结果是完全一样的。这是因为 Coq 可以自动进行 type inference，例如根据 count match 的方法可以看出 count 一定是 nat 类型等等。</p>
+<h4 id="type-argument-synthesis">Type Argument Synthesis</h4>
+<p>synthesis 和 inference 的原理类似：在某些地方你可以直接用 <code>_</code> 来代替类型名，Coq 会结合所有的上下文信息自动分析出这里该填写什么。例如下面两句代码在功能上是等价的：</p>
+<pre><code class="language-plaintext">Definition list123 := cons nat 1 (cons nat 2 (cons nat 3 (nil nat))).
+Definition list123' := cons _ 1 (cons _ 2 (cons _ 3 (nil _))).
+</code></pre>
+<h4 id="implicit-arguments">Implicit Arguments</h4>
+<p>利用 implicit argument 技术，我们甚至可以将 <code>_</code> 省略掉。</p>
+<p>第一种方法是使用 Arguments 语法：Arguments 可以指定一个函数/constructor的名字，以及需要被处理为 implicit 的类型名，以后再使用该函数/constructor时就不需要再显式地给出类型名或类型名的占位符。例如：</p>
+<pre><code class="language-plaintext">Arguments nil {X}.
+Arguments cons {X}.
+Arguments repeat {X}.
+</code></pre>
+<p>这时我们定义 list123 就可以直接写：</p>
+<pre><code class="language-plaintext">Definition list123'' := cons 1 (cons 2 (cons 3 nil)).
+</code></pre>
+<p>第二种更方便的语法是：我们在定义 Type/函数的时候，可以用 <code>{}</code> 代替 <code>()</code> 把用于多态的类型名框起来，这样以后自动省略类型名参数。下面我们用这种语法把 list 的其他几个重要函数重写一下，可以看到使用了 implicit arguments 后，函数体内部的代码就和之前的没有区别了：</p>
+<pre><code class="language-plaintext">Fixpoint app {X : Type} (l1 l2 : list X) : list X :=
+  match l1 with
+  | nil =&gt; l2
+  | cons h t =&gt; cons h (app t l2)  (* 注意我们还没有对多态的list定义::等notation，所以现在还不能
+                                      用 h::t 的方式书写，一会儿定义了之后就可以了*)
+  end.
+
+Fixpoint rev {X : Type} (l : list X) : list X :=
+  match l with
+  | nil =&gt; nil
+  | cons h t =&gt; app (rev t) (cons h nil)
+  end.
+
+Fixpoint length {X : Type} (l : list X) : list X :=
+  match l with
+  | nil =&gt; 0
+  | cons h t =&gt; 1 + (length t)
+  end.
+</code></pre>
+<h4 id="supplying-type-arguments-explicitly">Supplying Type Arguments Explicitly</h4>
+<p>将参数定义为隐式的一个坏处在于，某些特殊情况下 Coq 可能无法自动识别参数类型。这种情况下我们需要临时地显式给出参数类型。例如：</p>
+<pre><code class="language-plaintext">Fail Definition mynil := nil.
+</code></pre>
+<p>（注：这里的 Fail 命令表示如果后面的语句执行失败，Coq 会在交互区打印出错误信息，但程序仍然可以继续执行。）</p>
+<p>这样的定义是不成立的，因为完全没有上下文信息可以看出 nil X 的 X 是什么类型。我们有两种解决方法，一种是显式地指定 mynil 的类型：</p>
+<pre><code class="language-plaintext">Definition mynil : list nat := nil.
+</code></pre>
+<p>第二种是使用 <code>@</code> 让 nil 临时显式地接收一个类型参数：</p>
+<pre><code class="language-plaintext">Definition mynil' := @nil nat.
+</code></pre>
+<p>我们定义的多态 list 和之前的 list 本质上是两种类型，因此所有的 Notation 我们也要重新定义一遍：</p>
+<pre><code class="language-plaintext">Notation &quot;x :: y&quot; := (cons x y)
+                     (at level 60, right associativity).
+Notation &quot;[ ]&quot; := nil.
+Notation &quot;[ x ; .. ; y ]&quot; := (cons x .. (cons y []) ..).
+Notation &quot;x ++ y&quot; := (app x y)
+                     (at level 60, right associativity).
+</code></pre>
+<h3 id="polymorphic-pairs">Polymorphic Pairs</h3>
+<p>在上一章节中我们定义的两个自然数的 pair 也可以拓展成多态的 pair，这就是离散数学中的笛卡尔积：</p>
+<pre><code class="language-plaintext">Inductive prod (X Y : Type) : Type :=
+  | pair (x : X) (y : Y).
+Argument pair {X} {Y}.
+
+Notation &quot;( x, y )&quot; := (pair x y).
+Notation &quot;X * Y&quot; := (prod X Y) : type_scope.
+</code></pre>
+<p>这里的 &ldquo;type_scope&rdquo; 表明了笛卡尔积只作用在两个类型 (集合) 上，避免和自然数上的乘法混淆。</p>
+<p><code>(x, y)</code> 和 <code>X * Y</code> 在初期容易混淆。一个好的理解方式是：<code>X * Y</code> 是一个类型，即一个集合。如果 <code>x</code> 的类型是 <code>X</code>，<code>y</code> 的类型是 <code>Y</code>，那么 <code>(x, y)</code> 是类型 <code>X * Y</code> 的一个实例 (集合 <code>X * Y</code> 中的一个元素)。</p>
+<p>下面的函数 combine 接收两个 list，返回一个把对应 index 元素打包成 pair 的 list。这个函数在通常的编程语言中称为 <code>zip()</code>：</p>
+<pre><code class="language-plaintext">Fixpoint combine {X, Y : Type} (l1 : list X) (l2 : list Y) -&gt; list (X * Y) :=
+  match lx, ly with
+  | nil, _ =&gt; nil
+  | _, nil =&gt; nil
+  | x :: tx, y :: ty =&gt; (x, y) :: (combine tx ty)
+  end.
+</code></pre>
+<h3 id="polymorphic-options">Polymorphic Options</h3>
+<p>对于之前定义的 natoption，我们也将其转化为多态：</p>
+<pre><code class="language-plaintext">Inductive option (X : Type) : Type :=
+  | Some (x : X)
+  | None.
+
+Arguments Some {X}.
+Arguments None {X}.
+</code></pre>
+<p>然后我们可以将 <code>nth_error</code> 函数也转化为多态：</p>
+<pre><code class="language-plaintext">Fixpoint nth_error {X : Type} (l : list X) (n : nat) : option X :=
+  match l with
+  | nil =&gt; None
+  | a :: l' =&gt; match n with
+               | 0 =&gt; a
+               | S n' =&gt; nth_error l' n'
+               end
+  end.
+</code></pre>
+<h2 id="functions-as-data">Functions as Data</h2>
+<p>和多数函数式编程语言一样，Coq 将函数视为 first-class citizen，即函数可以作为函数参数，可以作为函数返回值，可以作为数据存储在数据结构中。</p>
+<h3 id="higher-order-functions">Higher-Order Functions</h3>
+<p>下面是一个简单的接受函数作为参数的高阶函数：</p>
+<pre><code class="language-plaintext">Definition doit3times {X : Type} (f : X -&gt; X) (n : X) : X :=
+  f (f (f n)).
+</code></pre>
+<p>参数 <code>f</code> 是一个从 X 映射到 X 的函数，我们可以检查 <code>doit3times</code> 的类型：</p>
+<pre><code class="language-plaintext">Check @doit3times : forall X : Type, (X -&gt; X) -&gt; X -&gt; X.
+</code></pre>
+<h3 id="filter">Filter</h3>
+<p>下面展示一个更有意思的高阶函数：<code>filter</code> 函数接收一个函数 test 和一个 list，返回一个新的 list，其中包含原 list 中通过 test 测试的元素：</p>
+<pre><code class="language-plaintext">Fixpoint filter {X : Type} (test : X -&gt; bool) (l : list X) : list X :=
+  match l with
+  | nil =&gt; nil
+  | h :: t =&gt;
+    if test h then h :: (filter test t)
+    else filter test t
+  end.
+</code></pre>
+<p>多态的 list 可以接收任何类型的元素，甚至是 list 自己，形成 list of lists，下面是一个例子：</p>
+<pre><code class="language-plaintext">Definition length_is_1 {X : Type} (l : list X) : bool :=
+  (length l) =? 1.
+
+Example test_filter :
+  filter length_is_1 [ [1; 2]; [3]; [4]; [5; 6; 7]; []; [8] ] = [ [3]; [4]; [8]; ].
+Proof. reflexivity. Qed.
+</code></pre>
+<h3 id="anonymous-functions">Anonymous Functions</h3>
+<p>有的时候，必须给函数命名以方便使用是一件令人沮丧的事情，因为很多时候我们只是想临时创建一个函数丢给高阶函数当参数使用，比如上面例子中的 <code>length_is_1</code>。Coq 为我们提供了一种临时创建函数的方式，这种方式类似于 Python 中的 lambda 表达式，不需要给函数命名，该函数也不会出现在 top level environment 中。下面是一个例子：</p>
+<pre><code class="language-plaintext">Example test_filter' :
+  filter (fun l =&gt; (length l) =? 1)
+         [ [1; 2]; [3]; [4]; [5;6;7]; []; [8] ]
+  = [ [3]; [4]; [8] ].
+</code></pre>
+<p>其中 <code>(fun l =&gt; (length l) =? 1)</code> 的意思是该函数接收一个参数 <code>l</code>，返回 <code>(length l) =? 1</code> (我们可以不指明参数和返回值的类型，Coq 会自己做 type inference)。</p>
+<h3 id="maps">Maps</h3>
+<p>map 也是许多函数式语言支持的常用高阶函数。它接收一个转换函数 f 和一个列表 l，返回一个新列表，其内容是把 f 作用到 l 里的每个元素后的结果。</p>
+<pre><code class="language-plaintext">Fixpoint map {X Y : Type} (f : X -&gt; Y) (l : list X) : list Y :=
+  match l with
+  | nil =&gt; nil
+  | h :: t =&gt; (f h) :: (map f t)
+  end.
+</code></pre>
+<p>值得注意的是传入的列表的元素类型和返回的列表的元素类型不一定一样。</p>
+<p>我们不仅可以对 list 做 map，也可以对其他的数据类型做 map，比如下面的例子对 option 做 map：</p>
+<pre><code class="language-plaintext">Definition option_map {X Y : Type} (f : X -&gt; Y) (xo : option X) : option Y :=
+  match xo with
+  | None =&gt; None
+  | Some x =&gt; Some (f x)
+  end.
+</code></pre>
+<h3 id="fold">Fold</h3>
+<p>一个更加强大的高阶函数是 fold，它是 Google map-reduced 框架的 reduce 函数的灵感来源：</p>
+<pre><code class="language-plaintext">Fixpoint fold {X Y : Type} (f : X -&gt; Y -&gt; Y) (l : list X) (b : Y) : Y :=
+  match l with
+  | nil =&gt; b
+  | h :: t =&gt; f h (fold f t b)
+  end.
+</code></pre>
+<p>从直观上来理解，该函数接收函数 f，列表 l 和初始值 b。然后从初始值 b 开始，把列表中的元素按照从右往左的顺序依次与 type Y 的结果做函数 f 操作。比如 <code>fold plus [1; 2; 3; 4] 0</code> 就意味着 <code>1+(2+(3+(4+0)))</code>。</p>
+<h3 id="functions-that-construct-functions">Functions That Construct Functions</h3>
+<p>我们之前讨论的高阶函数都是将函数作为参数传入，我们在这里看一些将函数作为函数返回值的例子。下面是一个比较 dummy 的例子，constfun 返回的函数不论接收什么都会输出固定值：</p>
+<pre><code class="language-plaintext">Definition constfun {X : Type} (x : X) : nat -&gt; X :=
+  fun (k : nat) =&gt; x.
+</code></pre>
+<p>事实上，函数式编程本质上不支持多参数的函数，我们之前看到的多参数的函数都是通过 currying 完成的。以 plus 为例：</p>
+<pre><code class="language-plaintext">Check plus : nat -&gt; nat -&gt; nat.
+</code></pre>
+<p>这里的 <code>-&gt;</code> 可以理解为作用在 type 类型元素上的一种二元运算符，它是 right associative 的，即 plus 的类型实际上是 <code>nat -&gt; (nat -&gt; nat)</code>。我们使用 plus 时都给它传两个参数，但实际上传一个也是可以的，按照 <code>nat -&gt; (nat -&gt; nat)</code>，plus 可以被理解为 “这是一个函数，它接收一个加数，返回另一个函数，这个返回的函数接收另一个加数作为参数，返回加法的结果”。</p>
+<pre><code class="language-plaintext">Definition plus3 := plus 3
+Check plus3 : nat -&gt; nat.
+
+Example test_plus3 : plus3 4 = 7.
+Proof. reflexivity. Qed.
+</code></pre>
+<p>这种给 currying 的函数传一个参数的手法称为 partial application。</p>
+<h2 id="exercises">Exercises</h2>
+<h3 id="exercise-2-stars-standard-optional-mumble_grumble">Exercise: 2 stars, standard, optional (mumble_grumble)</h3>
+<pre><code class="language-plaintext">d (b a 5)           (* NO, the first argument of d should be a type *)
+d mumble (b a 5)    (* YES, grumble mumble *)
+d bool (b a 5)      (* YES, grumble bool   *)
+e bool true         (* YES, grumble bool   *)
+e mumble (b c 0)    (* YES, grumble mumble *)
+e bool (b c 0)      (* NO, the second argument shoule be type bool *)
+c                   (* YES, mumble *)
+</code></pre>
+<h3 id="exercise-1-star-standard-optional-combine_checks">Exercise: 1 star, standard, optional (combine_checks)</h3>
+<pre><code class="language-plaintext">Check @combine : forall X Y : Type, list X -&gt; list Y -&gt; list (X * Y).
+Compute (combine [1; 2] [false; false; true; true]).
+  (* [(1, false); (2, false)] *)
+</code></pre>
+<h3 id="exercise-2-stars-standard-especially-useful-split">Exercise: 2 stars, standard, especially useful (split)</h3>
+<pre><code class="language-plaintext">Fixpoint split {X Y : Type} (l : list (X*Y)) : (list X) * (list Y) :=
+  match l with
+  | nil =&gt; (nil, nil)
+  | (x, y) :: l' =&gt; (x :: fst (split l'), y :: snd (split l'))
+  end.
+
+Example test_split:
+  split [(1,false);(2,false)] = ([1;2],[false;false]).
+Proof. reflexivity. Qed.
+</code></pre>
+<h3 id="exercise-1-star-standard-optional-hd_error_poly">Exercise: 1 star, standard, optional (hd_error_poly)</h3>
+<pre><code class="language-plaintext">Definition hd_error {X : Type} (l : list X) : option X :=
+  match l with
+  | nil =&gt; None
+  | h :: t =&gt; Some h
+  end.
+
+Check @hd_error : forall X : Type, list X -&gt; option X.
+
+Example test_hd_error1 : hd_error [1;2] = Some 1.
+Proof. reflexivity. Qed.
+Example test_hd_error2 : hd_error  [[1];[2]]  = Some [1].
+Proof. reflexivity. Qed.
+</code></pre>
+<h3 id="exercise-2-stars-standard-filter_even_gt7">Exercise: 2 stars, standard (filter_even_gt7)</h3>
+<pre><code class="language-plaintext">Definition filter_even_gt7 (l : list nat) : list nat :=
+  filter (fun n =&gt; (even n) &amp;&amp; (8 &lt;=? n)) l.
+
+Example test_filter_even_gt7_1 :
+  filter_even_gt7 [1;2;6;9;10;3;12;8] = [10;12;8].
+Proof. reflexivity. Qed.
+
+Example test_filter_even_gt7_2 :
+  filter_even_gt7 [5;2;6;19;129] = [].
+Proof. reflexivity. Qed.
+</code></pre>
+<h3 id="exercise-3-stars-standard-partition">Exercise: 3 stars, standard (partition)</h3>
+<pre><code class="language-plaintext">Definition partition {X : Type}
+                     (test : X -&gt; bool)
+                     (l : list X)
+                   : list X * list X :=
+  ((filter test l), (filter (fun x =&gt; negb(test x)) l)).
+
+Example test_partition1: partition odd [1;2;3;4;5] = ([1;3;5], [2;4]).
+Proof. reflexivity. Qed.
+Example test_partition2: partition (fun x =&gt; false) [5;9;0] = ([], [5;9;0]).
+Proof. reflexivity. Qed.
+</code></pre>
+<h3 id="exercise-3-stars-standard-map_rev">Exercise: 3 stars, standard (map_rev)</h3>
+<pre><code class="language-plaintext">Lemma app_map : forall (X Y : Type) (f : X -&gt; Y) (l1 l2 : list X),
+  map f (l1 ++ l2) = (map f l1) ++ (map f l2).
+Proof.
+  intros X Y f l1 l2.
+  induction l1 as [| n l1' IHl1'].
+  - reflexivity.
+  - simpl. rewrite IHl1'. reflexivity.
+Qed.
+
+Theorem map_rev : forall (X Y : Type) (f : X -&gt; Y) (l : list X),
+  map f (rev l) = rev (map f l).
+Proof.
+  intros X Y f l.
+  induction l as [| n l' IHl'].
+  - reflexivity.
+  - simpl. 
+    rewrite &lt;- IHl'.
+    rewrite app_map.
+    reflexivity.
+Qed.
+</code></pre>
+<p>在证明主要定理之前，需要先证明一个和列表 append 相关的引理。</p>
+<h3 id="exercise-2-stars-standard-especially-useful-flat_map">Exercise: 2 stars, standard, especially useful (flat_map)</h3>
+<pre><code class="language-plaintext">Fixpoint flat_map {X Y: Type} (f: X -&gt; list Y) (l: list X)
+                   : list Y :=
+  match l with
+  | nil =&gt; nil
+  | h :: t =&gt; (f h) ++ (flat_map f t)
+  end.
+
+Example test_flat_map1:
+  flat_map (fun n =&gt; [n;n;n]) [1;5;4]
+  = [1; 1; 1; 5; 5; 5; 4; 4; 4].
+Proof. reflexivity. Qed.
+</code></pre>
+<h3 id="exercise-1-star-standard-optional-fold_types_different">Exercise: 1 star, standard, optional (fold_types_different)</h3>
+<p>fold 参数中的函数 f 的类型是 <code>f : X -&gt; Y -&gt; Y</code>，X 和 Y 不同的情况也是很有用的，比如传入的 list 是一系列动作 (上下左右)，b 是一个初始位置，那么使用 fold 函数就可以得出做完这一系列移动后的最终位置。</p>
+<h3 id="exercise-2-stars-standard-fold_length">Exercise: 2 stars, standard (fold_length)</h3>
+<pre><code class="language-plaintext">Theorem fold_length_correct : forall X (l : list X),
+  fold_length l = length l.
+Proof.
+  intros X l.
+  induction l as [|n l' IHl'].
+  - reflexivity.
+  - simpl.
+    rewrite &lt;- IHl'.
+    reflexivity.
+Qed.
+</code></pre>
+<p>这段证明有一个值得关注的细节：在 successor case 的最后一步之前，证明的 goal 是</p>
+<pre><code class="language-plaintext">fold_length (n :: l') = S (fold_length l')
+</code></pre>
+<p>在这一步使用 <code>simpl.</code> 无法化简，但我们知道根据 fold_length 的定义这一步是可以化简的，事实上使用 <code>reflexivity.</code> 就可以直接解决问题。reflexivity 使用了更加 aggressive 的化简方法，有时卡壳时可以一试。</p>
+<h3 id="exercise-3-stars-standard-fold_map">Exercise: 3 stars, standard (fold_map)</h3>
+<pre><code class="language-plaintext">Definition fold_map {X Y: Type} (f: X -&gt; Y) (l: list X) : list Y :=
+  fold (fun x l =&gt; [f x] ++ l) l nil.
+
+Theorem fold_map_correct : forall (X Y : Type) (f : X -&gt; Y) (l : list X),
+  fold_map f l = map f l.
+Proof.
+  intros X Y f l.
+  induction l as [| n l' IHl'].
+  - reflexivity.
+  - simpl.
+    rewrite &lt;- IHl'.
+    reflexivity.
+Qed.
+</code></pre>
+<h3 id="exercise-2-stars-advanced-currying">Exercise: 2 stars, advanced (currying)</h3>
+<p>将一个 <code>(X * Y) -&gt; Z</code> 类型的函数转换为 <code>X -&gt; (Y -&gt; Z)</code> 类型的函数的过程称为 currying，反过来称为 uncurrying。</p>
+<pre><code class="language-plaintext">Definition prod_uncurry {X Y Z : Type}
+  (f : X -&gt; Y -&gt; Z) (p : X * Y) : Z := (f (fst p))(snd p).
+</code></pre>
+<pre><code class="language-plaintext">Theorem uncurry_curry : forall (X Y Z : Type)
+                        (f : X -&gt; Y -&gt; Z)
+                        x y,
+  prod_curry (prod_uncurry f) x y = f x y.
+Proof.
+  intros X Y Z f x y.
+  reflexivity.
+Qed.
+
+Theorem curry_uncurry : forall (X Y Z : Type)
+                        (f : (X * Y) -&gt; Z) (p : X * Y),
+  prod_uncurry (prod_curry f) p = f p.
+Proof.
+  intros X Y Z f p.
+  destruct p as [n m].
+  reflexivity.
+Qed.
+</code></pre>
+<p><code>prod_uncurry f</code> 接收了一个 <code>X -&gt; Y -&gt; Z</code> 类型的函数参数，返回了一个 <code>(X * Y) -&gt; Z </code> 类型的参数。<code>prod_curry</code> 正好相反。</p>
+<p>注意第二个证明中，由于我们定义 <code>prod_uncurry</code> 时使用了 <code>fst</code> 和 <code>snd</code>，所以使用 reflexivity 之前要先用 destruct 把 pair p 给展开。</p>
+<h3 id="church-numerals-advanced">Church Numerals (Advanced)</h3>
+<h4 id="exercise-2-stars-advanced-church_scc">Exercise: 2 stars, advanced (church_scc)</h4>
+<pre><code class="language-plaintext">Definition scc (n : cnat) : cnat :=
+  fun (X : Type) (f : X -&gt; X) (x : X) =&gt; n X f (f x).
+Example scc_1 : scc zero = one.
+Proof. reflexivity. Qed.
+
+Example scc_2 : scc one = two.
+Proof. reflexivity. Qed.
+
+Example scc_3 : scc two = three.
+Proof. reflexivity. Qed.
+</code></pre>
+<h4 id="exercise-3-stars-advanced-church_plus">Exercise: 3 stars, advanced (church_plus)</h4>
+<pre><code class="language-plaintext">Definition plus (n m : cnat) : cnat :=
+  fun (X : Type) (f : X -&gt; X) (x : X) =&gt; m X f (n X f x).
+
+Example plus_1 : plus zero one = one.
+Proof. reflexivity. Qed.
+
+Example plus_2 : plus two three = plus three two.
+Proof. reflexivity. Qed.
+
+Example plus_3 :
+  plus (plus two two) three = plus one (plus three three).
+Proof. reflexivity. Qed.
+</code></pre>
+<h4 id="exercise-3-stars-advanced-church_mult">Exercise: 3 stars, advanced (church_mult)</h4>
+<pre><code class="language-plaintext">Definition mult (n m : cnat) : cnat :=
+  fun (X : Type) (f : X -&gt; X) (x : X) =&gt; n X (m X f) x. 
+
+Example mult_1 : mult one one = one.
+Proof. reflexivity. Qed.
+
+Example mult_2 : mult zero (plus three three) = zero.
+Proof. reflexivity. Qed.
+
+Example mult_3 : mult two three = plus three three.
+Proof. reflexivity. Qed.
+</code></pre>
+<h4 id="exercise-3-stars-advanced-church_exp">Exercise: 3 stars, advanced (church_exp)</h4>
+<pre><code class="language-plaintext">Definition exp (n m : cnat) : cnat :=
+  fun (X : Type) (f : X -&gt; X) (x : X) =&gt; (m (X -&gt; X) (n X) f) x.
+
+Example exp_1 : exp two two = plus two two.
+Proof. reflexivity. Qed.
+
+Example exp_2 : exp three zero = one.
+Proof. reflexivity. Qed.
+
+Example exp_3 : exp three two = plus (mult two (mult two two)) one.
+Proof. reflexivity. Qed.
+</code></pre>
+<p>关于 church numeral 可以参考 UCB CS61A 的作业。这里额外再对乘方函数做一点解读，因为其结构比较复杂。</p>
+<p><code>n X</code> 的类型是 <code>(X -&gt; X) -&gt; X -&gt; X</code>，根据 <code>-&gt;</code> right associativity 的性质也可以看作 <code>(X -&gt; X) -&gt; (X -&gt; X)</code>，即传给它一个 <code>X -&gt; X</code> 的函数，它会返回另一个 <code>X -&gt; X</code> 的函数。这里我们将 <code>f</code> 作为底层参数传给 m，可以认为整个操作提高了一阶，我们不是将一个 <code>X -&gt; X</code> 的函数作用在元素 <code>X</code> 上 m 次，而是将一个 <code>(X -&gt; X) -&gt; (X -&gt; X)</code> 的函数作用在函数 <code>f</code> 上 m 次，这个作用函数的语义又恰好是将接收的函数参数重复 n 次，所以就形成了 $1 \to n \to n^2 \to \cdots \to n^m $ 的格局。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/posts/booknotes/softwarefoundations/lf/lists/" rel="next">Woring with Structured Data</a>
+  </div>
+  
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/posts/BookNotes/SoftwareFoundations/lf/poly.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
