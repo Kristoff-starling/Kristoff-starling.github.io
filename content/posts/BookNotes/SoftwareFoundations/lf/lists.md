@@ -1,5 +1,5 @@
 ---
-title: "Woring with Structured Data"
+title: "Working with Structured Data"
 linktitle: "03: Lists"
 type: docs
 draft: false
