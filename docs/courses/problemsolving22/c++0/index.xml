@@ -140,7 +140,7 @@ int main ()
       <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/</guid>
-      <description>&lt;p&gt;假设我们现在要计算 $1+2+3+&amp;hellip;+10$，相信你已经有能力写出一段代码完成这个任务：&lt;/p&gt;
+      <description>&lt;p&gt;假设我们现在要计算 $1+2+3+4+5$，相信你已经有能力写出一段代码完成这个任务：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int sum;
 sum = 1;
 sum = sum + 2; // 你也可以写 sum += 2; 它们的功能是一样的
@@ -160,7 +160,7 @@ sum = sum + 5;
 s0[start]
 s1{while yes?}
 s2(body)
-s3(continue)
+s3(break)
 s0 --&amp;gt; s1
 s1 --&amp;gt; |yes| s2
 s2 --&amp;gt; s1
@@ -225,7 +225,7 @@ int main ()
 {
     int n, sum;
     std::cin &amp;gt;&amp;gt; n;
-    for (int i = 1; i &amp;lt;= n; i++)
+    for (int i = 1; i &amp;lt;= n; i++) // 如果你想在循环体内部临时使用一个变量，你可以选择像这样的定义方式
         sum += i; // 别忘了单条语句可以不用{}包裹起来
     std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; &#39;\n&#39;;
     return 0;

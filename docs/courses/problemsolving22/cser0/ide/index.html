@@ -28,12 +28,13 @@
   
     
   
-  <meta name="description" content="随着科学技术的发展, 在国际学术交流中使用英语已经成为常态: 顶尖的论文无一不使用英文来书写, 在国际上公认的计算机领域经典书籍也是使用英文编著。顶尖的论文没有中文翻译版; 如果需要获取信息, 也应该主动去阅读英文材料, 而不是等翻译版出版。&ldquo;我是中国人, 我只看中文&quot;这类观点已经不符合时代发展的潮流, 要站在时代的最前沿, 阅读英文材料的能力是不可或缺的。
-想要学好计算机，大家一定要趁早“逼迫”自己熟悉英语环境，尤其强化自己的英语阅读能力 (将来快速略读大段的英文手册很可能是你的工作/学习常态)。我们强烈建议你注意以下几个方面：
-不要依赖教材的中文翻译版本。 将来大家学习的《算法导论》等教材是比较容易找到中文翻译版本的，但正如名著的翻译版时常体现不出名著本身的意境，翻译版的教材在很多细节上可能与原版有出入，影响大家的理解，也不利于大家熟悉一些英文术语。我们认为，英文阅读能力合格的标准之一便是阅读学术方面的英文材料和中文材料应该基本不存在速度差异。这个过程刚开始可能会比较痛苦，但随着学期深入大家一定能克服障碍。大家也不必对这个标准感到过于惊慌，因为助教认为自己的英语阅读能力也不合格 不要依赖百度等中文网站解决问题。 在刚刚接触计算机以及学习算法的初级阶段，中文的博客 (以CSDN为主) 可以帮助大家解决一部分问题。但随着大家水平的提高，很多复杂的问题 (尤其是与系统配置，环境配置相关的问题) 在中文环境下很难找到契合的回答。这时推荐大家使用对应的英文关键字在 google/bing/stackoverflow 上搜索回答。 (如果我想到了会再添加) 英语的学习和强化方法是一个见仁见智的问题。我们的建议是不要期待 大学英语读写/大学英语视听说 能给你带来质的改变。提升语言能力的核心还是多读多听多说多写。引用陈道蓄老师的话: “坚持一年, 你就会发现有不同; 坚持两年, 你就会发现大有不同。”">
+  <meta name="description" content="正所谓“工欲善其事，必先利其器”，想要拥有良好的代码书写体验就应当配置好一套舒适的代码编写环境。打开 Windows 的“记事本”编写代码可不是什么好的选择——一方面记事本无法提供代码高亮、自动补全、智能缩进等功能，盯着白纸黑字写代码颇为心累；另一方面即使你写完了代码，记事本也没有集成好配套的编译、调试工具帮助你确定代码的正确性。
+很多优秀的程序员都会选择 IDE (Integrated Development Environment，中文翻译为集成开发环境）来书写代码。所谓集成开发环境，就是将写代码所需要的一系列工具都集成在了一个软件里，从书写代码所需的编辑器，到编译运行代码所需的编译器、链接器，到调试代码所需的调试器……IDE里应有尽有，且很多功能都可以“一键运行”，极好地将程序员的精力解放了出来。
+由于本课程主要希望培养大家掌握 C/C&#43;&#43; 这门语言，所以我们着重介绍了几个和 C/C&#43;&#43; 配合体验良好的 IDE，包括 Dev-C&#43;&#43; (极其推荐新手入门使用，入门门槛低)，Visual Studio (工业级的重型IDE，功能强大但身材略显臃肿), Visual Studio Code (宇宙最强编辑器) 等，大家可以参考杜星宇助教撰写的 这篇文档 来学习。
+如果你已经是比较有经验的代码书写者，你可能并不需要 IDE。你也许会习惯使用 Vim/Emacs 等老牌编辑器，自己写脚本编译和运行代码，使用 GDB 进行调试……如果你能驾驭这些，我们当然也鼓励你充分地使用这些命令行工具。不过我们还是极力地推荐你尝试一下 VS Code (这不是为微软打广告)，其丰富的第三方插件库，强大的远程连接功能，自由的代码跳转、补全、纠错使其堪称编辑器界 BUG 级的存在，毕竟写代码怎么舒服怎么来，能拥有一个 这样 炫酷的界面何乐而不为呢？">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/cser0/english/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/cser0/ide/">
 
   
 
@@ -217,7 +218,7 @@
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/cser0/english/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/cser0/ide/">
 
   
   
@@ -231,11 +232,12 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/cser0/english/">
-  <meta property="og:title" content="English | Academic">
-  <meta property="og:description" content="随着科学技术的发展, 在国际学术交流中使用英语已经成为常态: 顶尖的论文无一不使用英文来书写, 在国际上公认的计算机领域经典书籍也是使用英文编著。顶尖的论文没有中文翻译版; 如果需要获取信息, 也应该主动去阅读英文材料, 而不是等翻译版出版。&ldquo;我是中国人, 我只看中文&quot;这类观点已经不符合时代发展的潮流, 要站在时代的最前沿, 阅读英文材料的能力是不可或缺的。
-想要学好计算机，大家一定要趁早“逼迫”自己熟悉英语环境，尤其强化自己的英语阅读能力 (将来快速略读大段的英文手册很可能是你的工作/学习常态)。我们强烈建议你注意以下几个方面：
-不要依赖教材的中文翻译版本。 将来大家学习的《算法导论》等教材是比较容易找到中文翻译版本的，但正如名著的翻译版时常体现不出名著本身的意境，翻译版的教材在很多细节上可能与原版有出入，影响大家的理解，也不利于大家熟悉一些英文术语。我们认为，英文阅读能力合格的标准之一便是阅读学术方面的英文材料和中文材料应该基本不存在速度差异。这个过程刚开始可能会比较痛苦，但随着学期深入大家一定能克服障碍。大家也不必对这个标准感到过于惊慌，因为助教认为自己的英语阅读能力也不合格 不要依赖百度等中文网站解决问题。 在刚刚接触计算机以及学习算法的初级阶段，中文的博客 (以CSDN为主) 可以帮助大家解决一部分问题。但随着大家水平的提高，很多复杂的问题 (尤其是与系统配置，环境配置相关的问题) 在中文环境下很难找到契合的回答。这时推荐大家使用对应的英文关键字在 google/bing/stackoverflow 上搜索回答。 (如果我想到了会再添加) 英语的学习和强化方法是一个见仁见智的问题。我们的建议是不要期待 大学英语读写/大学英语视听说 能给你带来质的改变。提升语言能力的核心还是多读多听多说多写。引用陈道蓄老师的话: “坚持一年, 你就会发现有不同; 坚持两年, 你就会发现大有不同。”"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/cser0/ide/">
+  <meta property="og:title" content="Coding Environment | Academic">
+  <meta property="og:description" content="正所谓“工欲善其事，必先利其器”，想要拥有良好的代码书写体验就应当配置好一套舒适的代码编写环境。打开 Windows 的“记事本”编写代码可不是什么好的选择——一方面记事本无法提供代码高亮、自动补全、智能缩进等功能，盯着白纸黑字写代码颇为心累；另一方面即使你写完了代码，记事本也没有集成好配套的编译、调试工具帮助你确定代码的正确性。
+很多优秀的程序员都会选择 IDE (Integrated Development Environment，中文翻译为集成开发环境）来书写代码。所谓集成开发环境，就是将写代码所需要的一系列工具都集成在了一个软件里，从书写代码所需的编辑器，到编译运行代码所需的编译器、链接器，到调试代码所需的调试器……IDE里应有尽有，且很多功能都可以“一键运行”，极好地将程序员的精力解放了出来。
+由于本课程主要希望培养大家掌握 C/C&#43;&#43; 这门语言，所以我们着重介绍了几个和 C/C&#43;&#43; 配合体验良好的 IDE，包括 Dev-C&#43;&#43; (极其推荐新手入门使用，入门门槛低)，Visual Studio (工业级的重型IDE，功能强大但身材略显臃肿), Visual Studio Code (宇宙最强编辑器) 等，大家可以参考杜星宇助教撰写的 这篇文档 来学习。
+如果你已经是比较有经验的代码书写者，你可能并不需要 IDE。你也许会习惯使用 Vim/Emacs 等老牌编辑器，自己写脚本编译和运行代码，使用 GDB 进行调试……如果你能驾驭这些，我们当然也鼓励你充分地使用这些命令行工具。不过我们还是极力地推荐你尝试一下 VS Code (这不是为微软打广告)，其丰富的第三方插件库，强大的远程连接功能，自由的代码跳转、补全、纠错使其堪称编辑器界 BUG 级的存在，毕竟写代码怎么舒服怎么来，能拥有一个 这样 炫酷的界面何乐而不为呢？"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -258,7 +260,7 @@
 
 
 
-  <title>English | Academic</title>
+  <title>Coding Environment | Academic</title>
 
 </head>
 
@@ -471,7 +473,7 @@
     <a class="docs-toc-link" href="/courses/problemsolving22/cser0/english/">Miscellaneous</a>
     <ul class="nav docs-sidenav">
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/cser0/english/">English</a>
       </li>
       
@@ -492,7 +494,7 @@
     <a class="docs-toc-link" href="/courses/problemsolving22/cser0/ide/">Tools</a>
     <ul class="nav docs-sidenav">
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/cser0/ide/">Environment</a>
       </li>
       
@@ -517,17 +519,15 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>English</h1>
+          <h1>Coding Environment</h1>
 
           <div class="article-style">
-            <p>随着科学技术的发展, 在国际学术交流中使用英语已经成为常态: 顶尖的论文无一不使用英文来书写, 在国际上公认的计算机领域经典书籍也是使用英文编著。顶尖的论文没有中文翻译版; 如果需要获取信息, 也应该主动去阅读英文材料, 而不是等翻译版出版。&ldquo;我是中国人, 我只看中文&quot;这类观点已经不符合时代发展的潮流, 要站在时代的最前沿, 阅读英文材料的能力是不可或缺的。</p>
-<p>想要学好计算机，大家一定要趁早“逼迫”自己熟悉英语环境，尤其强化自己的英语阅读能力 (将来快速略读大段的英文手册很可能是你的工作/学习常态)。我们强烈建议你注意以下几个方面：</p>
-<ul>
-<li><strong>不要依赖教材的中文翻译版本。</strong> 将来大家学习的《算法导论》等教材是比较容易找到中文翻译版本的，但正如名著的翻译版时常体现不出名著本身的意境，翻译版的教材在很多细节上可能与原版有出入，影响大家的理解，也不利于大家熟悉一些英文术语。我们认为，英文阅读能力合格的标准之一便是阅读学术方面的英文材料和中文材料应该基本不存在速度差异。这个过程刚开始可能会比较痛苦，但随着学期深入大家一定能克服障碍。<del>大家也不必对这个标准感到过于惊慌，因为助教认为自己的英语阅读能力也不合格</del></li>
-<li><strong>不要依赖百度等中文网站解决问题。</strong> 在刚刚接触计算机以及学习算法的初级阶段，中文的博客 (以CSDN为主) 可以帮助大家解决一部分问题。但随着大家水平的提高，很多复杂的问题 (尤其是与系统配置，环境配置相关的问题) 在中文环境下很难找到契合的回答。这时推荐大家使用对应的英文关键字在 google/bing/stackoverflow 上搜索回答。</li>
-<li>(如果我想到了会再添加)</li>
-</ul>
-<p>英语的学习和强化方法是一个见仁见智的问题。我们的建议是不要期待 <em>大学英语读写/大学英语视听说</em> 能给你带来质的改变。提升语言能力的核心还是多读多听多说多写。引用陈道蓄老师的话: “坚持一年, 你就会发现有不同; 坚持两年, 你就会发现大有不同。”</p>
+            <p>正所谓“工欲善其事，必先利其器”，想要拥有良好的代码书写体验就应当配置好一套舒适的代码编写环境。打开 Windows 的“记事本”编写代码可不是什么好的选择——一方面记事本无法提供代码高亮、自动补全、智能缩进等功能，盯着白纸黑字写代码颇为心累；另一方面即使你写完了代码，记事本也没有集成好配套的编译、调试工具帮助你确定代码的正确性。</p>
+<p>很多优秀的程序员都会选择 IDE (Integrated Development Environment，中文翻译为集成开发环境）来书写代码。所谓集成开发环境，就是将写代码所需要的一系列工具都集成在了一个软件里，从书写代码所需的编辑器，到编译运行代码所需的编译器、链接器，到调试代码所需的调试器……IDE里应有尽有，且很多功能都可以“一键运行”，极好地将程序员的精力解放了出来。</p>
+<p>由于本课程主要希望培养大家掌握 C/C++ 这门语言，所以我们着重介绍了几个和 C/C++ 配合体验良好的 IDE，包括 Dev-C++ (极其推荐新手入门使用，入门门槛低)，Visual Studio (工业级的重型IDE，功能强大但身材略显臃肿), Visual Studio Code (宇宙最强编辑器) 等，大家可以参考杜星宇助教撰写的
+<a href="/docs/C-env.pdf">这篇文档</a> 来学习。</p>
+<p>如果你已经是比较有经验的代码书写者，你可能并不需要 IDE。你也许会习惯使用 Vim/Emacs 等老牌编辑器，自己写脚本编译和运行代码，使用 GDB 进行调试……如果你能驾驭这些，我们当然也鼓励你充分地使用这些命令行工具。不过我们还是极力地推荐你尝试一下 VS Code (这不是为微软打广告)，其丰富的第三方插件库，强大的远程连接功能，自由的代码跳转、补全、纠错使其堪称编辑器界 BUG 级的存在，毕竟写代码怎么舒服怎么来，能拥有一个
+<a href="https://code.visualstudio.com/" target="_blank" rel="noopener">这样</a> 炫酷的界面何乐而不为呢？</p>
 
           </div>
 
@@ -543,8 +543,15 @@
   
   
   <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving22/cser0/english/" rel="next">English</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/cser0/ide/" rel="prev">Coding Environment</a>
+    <a href="/courses/problemsolving22/cser0/self-learning/" rel="prev">Self Learning</a>
   </div>
   
 </div>
@@ -566,7 +573,7 @@
   
 
 <p class="edit-page">
-  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/cser0/english.md">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/cser0/ide.md">
     <i class="fas fa-pen pr-2"></i>Edit this page
   </a>
 </p>

@@ -5,7 +5,7 @@ type: docs
 
 menu:
     cser0:
-        parent: Contents
+        parent: Miscellaneous
         weight: 2
 
 view: 3

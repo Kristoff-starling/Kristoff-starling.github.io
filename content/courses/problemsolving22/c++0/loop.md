@@ -10,7 +10,7 @@ menu:
         parent: Contents
         weight: 4
 ---
-假设我们现在要计算 $1+2+3+...+10$，相信你已经有能力写出一段代码完成这个任务：
+假设我们现在要计算 $1+2+3+4+5$，相信你已经有能力写出一段代码完成这个任务：
 
 ```c++
 int sum;
@@ -38,7 +38,7 @@ graph TD
 s0[start]
 s1{while yes?}
 s2(body)
-s3(continue)
+s3(break)
 s0 --> s1
 s1 --> |yes| s2
 s2 --> s1
@@ -124,7 +124,7 @@ int main ()
 {
     int n, sum;
     std::cin >> n;
-    for (int i = 1; i <= n; i++)
+    for (int i = 1; i <= n; i++) // 如果你想在循环体内部临时使用一个变量，你可以选择像这样的定义方式
         sum += i; // 别忘了单条语句可以不用{}包裹起来
     std::cout << sum << '\n';
     return 0;
