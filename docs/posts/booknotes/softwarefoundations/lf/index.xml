@@ -2310,5 +2310,464 @@ Proof. reflexivity. Qed.
 </description>
     </item>
     
+    <item>
+      <title>More Basic Tactics</title>
+      <link>https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/tactics/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/tactics/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#the-apply-tactic&#34;&gt;The &lt;code&gt;apply&lt;/code&gt; Tactic&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#the-apply-with-tactic&#34;&gt;The &lt;code&gt;apply with&lt;/code&gt; Tactic&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#the-injection-and-discriminate-tactics&#34;&gt;The &lt;code&gt;injection&lt;/code&gt; and &lt;code&gt;discriminate&lt;/code&gt; Tactics&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#using-tactics-on-hypotheses&#34;&gt;Using Tactics on Hypotheses&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#varying-the-induction-hypothesis&#34;&gt;Varying the Induction Hypothesis&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#unfolding-definitions&#34;&gt;Unfolding Definitions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#using-destruct-on-compound-expressions&#34;&gt;Using &lt;code&gt;destruct&lt;/code&gt; on Compound Expressions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercises-tbd&#34;&gt;Exercises (tbd)&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-optional-silly_ex&#34;&gt;Exercise: 2 stars, standard, optional (silly_ex)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-apply_exercise1&#34;&gt;Exercise: 2 stars, standard (apply_exercise1)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-optional-trans_eq_exercise&#34;&gt;Exercise: 3 stars, standard, optional (trans_eq_exercise)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-injection_ex3&#34;&gt;Exercise: 3 stars, standard (injection_ex3)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-1-star-standard-discriminate_ex3&#34;&gt;Exercise: 1 star, standard (discriminate_ex3)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-eqb_true&#34;&gt;Exercise: 2 stars, standard (eqb_true)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-especially-useful-plus_n_n_injective&#34;&gt;Exercise: 3 stars, standard, especially useful (plus_n_n_injective)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-especially-useful-gen_dep_practice&#34;&gt;Exercise: 3 stars, standard, especially useful (gen_dep_practice)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-combine_split&#34;&gt;Exercise: 3 stars, standard (combine_split)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-destruct_eqn_practice&#34;&gt;Exercise: 2 stars, standard (destruct_eqn_practice)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-eqb_sym&#34;&gt;Exercise: 3 stars, standard (eqb_sym)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-3-stars-standard-optional-eqb_trans&#34;&gt;Exercise: 3 stars, standard, optional (eqb_trans)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;the-apply-tactic&#34;&gt;The &lt;code&gt;apply&lt;/code&gt; Tactic&lt;/h2&gt;
+&lt;p&gt;我们在证明过程中经常遇到某个 goal 正好是假设/某个之前已经证明过的定理的情况。这时候写一步 &lt;code&gt;rewrite&lt;/code&gt; 再写一步 &lt;code&gt;reflexivity&lt;/code&gt; 显得略为繁琐，我们可以用 &lt;code&gt;apply&lt;/code&gt; 这个 tactic 来一步到位：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem silly1 : forall n m : nat, n = m -&amp;gt; n = m.
+Proof.
+  intros n m eq.
+  apply eq.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当 &lt;code&gt;apply&lt;/code&gt; 应用于一个蕴含式时，Coq 会把蕴含式的条件设置成一个新的 goal。如果 &lt;code&gt;apply&lt;/code&gt; 后面跟的表达式中有全称量词，Coq 可以自动将其实例化：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem silly2a : forall (n m : nat),
+  (n,n) = (m,m) -&amp;gt;
+  (forall (q r : nat), (q,q) = (r,r) -&amp;gt; [q] = [r]) -&amp;gt;
+  [n] = [m].
+Proof.
+  intros n m eq1 eq2.
+  apply eq2. apply eq1. Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在使用 &lt;code&gt;apply&lt;/code&gt; 时，被 applied 的表达式必须和 goal 完全匹配，比如 &lt;code&gt;n = m&lt;/code&gt; 和 &lt;code&gt;m = n&lt;/code&gt; 就不算完全匹配。但这种情况我们可以通过 &lt;code&gt;symmetry&lt;/code&gt; 这个 tactic 来调整等号左右的位置：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem silly3 : forall n m : nat, n = m -&amp;gt; m = n.
+Proof.
+  intros n m H.
+  symmetry.
+  apply H.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;the-apply-with-tactic&#34;&gt;The &lt;code&gt;apply with&lt;/code&gt; Tactic&lt;/h2&gt;
+&lt;p&gt;考虑如下例子：假设我们已经有了这样一个引理：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Lemma trans_eq : forall (X : Type) (n m o : X),
+  n = m -&amp;gt; m = o -&amp;gt; n = o.
+Proof.
+  intros X n m o eq1 eq2.
+  rewrite eq1.
+  rewrite eq2.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;现在我们希望证明如下命题：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Example trans_eq_example : forall (a b c d e f : nat),
+  [a;b] = [c;d] -&amp;gt;
+  [c;d] = [e;f] -&amp;gt;
+  [a;b] = [e;f].
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果我们想要用 &lt;code&gt;apply&lt;/code&gt; 直接使用之前的引理，Coq 会根据 goal 自动进行实例化，从而得到 &lt;code&gt;X&lt;/code&gt; 是 &lt;code&gt;list nat&lt;/code&gt;，&lt;code&gt;n&lt;/code&gt; 是 &lt;code&gt;[a;b]&lt;/code&gt;，&lt;code&gt;o&lt;/code&gt; 是 &lt;code&gt;[e;f]&lt;/code&gt;，但 &lt;code&gt;apply&lt;/code&gt; 无法从 goal 推断出 &lt;code&gt;m&lt;/code&gt; 应该取什么。所以我们要用 &lt;code&gt;apply with&lt;/code&gt; tactic 显式地把 &lt;code&gt;m&lt;/code&gt; 的值提供给 Coq：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Proof.
+  intros a b c d e f eq1 eq2.
+  apply trans_wq with (m:=[c;d]).
+  apply eq1. apply eq2.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;事实上我们可以省略 &lt;code&gt;m&lt;/code&gt;，即直接写 &lt;code&gt;apply trans_eq with [c;d].&lt;/code&gt;Coq 可以智能地判定我们提供的值是谁的。&lt;/p&gt;
+&lt;p&gt;除此之外，Coq 有一个名叫 &lt;code&gt;transtivity&lt;/code&gt; 的 tactic 专门负责做这项工作，所以实际上我们不需要证明 &lt;code&gt;trans_eq&lt;/code&gt; 这个引理，直接用这个 tactic，同时显式地给出中间变量的取值即可：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Proof.
+  intros a b c d e f eq1 eq2.
+  transtivity [c;d].
+  apply eq1. apply eq2.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;the-injection-and-discriminate-tactics&#34;&gt;The &lt;code&gt;injection&lt;/code&gt; and &lt;code&gt;discriminate&lt;/code&gt; Tactics&lt;/h2&gt;
+&lt;p&gt;考虑自然数的定义：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Inductive nat : Type :=
+  | O
+  | S (n : nat).
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;从这个定义中我们除了知道自然数唯二两种可能的形式，还可以看出两条性质：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;constructor &lt;code&gt;S&lt;/code&gt; 是 injective (one-to-one) 的，即若 &lt;code&gt;S n = S m&lt;/code&gt;，则有 &lt;code&gt;n = m&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;O&lt;/code&gt; 和 &lt;code&gt;S&lt;/code&gt; 这两个 constructor 是 disjoint 的，即对于任意 n，&lt;code&gt;O&lt;/code&gt; 不等于 &lt;code&gt;S n&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;上面两条性质其实可以推广到任何归纳定义的类型上，即一个类型中所有的 constructor 都是 injective 的；不同的 constructor 产生的 value 不可能相等。&lt;/p&gt;
+&lt;p&gt;我们先考虑前者，&lt;code&gt;forall n m : nat, S n = S m -&amp;gt; n = m.&lt;/code&gt; 这个定理可以通过归纳法证明，事实上所有 constructor 的 injectivity 都可以通过类似的归纳法证明，因此 Coq 提供了 &lt;code&gt;injection&lt;/code&gt; 这个 tactic。我们看一个使用 tactic 的例子 (注意：&lt;code&gt;injection&lt;/code&gt; 只能用在 constructor 的 injectivity 上，不能用于一般的单射！)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem injection_ex : forall (n m o : nat), [n;m] = [o;o] -&amp;gt; n = m.
+Proof.
+  intros n m o H.
+  injective H as H1 H2.
+  rewrite H1. rewrite H2. reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;injection H as H1 H2.&lt;/code&gt; 表示将 &lt;code&gt;H&lt;/code&gt; 这个表达式中所有可以通过 injectivity 得到的结论全部做成当前上下文的 hypothesis，分别命名为 &lt;code&gt;H1&lt;/code&gt; &lt;code&gt;H2&lt;/code&gt;。这里 &lt;code&gt;H : [n;m] = [o;o]&lt;/code&gt;，完全展开就是 &lt;code&gt;cons n (cons m nil) = cons o (cons o nil)&lt;/code&gt;。根据 injectivity 我们可以知道 &lt;code&gt;n = o&lt;/code&gt; 和 &lt;code&gt;cons m nil = cons o nil&lt;/code&gt;，再次利用 injectivity 可知 &lt;code&gt;m = o&lt;/code&gt;，因此 Coq 的 &lt;code&gt;injection&lt;/code&gt; 可以帮我们自动分析出两条结论。&lt;/p&gt;
+&lt;p&gt;我们再来讨论后者。disjointness 告诉我们如果我们的 hypothesis 中出现了一个定义中的两个不同的 constructor 的 value 相等，那么就可以由条件假推出一切真，这也被称为 principle of explosion。在 Coq 中我们可以使用 &lt;code&gt;discrimate&lt;/code&gt; 这个 tactic 来完成这件事，只要我们指定一个确定是错误的假设 (不一定是 disjointness 的这种，任何错误的表达式都可以)，就可以直接证完当前结论。下面是一个例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem discriminate_ex : forall (n : nat), S n = O -&amp;gt; 2 + 2 = 5.
+Proof.
+  intros n contra.
+  discriminate contra.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;injectivity 告诉我们 &lt;code&gt;S n = S m -&amp;gt; n = m&lt;/code&gt;。这件事情反过来也是成立的，即如下定理：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem f_equal : forall (A B : Type) (f : A -&amp;gt; B) (x y : A),
+  x = y -&amp;gt; f x = f y.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;该定理用 &lt;code&gt;rewrite&lt;/code&gt; 很好证。事实上 Coq 为我们提供了 &lt;code&gt;f_equal&lt;/code&gt; 这个 tactic，我们不需要证明该定理就可以使用这个结论，下面是一个例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem eq_implies_succ_equal : forall (n m : nat),
+  n = m -&amp;gt; S n = S m.
+Proof.
+  intros n m H.
+  f_equal.
+  apply H.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果当前的 goal 形如 &lt;code&gt;f a1 a2 ... an = g b1 b2 ... bn&lt;/code&gt;，则 &lt;code&gt;f_goal&lt;/code&gt; 会自动将其转化为 &lt;code&gt;f = g&lt;/code&gt; &lt;code&gt;a1 = b1&lt;/code&gt; &amp;hellip; &lt;code&gt;an = bn&lt;/code&gt; 这些 subgoal，如果其中有 trivial 的 (比如两个函数相同，对应位置的两个参数相同) &lt;code&gt;f_equal&lt;/code&gt; 还会自动过滤到它们。&lt;/p&gt;
+&lt;h2 id=&#34;using-tactics-on-hypotheses&#34;&gt;Using Tactics on Hypotheses&lt;/h2&gt;
+&lt;p&gt;默认情况下，大部分的 tactic 都是在保持 context 不变的情况下针对 goal 进行的。事实上 Coq 提供了 &amp;ldquo;in&amp;rdquo; 的语法，可以让 tactic 作用在 context 中的 hypothesis 上，例如 &lt;code&gt;simpl&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem S_inj : forall (n m : nat) (b : bool),
+  ((S n) =? (S m)) = b  -&amp;gt;
+  (n =? m) = b.
+Proof.
+  intros n m b H. simpl in H. apply H.  Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;再比如 &lt;code&gt;symmetry&lt;/code&gt; 和  &lt;code&gt;apply&lt;/code&gt;：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem silly4 : forall (n m p q : nat),
+  (n = m -&amp;gt; p = q) -&amp;gt;
+  m = n -&amp;gt;
+  q = p.
+Proof.
+  intros n m p q EQ H.
+  symmetry in H. apply EQ in H.
+  symmetry in H. apply H.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;值得注意的是 &lt;code&gt;apply&lt;/code&gt; 和 &lt;code&gt;apply in&lt;/code&gt; 的区别：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;apply in&lt;/code&gt; 采用的是 forward reasoning，即 &lt;code&gt;apply L in H&lt;/code&gt; 的功能是：如果 L 是蕴含式 &lt;code&gt;X -&amp;gt; Y&lt;/code&gt;，H 是 &lt;code&gt;X&lt;/code&gt;，则我们可以转而去证明 &lt;code&gt;Y&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;apply&lt;/code&gt; 采用的是 backward reasoning，即 &lt;code&gt;apply H&lt;/code&gt; 的功能是：如果 H 是蕴含式 &lt;code&gt;X -&amp;gt; Y&lt;/code&gt;，当前的结论是 &lt;code&gt;Y&lt;/code&gt;，则我们只要能证明 &lt;code&gt;X&lt;/code&gt; 就足已完成证明。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;人类的 informal proof 倾向于 forward reasoning，但 Coq 等证明工具通常更多采用 backward reasoning。&lt;/p&gt;
+&lt;h2 id=&#34;varying-the-induction-hypothesis&#34;&gt;Varying the Induction Hypothesis&lt;/h2&gt;
+&lt;p&gt;该章节介绍了两段具有一定技巧性的证明。有时候，不管三七二十一把所有的变量和假设全部都 &lt;code&gt;intros&lt;/code&gt; 了反而会使证明卡住。考虑如下证明 &lt;code&gt;double()&lt;/code&gt; 是单射的定理：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem double_injective : forall n m,
+  double n = double m -&amp;gt; n = m.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果我们先把 &lt;code&gt;n&lt;/code&gt; &lt;code&gt;m&lt;/code&gt; 都 &lt;code&gt;intros&lt;/code&gt; 了再对 &lt;code&gt;n&lt;/code&gt; 进行归纳，则会得到&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Proof.
+  intros n m. induction n as [| n&#39; IHn&#39;].
+  - (* n = 0 *) simpl. intros eq.
+    destruct m as [| m&#39;] eqn:E.
+    + reflexivity.
+    + discriminate eq.
+  - (* n = S n&#39; *) intros eq.
+    destruct m as [| m&#39;] eqn:E.
+    + discriminate eq.
+    + apply f_equal.
+Abort.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;(注：两次 &lt;code&gt;discriminate&lt;/code&gt; 的等式 &lt;code&gt;eq&lt;/code&gt; 均为 &lt;code&gt;double (S n&#39;) = double 0&lt;/code&gt;。这里可以根据 disjointment 直接 pass 的原因是我们可以根据 double 的定义将式子化简为 &lt;code&gt;S (S (double n&#39;)) = 0&lt;/code&gt;，在自然数的两个 constructor 下触发 disjointment。)&lt;/p&gt;
+&lt;p&gt;在 successor case 中 &lt;code&gt;m = S m&#39;&lt;/code&gt; 的情况下，我们需要证明 &lt;code&gt;n&#39; = m&#39;&lt;/code&gt;，而我们的归纳假设是 &lt;code&gt;double n&#39; = double (S m&#39;) -&amp;gt; n&#39; = S m&#39;&lt;/code&gt;，这和我们要证明的结论没什么联系，从而证明卡住。出现这个问题的原因是：在归纳假设和归纳目标的式子中我们的 &lt;code&gt;m&lt;/code&gt; 需要取到不同的值，但我们在开始归纳之前过早地 &lt;code&gt;intros m&lt;/code&gt; 导致 &lt;code&gt;m&lt;/code&gt; 只能是一个具体的值。正确的证明过程应当先对 &lt;code&gt;n&lt;/code&gt; 进行归纳，保证归纳假设中是 &lt;code&gt;forall m&lt;/code&gt; 而不是一个具体的 &lt;code&gt;m&lt;/code&gt;，这样在 successor case 时我们就可以让归纳假设中的 &lt;code&gt;m&lt;/code&gt; 实例化为具体需要的变量，从而完成证明。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem double_injective : forall n m,
+  double n = double m -&amp;gt; n = m.
+Proof.
+  intros n. induction n as [| n&#39; IHn&#39;].
+  - (* n = 0 *) simpl. intros m eq.
+    destruct m as [| m&#39;] eqn:E.
+    + reflexivity.
+    + discriminate eq.
+  - intros m eq.
+    destruct m as [| m&#39;] eqn:E.
+    + discriminate eq.
+    + apply f_equal.
+      apply IHn&#39;    (* IHn&#39;中是forall m，apply，可以完成关键的实例化 *)
+      simpl in eq.
+      injection eq as goal.
+      apply goal.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;刚才的例子展示了 fewer intros 的技巧，但有的时候我们发现我们不得不对全称量词中的变量顺序进行调换。比如刚才的定理，如果我们想对 &lt;code&gt;m&lt;/code&gt; 进行归纳就会遇到一些困难：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Proof.
+  intros m. induction m as [| m&#39; IHm&#39;].
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们会发现 &lt;code&gt;intros m.&lt;/code&gt; 时变量 &lt;code&gt;n&lt;/code&gt; 也被实例化了，因为在 forall 中 &lt;code&gt;n&lt;/code&gt; 出现在 &lt;code&gt;m&lt;/code&gt; 前面。在不修改定理描述的前提下，我们可以使用 &lt;code&gt;generalize dependent&lt;/code&gt; 这个 tactic 来将某个变量“去实例化”：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Proof.
+  intros n m. generalize dependent n.
+  ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行完 &lt;code&gt;generalize dependent n&lt;/code&gt; 后，变量 &lt;code&gt;n&lt;/code&gt; 又会回到 forall 中。&lt;/p&gt;
+&lt;h2 id=&#34;unfolding-definitions&#34;&gt;Unfolding Definitions&lt;/h2&gt;
+&lt;p&gt;有的时候我们需要手动将某个函数的定义展开，从而将证明推进下去。比如我们定义了平方函数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition square n := n * n.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;并且试图证明定理&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Lemma square_mult : forall n m, square (n * m) = (square n) * (square m)
+Proof.
+  intros n m.
+  simpl.  (* get stuck! *)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;simpl.&lt;/code&gt; 并不能帮助我们化简。这时候我们可以使用 &lt;code&gt;unfold square&lt;/code&gt; 把定义展开，这样再使用乘法的交换律、结合律就可以完成证明。&lt;/p&gt;
+&lt;p&gt;这里我们把 &lt;code&gt;unfold&lt;/code&gt; 和 &lt;code&gt;simpl&lt;/code&gt; &lt;code&gt;reflexivity&lt;/code&gt; 的定义展开功能做一个对比。&lt;code&gt;simpl&lt;/code&gt; 和 &lt;code&gt;reflexivity&lt;/code&gt; 也有一定的定义展开功能，但不是很强。例如：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition foo (x : nat) := 5.
+Fact silly_fact_1 : forall m, foo m + 1 = foo (m + 1) + 1.
+Proof.
+  intros m.
+  reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;reflexivity&lt;/code&gt; 可以帮我们自动把 foo 这个常值函数展开，直接完成证明。但如果函数的结构稍微复杂一点 &lt;code&gt;simpl&lt;/code&gt; 和 &lt;code&gt;reflexivity&lt;/code&gt; 就无能为力了：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Definition bar x :=
+  match x with
+  | O =&amp;gt; 5
+  | S _ =&amp;gt; 5
+  end.
+Fact silly_fact_2_FAILED : forall m, bar m + 1 = bar (m + 1) + 1.
+Proof.
+  intros m.
+  simpl.
+Abort.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;虽然我们人眼可以看出来不管自然数 x 走哪个分支 &lt;code&gt;bar x&lt;/code&gt; 的结果都是 5，但 Coq 没有这么强的分析能力。这种情况我们只能老老实实对着 x 做 &lt;code&gt;destruct&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;using-destruct-on-compound-expressions&#34;&gt;Using &lt;code&gt;destruct&lt;/code&gt; on Compound Expressions&lt;/h2&gt;
+&lt;p&gt;在 Coq 中，&lt;code&gt;destruct&lt;/code&gt; 的对象可以是任意的表达式，只要该表达式的结果是归纳定义的，&lt;code&gt;destruct&lt;/code&gt; 就会对其每种 constructor 分类讨论。&lt;/p&gt;
+&lt;p&gt;另外值得注意的一点是：当我们对一个表达式做 &lt;code&gt;destruct&lt;/code&gt; 时，通常 &lt;code&gt;eqn&lt;/code&gt; 是必不可少的，因为表达式的取值应当作为 context 的一部分参与证明，如果只是让 Coq 做纯代入，我们可能会丢失必要的信息。&lt;/p&gt;
+&lt;h2 id=&#34;exercises-tbd&#34;&gt;Exercises (tbd)&lt;/h2&gt;
+&lt;h3 id=&#34;exercise-2-stars-standard-optional-silly_ex&#34;&gt;Exercise: 2 stars, standard, optional (silly_ex)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem silly_ex : forall p,
+  (forall n, even n = true -&amp;gt; even (S n) = false) -&amp;gt;
+  (forall n, even n = false -&amp;gt; odd n = true) -&amp;gt;
+  even p = true -&amp;gt;
+  odd (S p) = true.
+Proof.
+  intros p H1 H2 H3.
+  apply H2.
+  apply H1.
+  apply H3.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-2-stars-standard-apply_exercise1&#34;&gt;Exercise: 2 stars, standard (apply_exercise1)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem rev_exercise1 : forall (l l&#39; : list nat),
+  l = rev l&#39; -&amp;gt;
+  l&#39; = rev l.
+Proof.
+  intros l l&#39; H.
+  replace l&#39; with (rev (rev l&#39;)).
+  - rewrite H. reflexivity.
+  - apply rev_involutive.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-optional-trans_eq_exercise&#34;&gt;Exercise: 3 stars, standard, optional (trans_eq_exercise)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Example trans_eq_exercise : forall (n m o p : nat),
+     m = (minustwo o) -&amp;gt;
+     (n + p) = m -&amp;gt;
+     (n + p) = (minustwo o).
+Proof.
+  intros n m o p eq1 eq2.
+  transitivity m.
+  apply eq2.
+  apply eq1.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-injection_ex3&#34;&gt;Exercise: 3 stars, standard (injection_ex3)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Example injection_ex3 : forall (X : Type) (x y z : X) (l j : list X),
+  x :: y :: l = z :: j -&amp;gt;
+  j = z :: l -&amp;gt;
+  x = y.
+Proof.
+  intros X x y z l j H1.
+  injection H1 as eq1.
+  rewrite &amp;lt;- H.
+  intros H2.
+  injection H2 as eq2.
+  rewrite eq1. rewrite eq2. reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-1-star-standard-discriminate_ex3&#34;&gt;Exercise: 1 star, standard (discriminate_ex3)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Example discriminate_ex3 :
+  forall (X : Type) (x y z : X) (l j : list X),
+    x :: y :: l = [] -&amp;gt;
+    x = z.
+Proof.
+  intros X x y z l eq1 eq2.
+  discriminate eq2.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;(注：不知为何 Coq 自动把 goal 修改为了 &lt;code&gt;list X -&amp;gt; ... -&amp;gt; x = z&lt;/code&gt;，导致多了一个条件。)&lt;/p&gt;
+&lt;h3 id=&#34;exercise-2-stars-standard-eqb_true&#34;&gt;Exercise: 2 stars, standard (eqb_true)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem eqb_true : forall n m,
+  n =? m = true -&amp;gt; n = m.
+Proof.
+  intros n. induction n as [| n&#39; IHn&#39;].
+  - destruct m as [| m&#39;] eqn:E.
+    + reflexivity.
+    + discriminate.
+  - destruct m as [| m&#39;] eqn:E.
+    + discriminate.
+    + intros H. apply IHn&#39; in H.
+      apply f_equal.
+      apply H.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-especially-useful-plus_n_n_injective&#34;&gt;Exercise: 3 stars, standard, especially useful (plus_n_n_injective)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem plus_n_n_injective : forall n m,
+  n + n = m + m -&amp;gt;
+  n = m.
+Proof.
+  intros n. induction n as [| n&#39; IHn&#39;].
+  - destruct m as [| m&#39;] eqn:E.
+    + reflexivity.
+    + discriminate.
+  - destruct m as [| m&#39;] eqn:E.
+    + discriminate.
+    + intros H. 
+      simpl in H. injection H as H&#39;.
+      rewrite &amp;lt;- plus_n_Sm in H&#39;.
+      rewrite &amp;lt;- plus_n_Sm in H&#39;.
+      injection H&#39; as H&#39;&#39;.
+      apply IHn&#39; in H&#39;&#39;.
+      apply f_equal.
+      apply H&#39;&#39;.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-especially-useful-gen_dep_practice&#34;&gt;Exercise: 3 stars, standard, especially useful (gen_dep_practice)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem nth_error_after_last: forall (n : nat) (X : Type) (l : list X),
+  length l = n -&amp;gt;
+  nth_error l n = None.
+Proof.
+  intros n X l.
+  generalize dependent n.
+  induction l as [| h l&#39; IHl&#39;].
+  - reflexivity.
+  - destruct n as [| n&#39;] eqn:E.
+    + discriminate.
+    + simpl. intros H.
+      apply IHl&#39;.
+      injection H as goal.
+      apply goal.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-combine_split&#34;&gt;Exercise: 3 stars, standard (combine_split)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem combine_split : forall X Y (l : list (X * Y)) l1 l2,
+  split l = (l1, l2) -&amp;gt;
+  combine l1 l2 = l.
+Proof.
+  intros X Y l.
+  induction l as [| (x, y) l&#39; IHl&#39;].
+  - simpl. intros l1 l2 H.
+    injection H as H1 H2.
+    rewrite &amp;lt;- H1. rewrite &amp;lt;- H2.
+    reflexivity.
+  - intros l1 l2 H.
+    simpl in H. destruct (split l&#39;) as [lx ly].
+    destruct l1 as [| h1 l1&#39;].
+    + discriminate.
+    + destruct l2 as [| h2 l2&#39;].
+      * discriminate.
+      * simpl.
+        injection H as eq1 eq2 eq3 eq4.
+        rewrite eq1. rewrite eq3.
+        apply f_equal. apply IHl&#39;.
+        rewrite eq2. rewrite eq4.
+        reflexivity.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-2-stars-standard-destruct_eqn_practice&#34;&gt;Exercise: 2 stars, standard (destruct_eqn_practice)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem bool_fn_applied_thrice :
+  forall (f : bool -&amp;gt; bool) (b : bool),
+  f (f (f b)) = f b.
+Proof.
+  intros f b.
+  destruct b.
+  - destruct (f true) eqn:ft.
+    + rewrite ft. apply ft.
+    + destruct (f false) eqn:ff.
+      * apply ft.
+      * apply ff.
+  - destruct (f false) eqn:ff.
+    + destruct (f true) eqn:ft.
+      * apply ft.
+      * apply ff.
+    + rewrite ff. apply ff.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-eqb_sym&#34;&gt;Exercise: 3 stars, standard (eqb_sym)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem eqb_sym : forall (n m : nat),
+  (n =? m) = (m =? n).
+Proof.
+  intros n. induction n as [| n&#39; IHn&#39;].
+  - destruct m as [| m&#39;].
+    + reflexivity.
+    + reflexivity.
+  - intros m. destruct m as [| m&#39;].
+    + reflexivity.
+    + simpl. apply IHn&#39;.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&#34;exercise-3-stars-standard-optional-eqb_trans&#34;&gt;Exercise: 3 stars, standard, optional (eqb_trans)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Theorem eqb_trans : forall n m p,
+  n =? m = true -&amp;gt;
+  m =? p = true -&amp;gt;
+  n =? p = true.
+Proof.
+  intros n m p H1 H2.
+  generalize dependent n.
+  generalize dependent p.
+  induction m as [| m&#39; IHm&#39;].
+  - destruct n as [| n&#39;].
+    + destruct p as [| p&#39;].
+      * reflexivity.
+      * discriminate.
+    + discriminate.
+  - intros n Hn p Hp.
+    destruct n as [| n&#39;].
+    + discriminate.
+    + destruct p as [| p&#39;].
+      * discriminate.
+      * simpl. rewrite eqb_sym.
+        simpl in Hn. rewrite eqb_sym in Hn.
+        simpl in Hp. rewrite eqb_sym in Hp.
+        apply IHm&#39;.
+        apply Hp. apply Hn.
+Qed.
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
   </channel>
 </rss>
