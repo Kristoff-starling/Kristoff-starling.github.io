@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Computer Networking: A Top-Down Approach | Academic</title>
+    <link>https://kristoff-starling.github.io/posts/booknotes/network-topdown/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/booknotes/network-topdown/index.xml" rel="self" type="application/rss+xml" />
+    <description>Computer Networking: A Top-Down Approach</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 23 Sep 2022 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Computer Networking: A Top-Down Approach</title>
+      <link>https://kristoff-starling.github.io/posts/booknotes/network-topdown/</link>
+    </image>
+    
+    <item>
+      <title>Chapter 1: Computer Networks and the Internet</title>
+      <link>https://kristoff-starling.github.io/posts/booknotes/network-topdown/ch01/</link>
+      <pubDate>Fri, 23 Sep 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/booknotes/network-topdown/ch01/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#11-what-is-the-internet&#34;&gt;1.1 What Is the Internet&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#111-a-nuts-and-bolts-description&#34;&gt;1.1.1 A Nuts-and-Bolts Description&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#112-a-services-description&#34;&gt;1.1.2 A Services Description&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#113-what-is-a-protocol&#34;&gt;1.1.3 What Is a Protocol&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#12-the-network-edge&#34;&gt;1.2 The Network Edge&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#121-access-networks&#34;&gt;1.2.1 Access Networks&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#home-access&#34;&gt;Home Access&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#enterprise-access&#34;&gt;Enterprise Access&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#wide-area-wireless-access&#34;&gt;Wide-Area Wireless Access&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#122-physical-media&#34;&gt;1.2.2 Physical Media&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#13-the-network-core&#34;&gt;1.3 The Network Core&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#131-packet-switching&#34;&gt;1.3.1 Packet Switching&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#store-and-forward-transmission&#34;&gt;Store-and-Forward Transmission&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#queuing-delays-and-packet-loss&#34;&gt;Queuing Delays and Packet Loss&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#forwarding-tables-and-routing-protocols&#34;&gt;Forwarding Tables and Routing Protocols&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#132-circuit-switching&#34;&gt;1.3.2 Circuit Switching&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#multiplexing-in-circuit-switched-networks&#34;&gt;Multiplexing in Circuit-Switched Networks&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#packet-switching-versus-circuit-switching&#34;&gt;Packet Switching Versus Circuit Switching&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#133-a-network-of-networks&#34;&gt;1.3.3 A Network of Networks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#14-delay-loss-and-throughput-in-packet-switched-networks&#34;&gt;1.4 Delay, Loss, and Throughput in Packet-Switched Networks&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#141-overview-of-delay-in-packet-switched-networks&#34;&gt;1.4.1 Overview of Delay in Packet-Switched Networks&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#processing-delay&#34;&gt;Processing Delay&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#queuing-delay&#34;&gt;Queuing Delay&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#transmission-delay&#34;&gt;Transmission Delay&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#propagation-delay&#34;&gt;Propagation Delay&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#comparing-transmission-and-propagation-delay&#34;&gt;Comparing Transmission and Propagation Delay&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#142-queuing-delay-and-packet-loss&#34;&gt;1.4.2 Queuing Delay and Packet Loss&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#packet-loss&#34;&gt;Packet Loss&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#143-end-to-end-delay&#34;&gt;1.4.3 End-to-End Delay&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#traceroute&#34;&gt;Traceroute&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#end-system-application-and-other-delays&#34;&gt;End System, Application, and Other Delays&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#144-throughput-in-computer-networks&#34;&gt;1.4.4 Throughput in Computer Networks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#15-protocol-layers-and-their-service-models&#34;&gt;1.5 Protocol Layers and Their Service Models&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#151-layered-architecture&#34;&gt;1.5.1 Layered Architecture&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#protocol-layering&#34;&gt;Protocol Layering&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#application-layer&#34;&gt;Application Layer&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#transport-layer&#34;&gt;Transport Layer&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#network-layer&#34;&gt;Network Layer&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#link-layer&#34;&gt;Link Layer&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#physical-layer&#34;&gt;Physical Layer&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#152-encapsulation&#34;&gt;1.5.2 Encapsulation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#16-networks-under-attack&#34;&gt;1.6 Networks Under Attack&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#put-malware-into-your-host-via-the-internet&#34;&gt;Put Malware into Your Host Via the Internet&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#attack-servers-and-network-infrastructure&#34;&gt;Attack Servers and Network Infrastructure&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#sniff-packets&#34;&gt;Sniff Packets&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#masquerade-as-someone-you-trust&#34;&gt;Masquerade as Someone You Trust&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#17-history-of-computer-networking-and-the-internet&#34;&gt;1.7 History of Computer Networking and the Internet&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;11-what-is-the-internet&#34;&gt;1.1 What Is the Internet&lt;/h2&gt;
+&lt;h3 id=&#34;111-a-nuts-and-bolts-description&#34;&gt;1.1.1 A Nuts-and-Bolts Description&lt;/h3&gt;
+&lt;p&gt;这里的 &amp;ldquo;nuts-and-bolts&amp;rdquo; 指介绍网络中一些基本的元素和组件。网络中用户使用的电脑、手机、手柄……等物品称为&lt;strong&gt;主机 (host)&lt;/strong&gt; 或&lt;strong&gt;终端设备 (end system)&lt;/strong&gt;。终端设备通过由&lt;strong&gt;通信线路 (communication links)&lt;/strong&gt; 和&lt;strong&gt;包交换机 (packet switches)&lt;/strong&gt; 组成的网络相互连接，不同的链路具有不同的 transmission rate，在链路上传送的数据是一份一份的，称为一个个&lt;strong&gt;包 (packet)&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;Packet switch 负责接收 packet 并将其转发到其他的链路上。最主要的两种 packet switch 就是&lt;strong&gt;路由器 (router)&lt;/strong&gt; 和&lt;strong&gt;链路层交换机 (link-layer switch)&lt;/strong&gt;，前者通常用于 network core，后者通常用于 access network。Packet-switched network 和日常生活中的交通运输网络很像：packet 就好比卡车上的货物，communication links 就好比高速公路，packet switch 就好比十字路口，end system 就好比仓库和大楼。&lt;/p&gt;
+&lt;p&gt;终端设备需要通过&lt;strong&gt;因特网服务提供商 (Internet Service Provider, ISP)&lt;/strong&gt; 来接入网络。ISP 分为若干层级，彼此互联，形成网络。&lt;/p&gt;
+&lt;p&gt;终端设备、包交换机等在网络中收发数据都要遵循相关的&lt;strong&gt;协议 (protocol)&lt;/strong&gt;。&lt;strong&gt;传输控制协议 (Transmission Control Protocol, TCP)&lt;/strong&gt; 和&lt;strong&gt;网络互联协议 (Internet Protocol, IP)&lt;/strong&gt; 是最重要的两个协议。IP 协议描述了 packet 的格式。&lt;/p&gt;
+&lt;h3 id=&#34;112-a-services-description&#34;&gt;1.1.2 A Services Description&lt;/h3&gt;
+&lt;p&gt;这个角度旨在说明计算机网络是由若干服务组成的：对于每个服务项目，你需要遵守它提出的 specification，这样你就可以享受它的若干服务。&lt;/p&gt;
+&lt;p&gt;我们开发的网络游戏、社交软件等称为 distributed application，因为它们需要运行在多个终端设备上，这些终端设备需要彼此交换信息。终端设备通过套接字接口 (socket interface) 来连入互联网，socket interface 主要规定了程序应当如何发送数据 (比如格式)，就像邮局规定寄信需要装信封贴邮票一样。&lt;/p&gt;
+&lt;h3 id=&#34;113-what-is-a-protocol&#34;&gt;1.1.3 What Is a Protocol&lt;/h3&gt;
+&lt;p&gt;一个协议定义了两个通讯实体之间发送信息的格式和顺序，以及收到某些信息后应当采取的行动。&lt;/p&gt;
+&lt;h2 id=&#34;12-the-network-edge&#34;&gt;1.2 The Network Edge&lt;/h2&gt;
+&lt;p&gt;Hosts 有时可以细分成两类：客户端 (client) 和服务器 (server)。客户端就是电脑、手机等，服务器通常指更加强大的，存储和分发网页、视频等的机器。先在大多数的网页内容都存储在数据中心 (data center)。&lt;/p&gt;
+&lt;h3 id=&#34;121-access-networks&#34;&gt;1.2.1 Access Networks&lt;/h3&gt;
+&lt;p&gt;接入网络 (access network) 指将终端设备和第一个路由器物理地连接起来的网络。&lt;/p&gt;
+&lt;h4 id=&#34;home-access&#34;&gt;Home Access&lt;/h4&gt;
+&lt;p&gt;对于家庭来说，常见的 access network 有以下几种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;电话线接入 (digital subscriber line, DSL)：电脑通过一个 DSL modem 连接到电话线上，DSL modem 负责将数字信号转换成可以在电话线上传输的高频模拟信号。电话线上不同的频率可以传输不同的信号。来自一个地区各家各户的信号会汇总到一个 digital subscriber line access multiplexer (DSLAM) 处，它负责将模拟信号转换回数字信号，并将信号转发到 Internet / telephone network 中。&lt;/p&gt;
+&lt;p&gt;DSL 的上传速率和下载速率是不一样的，因此 DSL 被称为是一项非对称技术。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;电缆接入 (cable)：基本原理和 DSL 相同，电脑通过 cable modem 连接到电缆上，一个 cable modem termination system (CMTS) 负责和 DSLAM 相同的工作。&lt;/p&gt;
+&lt;p&gt;cable network access 的一个显著特征是这是一个共享的传输介质，因此同一个时刻使用网络的人越多，实际的网速就会越低。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;光纤到户 (fiber to the home, FTTH)：从 central office 直接拉光纤到家里。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;5G：信号从服务商的 5G 基站通过无线的方式传输到家庭的 modem。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;enterprise-access&#34;&gt;Enterprise Access&lt;/h4&gt;
+&lt;p&gt;企业/高校会部署一个 local area network (LAN) 作为接入网络，最常用的是以太网 (Ethernet)：多台终端设备通过 twisted-pair copper wire 连接到以太网交换机上，以太网交换机再连接到更大的因特网中。wireless LAN 应用的也很广泛。&lt;/p&gt;
+&lt;h4 id=&#34;wide-area-wireless-access&#34;&gt;Wide-Area Wireless Access&lt;/h4&gt;
+&lt;p&gt;电信公司花费了大量财力部署无线网络的基站。这种技术和 WiFi 不太一样，只要终端设备和基站距离在几千米之内就可以收到信号。&lt;/p&gt;
+&lt;h3 id=&#34;122-physical-media&#34;&gt;1.2.2 Physical Media&lt;/h3&gt;
+&lt;p&gt;略。&lt;/p&gt;
+&lt;h2 id=&#34;13-the-network-core&#34;&gt;1.3 The Network Core&lt;/h2&gt;
+&lt;p&gt;Network Core 是由链路和包交换机组成的网络，用于将各地的终端设备连接起来。&lt;/p&gt;
+&lt;h3 id=&#34;131-packet-switching&#34;&gt;1.3.1 Packet Switching&lt;/h3&gt;
+&lt;p&gt;在网络中不同的终端设备之间需要传递信息。长的信息会被切割成一块一块小的数据，这些块被称为&lt;strong&gt;包 (packet)&lt;/strong&gt;。包在 communication link 上的传输速度等于该 link 的 full transmission rate，即如果一个 $L$ bits 的包在一个 $R$ bits/s 的链路上传输，则需要 $L/R$ 秒。&lt;/p&gt;
+&lt;h4 id=&#34;store-and-forward-transmission&#34;&gt;Store-and-Forward Transmission&lt;/h4&gt;
+&lt;p&gt;绝大多数的 packet switches 采取&lt;strong&gt;存储转发传输 (store-and-forward transmission)&lt;/strong&gt;，这意味着交换机一定会在接收到整个 packet 之后才会开始将 packet 转发到下一条链路，不存在并行的一边接收一边转发的情况。&lt;/p&gt;
+&lt;p&gt;假设每个包的大小都是 $L$ bits，每条链路的 transmission rate 都是 $R$ bits，那么&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$N$ 个包转发 1 次 (即 src 和 dst 之间只有一个 packet switch)，需要的时间是 $(N+1)\cdot L/R$，注意发送第二个包的时候，packet switch 可以并行地接收第二个包和转发第一个包。&lt;/li&gt;
+&lt;li&gt;1 个包经过 $N$ 个 link (即 $N-1$ 个 packet switch)，需要的时间是 $N\cdot L/R$。&lt;/li&gt;
+&lt;li&gt;$P$ 个包经过 $N$ 个 link，需要的时间是 $(P+N-1)\cdot L/R$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;queuing-delays-and-packet-loss&#34;&gt;Queuing Delays and Packet Loss&lt;/h4&gt;
+&lt;p&gt;每个 packet switch 上都连接了多个 link，对于每条 link，packet switch 都有一个&lt;strong&gt;输出缓冲区&lt;/strong&gt; (&lt;strong&gt;output buffer&lt;/strong&gt;, also called &lt;strong&gt;output queue&lt;/strong&gt;)，存放那些即将被发出去的包。如果一个新到来的包需要从某条 link 转发出去，但这条 link 正在转发别的包，那么这个新的包就要到该 link 的 output buffer 中等待。因此除了 store-and-forward delay，包在传输过程中还有&lt;strong&gt;排队延迟 (queuing delay)&lt;/strong&gt;，其长短取决于网络的拥塞程度。&lt;/p&gt;
+&lt;p&gt;由于 buffer 的大小是有限的，有时候新来的包会发现 output buffer 已经满了，这时就会发生&lt;strong&gt;包丢失 (packet loss)&lt;/strong&gt;——要么新来的包被丢弃，要么 buffer 里的某一个其他正在等待的包被丢弃。&lt;/p&gt;
+&lt;h4 id=&#34;forwarding-tables-and-routing-protocols&#34;&gt;Forwarding Tables and Routing Protocols&lt;/h4&gt;
+&lt;p&gt;对于 packet switch 来说，收到一个包以后该选择哪一条 link 去转发是它主要关心的问题。在 Internet 中，每个终端设备都有一个 IP 地址。当 src 想要给 dst 发送消息时，它会将 dst 的 IP 地址写在 packet header 中。路途中的每个 router 会解析 IP 地址的一部分，根据本地的&lt;strong&gt;转发表 (forwarding table)&lt;/strong&gt; 决定沿着哪条链路继续传输。&lt;/p&gt;
+&lt;p&gt;Internet 有一系列的&lt;strong&gt;路由协议 (routing protocol)&lt;/strong&gt;，这些协议用来自动生成各个路由器的转发表。一个路由协议可以根据全局的情况来统筹规划，比如设计一条大城市之间的最短转发路径。&lt;/p&gt;
+&lt;h3 id=&#34;132-circuit-switching&#34;&gt;1.3.2 Circuit Switching&lt;/h3&gt;
+&lt;p&gt;在网络中主要有两种传输数据的方式：packet switching 和 circuit switching。这一节主要介绍后者。在 circuit-switched 网络中，两个终端设备之间联络需要提前预定资源，一旦建立了 end-to-end connection 后，在两个设备通话期间，这条路径上预定的资源会被这两个设备独占，从而可以保证一个稳定的 transmission rate (注意：在 circuit switching 中传输速率和 link 的个数无关，即不再有所谓的 store-and-forward delay)。&lt;/p&gt;
+&lt;h4 id=&#34;multiplexing-in-circuit-switched-networks&#34;&gt;Multiplexing in Circuit-Switched Networks&lt;/h4&gt;
+&lt;p&gt;switches 之间由 link 连接，一个 link 中包含多个 circuit。circuit 上一般会采用&lt;strong&gt;频分复用 (frequency-division multiplexing, FDM)&lt;/strong&gt; 或&lt;strong&gt;时分复用 (time-division multiplexing, TDM)&lt;/strong&gt; 技术。前者指的是将频谱分成多个 band 给不同的人用，后者指的是将时间轴切分成多个时间片给不同的人用。&lt;/p&gt;
+&lt;h4 id=&#34;packet-switching-versus-circuit-switching&#34;&gt;Packet Switching Versus Circuit Switching&lt;/h4&gt;
+&lt;p&gt;Packet Switching 的劣势主要在于，由于存在不可预测的延迟，它不能保证即时服务的稳定性。但 packet switching 总体来说比 circuit switching 更高效，因为 packet switching 可以更动态、更灵活地分配资源。下面是两个例子：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;假设 link 的传输速率是 1Mbps，有一些用户需要 100kbps 的传输速率。在 circuit switching 中，我们可以使用 TDM 技术，把 1s 分成 10 份，每个用户在 1s 中获取一个时间片，这样可以有 10 个用户同时使用网络。但在 packet switching 中，我们可以证明在每个客户每个时刻有 0.1 的概率 active 的情况下，即使有 35 个用户同时 active 也有 0.9996 的概率只有不超过 10 人 active，这样 packet switching 在几乎保证了用户需求的情况下支持了更多用户。&lt;/li&gt;
+&lt;li&gt;假设 10 个用户有 9 个在休息，有一个在大量产生数据，那么在 circuit switching 中，有需求的用户仍然只能得到 1/10 的时间片，而在 packet switching 中，所有的传输资源都可以为唯一的活跃用户所用。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;现在的主流是向 packet switching 靠拢。&lt;/p&gt;
+&lt;h3 id=&#34;133-a-network-of-networks&#34;&gt;1.3.3 A Network of Networks&lt;/h3&gt;
+&lt;p&gt;我们之前讨论了 home network, enterprise network 等等，无数的终端设备连接到由电话公司、电缆公司、高校……搭建的 access ISP 上。这些 access ISP 之间也需要连接起来，形成一个 network of networks。&lt;/p&gt;
+&lt;p&gt;现代的互联网格局大致如下图所示：&lt;/p&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/NetworkHierarchy.png&#34; style=&#34;zoom:50%;&#34; /&gt;
+&lt;p&gt;整个互联网大致是一个三级格局：access ISP 连向 regional ISP，regional ISP 连向 Tier 1 ISP，底层的 ISP 可以连接多个上层 ISP，还可以跨级连接。处于下层的 ISP 连向上层是为了和别的 ISP 连通，因此下层的 ISP 是 customer，上层的 ISP 是 provider，customer 给 provider 付费，provider 提供服务。顶层的 Tier 1 ISP 全球只有几十个，通常是国家级的，它们彼此之间连接，保证网络的连通。&lt;/p&gt;
+&lt;p&gt;在基本的 hierarchical 架构下还有如下的一些特性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Points of presence (PoP)：PoP 是 provider network 里的一组路由器，负责和 customer 联络。&lt;/li&gt;
+&lt;li&gt;customer 为了减少给 provider 付费，同级的 ISP 之间也可以自己建立通讯，这种方式称为 peer。有一些第三方公司建立了&lt;strong&gt;互联网交换中心 (Internet Exchange Point, IXP)&lt;/strong&gt;，为 peer 提供服务。这种机制也可以减轻上层 ISP 的通讯压力。&lt;/li&gt;
+&lt;li&gt;有一些本应处于底层的 content provider (比如 Google)，由于自身实力过于雄厚，拥有无数的数据中心和服务器，所以建立了自己的私有网络。Google 和 Tier 1 ISP 建立联络以保证自己的内容可以发送给世界各地，它在各地也有一些 IXP 可以直接和底层的 ISP 建立联系 (从而不用付钱走别的 Tier 1 ISP)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;14-delay-loss-and-throughput-in-packet-switched-networks&#34;&gt;1.4 Delay, Loss, and Throughput in Packet-Switched Networks&lt;/h2&gt;
+&lt;h3 id=&#34;141-overview-of-delay-in-packet-switched-networks&#34;&gt;1.4.1 Overview of Delay in Packet-Switched Networks&lt;/h3&gt;
+&lt;p&gt;在 packet 传输的过程中，它在每个节点都会受到一些 delay，最重要的四种 delay 是&lt;strong&gt;处理时延 (processing delay)&lt;/strong&gt;，&lt;strong&gt;排队时延 (queuing delay)&lt;/strong&gt;，&lt;strong&gt;发送时延 (transmission delay)&lt;/strong&gt; 和&lt;strong&gt;传播时延 (propagation delay)&lt;/strong&gt;，这些 delay 综合起来形成一个节点的 total nodal delay。&lt;/p&gt;
+&lt;h4 id=&#34;processing-delay&#34;&gt;Processing Delay&lt;/h4&gt;
+&lt;p&gt;processing delay 指的是处理 packet header 以及确定这个 packet 该如何转发所花费的时间。在高速路由器中 processing delay 通常以微秒计。&lt;/p&gt;
+&lt;h4 id=&#34;queuing-delay&#34;&gt;Queuing Delay&lt;/h4&gt;
+&lt;p&gt;queuing delay 指的是在路由器的 output buffer 上排队等待的时间，该 delay 和整个网络的拥塞程度有关。量级从微秒到毫秒不等。&lt;/p&gt;
+&lt;h4 id=&#34;transmission-delay&#34;&gt;Transmission Delay&lt;/h4&gt;
+&lt;p&gt;transmission delay 指的是把要传输的数据 push 到 link 上所花费的时间，量级从微秒到毫秒不等。&lt;/p&gt;
+&lt;h4 id=&#34;propagation-delay&#34;&gt;Propagation Delay&lt;/h4&gt;
+&lt;p&gt;propagation delay 指的是数据在 link 上传输所花费的时间，该 delay 和 link 的物理材质以及距离的远近有关，量级以毫秒计。&lt;/p&gt;
+&lt;h4 id=&#34;comparing-transmission-and-propagation-delay&#34;&gt;Comparing Transmission and Propagation Delay&lt;/h4&gt;
+&lt;p&gt;transmission delay 指的是把数据 push out 到 link 上的时间，它和 packet 的大小以及 link 的 transmission rate 有关。propagation delay 指的是数据在 link 上传播的时间，它主要和路途的距离有关。一个节点的总时延可以写为
+$$
+d_{nodal}=d_{proc}+d_{queue}+d_{trans}+d_{prop}
+$$
+通常来说 $d_{proc}$ 这一项总是可以忽略不计的，而其他几项在不同的场景下可能很小也可能很大。&lt;/p&gt;
+&lt;h3 id=&#34;142-queuing-delay-and-packet-loss&#34;&gt;1.4.2 Queuing Delay and Packet Loss&lt;/h3&gt;
+&lt;p&gt;queuing delay 是最复杂和有趣的一种时延，每个包的 queuing delay 可能都不一样 (比如两个包来到一个 router，先来的包可能没有 queuing delay，后来的包就可能要等一个包的时间)，因此我们在刻画 queuing delay 的时候通常采取一些统计量，比如 queuing delay 的平均值、方差、超过某个阈值的概率等等。&lt;/p&gt;
+&lt;p&gt;queuing delay 的大小和当前的流量，link 的 transmission rate (transmission rate 大，push out 一个包就要更长的时间，排队的包就要等更久) 以及流量的特征 (arrive periodically/in burst) 等有关。我们这里考虑一个简单情形：对于一个 router，buffer 没有容量限制，包的到来速率是 $a$ 个/秒，每个包的大小都是 $L$ bits，即流量是 $La$ bits/s；link 的 transmission rate 是 $R$ bits/s，那么 $La/R$ 这个值从量纲上看是没有单位的，通常称为&lt;strong&gt;流量强度 (traffic intensity)&lt;/strong&gt;。(更一般的定义是 $\frac{\text{arrival rate of bits}}{\text{service rate of bits}}$。) 流量强度是衡量 queuing delay 的重要指标，如果 $La/R&amp;gt;1$，那么可想而知发送的速度比到来的速度满，久而久之 queuing delay 将趋向于无限，因此网络系统建设的一个黄金原则就是：保证 system 的 traffic intensity 不大于 1。&lt;/p&gt;
+&lt;p&gt;当 $La/R\leq 1$ 时，研究表明如果将平均 queuing delay 看作关于流量强度的函数，则该函数呈指数型，因此稍稍减小流量强度就可能对 queuing delay 有很明显的改善。&lt;/p&gt;
+&lt;h4 id=&#34;packet-loss&#34;&gt;Packet Loss&lt;/h4&gt;
+&lt;p&gt;在实际生活中 router 的 buffer 大小是有限的，因此当流量强度趋向于 1 的时候 queuing delay 并不会趋向于无穷。当 buffer 满了的时候，router 会选择&lt;strong&gt;丢弃 (drop)&lt;/strong&gt; 新来的包，或者说新来的包&lt;strong&gt;丢失 (lost)&lt;/strong&gt; 了。衡量网络性能时，我们不仅会关注每个节点的 delay，还会关注发生包丢失的概率。通常情况下，为了保证数据的完整性，发生包丢失时，丢失的包会再次从 source 发出。&lt;/p&gt;
+&lt;h3 id=&#34;143-end-to-end-delay&#34;&gt;1.4.3 End-to-End Delay&lt;/h3&gt;
+&lt;p&gt;我们之前讨论的都是一个 router/节点上的延迟，在这个 section 中我们讨论 end-to-end 的延迟。假设从起点到终点一共有 $N-1$ 个 router，当前流量很少节点上不会发生 queuing delay，那么 end-to-end 的 delay 为
+$$
+d_{end-end}=N(d_{proc}+d_{trans}+d_{prop})
+$$
+这里前面的系数之所以是 $N$ 而不是 $N-1$ 是因为起点节点把 packet 发送到第一个 router 上也有一个一组处理+发送+传播。&lt;/p&gt;
+&lt;h4 id=&#34;traceroute&#34;&gt;Traceroute&lt;/h4&gt;
+&lt;p&gt;traceroute 是一个命令行工具，命令格式为：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;traceroute hostname
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;它的功能是从运行命令的主机向目标主机发送一系列的 special packet。包在传输过程中会经过一系列的 router，假设沿路一共有 $N$ 个 router，编号 1~N，那么我们的主机就会发送 $N+1$ 个包。当 router 接收到一个 special packet 时，它会返回一条包含自己的名字、地址等信息的简短消息，且不会把 special packet 继续转发下去。这样沿路的所有 router 以及目标主机都会收到一个 special packet 并把自己的信息传输回去，我们的主机就可以根据这些信息分析到每个节点的传输时长，delay 等。traceroute 会把这个过程做 3 次并取平均值。&lt;/p&gt;
+&lt;p&gt;由于 queuing delay 的影响，路径上处在前面的节点的平均传输时长是有可能比后面的节点长的。&lt;/p&gt;
+&lt;h4 id=&#34;end-system-application-and-other-delays&#34;&gt;End System, Application, and Other Delays&lt;/h4&gt;
+&lt;p&gt;除了之前提到的 4 种 delay，网络系统中还有许多其他类型的 delay，比如多个设备接入 WiFi 时，需要遵守协议保证资源共享，从而形成 delay；再例如在因特网语音 (Voice over IP, VoIP) 中，消息的发送方必须要在包里填写上加密的语音信息，这一步时延被称为 media packetization delay。&lt;/p&gt;
+&lt;h3 id=&#34;144-throughput-in-computer-networks&#34;&gt;1.4.4 Throughput in Computer Networks&lt;/h3&gt;
+&lt;p&gt;除了 delay 和 packet loss，衡量网络系统的另一个重要指标就是 end-to-end 的吞吐率。在一场 end-to-end 的传输中，任意时刻的&lt;strong&gt;即时吞吐率 (instantaneous throughput)&lt;/strong&gt; 指的是该时刻接收端在 1s 内接受的 bit 量 (单位：bit/s)，类似的平均吞吐率则应用一段时间内接受的 bit 数除以时间长度。一个网络的吞吐率取决于整个网络的&lt;strong&gt;瓶颈链路 (bottleneck link)&lt;/strong&gt;，即 transmission rate 最小的链路。通常来说 access network 中的链路很有可能称为瓶颈 (因为 network core 中的一般都是高速链路)；如果有多条传输路径共享某一条链路，那么这个“独木桥”也很有可能成为瓶颈。&lt;/p&gt;
+&lt;h2 id=&#34;15-protocol-layers-and-their-service-models&#34;&gt;1.5 Protocol Layers and Their Service Models&lt;/h2&gt;
+&lt;h3 id=&#34;151-layered-architecture&#34;&gt;1.5.1 Layered Architecture&lt;/h3&gt;
+&lt;p&gt;我们以人类坐飞机为例，整个流程大致如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;Ticket(purchase)                             Ticket(complain)
+       |                                            |
+ Baggage(check)                               Baggage(claim)
+       |                                            |
+  Gates(load)                                 Gates(unload)
+       |                                            |
+Runaway takeoff       Airplane routing       Runaway landing
+                 -------------------------&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到整个系统的功能被分成了若干层。每个层都可以提供一些服务，这些服务包含两个方面：一是对来的旅客做一些操作，二是使用更下一层提供的服务 (不会跨层调用)。&lt;/p&gt;
+&lt;p&gt;对于复杂系统来说，这种模块化的设计很有好处：每层只对上层提供一些 specification，这样某一层的 implementation 如果变了，只要保证 specification 不变，系统的其他部分就不需要改变。&lt;/p&gt;
+&lt;h4 id=&#34;protocol-layering&#34;&gt;Protocol Layering&lt;/h4&gt;
+&lt;p&gt;在网络系统中，网络的设计者设计了一些协议，每个协议属于一个 layer。对于一个 layer，我们关心它可以对上面的层提供的服务，即所谓的&lt;strong&gt;服务模型 (service model)&lt;/strong&gt;。一个 protocol layer 即可以用硬件实现，也可以用软件实现，也可以硬软结合，例如应用层的协议 (如 HTTP, SMTP) 通常是由终端设备中的软件实现的，而网络层的协议则通常是硬软结合实现的。一个值得注意的点是，正如全世界各地的每个机场都有值机点一样，一个协议是分布式地存在于网络系统中的各个设备上的。&lt;/p&gt;
+&lt;p&gt;尽管 protocol layer 的思想有很多好处，但仍有一些观点反对 layering。layering 的一个潜在的缺点是有时候多个层不得不实现相同的功能模块；另一个潜在的缺点是有时候一些层不得不获取下一个层的信息，这打破了 layer separation。&lt;/p&gt;
+&lt;p&gt;各个层的 protocol 合起来总称&lt;strong&gt;协议栈 (protocol stack)&lt;/strong&gt;。因特网的协议栈共有五个层：&lt;strong&gt;应用层 (application layer)&lt;/strong&gt;，&lt;strong&gt;传输层 (transport layer)&lt;/strong&gt;，&lt;strong&gt;网络层 (network layer)&lt;/strong&gt;，&lt;strong&gt;链路层 (link layer)&lt;/strong&gt; 和&lt;strong&gt;物理层 (physical layer)&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;application-layer&#34;&gt;Application Layer&lt;/h4&gt;
+&lt;p&gt;网络应用和应用层协议处于应用层。常见的应用层协议有 HTTP, SMTP, FTP 等。我们日常可见的一些服务，比如在地址栏里输入 human-readable 的网址就可以访问网站，也是由应用层的 DNS 支持的。&lt;/p&gt;
+&lt;p&gt;应用层的 packet 通常称为&lt;strong&gt;报文 (message)&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;transport-layer&#34;&gt;Transport Layer&lt;/h4&gt;
+&lt;p&gt;在因特网中，传输层协议有两个：TCP 和 UDP，它们都可以传输应用层的报文。TCP 和 UDP 的不同点在于前者可以对 reliability, flow control, congestion control 提供一些保证。&lt;/p&gt;
+&lt;p&gt;传输层的 packet 通常称为&lt;strong&gt;段 (segment)&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;network-layer&#34;&gt;Network Layer&lt;/h4&gt;
+&lt;p&gt;网络层的 packet 通常称为数据报 (datagram)。source host 的传输层协议 (TCP/UDP) 会将要发送的 segment 和目标主机的地址传给网络层，网络层负责发送这些内容。&lt;/p&gt;
+&lt;p&gt;网络层最重要的协议是 IP，它定义了 datagram 的每一个字段的内容以及终端设备和路由器应当如何处理这些字段。网络中的每个设备都要遵守 IP。除此之外，网络层中还有很多小的路由协议。&lt;/p&gt;
+&lt;h4 id=&#34;link-layer&#34;&gt;Link Layer&lt;/h4&gt;
+&lt;p&gt;网络层会为 datagram 的传输规划出一条经过若干路由器的路线，但网络层需要依靠链路层完成具体的传输。具体地，在某一个节点中，网络层会把 datagram 传给链路层，链路层把 datagram 传给另一个节点的链路层，另一个节点再把 datagram 上传给自己的网络层。常见的链路层协议有 Ethernet, WiFi 等。&lt;/p&gt;
+&lt;p&gt;链路层的 packet 通常称为&lt;strong&gt;帧 (frame)&lt;/strong&gt;。&lt;/p&gt;
+&lt;h4 id=&#34;physical-layer&#34;&gt;Physical Layer&lt;/h4&gt;
+&lt;p&gt;物理层的任务就是将 frame 里一个一个的 bit 从一个节点传输到另一个。根据不同的线材 (twisted-pair copper, single-mode fiber etc.)，物理层也有不同的协议。&lt;/p&gt;
+&lt;h3 id=&#34;152-encapsulation&#34;&gt;1.5.2 Encapsulation&lt;/h3&gt;
+&lt;p&gt;网络中不是所有的设备都 implement 了5层协议。所有的 host 都 implement 了5层，像交换机、路由器等可能只做了低下的两三层。&lt;/p&gt;
+&lt;p&gt;数据传输过程中的一个重要的概念就是&lt;strong&gt;封装 (encapsulation)&lt;/strong&gt;。每一层都会从上面一层接收 packet，在 packet 前加上自己这一层相关信息的 header，然后打包发给下一层。在每一层 packet 都分为 header field 和 payload field 两部分，payload field 本质上就是上一层传下来的包。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Layer&lt;/th&gt;
+&lt;th&gt;Packet&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Application&lt;/td&gt;
+&lt;td&gt;$M$&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Transport&lt;/td&gt;
+&lt;td&gt;$H_t\space M$&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Network&lt;/td&gt;
+&lt;td&gt;$H_n\space H_t\space M$&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Link&lt;/td&gt;
+&lt;td&gt;$H_l\space H_n\space H_t\space M$&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Physical&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;解析的过程正好相反：每一层把自己这层的 header 拔下来，根据 header 中的信息做一些操作，然后把剩下的 payload field 往上传。&lt;/p&gt;
+&lt;h2 id=&#34;16-networks-under-attack&#34;&gt;1.6 Networks Under Attack&lt;/h2&gt;
+&lt;p&gt;互联网最初建立时的目标用户是 ”a group of mutually trusting users&amp;quot;，但现在互联网变得非常庞大，其中的人不可能做到互相信赖。互联网最初的一套底层的设计不能推倒重来，所以就有了各种攻击手段和防御手段。&lt;/p&gt;
+&lt;h3 id=&#34;put-malware-into-your-host-via-the-internet&#34;&gt;Put Malware into Your Host Via the Internet&lt;/h3&gt;
+&lt;p&gt;网络上除了好的程序，还有一些&lt;strong&gt;恶意软件 (malware)&lt;/strong&gt;，它们会侵入设备并做一切可能的坏事。此外，成千上万的主机可能会被利用并构建成一个&lt;strong&gt;僵尸网络 (botnet)&lt;/strong&gt;，坏人利用 botnet 来免费为他们自己做事。大部分的恶意软件都具有自我复制的功能：一旦感染了一台设备，它就会顺着这台设备在互联网中的连接去感染别的设备，从而形成一个指数级的感染规模。&lt;/p&gt;
+&lt;h3 id=&#34;attack-servers-and-network-infrastructure&#34;&gt;Attack Servers and Network Infrastructure&lt;/h3&gt;
+&lt;p&gt;另一类常见的攻击手段是&lt;strong&gt;拒绝服务攻击 (denial-of-service, DoS attack)&lt;/strong&gt;。DoS 攻击顾名思义就是让某些 server 停止工作，通常分为三大类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Vulnerability attack：利用应用或操作系统的弱点代码攻击，使系统崩溃。&lt;/li&gt;
+&lt;li&gt;Bandwidth flooding：向目标主机传输大量的数据，使其应接不暇，无法接收其他的正常数据。&lt;/li&gt;
+&lt;li&gt;Connection flooding：攻击者和目标主机建立大量的 TCP 连接，使其应接不暇，无法建立其他的正常连接。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这里着重讨论一下 bandwidth flooding。有的时候一个 link 的 transmission rate 很高，用一台机器很难发送足够海量的数据，而且如果所有的垃圾数据都来自同一台机器，上游的 router 很容易监测到这种攻击并作出相应的防御。因此现在攻击者更倾向于使用&lt;strong&gt;分布式拒绝服务攻击 (distributed Dos, DDoS)&lt;/strong&gt;。攻击者控制一个有成千上万台僵尸机的 botnet 来向目标主机倾泄垃圾数据。&lt;/p&gt;
+&lt;h3 id=&#34;sniff-packets&#34;&gt;Sniff Packets&lt;/h3&gt;
+&lt;p&gt;坏人可能会在一个网络中放置一个被动的接受器，这个接受器可以将网络中传输的每个 packet 都复制一份，这样的被动接受器被称为&lt;strong&gt;包嗅探器 (packet sniffer)&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;sniffer 可以被用来窃取用户的隐私信息，其由于它是完全被动的，不会向网络主动发送 packet，所以它很难被发现。预防 packet sniffer 的有效手段是对包的内容进行加密。&lt;/p&gt;
+&lt;h3 id=&#34;masquerade-as-someone-you-trust&#34;&gt;Masquerade as Someone You Trust&lt;/h3&gt;
+&lt;p&gt;在网络中，我们可以很容易地制作一个包含任意源地址，目标地址和内容的 packet。网络中的节点只会负责地帮助我们转发这个包，但不一定能检验这个包的真实性。这种向网络中发送包含虚假源地址的包的攻击手段被称为 &lt;strong&gt;IP 欺骗 (IP spoofing)&lt;/strong&gt;。通过 IP spoofing，我们可以在网络中伪装成另一个人与他人通信。&lt;/p&gt;
+&lt;p&gt;为了防御 IP spoofing，我们需要在网络中添加 end-point authentication，即检验消息的源地址的真实性。&lt;/p&gt;
+&lt;h2 id=&#34;17-history-of-computer-networking-and-the-internet&#34;&gt;1.7 History of Computer Networking and the Internet&lt;/h2&gt;
+&lt;p&gt;略。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

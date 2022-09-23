@@ -2,6 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://kristoff-starling.github.io/posts/booknotes/network-topdown/</loc>
+    <lastmod>2022-09-23T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/</loc>
     <lastmod>2022-08-23T00:00:00+00:00</lastmod>
   </url><url>
@@ -52,13 +55,19 @@
     <loc>https://kristoff-starling.github.io/talk/</loc>
     <lastmod>2030-06-01T13:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://kristoff-starling.github.io/posts/booknotes/</loc>
+    <lastmod>2022-09-23T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/booknotes/network-topdown/ch01/</loc>
+    <lastmod>2022-09-23T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/</loc>
+    <lastmod>2022-09-23T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/</loc>
     <lastmod>2022-08-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/lec06/</loc>
-    <lastmod>2022-08-23T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://kristoff-starling.github.io/posts/</loc>
     <lastmod>2022-08-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/</loc>
@@ -176,9 +185,6 @@
     <lastmod>2020-12-13T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/lectures/lec30/</loc>
-    <lastmod>2020-12-13T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://kristoff-starling.github.io/posts/booknotes/</loc>
     <lastmod>2020-12-13T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/booknotes/ostep/ch02/</loc>
@@ -365,6 +371,9 @@
     <lastmod>2019-02-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/slides/20220907/</loc>
+    <lastmod>2019-02-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/slides/20220923/</loc>
     <lastmod>2019-02-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/slides/example/</loc>
