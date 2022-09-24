@@ -288,7 +288,7 @@ In the thread subsystem:
 $$
 \frac{}{\mathbf{ssfence};c,s\overset{SSF}{\to}\mathbf{skip};c,s}
 $$
-In the storeage subsystem:
+In the storage subsystem:
 
 SSF rule: add a special mark into the buffer array:
 $$

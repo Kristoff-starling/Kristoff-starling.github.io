@@ -269,7 +269,7 @@ $$
 $$
 \frac{}{\mathbf{ssfence};c,s\overset{SSF}{\to}\mathbf{skip};c,s}
 $$
-In the storeage subsystem:&lt;/p&gt;
+In the storage subsystem:&lt;/p&gt;
 &lt;p&gt;SSF rule: add a special mark into the buffer array:
 $$
 \frac{}{M,B\overset{SSF}{\to}M,B[i\mapsto F\cdot B(i)]}
