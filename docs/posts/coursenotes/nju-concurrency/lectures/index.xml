@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lectures | Academic</title>
+    <link>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/index.xml" rel="self" type="application/rss+xml" />
+    <description>Lectures</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 20 Sep 2022 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Lectures</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/</link>
+    </image>
+    
+    <item>
+      <title>Lecture 03: Basic Operational Semantics for Concurrency</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec03/</link>
+      <pubDate>Tue, 20 Sep 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec03/</guid>
+      <description>&lt;h2 id=&#34;a-simple-concurrent-programming-language&#34;&gt;A Simple Concurrent Programming Language&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Basic domains:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Registers: $r\in \text{Reg}$.&lt;/li&gt;
+&lt;li&gt;Memory locations: $x\in \text{Loc}$.&lt;/li&gt;
+&lt;li&gt;Values (including 0): $v\in \text{Val}$.&lt;/li&gt;
+&lt;li&gt;Thread identifiers: $i\in \text{Tid}=\{1,\cdots,N\}$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Expressions and commands&lt;/strong&gt; (here all commands are atomic):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-plaintext&#34;&gt;e ::= r | v | e +(-*/) e | ...
+
+c ::= skip | if e then c else c | while e do c |
+      c ; c (sequential) | r := e | r := x (read) | x := e (write)
+      r := FAA(x, e) | r := CAS(x, e, e) | fence
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;FAA means &amp;ldquo;fetch-and-add&amp;rdquo;, &lt;code&gt;r = FAA(x, e)&lt;/code&gt; will do&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;r = x;
+x += e;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;atomically.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;CAS means &amp;ldquo;compare-and-set/swap&amp;rdquo;, &lt;code&gt;r = CAS(x, er, ew)&lt;/code&gt; will do&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;r = x;
+if (r == er) {
+    x = ew;
+    r = 1;
+}
+else
+    r = 0;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;atomically.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;fence&lt;/code&gt; only takes effect under WMM. It forces previous writes to be propagated into memory.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Programs:&lt;/strong&gt; $P:Tid\to Cmd$, written as $P=c_1||c_2||\cdots ||c_N$.&lt;/p&gt;
+&lt;h2 id=&#34;basic-setup&#34;&gt;Basic Setup&lt;/h2&gt;
+&lt;p&gt;Different memory models usually share the same thread behaviors while have different implementation on the read/write side. Therefore we decompose the system into thread subsystem and storage subsystem and set an &amp;ldquo;virtual&amp;rdquo; interface between them.&lt;/p&gt;
+&lt;h3 id=&#34;thread-subsystem&#34;&gt;Thread Subsystem&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;thread local step: $(c,s)\overset{l}{\to}(c&amp;rsquo;,s&amp;rsquo;)$,&lt;/li&gt;
+&lt;li&gt;Lift them to program steps: $(P,S)\overset{i,l}{\to}(P&amp;rsquo;,S&amp;rsquo;)$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;storage-subsystem&#34;&gt;Storage Subsystem&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;It&amp;rsquo;s memory-model-dependent.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Describe the effect of memory accesses and fences.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$M\overset{i:l}{\to}M&amp;rsquo;$.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;linking-the-two&#34;&gt;Linking the Two&lt;/h3&gt;
+&lt;p&gt;Either the thread or the storage subsystem make an internel step, i.e., $\epsilon$, or they make matching $i:l$ steps. The transformation is denoted as $P,S,M\Rightarrow P&amp;rsquo;,S&amp;rsquo;,M&amp;rsquo;$.&lt;/p&gt;
+&lt;h2 id=&#34;the-thread-subsystem&#34;&gt;The Thread Subsystem&lt;/h2&gt;
+&lt;h3 id=&#34;thread-local-steps&#34;&gt;Thread Local Steps&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Store:&lt;/strong&gt; $s:\text{Reg}\to \text{Val}$ (initially $s_0\triangleq \lambda r.0$).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;State:&lt;/strong&gt; $(c,s)\in \text{Command}\times \text{Store}$&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Transitions:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;$\mathbf{skip}$:
+$$
+\frac{}{\mathbf{skip};c,s\overset{\epsilon}{\to}c,s}
+$$&lt;/p&gt;
+&lt;p&gt;Sequential:&lt;/p&gt;
+&lt;p&gt;$$
+\frac{c_1,s\overset{l}{\to}c_1&amp;rsquo;,s&amp;rsquo;}{c_1;c_2,s\overset{l}{\to}c_1&amp;rsquo;,c_2,s&amp;rsquo;}
+$$&lt;/p&gt;
+&lt;p&gt;Register operations:
+$$
+\frac{s&amp;rsquo;=s[r\mapsto s(e)]}{\text{r:=e},s\overset{\epsilon}{\to}\mathbf{skip},s&amp;rsquo;}
+$$
+Memory read:
+$$
+\frac{l=R(x, v)}{\text{r:=x},s\overset{l}{\to}\mathbf{skip},s[r\to v]}
+$$
+Here $l=R(x, v)$ means that we read from the memory and $M[x] = v$.&lt;/p&gt;
+&lt;p&gt;Memory write:
+$$
+\frac{l=W(x, s(e))}{\text{x:=e,s}\overset{l}{\to}\mathbf{skip},s}
+$$
+$\mathbf{if}$-$\mathbf{then}$-$\mathbf{else}$ branch:
+$$
+\frac{s(e)\neq 0}{\mathbf{if}\space e\space \mathbf{then}\space c_1\space \mathbf{else}\space c_2,s\overset{\epsilon}{\to}c_1,s}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\frac{s(e)= 0}{\mathbf{if}\space e\space \mathbf{then}\space c_1\space \mathbf{else}\space c_2,s\overset{\epsilon}{\to}c_2,s}
+$$&lt;/p&gt;
+&lt;p&gt;$\mathbf{while}$ loop:
+$$
+\frac{}{\mathbf{while}\space e\space \mathbf{do}\space c,s\overset{\epsilon}{\to}\mathbf{if}\space e\space\mathbf{then}\space (c;\mathbf{while}\space e\space \mathbf{do}\space c)\space \mathbf{else}\space \mathbf{skip},s}
+$$
+Fetch-and-add:
+$$
+\frac{l=U(x, v, v + s(e))}{\text{r:=}\mathbf{FAA}(x,e),s\overset{l}{\to}\mathbf{skip},s[r\to v]}
+$$
+Here we define a new way to interact with memory: &lt;code&gt;U&lt;/code&gt; (update).  &lt;code&gt;U(x, vr, vw)&lt;/code&gt; means that we fetch $v_r$ from $M[x]$ and write $v_w$ to $M[x]$.&lt;/p&gt;
+&lt;p&gt;Compare-and-swap:
+$$
+\frac{l=R(x, v)\quad v\neq s(e_r)}{\text{r:=}\mathbf{CAS}(x, e_r,e_w),s\overset{l}{\to}\mathbf{skip},s[r\to 0]}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\frac{l=U(x, s(e_r), s(e_w))}{\text{r:=}\mathbf{CAS}(x, e_r,e_w),s\overset{l}{\to}\mathbf{skip},s[r\to 1]}
+$$&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s worth noticing that when compare-and-swap fails, it acts as a normal read operation (&amp;ldquo;R&amp;rdquo; instead of &amp;ldquo;U&amp;rdquo;)&lt;/p&gt;
+&lt;p&gt;Fence:
+$$
+\frac{}{\mathbf{fence},s\overset{F}{\to}\mathbf{skip},s}
+$$
+For WMM, when the memory receives &amp;ldquo;F&amp;rdquo;, it will do particular operations.&lt;/p&gt;
+&lt;h3 id=&#34;lifting-to-concurrent-programs&#34;&gt;Lifting to Concurrent Programs&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;State:&lt;/strong&gt; $(P,S)\in\text{Program}\times (\text{Tid}\to \text{Store})$. (initially $(P,S_0)$, where $S_0\triangleq \lambda i.s_0$)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Transitions:&lt;/strong&gt;
+$$
+\frac{P(i),S(i)\overset{l}{\to}c,s}{P,S\overset{i:l}{\mapsto}P[i\to c],S[i\mapsto s]}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;sc-storage-subsystem&#34;&gt;SC Storage subsystem&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Machine state:&lt;/strong&gt; $M:\text{Loc}\to\text{Val}$ (initially $M_0\triangleq \lambda x.0$).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Transitions:&lt;/strong&gt;
+$$
+\frac{l=W(x, v)}{M\overset{i:l}{\to}M[x\mapsto v]}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\frac{l=R(x, v)\quad M[x]=v}{M\overset{i:l}{\to}M}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\frac{l=U(x,v_r,v_w)\quad M[x]=v_r}{M\overset{i:l}{\to}M[x\mapsto v_w]}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\frac{l=F}{M\overset{i:l}{\to}M}
+$$&lt;/p&gt;
+&lt;p&gt;(&lt;code&gt;fence&lt;/code&gt; doesn&amp;rsquo;t take effect in SC memory model.)&lt;/p&gt;
+&lt;h3 id=&#34;linking-the-thread-and-storage-subsystems&#34;&gt;Linking the Thread and Storage Subsystems&lt;/h3&gt;
+&lt;p&gt;Silent:
+$$
+\frac{P,S\overset{i:\epsilon}{\to}P&amp;rsquo;, S&amp;rsquo;}{P,S,M\Rightarrow P&amp;rsquo;,S&amp;rsquo;,M}
+$$
+Non-silent:
+$$
+\frac{P,S\overset{i:l}{\to}P&amp;rsquo;,S&amp;rsquo;\quad M\overset{i:l}{\to}M&amp;rsquo;}{P,S,M\Rightarrow P&amp;rsquo;,S&amp;rsquo;,M&amp;rsquo;}
+$$
+An outcome $O:\text{Tid}\to\text{Store}$ is allowed for a program $P$ under SC if there exists $M$ such that
+$$
+P,S_0,M_0\Rightarrow^* \mathbf{skip}||&amp;hellip;||\mathbf{skip},O,M.
+$$&lt;/p&gt;
+&lt;h2 id=&#34;x86s-tso-storage-subsystem&#34;&gt;x86&amp;rsquo;s TSO Storage Subsystem:&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Machine states:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A memory $M:\text{Loc}\to\text{Val}$&lt;/li&gt;
+&lt;li&gt;A function $B:\text{Tid}\to (\text{Loc},\text{Val})^*$ assigning a &lt;strong&gt;store buffer&lt;/strong&gt; to every thread. Here a pair $(x, v)$ stands for a write. The most recent write appears at the left most position of the write sequence.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;(Initially, $M_0\triangleq \lambda x.0$,$B_0=\lambda i.\epsilon$).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Transitions:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Write (only to the thread-local buffer):
+$$
+\frac{l=W(x, v)}{M,B\overset{i:l}{\to}M,B[i\mapsto (x,v)\cdot B(i)]}
+$$
+Propagate (flush the least recent operation in the buffer to the memory):
+$$
+\frac{B(i)=b\cdot (x,v)}{M,B\overset{i:\epsilon}{\to}M[x\mapsto v],B[i\mapsto b]}
+$$
+Read
+$$
+\frac{l=R(x,v)\quad B(i)=(x_n,v_n)\cdot\ldots\cdot(x_1,v_1)\quad M[x_1\mapsto v_1]\cdots[x_n\mapsto v_n] (x)=v}{M,B\overset{i:l}{\to}M,B}
+$$
+Notice that during a read, the buffer won&amp;rsquo;t be flushed into the memory.&lt;/p&gt;
+&lt;p&gt;RMW (read-modify-write):
+$$
+\frac{l=U(x,v_r,v_w)\quad B(i)=\epsilon \quad M(x)=v_r}{M,B\overset{i:l}{\to}M[x\mapsto v_w],B}
+$$
+The condition $B(i)=\epsilon$ indicates that RMW will automatically synchronize the state. Notice that in $\mathbf{CAS}$, if the comparison failed, $\mathbf{CAS}$ would act as a normal &amp;ldquo;read&amp;rdquo; operation and in TSO no synchronization would be conducted.&lt;/p&gt;
+&lt;p&gt;Fence:
+$$
+\frac{l=F\quad B(i)=\epsilon}{M,B\overset{i:l}{\to}M,B}
+$$
+Fence is used as forced synchronization.&lt;/p&gt;
+&lt;h3 id=&#34;linking-the-thread-and-storage-subsystem&#34;&gt;Linking The Thread and Storage Subsystem&lt;/h3&gt;
+&lt;p&gt;Silent thread:
+$$
+\frac{P,S\overset{i:\epsilon}{\to}P&amp;rsquo;,S&amp;rsquo;}{P,S,M,B\Rightarrow P,S&amp;rsquo;,M,B}
+$$
+Silent storage:
+$$
+\frac{M,B\overset{i:\epsilon}{\to}M&amp;rsquo;,B&amp;rsquo;}{P,S,M,B\Rightarrow P,S,M&amp;rsquo;,B&amp;rsquo;}
+$$
+Non silent:
+$$
+\frac{P,S\overset{i:l}{\to}P&amp;rsquo;,S&amp;rsquo;\qquad M,B\overset{i:l}{\to}M&amp;rsquo;,B&amp;rsquo;}{P,S,M,B\Rightarrow P&amp;rsquo;,S&amp;rsquo;,M&amp;rsquo;,B&amp;rsquo;}
+$$
+The definition of allowed outcome is similar to that of SC.&lt;/p&gt;
+&lt;h2 id=&#34;exercise-pso-storage-system&#34;&gt;Exercise: PSO Storage System&lt;/h2&gt;
+&lt;p&gt;&lt;em&gt;Partial Store Ordering (PSO)&lt;/em&gt; is a WMM similar to TSO, but it does not guarantee that stores to different locations propagate to the main memory in the order they were issued. In particular, it allows the following weak behavior:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;Initially, x = y = 0;
+x = 1;  ||  a = y; // 1
+y = 1;  ||  b = x; // 0;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;(1) Operational semantics for PSO:&lt;/p&gt;
+&lt;p&gt;We only need to redefine the propagate rule in TSO:
+$$
+\frac{B(i)=b&amp;rsquo;\cdot(x,v)\cdot b\qquad b=(x_t,v_t)\cdot\ldots\cdot(x_1,v_1),\forall 1\leq i\leq t,x_i\neq x}{M,B\overset{i:\epsilon}{\to}M[x\mapsto v],B[i\mapsto b&amp;rsquo;\cdot b]}
+$$
+(2) store-store fence:&lt;/p&gt;
+&lt;p&gt;In the thread subsystem:
+$$
+\frac{}{\mathbf{ssfence};c,s\overset{SSF}{\to}\mathbf{skip};c,s}
+$$
+In the storeage subsystem:&lt;/p&gt;
+&lt;p&gt;SSF rule: add a special mark into the buffer array:
+$$
+\frac{}{M,B\overset{SSF}{\to}M,B[i\mapsto F\cdot B(i)]}
+$$
+Propagation rule needn&amp;rsquo;t be changed because our conditions implicitly require that there&amp;rsquo;s no store-store fence before the target operation. But we need an additional rule to move away &amp;ldquo;F&amp;rdquo; marks:
+$$
+\frac{B(i)=b\cdot F}{M,B\overset{i:\epsilon}{\to}M&amp;rsquo;,B[i\mapsto b]}
+$$
+(3) Show that programs containing store-store fences between every two writes have the same outcomes under TSO and PSO:&lt;/p&gt;
+&lt;p&gt;TSO and PSO differ only in their propagation rules. If there is a store-store fence between every two writes, it&amp;rsquo;s easy to prove that at any point, the buffer of arbitrary thread should be in the form of $(x_n,v_n)\cdot F\cdot \ldots \cdot F\cdot (x_2,v_2)\cdot F\cdot (x_1,v_1)$. Therefore at any point the propagation rule in PSO can only choose the least recent operation in the buffer to propagate, which makes it completely the same as TSO&amp;rsquo;s propagation rule.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Lecture 02: Java Memory Model</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec02/</link>
+      <pubDate>Tue, 13 Sep 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec02/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#the-need-of-weak-memory-model&#34;&gt;The Need of Weak Memory Model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#design-criteria&#34;&gt;Design Criteria&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#happened-before-memory-model-hmm&#34;&gt;Happened-before Memory Model (HMM)&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#example-store-buffering&#34;&gt;Example: Store Buffering&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#example-out-of-thin-air-read&#34;&gt;Example: Out-of-thin-Air Read&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#example-independent-reads-of-independent-writes-iriw&#34;&gt;Example: Independent Reads of Independent Writes (IRIW)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#example-hmm---no-drf-guarantee&#34;&gt;Example: HMM - No DRF guarantee.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Memory models define which reads see which writes. Sequential Consistency (SC) model is the simplest memory model: several threads&amp;rsquo; executions are interleaved (interleaving semantics), every read fetches the most recent write (full visibility).&lt;/p&gt;
+&lt;h2 id=&#34;the-need-of-weak-memory-model&#34;&gt;The Need of Weak Memory Model&lt;/h2&gt;
+&lt;p&gt;SC mode prohibits many optimizations, e.g. store buffering&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;Initially: x = y = 0;
+x = 1;   ||   y = 1;
+r1 = y;  ||   r2 = x;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;r1 = r2 = 0&lt;/code&gt; is impossible in SC model. However, compilers are unaware of concurrency and may adjust the order of statements, which violates SC model:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;r1 = y;   #1 ||   y = 1;   #2
+x = 1     #4 ||   r2 = x;  #3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;SC model is inconsistent with the current compiler &amp;amp; architecture implementations. That&amp;rsquo;s why we need weak memory models, which allow more behaviors.&lt;/p&gt;
+&lt;h2 id=&#34;design-criteria&#34;&gt;Design Criteria&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Usability&lt;/strong&gt;: DRF guarantee. DRF programs should have the same behaviors as in SC model. DRF stands for Data-Race-Freedom. A data race occurs when we have two concurrent conflicting operations.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Conflicting: two operations both access the same memory location and at least one is a write.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Concurrent: two operations are not ordered by &amp;ldquo;happens-before&amp;rdquo;. Here &amp;ldquo;happens-before&amp;rdquo; varies under different memory models. In SC, &amp;ldquo;happens-before&amp;rdquo; means:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Program order: statement $S_1$ appears before $S_2$.&lt;/li&gt;
+&lt;li&gt;Synchronization-with: lock - unlock&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Implementability&lt;/strong&gt;: WMM cannot be too strong. It should be compatible with the mainstream compilers/architecture design:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Allow common optimization techniques.&lt;/li&gt;
+&lt;li&gt;Allow standard compilation schemes to major modern architectures.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;That is, for an arbitrary code $C$, let $WMM(C)$ be the set of possible behaviors of $C$ under WMM, $Compiler(C)$ be the set of possible behaviors after compilation, $Compiler(C)\subseteq WMM(C)$ should hold.&lt;/p&gt;
+&lt;p&gt;However, WMM cannot be too week either. e.g., type-safety and security guarantee shall be preserved.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Compiler Optimization Can Be Smart&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;It&amp;rsquo;s difficult to put forward a good WMM because optimizations are complex. For example,&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;r1 = x;               ||  y = 2;
+r2 = x;               ||  x = r3;
+if (r1 == r2) y = 2;  ||
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The code can be optimized like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;y = 2;        // reorder
+r1 = x;
+r2 = r1;      // reduce memory access
+if (true);    // &amp;quot;r2 = r1&amp;quot; guarantees (r1 == r2)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;happened-before-memory-model-hmm&#34;&gt;Happened-before Memory Model (HMM)&lt;/h2&gt;
+&lt;p&gt;Program execution: a set of events, and some orders between them.&lt;/p&gt;
+&lt;p&gt;Happened-before order is the transitive closure of po (program order) and sw (synchronize-with). In HMM, a read can see&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The most recent write that happens before it.&lt;/li&gt;
+&lt;li&gt;A write that has no happens-before relation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In WMM, we consider declarative semantics, i.e., instead of constructing the execution, we firstly do assumptions on the result of reads, then we draw execution graph and check whether the result is reasonable.&lt;/p&gt;
+&lt;h3 id=&#34;example-store-buffering&#34;&gt;Example: Store Buffering&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph LR
+S1(x=y=0) --&amp;gt; S2(x=1) --&amp;gt; S3(r1=y // 0?)
+S1 --&amp;gt; S4(y=1) --&amp;gt; S5(r2=x // 0?)
+S5 -.-&amp;gt; S1
+S3 -.-&amp;gt; S1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Assumption: &lt;code&gt;r1 = r2 = 0&lt;/code&gt;, we find that &lt;code&gt;x = y = 0&lt;/code&gt; is the most recent write that happens before &lt;code&gt;r1 = y&lt;/code&gt; and &lt;code&gt;r2 = x&lt;/code&gt;. Therefore the assumption is reasonable.&lt;/p&gt;
+&lt;h3 id=&#34;example-out-of-thin-air-read&#34;&gt;Example: Out-of-thin-Air Read&lt;/h3&gt;
+&lt;p&gt;Out-of-thin-air (OOTA) read means that the result is completely unreasonable.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;Initially: x = y = 0;
+r1 = x; | r2 = y;
+y = r1; | x = r2;
+assumption: r1 = r2 = 42;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph LR
+S1(x=y=0) --&amp;gt; S2(r1=x // 42?) --&amp;gt; S3(y=42)
+S1 --&amp;gt; S4(r2=y // 42?) --&amp;gt; S5(x=42)
+S2 -.-&amp;gt; S5
+S4 -.-&amp;gt; S3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Another understanding:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Speculation: &lt;code&gt;r2&lt;/code&gt; should be 42, which means that &lt;code&gt;y&lt;/code&gt; needs to be 42.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;r2&lt;/code&gt; equals 42, then in thread #2 &lt;code&gt;x&lt;/code&gt; will be 42.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;x&lt;/code&gt; equals 42, then in thread #1 &lt;code&gt;r1&lt;/code&gt; will be 42.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;r1&lt;/code&gt; equals 42, then in thread #1 &lt;code&gt;y&lt;/code&gt; will be 42. -&amp;gt; cycle formed, justified!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;OOTA reads should be prohibited, otherwise malicious inputs may challenge the safety of programming languages. Java&amp;rsquo;s JMM spare great efforts to eliminate OOTA from HMM, resulting in JMM&amp;rsquo;s complexity, and JMM may generate some surprising behaviors.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;JMM&amp;rsquo;s Suprising Behaviors - Example&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;C1;       ||                 lock I    ||
+lock I;   ||  C3;    ===&amp;gt;        C1;   ||  C3;
+    C2;   ||                     C2;   ||
+unlock I; ||                 unlock I; ||
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Adding more synchronization may increase behaviors!&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;C1;  ||  C2  ||  C3;   ===&amp;gt;   C1;  ||  C3;
+                              C2;  ||
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Inlining threads may increase behaviors!&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;example-independent-reads-of-independent-writes-iriw&#34;&gt;Example: Independent Reads of Independent Writes (IRIW)&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;Initially: x = y = 0;
+x = 1; || r1 = x; || r3 = y; || y = 1;
+       || r2 = y; || r4 = x; ||
+Assumption: r1 = 1, r2 = 0, r3 = 1, r4 = 0;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The assumption means that thread #2 shows &lt;code&gt;x=1&lt;/code&gt; happens before &lt;code&gt;y=1&lt;/code&gt; while thread #3 shows &lt;code&gt;y=1&lt;/code&gt; happens before &lt;code&gt;x=1&lt;/code&gt;, which is impossible in SC.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph LR
+S1(x=y=0) --&amp;gt; S2(x=1)
+S1 --&amp;gt; S3(r1=x // 1?) --&amp;gt; S6(r2=y // 0?)
+S1 --&amp;gt; S4(r3=y // 1?) --&amp;gt; S7(r4=x // 0?)
+S1 --&amp;gt; S5(y=1)
+S3 -.-&amp;gt; S2
+S4 -.-&amp;gt; S5
+S6 -.-&amp;gt; S1
+S7 -.-&amp;gt; S1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, In HMM, it&amp;rsquo;s allowed.&lt;/p&gt;
+&lt;h3 id=&#34;example-hmm---no-drf-guarantee&#34;&gt;Example: HMM - No DRF guarantee.&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;Initially: x = y = 0;
+r1 = x;       ||  r2 = y;
+if (r1 != 0)  ||  if (r2 != 0)
+    y = 42;   ||      x = 42;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In SC, since both &lt;code&gt;if&lt;/code&gt; statements yield false, the two threads have no data race and the program satisfies DRF property. However, in HMM, &lt;code&gt;r1 = r2 = 42&lt;/code&gt; is possible, demonstrating that HMM doesn&amp;rsquo;t have DRF guarantee:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph LR
+S1(x=y=0) --&amp;gt; S2(r1=x // 42?) --&amp;gt; |if pass|S3(y=42)
+S1 --&amp;gt; S4(r2=y // 42?) --&amp;gt; |if pass|S5(x=42)
+S4 -.-&amp;gt; S3
+S2 -.-&amp;gt; S5
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Lecture 01: Introduction</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec01/</link>
+      <pubDate>Tue, 06 Sep 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec01/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#implementations-of-concurrent-programs&#34;&gt;Implementations of Concurrent Programs&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#problem-with-concurrency&#34;&gt;Problem with Concurrency&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#model-summary&#34;&gt;Model Summary&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#programmers-view&#34;&gt;Programmers View&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#memory-model&#34;&gt;Memory Model&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#store-buffering&#34;&gt;Store Buffering&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#load-buffering&#34;&gt;Load Buffering&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#wmm-for-high-level-languages&#34;&gt;WMM for High-Level Languages&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;implementations-of-concurrent-programs&#34;&gt;Implementations of Concurrent Programs&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Python:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import threading
+def func():
+    ...
+if __name__ == &#39;__main__&#39;:
+    t = threading.Thread(target=func,args=...)
+    t.start()
+    t.join()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Java: use &amp;ldquo;Runnable&amp;rdquo; module&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;C++: use &lt;code&gt;&amp;lt;thread&amp;gt;&lt;/code&gt; header file.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Some programming languages use message-passing mechanism instead of sharing memory, such as Go. But we can use the same abstraction.&lt;/p&gt;
+&lt;h2 id=&#34;problem-with-concurrency&#34;&gt;Problem with Concurrency&lt;/h2&gt;
+&lt;p&gt;Interleaving semantics means that the execution is non-deterministic, which is difficult for bug detection and reproduction.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;void thread_function() {
+    for (int i = 0; i &amp;lt; 100; i++)
+        std::cout &amp;lt;&amp;lt; &amp;quot;new thread&amp;quot; &amp;lt;&amp;lt; i &amp;lt;&amp;lt; &#39;\n&#39;;
+}
+int main () {
+    std::thread t(thread_function);
+    for (int i = 0; i &amp;lt; 100; i++)
+        std::cout &amp;lt;&amp;lt; &amp;quot;main thread&amp;quot; &amp;lt;&amp;lt; i &amp;lt;&amp;lt; &#39;\n&#39;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If we use &lt;code&gt;&amp;lt;&amp;lt;&lt;/code&gt; to  concatenate multiple outputs, the printing is not thread-safe and the example code results in interleaving outputs.&lt;/p&gt;
+&lt;p&gt;The simplest solution to this is to use locks (synchronization operations):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;std::mutex mu;
+void shared_output(std::string msg, int i) {
+    std::lock_guard&amp;lt;std::mutex&amp;gt; guard(mu);
+    std::cout &amp;lt;&amp;lt; msg &amp;lt;&amp;lt; i &amp;lt;&amp;lt; &#39;\n&#39;;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;model-summary&#34;&gt;Model Summary&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Multiple threads&lt;/li&gt;
+&lt;li&gt;Single shared memory&lt;/li&gt;
+&lt;li&gt;Objects live in memory&lt;/li&gt;
+&lt;li&gt;Unpredictable asynchronous delays.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;programmers-view&#34;&gt;Programmers View&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Parallel composition, shared memory &amp;amp; interleaving semantics&lt;/li&gt;
+&lt;li&gt;Lock &amp;amp; synchronization operations&lt;/li&gt;
+&lt;li&gt;Concurrent objects (e.g. implementation of locks) and their clients&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;memory-model&#34;&gt;Memory Model&lt;/h2&gt;
+&lt;p&gt;In computing, a memory model describes the interactions of threads through memory and their shared use of data.&lt;/p&gt;
+&lt;p&gt;When we write codes, we use sequential consistency (SC) model to understand it. However:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;No multiprocessor implements SC.&lt;/li&gt;
+&lt;li&gt;Modern compilers may invalidate the order.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Each hardware has its own memory model. Theses models are called &lt;strong&gt;weak/relaxed memory model&lt;/strong&gt;. (Here the &amp;ldquo;weak&amp;rdquo; means that practical memory model may have more &amp;ldquo;unexpected&amp;rdquo; behavior.)&lt;/p&gt;
+&lt;h3 id=&#34;store-buffering&#34;&gt;Store Buffering&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;Initially: x = y = 0;
+x = 1;   |   y = 1;
+r1 = y;  |   r2 = x;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It&amp;rsquo;s possible that &lt;code&gt;r1 = r2 = 0&lt;/code&gt; ! (e.g. in X86.)&lt;/p&gt;
+&lt;p&gt;X86&amp;rsquo;s TSO memory model:&lt;/p&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/x86-TSO.png&#34; style=&#34;zoom:50%;&#34; /&gt;
+&lt;p&gt;When we write data to the memory, the processor puts the data to the buffer and updates the buffer to the memory later. Each processor&amp;rsquo;s buffer is invisible to other processors.&lt;/p&gt;
+&lt;p&gt;A possible execution leading to &lt;code&gt;r1 = r2 = 0&lt;/code&gt; is shown as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;x = 1&lt;/code&gt; in T1 (write to buffer)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;y = 1&lt;/code&gt; in T2 (write to buffer)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;r1 = y&lt;/code&gt; in T1 (no &lt;code&gt;y&lt;/code&gt; in T1&amp;rsquo;s buffer, read from memory, get 0)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;r2 = x&lt;/code&gt; in T2 (no &lt;code&gt;x&lt;/code&gt; in T2&amp;rsquo;s buffer, read from memory, get 0)&lt;/li&gt;
+&lt;li&gt;Update buffers to memory.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;load-buffering&#34;&gt;Load Buffering&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;Initially: x = y = 0;
+r1 = x;  ||  r2 = y;
+y = 1;   ||  x = 1;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It&amp;rsquo;s possible that &lt;code&gt;r1 = r2 = 1&lt;/code&gt; ! (e.g. in ARM)&lt;/p&gt;
+&lt;h2 id=&#34;wmm-for-high-level-languages&#34;&gt;WMM for High-Level Languages&lt;/h2&gt;
+&lt;p&gt;For programmers, if they write code that satisfies DRF property, the compilers and processors guarantee SC behavior.&lt;/p&gt;
+&lt;p&gt;We should embrace WMM since it&amp;rsquo;s part of the reality. Furthermore, many programs don&amp;rsquo;t rely on the strict SC model to ensure correctness.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
