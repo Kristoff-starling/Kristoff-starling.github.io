@@ -14,6 +14,20 @@ menu:
         weight: 3
 ---
 
+- [A Simple Concurrent Programming Language](#a-simple-concurrent-programming-language)
+- [Basic Setup](#basic-setup)
+  - [Thread Subsystem](#thread-subsystem)
+  - [Storage Subsystem](#storage-subsystem)
+  - [Linking the Two](#linking-the-two)
+- [The Thread Subsystem](#the-thread-subsystem)
+  - [Thread Local Steps](#thread-local-steps)
+  - [Lifting to Concurrent Programs](#lifting-to-concurrent-programs)
+- [SC Storage subsystem](#sc-storage-subsystem)
+  - [Linking the Thread and Storage Subsystems](#linking-the-thread-and-storage-subsystems)
+- [x86's TSO Storage Subsystem:](#x86s-tso-storage-subsystem)
+  - [Linking The Thread and Storage Subsystem](#linking-the-thread-and-storage-subsystem)
+- [Exercise: PSO Storage System](#exercise-pso-storage-system)
+
 ## A Simple Concurrent Programming Language
 
 **Basic domains:**

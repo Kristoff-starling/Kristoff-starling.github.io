@@ -28,8 +28,7 @@
   
     
   
-  <meta name="description" content="A Simple Concurrent Programming Language Basic domains:
-Registers: $r\in \text{Reg}$. Memory locations: $x\in \text{Loc}$. Values (including 0): $v\in \text{Val}$. Thread identifiers: $i\in \text{Tid}=\{1,\cdots,N\}$. Expressions and commands (here all commands are atomic):">
+  <meta name="description" content="A Simple Concurrent Programming Language Basic Setup Thread Subsystem Storage Subsystem Linking the Two The Thread Subsystem Thread Local Steps Lifting to Concurrent Programs SC Storage subsystem Linking the Thread and Storage Subsystems x86&rsquo;s TSO Storage Subsystem: Linking The Thread and Storage Subsystem Exercise: PSO Storage System A Simple Concurrent Programming Language Basic domains:">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec03/">
@@ -235,8 +234,7 @@ Registers: $r\in \text{Reg}$. Memory locations: $x\in \text{Loc}$. Values (inclu
   <meta property="og:site_name" content="Academic">
   <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec03/">
   <meta property="og:title" content="Lecture 03: Basic Operational Semantics for Concurrency | Academic">
-  <meta property="og:description" content="A Simple Concurrent Programming Language Basic domains:
-Registers: $r\in \text{Reg}$. Memory locations: $x\in \text{Loc}$. Values (including 0): $v\in \text{Val}$. Thread identifiers: $i\in \text{Tid}=\{1,\cdots,N\}$. Expressions and commands (here all commands are atomic):"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="A Simple Concurrent Programming Language Basic Setup Thread Subsystem Storage Subsystem Linking the Two The Thread Subsystem Thread Local Steps Lifting to Concurrent Programs SC Storage subsystem Linking the Thread and Storage Subsystems x86&rsquo;s TSO Storage Subsystem: Linking The Thread and Storage Subsystem Exercise: PSO Storage System A Simple Concurrent Programming Language Basic domains:"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -508,7 +506,47 @@ Registers: $r\in \text{Reg}$. Memory locations: $x\in \text{Loc}$. Values (inclu
           <h1>Lecture 03: Basic Operational Semantics for Concurrency</h1>
 
           <div class="article-style">
-            <h2 id="a-simple-concurrent-programming-language">A Simple Concurrent Programming Language</h2>
+            <ul>
+<li>
+<a href="#a-simple-concurrent-programming-language">A Simple Concurrent Programming Language</a></li>
+<li>
+<a href="#basic-setup">Basic Setup</a>
+<ul>
+<li>
+<a href="#thread-subsystem">Thread Subsystem</a></li>
+<li>
+<a href="#storage-subsystem">Storage Subsystem</a></li>
+<li>
+<a href="#linking-the-two">Linking the Two</a></li>
+</ul>
+</li>
+<li>
+<a href="#the-thread-subsystem">The Thread Subsystem</a>
+<ul>
+<li>
+<a href="#thread-local-steps">Thread Local Steps</a></li>
+<li>
+<a href="#lifting-to-concurrent-programs">Lifting to Concurrent Programs</a></li>
+</ul>
+</li>
+<li>
+<a href="#sc-storage-subsystem">SC Storage subsystem</a>
+<ul>
+<li>
+<a href="#linking-the-thread-and-storage-subsystems">Linking the Thread and Storage Subsystems</a></li>
+</ul>
+</li>
+<li>
+<a href="#x86s-tso-storage-subsystem">x86&rsquo;s TSO Storage Subsystem:</a>
+<ul>
+<li>
+<a href="#linking-the-thread-and-storage-subsystem">Linking The Thread and Storage Subsystem</a></li>
+</ul>
+</li>
+<li>
+<a href="#exercise-pso-storage-system">Exercise: PSO Storage System</a></li>
+</ul>
+<h2 id="a-simple-concurrent-programming-language">A Simple Concurrent Programming Language</h2>
 <p><strong>Basic domains:</strong></p>
 <ul>
 <li>Registers: $r\in \text{Reg}$.</li>

@@ -17,7 +17,47 @@
       <link>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec03/</link>
       <pubDate>Tue, 20 Sep 2022 00:00:00 +0000</pubDate>
       <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec03/</guid>
-      <description>&lt;h2 id=&#34;a-simple-concurrent-programming-language&#34;&gt;A Simple Concurrent Programming Language&lt;/h2&gt;
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#a-simple-concurrent-programming-language&#34;&gt;A Simple Concurrent Programming Language&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#basic-setup&#34;&gt;Basic Setup&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#thread-subsystem&#34;&gt;Thread Subsystem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#storage-subsystem&#34;&gt;Storage Subsystem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#linking-the-two&#34;&gt;Linking the Two&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#the-thread-subsystem&#34;&gt;The Thread Subsystem&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#thread-local-steps&#34;&gt;Thread Local Steps&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#lifting-to-concurrent-programs&#34;&gt;Lifting to Concurrent Programs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#sc-storage-subsystem&#34;&gt;SC Storage subsystem&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#linking-the-thread-and-storage-subsystems&#34;&gt;Linking the Thread and Storage Subsystems&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#x86s-tso-storage-subsystem&#34;&gt;x86&amp;rsquo;s TSO Storage Subsystem:&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#linking-the-thread-and-storage-subsystem&#34;&gt;Linking The Thread and Storage Subsystem&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#exercise-pso-storage-system&#34;&gt;Exercise: PSO Storage System&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;a-simple-concurrent-programming-language&#34;&gt;A Simple Concurrent Programming Language&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;Basic domains:&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Registers: $r\in \text{Reg}$.&lt;/li&gt;
