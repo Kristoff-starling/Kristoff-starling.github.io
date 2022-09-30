@@ -8,7 +8,10 @@
     <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/</loc>
     <lastmod>2022-09-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formalsemantics/lectures/</loc>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-software-analysis/lectures/</loc>
+    <lastmod>2022-09-15T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/lectures/</loc>
     <lastmod>2022-09-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/lectures/</loc>
@@ -79,16 +82,22 @@
     <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/</loc>
     <lastmod>2022-09-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formalsemantics/lectures/lec02/</loc>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-software-analysis/lectures/lec01/</loc>
+    <lastmod>2022-09-15T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-software-analysis/</loc>
+    <lastmod>2022-09-15T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/lectures/lec02/</loc>
     <lastmod>2022-09-14T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formalsemantics/</loc>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/</loc>
     <lastmod>2022-09-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec02/</loc>
     <lastmod>2022-09-13T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formalsemantics/lectures/lec01/</loc>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/lectures/lec01/</loc>
     <lastmod>2022-09-07T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec01/</loc>
@@ -401,6 +410,9 @@
     <lastmod>2019-02-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/slides/20220923/</loc>
+    <lastmod>2019-02-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/slides/20220930/</loc>
     <lastmod>2019-02-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/slides/example/</loc>

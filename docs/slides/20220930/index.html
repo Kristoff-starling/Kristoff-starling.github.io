@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  
+  
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/slides/20220930/">
+
+  <title>Slides | Academic</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/css/reveal.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/css/theme/serif.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous">
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/reveal_custom.min.css">
+
+  
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/css/print/pdf.css' : 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+
+</head>
+<body>
+
+  
+<div class="reveal">
+  <div class="slides">
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    <section>
+    
+      <h2 id="scalability">Scalability</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="setup">Setup</h3>
+<ul>
+<li>1000 times for each API (FreeFuzz&rsquo;s standard)</li>
+<li>Including invalid inputs</li>
+<li>Total coverage (including C++&rsquo;s libraries)</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="coverage">Coverage</h3>
+<ul>
+<li>209 APIs were tested.</li>
+<li>Approximately 150 new lines per API.</li>
+<li>4158 new lines are covered, 567 of which are &ldquo;completely new&rdquo;.</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="speed">Speed</h3>
+<ul>
+<li>Approximately 5 min per API (with coverage test) :(</li>
+<li>Several seconds per API (generate tests only)</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h2 id="optimization">Optimization</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<p align=left>Three strategies:</p>
+<ul>
+<li>Successful-execution path:
+<ul>
+<li>Leverage FreeFuzz&rsquo;s mutation strategies. (working)</li>
+<li>Non-aggresive argument generation (with learned specifications)</li>
+</ul>
+</li>
+<li>Error-handling path:
+<ul>
+<li>Aggresive argument generation (no specification)</li>
+</ul>
+</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="atheris-test-framework">Atheris Test Framework</h3>
+<p align=left>Example: tf.tile</p>
+<pre><code class="language-python">def TestOneInput(data):
+    fh = FuzzingHelper(data)
+    aggresive = False if fh.random_dice(0.3) else True
+    follow_freefuzz = False if fh.random_dice(0.6) else True
+    arg_0_tensor = get_argument_arg_0_tensor(
+        name='arg_0_tensor', fh, 
+        aggresive=aggresive, follow_freefuzz=follow_freefuzz)
+    arg_0 = tf.identity(arg_0_tensor)
+    arg_1 = get_argument_arg_1(
+        name='arg_1', fh, 
+        aggresive=aggresive, follow_freefuzz=follow_freefuzz)
+    _ = tf.tile(arg_0, arg_1,)
+</code></pre>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="atheris-test-framework-contd">Atheris Test Framework (cont&rsquo;d)</h3>
+<pre><code class="language-python">def get_argument_arg_0_tensor(name, fh, aggresive=False, follow_freefuzz=False):
+    global argument_dict
+    if name not in argument_dict:
+        follow_freefuzz = False
+    if follow_freefuzz is True:
+        res = fh.mutate(argument_dict[name])
+    elif not aggresive:
+        res = fh.get_random_tensor(shape=None, 
+            dtype_set=[tf.float16, tf.float32, tf.float64, tf.int32, tf.int64], 
+            min_size=3, max_size=3)
+    else:
+        res = fh.get_random_tensor()
+    argument_dict[name] = res
+    return res
+</code></pre>
+
+    </section>
+    
+
+    
+    
+  </div>
+</div>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/js/reveal.min.js"></script>
+
+  <script>
+    window.revealPlugins = { dependencies: [
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/zoom-js/zoom.js', async: true },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/math/math.js', async: true },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/print-pdf/print-pdf.js', async: true },
+      
+      { src: '\/js\/vendor\/reveal.js\/plugin\/notes\/notes.js', async: true }
+    ]};
+
+    let revealDefaults = { center: true, controls: true, history: true, progress: true, transition: 'slide', mouseWheel: true };
+    let revealOptions = Object.assign({}, revealDefaults, revealPlugins);
+    Reveal.initialize(revealOptions);
+  </script>
+
+</body>
+</html>
