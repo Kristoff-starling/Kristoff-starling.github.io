@@ -28,11 +28,14 @@
   
     
   
-  <meta name="description" content="假设我们现在要计算 $1&#43;2&#43;3&#43;4&#43;5$，相信你已经有能力写出一段代码完成这个任务：
-int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的功能是一样的 sum = sum &#43; 3; sum = sum &#43; 4; sum = sum &#43; 5; 但是这样的代码看起来未免有些笨拙，如果我们要计算 $1&#43;2&#43;\cdots&#43;100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为：">
+  <meta name="description" content="为了解释清楚一些现象背后的原因，本文涉及一些超纲的计算机底层知识。这部分内容都在绿色的框内，如果你无法看懂可以直接跳过。等到大家学完了计算机系统基础 (ICS) 后自然就能理解这些话的含义。 有了循环之后，你很快就会发现简单地定义一个一个的变量有点“不够用”了，比如考虑如下问题：
+输入整数 $N$，然后输入 $N$ 个数的一个数列，将这个数列倒序输出。
+我们想要倒序输出，就说明我们在读取完数列的最后一个整数时，还要“记住”前面的 $N-1$ 个整数，所以我们每读取到一个整数都得将其保存在变量里，但我们在预先不知道数列长度的情况下怎么知道该定义多少个变量呢？这似乎陷入了死局。
+(在这里我们不考虑递归等技巧) 我们希望有一种语法，可以批量开一堆变量，而且最好能用下标去索引它们。在 C/C&#43;&#43; 中我们可以通过定义数组来实现这一点。我们先给出上面问题的一段示例代码：
+#include &lt;bits/stdc&#43;&#43;.h&gt; int main () { int n; std::cin &gt;&gt; n; int a[n]; for (int i = 0; i &lt; n; i&#43;&#43;) std::cin &gt;&gt; a[i]; for (int i = n - 1; i &gt;= 0; i--) std::cout &lt;&lt; a[i] &lt;&lt; &#39;\n&#39;; return 0; } 这里出现的新语法是 int a[n]。如果说 int 类型的变量是一个可以存放一个整数的小盒子，那么 int a[n] 就定义了 $n$ 个小盒子，每个小盒子都可以存放一个整数。值得注意的是，这里的“小盒子”是按照 $0,1,\cdots, n-1$ 编号的。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/array/">
 
   
 
@@ -219,7 +222,7 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/array/">
 
   
   
@@ -233,10 +236,13 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/">
-  <meta property="og:title" content="循环 | Academic">
-  <meta property="og:description" content="假设我们现在要计算 $1&#43;2&#43;3&#43;4&#43;5$，相信你已经有能力写出一段代码完成这个任务：
-int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的功能是一样的 sum = sum &#43; 3; sum = sum &#43; 4; sum = sum &#43; 5; 但是这样的代码看起来未免有些笨拙，如果我们要计算 $1&#43;2&#43;\cdots&#43;100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/array/">
+  <meta property="og:title" content="数组 | Academic">
+  <meta property="og:description" content="为了解释清楚一些现象背后的原因，本文涉及一些超纲的计算机底层知识。这部分内容都在绿色的框内，如果你无法看懂可以直接跳过。等到大家学完了计算机系统基础 (ICS) 后自然就能理解这些话的含义。 有了循环之后，你很快就会发现简单地定义一个一个的变量有点“不够用”了，比如考虑如下问题：
+输入整数 $N$，然后输入 $N$ 个数的一个数列，将这个数列倒序输出。
+我们想要倒序输出，就说明我们在读取完数列的最后一个整数时，还要“记住”前面的 $N-1$ 个整数，所以我们每读取到一个整数都得将其保存在变量里，但我们在预先不知道数列长度的情况下怎么知道该定义多少个变量呢？这似乎陷入了死局。
+(在这里我们不考虑递归等技巧) 我们希望有一种语法，可以批量开一堆变量，而且最好能用下标去索引它们。在 C/C&#43;&#43; 中我们可以通过定义数组来实现这一点。我们先给出上面问题的一段示例代码：
+#include &lt;bits/stdc&#43;&#43;.h&gt; int main () { int n; std::cin &gt;&gt; n; int a[n]; for (int i = 0; i &lt; n; i&#43;&#43;) std::cin &gt;&gt; a[i]; for (int i = n - 1; i &gt;= 0; i--) std::cout &lt;&lt; a[i] &lt;&lt; &#39;\n&#39;; return 0; } 这里出现的新语法是 int a[n]。如果说 int 类型的变量是一个可以存放一个整数的小盒子，那么 int a[n] 就定义了 $n$ 个小盒子，每个小盒子都可以存放一个整数。值得注意的是，这里的“小盒子”是按照 $0,1,\cdots, n-1$ 编号的。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -259,7 +265,7 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
 
 
 
-  <title>循环 | Academic</title>
+  <title>数组 | Academic</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -486,11 +492,11 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
         <a href="/courses/problemsolving22/c&#43;&#43;0/branch/">分支</a>
       </li>
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/c&#43;&#43;0/loop/">循环</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/c&#43;&#43;0/array/">数组</a>
       </li>
       
@@ -515,126 +521,96 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>循环</h1>
+          <h1>数组</h1>
 
           <div class="article-style">
-            <p>假设我们现在要计算 $1+2+3+4+5$，相信你已经有能力写出一段代码完成这个任务：</p>
-<pre><code class="language-c++">int sum;
-sum = 1;
-sum = sum + 2; // 你也可以写 sum += 2; 它们的功能是一样的
-sum = sum + 3;
-sum = sum + 4;
-sum = sum + 5;
-</code></pre>
-<p>但是这样的代码看起来未免有些笨拙，如果我们要计算 $1+2+\cdots+100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为：</p>
-<pre><code class="language-c++">while (condition)
-{
-    // your code here
-}
-</code></pre>
-<p>在进入循环体之前，程序会先检查括号中的条件是否成立，如果成立就执行大括号中的内容，执行完内容后程序会再次判断括号中的条件是否成立……直到某次执行完循环体后条件不成立了，while 循环才会退出，下面的流程图很好地诠释了 while 循环的执行过程：</p>
-<pre><code class="language-mermaid">graph TD
-
-s0[start]
-s1{while yes?}
-s2(body)
-s3(break)
-s0 --&gt; s1
-s1 --&gt; |yes| s2
-s2 --&gt; s1
-s1 --&gt; |no| s3
-</code></pre>
-<p>有了 while 循环后，我们可以容易地解决下面的这个问题：输入一个整数 $n$，输出 $1+2+\cdots+n$：</p>
+            <div class="alert alert-warning">
+  <div>
+    为了解释清楚一些现象背后的原因，本文涉及一些超纲的计算机底层知识。这部分内容都在绿色的框内，如果你无法看懂可以直接跳过。等到大家学完了计算机系统基础 (ICS) 后自然就能理解这些话的含义。
+  </div>
+</div>
+<p>有了循环之后，你很快就会发现简单地定义一个一个的变量有点“不够用”了，比如考虑如下问题：</p>
+<blockquote>
+<p>输入整数 $N$，然后输入 $N$ 个数的一个数列，将这个数列倒序输出。</p>
+</blockquote>
+<p>我们想要倒序输出，就说明我们在读取完数列的最后一个整数时，还要“记住”前面的 $N-1$ 个整数，所以我们每读取到一个整数都得将其保存在变量里，但我们在预先不知道数列长度的情况下怎么知道该定义多少个变量呢？这似乎陷入了死局。</p>
+<p>(在这里我们不考虑递归等技巧) 我们希望有一种语法，可以批量开一堆变量，而且最好能用下标去索引它们。在 C/C++ 中我们可以通过定义数组来实现这一点。我们先给出上面问题的一段示例代码：</p>
 <pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
 
 int main ()
 {
-    int n, sum;
+    int n;
     std::cin &gt;&gt; n;
-    sum = 0;
-    while (n != 0)
-    {
-        sum += n;
-        n--; // &quot;n--&quot; is equal to &quot;n = n - 1&quot;
-    }
-    std::cout &lt;&lt; sum &lt;&lt; '\n';
+    int a[n];
+    for (int i = 0; i &lt; n; i++)
+        std::cin &gt;&gt; a[i];
+    for (int i = n - 1; i &gt;= 0; i--)
+        std::cout &lt;&lt; a[i] &lt;&lt; '\n';
     return 0;
 }
 </code></pre>
-<p>上述 while 循环将判断条件放在开头，另有一种 do-while 循环框架将判断条件放在末尾：</p>
-<pre><code class="language-c++">do
-{
-    // your code
-}
-while (condition); // 这里要加分号！
-</code></pre>
-<p>do-while 循环一定会先执行循环体再检查条件，其他的部分和 while 循环没有区别。</p>
-<p>除了 while 循环，for 循环也是一种常用的循环框架，不过 for 循环的格式相对复杂：</p>
-<pre><code class="language-c++">for (/* statement 1 */; /* statement 2 */; /* statement 3 */)
-{
-    // your code
-}
-</code></pre>
-<p>C++ 语言的 for 循环中有 3 条语句，其执行顺序非常微妙 (这是 C/C++ 经常被吐槽的一个点)。用流程图可以比较清楚地解释执行的顺序：</p>
-<pre><code class="language-mermaid">graph LR
+<p>这里出现的新语法是 <code>int a[n]</code>。如果说 int 类型的变量是一个可以存放一个整数的小盒子，那么 <code>int a[n]</code> 就定义了 $n$ 个小盒子，每个小盒子都可以存放一个整数。值得注意的是，这里的“小盒子”是按照 $0,1,\cdots, n-1$ 编号的。</p>
+<div class="alert alert-tip">
+  <div>
+    <p><strong>Variable-Length Array (VLA)</strong></p>
+<p>在上面的例子中，我们定义的数组的长度依赖于我们输入的变量 $n$ 的值，也就是说，在程序开始运行之前，我们无法知道数组的具体长度。这种以变量作为长度的数组称为 variable-length array (VLA)。</p>
+<p>VLA 的微妙之处在于，编译器在不知道数组具体长度的情况下可能会在内存分配上犯难。C99 标准首次允许 VLA 的使用，但对其作出了诸多限制，比如不能使用 $\mathbf{extern}$, $\mathbf{static}$ 等关键字修饰。不同的编译器支持的标准也略有差异，例如 Visual Studio 使用的 msvc 编译器很可能会对上面的示例代码报错。</p>
+<p>如果你对这些内容感兴趣，可以上网查询更多的资料。</p>
+  </div>
+</div>
+<p>如果上面关于 VLA 的内容你没有看懂，没有关系，一句话概括就是使用变量作为数组的长度“不太好”。我们的 OJ 题会对输入数据的范围作出严格的限制，你可以根据数据范围将数组开到足够大的一个固定长度。假设题目规定了 $N\leq 1000$，那么一个不使用 VLA 的程序应该这样写：</p>
+<pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
 
-s0[start]
-s1(statement 1)
-s2{statement 2 yes?}
-s3(body)
-s4(statement 3)
-s5(break)
-s0 --&gt; s1
-s1 --&gt; s2
-s2 --&gt; |yes| s3
-s3 --&gt; s4
-s4 --&gt; s2
-s2 --&gt; |no| s5
+int a[1000];
+
+int main ()
+{
+    int n;
+    std::cin &gt;&gt; n;
+    for (int i = 0; i &lt; n; i++)
+        std::cin &gt;&gt; a[i];
+    for (int i = n - 1; i &gt;= 0; i--)
+        std::cout &lt;&lt; a[i] &lt;&lt; '\n';
+    return 0;
+}
 </code></pre>
-<p>如果你觉得这个流程比较复杂，也可以暂时不那么仔细地理解它，毕竟 while 循环可以做到 for 循环能做到的所有事情。不过你可以记住的是：</p>
-<pre><code class="language-c++">int i;
-for (i = 1; i &lt;= n; i++) {}
-</code></pre>
-<p>这样一个 for 循环可以让变量 <code>i</code> 分别取 $1, 2, \cdots, n$，然后退出循环。如果你把三条语句代入刚才的流程图，你会发现它确实是正确的。这样一个从 $1$ 枚举到 $n$ 的写法比 while 循环看上去简洁一些。</p>
-<p>我们给出两个使用 for 循环实现计算 $1+2+\cdots n$ 的示例代码：</p>
+<p>这里我们希望不加解释地做出一个规定：如果你要定义一个定长的数组，请将它定义在 <code>main()</code> 函数的外面。</p>
+<div class="alert alert-tip">
+  <div>
+    <p><strong>不行，我就是想知道为什么要这么规定</strong></p>
+<p>C/C++ 的编译器需要负责将高级语言程序映射到具体的硬件上。对于数组这样的存储设施，编译器会将其映射到内存中的某块区域。如果你将数组定义在函数内部，编译器会将其安排在栈上；如果你将数组定义在全局 (函数外部)，编译器会将其安排在静态数据区。除非特别配置，一个程序的栈空间通常不是很大，如果在函数内部定义了过长的数组可能会导致栈溢出，栈溢出会导致不可预知的严重后果。</p>
+<p>如果你想亲手体验一下“栈溢出”，你可以尝试运行以下代码 (不要加任何编译优化)：</p>
+<pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
+<p>int main () { char s[1 &lt;&lt; 25]; }
+</code></pre></p>
+<p>直接运行这段代码可能会获得段错误 (Segmentation Fault)。</p>
+  </div>
+</div>
+<p>如果你没有看懂这段话，那就老老实实地遵守我们的规定吧。</p>
+<p>总有一些“完美主义者”觉得这样写代码十分令人不爽——如果 $N$ 远小于 1000，我们的代码岂不是无谓的多使用了很多资源？这里我们再介绍一种定义数组的方式，它在功能上和前面的几种是完全相同的：</p>
 <pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
 
 int main ()
 {
-    int n, sum;
+    int n;
     std::cin &gt;&gt; n;
-    for (int i = 1; i &lt;= n; i++) // 如果你想在循环体内部临时使用一个变量，你可以选择像这样的定义方式
-        sum += i; // 别忘了单条语句可以不用{}包裹起来
-    std::cout &lt;&lt; sum &lt;&lt; '\n';
+    int *a = new int [n];
+    for (int i = 0; i &lt; n; i++)
+        std::cin &gt;&gt; a[i];
+    for (int i = n - 1; i &gt;= 0; i--)
+        std::cout &lt;&lt; a[i] &lt;&lt; '\n';
+    delete [] a;
     return 0;
 }
 </code></pre>
-<p>如你所见，你可以在 for 循环中临时定义变量 <code>i</code>，这个变量 <code>i</code> 只可以在循环体中使用，在循环体以外你不能使用 <code>i</code>。</p>
-<p>这个 for 循环的写法是之前介绍的比较规整的写法，下面是一个长相比较特别的 for 循环：</p>
-<pre><code class="language-c++">int main ()
-{
-    int n, sum;
-    std::cin &gt;&gt; n;
-    for ( ;n != 0; n--)
-        sum = sum + n;
-    std::cout &lt;&lt; sum &lt;&lt; '\n';
-    return 0;
-}
-</code></pre>
-<p>如果你代入之前的流程图理解 for 循环执行的过程，你会发现这个写法比较像 while 循环的逻辑。事实上，之所以说 for 循环完全可以用 while 循环代替，是因为</p>
-<pre><code class="language-c++">for (s1; s2; s3)
-{
-    // your code
-}
-</code></pre>
-<p>等价于</p>
-<pre><code class="language-c++">s1;
-while (s2)
-{
-    // your code
-    s3;
-}
-</code></pre>
+<p><code>int *a = new int [n]</code> 的功能是定义一个长度为 $n$ 的数组，每个数组元素都是 int 类型，这个数组的名字叫做 <code>a</code>。我们在这里希望强调一点：<strong>如果你使用了new语法定义数组，请一定在你确定不会再使用该数组的时刻 (例如 <code>return 0</code> 之前) 使用delete释放它</strong>。</p>
+<div class="alert alert-tip">
+  <div>
+    <p><strong>我不写delete这一行好像也没报错啊？</strong></p>
+<p>如果你是一个曾经学过算法竞赛的同学，你很可能已经养成了“随手new，从不delete”的习惯。我们在这里必须严肃地警告：这是一个非常危险的习惯！你之前写过的忘记 delete 的 OJ 程序之所以可以正常退出，是因为当 OJ 程序所在的进程被销毁时，操作系统会将进程申请的资源自动释放——换言之，操作系统帮你默默地做了 delete。没有及时释放申请的内存会导致内存泄漏 (memory leak)，如果将来你维护一个大型的项目，内存泄漏的累积很可能导致程序崩溃。</p>
+<p>如果你是一个计算机小白，恭喜你拥有了一个小小的优势：你没有经历过算法竞赛中各种糟糕的代码书写习惯的熏陶。从初学阶段开始严格遵守各种规范，你将自然而然地将书写安全、高质量、可读性强的代码作为一种本能。</p>
+  </div>
+</div>
 
           </div>
 
@@ -651,14 +627,14 @@ while (s2)
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/c&#43;&#43;0/nestedloop/" rel="next">嵌套循环</a>
+    <a href="/courses/problemsolving22/c&#43;&#43;0/loop/" rel="next">循环</a>
   </div>
   
   
   
   <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/c&#43;&#43;0/array/" rel="prev">数组</a>
+    <a href="/courses/problemsolving22/c&#43;&#43;0/io/" rel="prev">输入输出</a>
   </div>
   
 </div>
@@ -680,7 +656,7 @@ while (s2)
   
 
 <p class="edit-page">
-  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/loop.md">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/array.md">
     <i class="fas fa-pen pr-2"></i>Edit this page
   </a>
 </p>

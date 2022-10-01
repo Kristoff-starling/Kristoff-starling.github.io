@@ -28,11 +28,11 @@
   
     
   
-  <meta name="description" content="假设我们现在要计算 $1&#43;2&#43;3&#43;4&#43;5$，相信你已经有能力写出一段代码完成这个任务：
-int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的功能是一样的 sum = sum &#43; 3; sum = sum &#43; 4; sum = sum &#43; 5; 但是这样的代码看起来未免有些笨拙，如果我们要计算 $1&#43;2&#43;\cdots&#43;100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为：">
+  <meta name="description" content="上一节的所有示例代码中我们定义的都是一维数组，一维数组顾名思义就是将所有的”小盒子“排成一排，用一个下标去索引它们。C/C&#43;&#43; 中可以定义各种维度的数组，比如你可以定义一个二维数组来存储方阵：
+#include &lt;bits/stdc&#43;&#43;.h&gt; int a[100][100]; int main () { a[0][0] = 1; // 二维数组的每个维度都是从0开始编号的！ a[2][3] = 5; std::cout &lt;&lt; a[0][0] &lt;&lt; &#39;\n&#39;; //输出结果为1 return 0; } 有了多维数组后，你会发现我们手里原有的线性的循环工具有点不够用了。但事实上我们可以用嵌套循环来轻松地对多维数组进行访问。下面的示例程序接受一个 $n$ 行 $m$ 列的包含整数的方阵作为输入，它会将其原封不动地打印出来 (假设 $n,m\leq 100$)：">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/nestedloop/">
 
   
 
@@ -219,7 +219,7 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/nestedloop/">
 
   
   
@@ -233,10 +233,10 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/">
-  <meta property="og:title" content="循环 | Academic">
-  <meta property="og:description" content="假设我们现在要计算 $1&#43;2&#43;3&#43;4&#43;5$，相信你已经有能力写出一段代码完成这个任务：
-int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的功能是一样的 sum = sum &#43; 3; sum = sum &#43; 4; sum = sum &#43; 5; 但是这样的代码看起来未免有些笨拙，如果我们要计算 $1&#43;2&#43;\cdots&#43;100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/nestedloop/">
+  <meta property="og:title" content="嵌套循环 | Academic">
+  <meta property="og:description" content="上一节的所有示例代码中我们定义的都是一维数组，一维数组顾名思义就是将所有的”小盒子“排成一排，用一个下标去索引它们。C/C&#43;&#43; 中可以定义各种维度的数组，比如你可以定义一个二维数组来存储方阵：
+#include &lt;bits/stdc&#43;&#43;.h&gt; int a[100][100]; int main () { a[0][0] = 1; // 二维数组的每个维度都是从0开始编号的！ a[2][3] = 5; std::cout &lt;&lt; a[0][0] &lt;&lt; &#39;\n&#39;; //输出结果为1 return 0; } 有了多维数组后，你会发现我们手里原有的线性的循环工具有点不够用了。但事实上我们可以用嵌套循环来轻松地对多维数组进行访问。下面的示例程序接受一个 $n$ 行 $m$ 列的包含整数的方阵作为输入，它会将其原封不动地打印出来 (假设 $n,m\leq 100$)："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -259,7 +259,7 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
 
 
 
-  <title>循环 | Academic</title>
+  <title>嵌套循环 | Academic</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -486,7 +486,7 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
         <a href="/courses/problemsolving22/c&#43;&#43;0/branch/">分支</a>
       </li>
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/c&#43;&#43;0/loop/">循环</a>
       </li>
       
@@ -494,7 +494,7 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
         <a href="/courses/problemsolving22/c&#43;&#43;0/array/">数组</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/c&#43;&#43;0/nestedloop/">嵌套循环</a>
       </li>
       
@@ -515,126 +515,98 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>循环</h1>
+          <h1>嵌套循环</h1>
 
           <div class="article-style">
-            <p>假设我们现在要计算 $1+2+3+4+5$，相信你已经有能力写出一段代码完成这个任务：</p>
-<pre><code class="language-c++">int sum;
-sum = 1;
-sum = sum + 2; // 你也可以写 sum += 2; 它们的功能是一样的
-sum = sum + 3;
-sum = sum + 4;
-sum = sum + 5;
-</code></pre>
-<p>但是这样的代码看起来未免有些笨拙，如果我们要计算 $1+2+\cdots+100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为：</p>
-<pre><code class="language-c++">while (condition)
-{
-    // your code here
-}
-</code></pre>
-<p>在进入循环体之前，程序会先检查括号中的条件是否成立，如果成立就执行大括号中的内容，执行完内容后程序会再次判断括号中的条件是否成立……直到某次执行完循环体后条件不成立了，while 循环才会退出，下面的流程图很好地诠释了 while 循环的执行过程：</p>
-<pre><code class="language-mermaid">graph TD
-
-s0[start]
-s1{while yes?}
-s2(body)
-s3(break)
-s0 --&gt; s1
-s1 --&gt; |yes| s2
-s2 --&gt; s1
-s1 --&gt; |no| s3
-</code></pre>
-<p>有了 while 循环后，我们可以容易地解决下面的这个问题：输入一个整数 $n$，输出 $1+2+\cdots+n$：</p>
+            <p>上一节的所有示例代码中我们定义的都是一维数组，一维数组顾名思义就是将所有的”小盒子“排成一排，用一个下标去索引它们。C/C++ 中可以定义各种维度的数组，比如你可以定义一个二维数组来存储方阵：</p>
 <pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
+
+int a[100][100];
 
 int main ()
 {
-    int n, sum;
-    std::cin &gt;&gt; n;
-    sum = 0;
-    while (n != 0)
+    a[0][0] = 1; // 二维数组的每个维度都是从0开始编号的！
+    a[2][3] = 5;
+    std::cout &lt;&lt; a[0][0] &lt;&lt; '\n'; //输出结果为1
+    return 0;
+}
+</code></pre>
+<p>有了多维数组后，你会发现我们手里原有的线性的循环工具有点不够用了。但事实上我们可以用嵌套循环来轻松地对多维数组进行访问。下面的示例程序接受一个 $n$ 行 $m$ 列的包含整数的方阵作为输入，它会将其原封不动地打印出来 (假设 $n,m\leq 100$)：</p>
+<pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
+
+int a[100][100];
+
+int main ()
+{
+    int row, col;
+    std::cin &gt;&gt; row &gt;&gt; col;
+
+    // input
+    for (int i = 0; i &lt; row; i++)
     {
-        sum += n;
-        n--; // &quot;n--&quot; is equal to &quot;n = n - 1&quot;
+        for (int j = 0; j &lt; col; j++)
+        {
+            std::cin &gt;&gt; a[i][j];
+        }
     }
-    std::cout &lt;&lt; sum &lt;&lt; '\n';
-    return 0;
-}
-</code></pre>
-<p>上述 while 循环将判断条件放在开头，另有一种 do-while 循环框架将判断条件放在末尾：</p>
-<pre><code class="language-c++">do
-{
-    // your code
-}
-while (condition); // 这里要加分号！
-</code></pre>
-<p>do-while 循环一定会先执行循环体再检查条件，其他的部分和 while 循环没有区别。</p>
-<p>除了 while 循环，for 循环也是一种常用的循环框架，不过 for 循环的格式相对复杂：</p>
-<pre><code class="language-c++">for (/* statement 1 */; /* statement 2 */; /* statement 3 */)
-{
-    // your code
-}
-</code></pre>
-<p>C++ 语言的 for 循环中有 3 条语句，其执行顺序非常微妙 (这是 C/C++ 经常被吐槽的一个点)。用流程图可以比较清楚地解释执行的顺序：</p>
-<pre><code class="language-mermaid">graph LR
 
-s0[start]
-s1(statement 1)
-s2{statement 2 yes?}
-s3(body)
-s4(statement 3)
-s5(break)
-s0 --&gt; s1
-s1 --&gt; s2
-s2 --&gt; |yes| s3
-s3 --&gt; s4
-s4 --&gt; s2
-s2 --&gt; |no| s5
+    // output
+    for (int i = 0; i &lt; row; i++)
+        for (int j = 0; j &lt; col; j++)
+        {
+            char suffix_char = ((j == col - 1) ? '\n' : ' ');
+            std::cout &lt;&lt; a[i][j] &lt;&lt; suffix_char;
+        }
+}
 </code></pre>
-<p>如果你觉得这个流程比较复杂，也可以暂时不那么仔细地理解它，毕竟 while 循环可以做到 for 循环能做到的所有事情。不过你可以记住的是：</p>
-<pre><code class="language-c++">int i;
-for (i = 1; i &lt;= n; i++) {}
+<p>从逻辑上来看嵌套循环也没什么“了不起”：以输出部分为例，对于每一个 $i=0,1,\cdots,row-1$，循环变量 $j$ 都会从 $0$ 循环到 $col-1$，这样在内层循环的里面我们就可以按照 $(0,0)$, $(0,1)$,$\cdots$, $(0, col-1)$, $(1, 0)$, $(1, 1)$, $\cdots$ ,$(1, col-1)$, $(2, 0)$,$\cdots$, $(row-1, 0)$, $\cdots$, $(row-1, col-1)$ 的顺序去访问二维数组中的每个元素。</p>
+<p>这个代码中有一些细节值得讲解：</p>
+<ul>
+<li>在书写嵌套循环时，内层循环和外层循环应当使用不同的循环变量。如果你在内层循环中使用了和外层循环一样的变量，那么执行完内层循环后回到外层循环时，变量的值就乱了。不要小瞧这条看上去显而易见的结论，你们所有人大抵都会在过去、现在或将来犯一些类似下面的错误：
+<pre><code class="language-c++">for (int i = 0; i &lt; n; i++)
+    for (int j = 0; j &lt; m; i++)
 </code></pre>
-<p>这样一个 for 循环可以让变量 <code>i</code> 分别取 $1, 2, \cdots, n$，然后退出循环。如果你把三条语句代入刚才的流程图，你会发现它确实是正确的。这样一个从 $1$ 枚举到 $n$ 的写法比 while 循环看上去简洁一些。</p>
-<p>我们给出两个使用 for 循环实现计算 $1+2+\cdots n$ 的示例代码：</p>
+</li>
+<li>我们在给出两段双重循环的代码时特地使用了不同的括号风格，你可以借此机会对到底什么时候需要打大括号有更深入的理解：我们之前提到如果当前结构内部只有一条语句，for循环/if语句可以不打大括号；但更准确地说应该是如果只有“一块”一句，比如第二段双重循环的外层循环内部只有一个for循环这“一块”语句，所以可以省略大括号。还是那句话，如果你拿捏不准，把大括号写全永远是最稳妥的。</li>
+<li>示例代码中出现了一个比较奇怪的语句：<code>suffix_char = ((j == col - 1) ? '\n' : ' ')</code>。<code>? :</code> 被称为三目运算符，是 C/C++ 提供的一个语法机制。<code>(a ? b : c)</code> 的意思是如果 <code>a</code> 的值为真则返回 <code>b</code>，否则返回 <code>c</code>。上面的这一行代码等价于一个if语句：
+<pre><code class="language-c++">if (j == col - 1)
+    suffix_char = '\n';
+else
+    suffix_char = ' ';
+</code></pre>
+可以看到合理使用三目运算符有助于使代码更加简洁。</li>
+</ul>
+<div class="alert alert-note">
+  <div>
+    <p><strong>运算符优先级</strong></p>
+<p>你可能会疑惑：三目运算符的代码写成</p>
+<pre><code class="language-c++">suffix_char = (j == col - 1 ? '\n' : ' ');
+</code></pre>
+<p>甚至是</p>
+<pre><code class="language-c++">suffix_char = j == col - 1 ? '\n' : ' ';
+</code></pre>
+<p>可不可以呢？
+在坐等答案之前，你应该做的事情是把括号去掉并尝试运行程序，这是你自己通过试验寻求问题答案的途径。当然在这里我们会告诉你：上面两段代码是没有问题的，因为 C/C++ 中不同的符号存在优先级差异。正如算术中乘除法比加减法优先级高，C/C++内部也有一套严格的优先级金字塔。优先级相同的运算符优先计算左侧的；优先级不同的运算符优先计算等级高的。这个
+<a href="https://en.cppreference.com/w/cpp/language/operator_precedence" target="_blank" rel="noopener">链接</a> 详细讲述了优先级的划分。</p>
+  </div>
+</div>
+<p>下面展示一个更精巧的例子，它的作用是打印出一个字符三角形：</p>
 <pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
 
 int main ()
 {
-    int n, sum;
+    int n;
     std::cin &gt;&gt; n;
-    for (int i = 1; i &lt;= n; i++) // 如果你想在循环体内部临时使用一个变量，你可以选择像这样的定义方式
-        sum += i; // 别忘了单条语句可以不用{}包裹起来
-    std::cout &lt;&lt; sum &lt;&lt; '\n';
+    for (int i = 1; i &lt;= n; i++)
+    {
+        for (int j = 0; j &lt; i; j++)
+            std:: cout &lt;&lt; '*';
+        std::cout &lt;&lt; '\n';
+    }
     return 0;
 }
 </code></pre>
-<p>如你所见，你可以在 for 循环中临时定义变量 <code>i</code>，这个变量 <code>i</code> 只可以在循环体中使用，在循环体以外你不能使用 <code>i</code>。</p>
-<p>这个 for 循环的写法是之前介绍的比较规整的写法，下面是一个长相比较特别的 for 循环：</p>
-<pre><code class="language-c++">int main ()
-{
-    int n, sum;
-    std::cin &gt;&gt; n;
-    for ( ;n != 0; n--)
-        sum = sum + n;
-    std::cout &lt;&lt; sum &lt;&lt; '\n';
-    return 0;
-}
-</code></pre>
-<p>如果你代入之前的流程图理解 for 循环执行的过程，你会发现这个写法比较像 while 循环的逻辑。事实上，之所以说 for 循环完全可以用 while 循环代替，是因为</p>
-<pre><code class="language-c++">for (s1; s2; s3)
-{
-    // your code
-}
-</code></pre>
-<p>等价于</p>
-<pre><code class="language-c++">s1;
-while (s2)
-{
-    // your code
-    s3;
-}
-</code></pre>
+<p>可以看到外层的循环变量是可以在内层循环体和循环条件中使用的。</p>
 
           </div>
 
@@ -651,14 +623,14 @@ while (s2)
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/c&#43;&#43;0/nestedloop/" rel="next">嵌套循环</a>
+    <a href="/courses/problemsolving22/c&#43;&#43;0/framework/" rel="next">基本框架</a>
   </div>
   
   
   
   <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/c&#43;&#43;0/array/" rel="prev">数组</a>
+    <a href="/courses/problemsolving22/c&#43;&#43;0/loop/" rel="prev">循环</a>
   </div>
   
 </div>
@@ -680,7 +652,7 @@ while (s2)
   
 
 <p class="edit-page">
-  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/loop.md">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/nestedloop.md">
     <i class="fas fa-pen pr-2"></i>Edit this page
   </a>
 </p>

@@ -136,6 +136,103 @@ int main ()
     </item>
     
     <item>
+      <title>嵌套循环</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/nestedloop/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/nestedloop/</guid>
+      <description>&lt;p&gt;上一节的所有示例代码中我们定义的都是一维数组，一维数组顾名思义就是将所有的”小盒子“排成一排，用一个下标去索引它们。C/C++ 中可以定义各种维度的数组，比如你可以定义一个二维数组来存储方阵：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int a[100][100];
+
+int main ()
+{
+    a[0][0] = 1; // 二维数组的每个维度都是从0开始编号的！
+    a[2][3] = 5;
+    std::cout &amp;lt;&amp;lt; a[0][0] &amp;lt;&amp;lt; &#39;\n&#39;; //输出结果为1
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;有了多维数组后，你会发现我们手里原有的线性的循环工具有点不够用了。但事实上我们可以用嵌套循环来轻松地对多维数组进行访问。下面的示例程序接受一个 $n$ 行 $m$ 列的包含整数的方阵作为输入，它会将其原封不动地打印出来 (假设 $n,m\leq 100$)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int a[100][100];
+
+int main ()
+{
+    int row, col;
+    std::cin &amp;gt;&amp;gt; row &amp;gt;&amp;gt; col;
+
+    // input
+    for (int i = 0; i &amp;lt; row; i++)
+    {
+        for (int j = 0; j &amp;lt; col; j++)
+        {
+            std::cin &amp;gt;&amp;gt; a[i][j];
+        }
+    }
+
+    // output
+    for (int i = 0; i &amp;lt; row; i++)
+        for (int j = 0; j &amp;lt; col; j++)
+        {
+            char suffix_char = ((j == col - 1) ? &#39;\n&#39; : &#39; &#39;);
+            std::cout &amp;lt;&amp;lt; a[i][j] &amp;lt;&amp;lt; suffix_char;
+        }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;从逻辑上来看嵌套循环也没什么“了不起”：以输出部分为例，对于每一个 $i=0,1,\cdots,row-1$，循环变量 $j$ 都会从 $0$ 循环到 $col-1$，这样在内层循环的里面我们就可以按照 $(0,0)$, $(0,1)$,$\cdots$, $(0, col-1)$, $(1, 0)$, $(1, 1)$, $\cdots$ ,$(1, col-1)$, $(2, 0)$,$\cdots$, $(row-1, 0)$, $\cdots$, $(row-1, col-1)$ 的顺序去访问二维数组中的每个元素。&lt;/p&gt;
+&lt;p&gt;这个代码中有一些细节值得讲解：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在书写嵌套循环时，内层循环和外层循环应当使用不同的循环变量。如果你在内层循环中使用了和外层循环一样的变量，那么执行完内层循环后回到外层循环时，变量的值就乱了。不要小瞧这条看上去显而易见的结论，你们所有人大抵都会在过去、现在或将来犯一些类似下面的错误：
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 0; i &amp;lt; n; i++)
+    for (int j = 0; j &amp;lt; m; i++)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;我们在给出两段双重循环的代码时特地使用了不同的括号风格，你可以借此机会对到底什么时候需要打大括号有更深入的理解：我们之前提到如果当前结构内部只有一条语句，for循环/if语句可以不打大括号；但更准确地说应该是如果只有“一块”一句，比如第二段双重循环的外层循环内部只有一个for循环这“一块”语句，所以可以省略大括号。还是那句话，如果你拿捏不准，把大括号写全永远是最稳妥的。&lt;/li&gt;
+&lt;li&gt;示例代码中出现了一个比较奇怪的语句：&lt;code&gt;suffix_char = ((j == col - 1) ? &#39;\n&#39; : &#39; &#39;)&lt;/code&gt;。&lt;code&gt;? :&lt;/code&gt; 被称为三目运算符，是 C/C++ 提供的一个语法机制。&lt;code&gt;(a ? b : c)&lt;/code&gt; 的意思是如果 &lt;code&gt;a&lt;/code&gt; 的值为真则返回 &lt;code&gt;b&lt;/code&gt;，否则返回 &lt;code&gt;c&lt;/code&gt;。上面的这一行代码等价于一个if语句：
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;if (j == col - 1)
+    suffix_char = &#39;\n&#39;;
+else
+    suffix_char = &#39; &#39;;
+&lt;/code&gt;&lt;/pre&gt;
+可以看到合理使用三目运算符有助于使代码更加简洁。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;运算符优先级&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;你可能会疑惑：三目运算符的代码写成&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;suffix_char = (j == col - 1 ? &#39;\n&#39; : &#39; &#39;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;甚至是&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;suffix_char = j == col - 1 ? &#39;\n&#39; : &#39; &#39;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可不可以呢？
+在坐等答案之前，你应该做的事情是把括号去掉并尝试运行程序，这是你自己通过试验寻求问题答案的途径。当然在这里我们会告诉你：上面两段代码是没有问题的，因为 C/C++ 中不同的符号存在优先级差异。正如算术中乘除法比加减法优先级高，C/C++内部也有一套严格的优先级金字塔。优先级相同的运算符优先计算左侧的；优先级不同的运算符优先计算等级高的。这个
+&lt;a href=&#34;https://en.cppreference.com/w/cpp/language/operator_precedence&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;链接&lt;/a&gt; 详细讲述了优先级的划分。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;下面展示一个更精巧的例子，它的作用是打印出一个字符三角形：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int n;
+    std::cin &amp;gt;&amp;gt; n;
+    for (int i = 1; i &amp;lt;= n; i++)
+    {
+        for (int j = 0; j &amp;lt; i; j++)
+            std:: cout &amp;lt;&amp;lt; &#39;*&#39;;
+        std::cout &amp;lt;&amp;lt; &#39;\n&#39;;
+    }
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到外层的循环变量是可以在内层循环体和循环条件中使用的。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>循环</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -261,6 +358,101 @@ while (s2)
     </item>
     
     <item>
+      <title>数组</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/array/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/array/</guid>
+      <description>&lt;div class=&#34;alert alert-warning&#34;&gt;
+  &lt;div&gt;
+    为了解释清楚一些现象背后的原因，本文涉及一些超纲的计算机底层知识。这部分内容都在绿色的框内，如果你无法看懂可以直接跳过。等到大家学完了计算机系统基础 (ICS) 后自然就能理解这些话的含义。
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;有了循环之后，你很快就会发现简单地定义一个一个的变量有点“不够用”了，比如考虑如下问题：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;输入整数 $N$，然后输入 $N$ 个数的一个数列，将这个数列倒序输出。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我们想要倒序输出，就说明我们在读取完数列的最后一个整数时，还要“记住”前面的 $N-1$ 个整数，所以我们每读取到一个整数都得将其保存在变量里，但我们在预先不知道数列长度的情况下怎么知道该定义多少个变量呢？这似乎陷入了死局。&lt;/p&gt;
+&lt;p&gt;(在这里我们不考虑递归等技巧) 我们希望有一种语法，可以批量开一堆变量，而且最好能用下标去索引它们。在 C/C++ 中我们可以通过定义数组来实现这一点。我们先给出上面问题的一段示例代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int n;
+    std::cin &amp;gt;&amp;gt; n;
+    int a[n];
+    for (int i = 0; i &amp;lt; n; i++)
+        std::cin &amp;gt;&amp;gt; a[i];
+    for (int i = n - 1; i &amp;gt;= 0; i--)
+        std::cout &amp;lt;&amp;lt; a[i] &amp;lt;&amp;lt; &#39;\n&#39;;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里出现的新语法是 &lt;code&gt;int a[n]&lt;/code&gt;。如果说 int 类型的变量是一个可以存放一个整数的小盒子，那么 &lt;code&gt;int a[n]&lt;/code&gt; 就定义了 $n$ 个小盒子，每个小盒子都可以存放一个整数。值得注意的是，这里的“小盒子”是按照 $0,1,\cdots, n-1$ 编号的。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Variable-Length Array (VLA)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在上面的例子中，我们定义的数组的长度依赖于我们输入的变量 $n$ 的值，也就是说，在程序开始运行之前，我们无法知道数组的具体长度。这种以变量作为长度的数组称为 variable-length array (VLA)。&lt;/p&gt;
+&lt;p&gt;VLA 的微妙之处在于，编译器在不知道数组具体长度的情况下可能会在内存分配上犯难。C99 标准首次允许 VLA 的使用，但对其作出了诸多限制，比如不能使用 $\mathbf{extern}$, $\mathbf{static}$ 等关键字修饰。不同的编译器支持的标准也略有差异，例如 Visual Studio 使用的 msvc 编译器很可能会对上面的示例代码报错。&lt;/p&gt;
+&lt;p&gt;如果你对这些内容感兴趣，可以上网查询更多的资料。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;如果上面关于 VLA 的内容你没有看懂，没有关系，一句话概括就是使用变量作为数组的长度“不太好”。我们的 OJ 题会对输入数据的范围作出严格的限制，你可以根据数据范围将数组开到足够大的一个固定长度。假设题目规定了 $N\leq 1000$，那么一个不使用 VLA 的程序应该这样写：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int a[1000];
+
+int main ()
+{
+    int n;
+    std::cin &amp;gt;&amp;gt; n;
+    for (int i = 0; i &amp;lt; n; i++)
+        std::cin &amp;gt;&amp;gt; a[i];
+    for (int i = n - 1; i &amp;gt;= 0; i--)
+        std::cout &amp;lt;&amp;lt; a[i] &amp;lt;&amp;lt; &#39;\n&#39;;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里我们希望不加解释地做出一个规定：如果你要定义一个定长的数组，请将它定义在 &lt;code&gt;main()&lt;/code&gt; 函数的外面。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;不行，我就是想知道为什么要这么规定&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;C/C++ 的编译器需要负责将高级语言程序映射到具体的硬件上。对于数组这样的存储设施，编译器会将其映射到内存中的某块区域。如果你将数组定义在函数内部，编译器会将其安排在栈上；如果你将数组定义在全局 (函数外部)，编译器会将其安排在静态数据区。除非特别配置，一个程序的栈空间通常不是很大，如果在函数内部定义了过长的数组可能会导致栈溢出，栈溢出会导致不可预知的严重后果。&lt;/p&gt;
+&lt;p&gt;如果你想亲手体验一下“栈溢出”，你可以尝试运行以下代码 (不要加任何编译优化)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+&lt;p&gt;int main () { char s[1 &amp;lt;&amp;lt; 25]; }
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
+&lt;p&gt;直接运行这段代码可能会获得段错误 (Segmentation Fault)。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;如果你没有看懂这段话，那就老老实实地遵守我们的规定吧。&lt;/p&gt;
+&lt;p&gt;总有一些“完美主义者”觉得这样写代码十分令人不爽——如果 $N$ 远小于 1000，我们的代码岂不是无谓的多使用了很多资源？这里我们再介绍一种定义数组的方式，它在功能上和前面的几种是完全相同的：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int n;
+    std::cin &amp;gt;&amp;gt; n;
+    int *a = new int [n];
+    for (int i = 0; i &amp;lt; n; i++)
+        std::cin &amp;gt;&amp;gt; a[i];
+    for (int i = n - 1; i &amp;gt;= 0; i--)
+        std::cout &amp;lt;&amp;lt; a[i] &amp;lt;&amp;lt; &#39;\n&#39;;
+    delete [] a;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;int *a = new int [n]&lt;/code&gt; 的功能是定义一个长度为 $n$ 的数组，每个数组元素都是 int 类型，这个数组的名字叫做 &lt;code&gt;a&lt;/code&gt;。我们在这里希望强调一点：&lt;strong&gt;如果你使用了new语法定义数组，请一定在你确定不会再使用该数组的时刻 (例如 &lt;code&gt;return 0&lt;/code&gt; 之前) 使用delete释放它&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;我不写delete这一行好像也没报错啊？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果你是一个曾经学过算法竞赛的同学，你很可能已经养成了“随手new，从不delete”的习惯。我们在这里必须严肃地警告：这是一个非常危险的习惯！你之前写过的忘记 delete 的 OJ 程序之所以可以正常退出，是因为当 OJ 程序所在的进程被销毁时，操作系统会将进程申请的资源自动释放——换言之，操作系统帮你默默地做了 delete。没有及时释放申请的内存会导致内存泄漏 (memory leak)，如果将来你维护一个大型的项目，内存泄漏的累积很可能导致程序崩溃。&lt;/p&gt;
+&lt;p&gt;如果你是一个计算机小白，恭喜你拥有了一个小小的优势：你没有经历过算法竞赛中各种糟糕的代码书写习惯的熏陶。从初学阶段开始严格遵守各种规范，你将自然而然地将书写安全、高质量、可读性强的代码作为一种本能。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>输入输出</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/io/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -302,11 +494,13 @@ int main ()
 &lt;li&gt;&lt;code&gt;cin&lt;/code&gt; 是用于输入的对象。有了 &lt;code&gt;cout&lt;/code&gt; 的经验，&lt;code&gt;cin&lt;/code&gt; 一行很好理解：我们还是将 &amp;ldquo;cin&amp;rdquo; 想象成黑色窗口，当我们输入了两个数字的时候，&amp;ldquo;cin&amp;rdquo; 需要将数据喂给变量，因此流符号的方向是 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt;。&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;sum = a + b;&lt;/code&gt; 是一个赋值语句，它的含义是将 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 中的值加起来，存放到 &lt;code&gt;sum&lt;/code&gt; 中，注意该操作不会影响 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 中的内容。&lt;/li&gt;
 &lt;/ul&gt;
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;变量&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;变量&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;上述示例代码中定义的是 &lt;code&gt;int&lt;/code&gt; 型的变量 (&amp;ldquo;int&amp;quot;是整数 integer 的缩写）。C++ 为我们提供了很多的变量类型，比如存储小数(浮点数）的 &lt;code&gt;float&lt;/code&gt; 类型和 &lt;code&gt;double&lt;/code&gt; 类型，存储更大的整数的 &lt;code&gt;long long&lt;/code&gt; 类型，存储字符的 &lt;code&gt;char&lt;/code&gt; 类型等等，你可以上网搜索这些类型的含义。&lt;/p&gt;
 &lt;p&gt;除此之外，变量的命名看似自由，其实也有一定的约束条件，比如变量名的第一个字符不能是数字。如果你感兴趣，你也可以上网搜索相关的资料。&lt;/p&gt;
-&lt;/blockquote&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
 </description>
     </item>
     
