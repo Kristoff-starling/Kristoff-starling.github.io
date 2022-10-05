@@ -2,6 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/</loc>
+    <lastmod>2022-10-05T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://kristoff-starling.github.io/posts/booknotes/network-topdown/</loc>
     <lastmod>2022-09-23T00:00:00+00:00</lastmod>
   </url><url>
@@ -64,17 +67,32 @@
     <loc>https://kristoff-starling.github.io/talk/</loc>
     <lastmod>2030-06-01T13:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/ch01/</loc>
+    <lastmod>2022-10-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/ch02/</loc>
+    <lastmod>2022-10-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/ch03/</loc>
+    <lastmod>2022-10-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/</loc>
+    <lastmod>2022-10-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/</loc>
+    <lastmod>2022-10-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/</loc>
+    <lastmod>2022-10-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/posts/</loc>
+    <lastmod>2022-10-05T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://kristoff-starling.github.io/posts/booknotes/</loc>
     <lastmod>2022-09-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/booknotes/network-topdown/ch01/</loc>
     <lastmod>2022-09-23T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://kristoff-starling.github.io/posts/</loc>
-    <lastmod>2022-09-23T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://kristoff-starling.github.io/posts/coursenotes/</loc>
-    <lastmod>2022-09-20T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec03/</loc>
     <lastmod>2022-09-20T00:00:00+00:00</lastmod>
@@ -89,9 +107,6 @@
     <lastmod>2022-09-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/lectures/lec02/</loc>
-    <lastmod>2022-09-14T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/</loc>
     <lastmod>2022-09-14T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec02/</loc>

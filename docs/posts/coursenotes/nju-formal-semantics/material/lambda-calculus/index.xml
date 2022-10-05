@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Peter Selinger&#39;s Lecture Notes on Lambda Calculus | Academic</title>
+    <link>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/</link>
+      <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/index.xml" rel="self" type="application/rss+xml" />
+    <description>Peter Selinger&#39;s Lecture Notes on Lambda Calculus</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 05 Oct 2022 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Peter Selinger&#39;s Lecture Notes on Lambda Calculus</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/</link>
+    </image>
+    
+    <item>
+      <title>Chapter 01: Introduction</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/ch01/</link>
+      <pubDate>Wed, 05 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/ch01/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#11-extenional-vs-intensional-view-of-functions&#34;&gt;1.1 Extenional vs. Intensional View of Functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#12-the-lambda-calculu&#34;&gt;1.2 The Lambda Calculu&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#13-untyped-v-typed-lambda-calculi&#34;&gt;1.3 Untyped v. Typed Lambda-Calculi&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#14-lambda-calculu-and-computability&#34;&gt;1.4 Lambda Calculu and Computability&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#15-connection-to-computer-cience&#34;&gt;1.5 Connection to Computer cience&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#16-connection-to-logic&#34;&gt;1.6 Connection to Logic&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;11-extenional-vs-intensional-view-of-functions&#34;&gt;1.1 Extenional vs. Intensional View of Functions&lt;/h2&gt;
+&lt;p&gt;根据现代数学的观点，函数是一个关系的集合。一个函数 $f:X\to Y$ 有定义域 $X$ 和值域 $Y$，$f\subseteq X\times Y$ 且对于任意 $x\in X$，$(x,y_1)\in f\wedge (x,y_2)\in f\implies y_1=y_2$。我们将这种观念称作 function as graph。&lt;/p&gt;
+&lt;p&gt;但 20 世纪以前很少有人用这样的方法看待函数。更早的关于函数的概念更多是 function a rule，即我们应当通过给出解析式的方式来定义一个函数。两个函数 &lt;strong&gt;extensionally equal&lt;/strong&gt; 当且仅当它们的 input-output behavior 完全相同；两个函数 &lt;strong&gt;intensionally equal&lt;/strong&gt; 当且仅当它们的解析式一样。&lt;/p&gt;
+&lt;p&gt;在数学界人们普遍认为 function a graph 的观念更加简洁，因为它更触及函数的本质——有一些函数是无法写出解析式的。但在计算机科学中人们更喜欢使用 function as rule，因为计算机是一项具体的工程，我们不仅在意函数的外在行为，还必须关注一个函数应当如何计算，计算它有多少开销等等。&lt;/p&gt;
+&lt;h2 id=&#34;12-the-lambda-calculu&#34;&gt;1.2 The Lambda Calculu&lt;/h2&gt;
+&lt;p&gt;Lambda calculu 是一门关于 functions as formulas 的理论，其核心在于将函数表示成简单的表达式。它的简洁之处在于，我们可以将 &amp;ldquo;Let $f$ be the function that maps $x$ to $x^2$, then consider $A=f(5)$&amp;rdquo; 这句话写成：
+$$
+A = (\lambda x.x^2)(5).
+$$
+值得注意的是，上式中的 $x$ 是一个“局部变量”，它只用于描述函数的行为，把它换成 $\lambda y.y^2$ 没有任何区别的。这样的变量称为 &lt;strong&gt;bound variable&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;Lambda notation 的一大优势在于它可以非常轻松地表达高阶函数。比如将 $f$ 映射到 $f\circ f$ 可以这样写：
+$$
+\lambda f.\lambda x.f(f(x)).
+$$&lt;/p&gt;
+&lt;h2 id=&#34;13-untyped-v-typed-lambda-calculi&#34;&gt;1.3 Untyped v. Typed Lambda-Calculi&lt;/h2&gt;
+&lt;p&gt;当我们用 function a rules 的观点来看待函数时，我们不那么在意函数的定义域和值域。比如函数 $f=\lambda x.x$。只要定义域和值域一样这个函数总是有意义的。我们可以说 $\text{type}(f)=X\to X$。一个稍复杂的例子是 $g=\lambda f.\lambda x.f(f(x))$，我们可以认为给 $g$ 传递一个 $X\to X$ 类型的函数作为参数，它会返回 $X\to X$ 类型的函数，所以 $\text{type}(g)=(X\to X)\to(X\to X)$。&lt;/p&gt;
+&lt;p&gt;Lambda Calculu 自由的定义域值域可以让我们做到一些更神奇的事情，比如若 $f=\lambda x.x$，那么 $f(f)=f$。这件事在普通的数学中是做不到的，因为罗素悖论的原因，一个函数自己不可能在该函数的定义域中。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;一个有趣的问题&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;令 $\omega=\lambda x.x(x)$，那么 $\omega(\omega)$ 是什么？
+$$
+\begin{align}
+\omega(\omega)&amp;amp;=(\lambda x.x(x))(\omega)\\
+&amp;amp;=(x(x))[x/\omega]\\
+&amp;amp;=\omega(\omega)
+\end{align}
+$$
+该表达式不存在 normal form。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;在 type 方面 lambda calculu 分成以下几类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Untyped lambda calculu：从不对任何参数的类型进行指定，在非常自由的同时引入了一些不安全的因素 (比如函数可能会无法识别输入参数)。&lt;/li&gt;
+&lt;li&gt;imply-typed lambda calculus：为每个参数都完整地指定具体的类型，这样我们的函数就和集合论中的函数基本没有区别，$f(f)$ 这样的东西不会出现。&lt;/li&gt;
+&lt;li&gt;Polymorphically typed lambda calculu：介于前两者之间，在指定类型的时候允许多态，比如 $X\to X$ 这样的类型。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;14-lambda-calculu-and-computability&#34;&gt;1.4 Lambda Calculu and Computability&lt;/h2&gt;
+&lt;p&gt;Computability 是一个古老的问题：给定一个函数 $f:X\to X$，我们如何判定它是否是可计算的？不同的研究者给出了不同的定义方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Turning： 定义图灵机，并定义一个函数可计算当且仅当它在图灵机上可以得到结果。&lt;/li&gt;
+&lt;li&gt;Godel：定义了一个集合 general recurive function，并定义一个函数可计算当且仅当它在这个集合中。&lt;/li&gt;
+&lt;li&gt;Church：定义了 lambda calculu，并定义一个函数可计算当且仅当它可以被写为一个 lambda term。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;后来人们证明：这三种定义是等价的，这就是著名的 Church-Turning theis。&lt;/p&gt;
+&lt;h2 id=&#34;15-connection-to-computer-cience&#34;&gt;1.5 Connection to Computer cience&lt;/h2&gt;
+&lt;p&gt;lambda calculu 是一种非常理想化的编程语言，也是最简单的满足 Turning-complete 的编程语言。它常常用来定义和证明程序相关的性质。几乎所有的函数式编程语言 (Lisp, Haskell, Scheme etc.) 都是在 lambda calculus 的基础上，增添了一些自己的功能。&lt;/p&gt;
+&lt;h2 id=&#34;16-connection-to-logic&#34;&gt;1.6 Connection to Logic&lt;/h2&gt;
+&lt;p&gt;在 19 世纪到 20 世纪初期，数学家对证明的本质有过一场争论。一个流派是所谓的 contructivist，他们认为证明一个东西存在就必须显式地将其构造出来；另一个流派是 classical logicians，他们认为只要能从一个东西不存在这个命题出发导出矛盾即可，不一定要给出构造。&lt;/p&gt;
+&lt;p&gt;对于 contructivist 来说，一段证明必须是一个构造，或者说一个程序。lambda calculus 就是表达这种构造的一个符号系统。constructivist 并没有成为主流，但构造性的证明有其独特的价值。相较于反证法，构造性证明中提出的构造方法可以对多个领域提供帮助。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Chapter 02: The Untyped Lambda Calculus</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/ch02/</link>
+      <pubDate>Wed, 05 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/ch02/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#21-syntax&#34;&gt;2.1 Syntax&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#22-free-and-bound-variable-alpha-equivalence&#34;&gt;2.2 Free and Bound Variable, $\alpha$-Equivalence&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#23-substitution&#34;&gt;2.3 Substitution&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#24-introduction-to-beta-reduction&#34;&gt;2.4 Introduction to $\beta$-Reduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#25-formal-definitions-of-beta-reduction-and-beta-equivalence&#34;&gt;2.5 Formal Definitions of $\beta$-reduction and $\beta$-equivalence&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;21-syntax&#34;&gt;2.1 Syntax&lt;/h2&gt;
+&lt;p&gt;$\fbox{Definition}$ (lambda term) 在一个无限的变量集合 $V$ 下 (将其中的变量命名为 $x,y,z&amp;hellip;$)，&lt;strong&gt;lambda term&lt;/strong&gt; 可以由如下的 BNF 范式定义：
+$$
+\text{Lambda terms:}\quad M,N::=x|(M\space N)|(\lambda x.M)
+$$
+上面的三种形式分别被称为 &lt;strong&gt;variable&lt;/strong&gt;, &lt;strong&gt;application&lt;/strong&gt; 和 &lt;strong&gt;lambda abstraction&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;书写 lambda 表达式的一些 convention：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;最外层的括号可以省略。&lt;/li&gt;
+&lt;li&gt;application 是左结合的，即 $M\space N\space P$ 指的是 $(M\space N)\space P$。&lt;/li&gt;
+&lt;li&gt;lambda abstraction 的函数体向右极大延伸，即 $\lambda x.M\space N$ 指的是 $\lambda x.(M\space N)$ 而不是 $(\lambda x. M)\space N$。&lt;/li&gt;
+&lt;li&gt;多个 lambda abstraction 可以合并了写，例如 $\lambda xyz.M$ 和 $\lambda x.\lambda y.\lambda z. M$ 等价。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;22-free-and-bound-variable-alpha-equivalence&#34;&gt;2.2 Free and Bound Variable, $\alpha$-Equivalence&lt;/h2&gt;
+&lt;p&gt;自由变量的归纳定义：令 $FV(M)$ 表示 $M$ 这个 lambda term 中的自由变量的集合，则
+$$
+\begin{align}
+&amp;amp;FV(x)=\{x\}\\
+&amp;amp;FV(M\space N)=FV(M)\cup FV(N)\\
+&amp;amp;FV(\lambda x.M)=FV(M)-\{x\}
+\end{align}
+$$
+例如 $\lambda x.N$ 中的 $x$ 就是 &lt;strong&gt;bound variable&lt;/strong&gt;，$\lambda x$ 被称为 &lt;strong&gt;binder&lt;/strong&gt;，$N$ 被称为该函数的 &lt;strong&gt;scope&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;在定义 $\alpha$-equivalence 之前，我们要先给出变量换名的归纳定义：
+$$
+\begin{align}
+x\{y/x\}&amp;amp;\triangleq y\\
+z\{y/x\}&amp;amp;\triangleq z,\qquad\qquad\qquad\qquad\qquad\text{ if }z\neq x\\
+(M\space N)\{y/x\}&amp;amp;\triangleq (M\{y/x\})(N\{y/x\})\\
+(\lambda x.M)\{y/x\}&amp;amp;\triangleq (\lambda y.M\{y/x\})\\
+(\lambda z.M)\{y/x\}&amp;amp;\triangleq (\lambda z.M\{y/x\})\qquad\qquad\quad \text{ if }z\neq x
+\end{align}
+$$
+$\fbox{Definition}$ ($\alpha$-equivalence) 对于任意 lambda term $M$ 和变量 $y$，&lt;strong&gt;$\alpha$-equivalence&lt;/strong&gt; 指
+$$
+\frac{y\notin M}{\lambda x.M=_{\alpha}\lambda y.M\{y/x\}}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;23-substitution&#34;&gt;2.3 Substitution&lt;/h2&gt;
+&lt;p&gt;上一节中我们给出的是变量换名的规则，即将一个变量转化成另一个变量，这一节我们给出变量替换的规则。变量替换可以将一个变量换成任意一个 lambda term。变量替换和变量换名类似，但要注意两点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;我们只对 free variable 进行替换，scope 中的 bound variable 不能换。&lt;/li&gt;
+&lt;li&gt;要小心 unintended capture，即如果当前的新 term 里出现了某个 bound variable，我们需要先对 bound variable 进行一次变量换名。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;具体的规则如下：
+$$
+\begin{align}
+x[N/x]&amp;amp;\triangleq N\\
+y[N/x]&amp;amp;\triangleq y\\
+(M\space P)[N/x]&amp;amp;\triangleq (M[N/x])(P[N/x])\\
+(\lambda x.M)[N/x]&amp;amp;\triangleq \lambda x.M\\
+(\lambda y.M)[N/x]&amp;amp;\triangleq \lambda y.(M[N/x])\qquad\qquad \text{if }x\neq y\text{ and }y\neq FV(N)\\
+(\lambda y.M)[N/x]&amp;amp;\triangleq \lambda y&amp;rsquo;.(M\{y&amp;rsquo;/y\}[N/x])\quad \text{if }x\neq y,y\in FV(N) \text{ and }y&amp;rsquo; \text{ fresh}
+\end{align}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;24-introduction-to-beta-reduction&#34;&gt;2.4 Introduction to $\beta$-Reduction&lt;/h2&gt;
+&lt;p&gt;Convention：从现在起我们不再关注 bound variable 是否相同，当我们说 $M=N$ 时，我们指的是它们在 $\alpha$-equivalence 这个关系下属于同一个等价类。&lt;/p&gt;
+&lt;p&gt;将函数的参数取值代入函数的过程称为 &lt;strong&gt;$\beta$-reduction&lt;/strong&gt;。一个形如 $(\lambda x.M)N$ 的东西，即把一个 lambda abstraction 作用到另一个 lambda term 上，称为 &lt;strong&gt;$\beta$-redex&lt;/strong&gt;，它可以被化简成 $M[N/x]$，化简后的式子称为 &lt;strong&gt;reduct&lt;/strong&gt;。化简的过程就是不断寻找 $\beta$-redex 并用相应的 reduct 代替它，一个没有任何 $\beta$-redex 的 lambda term 被称为 &lt;strong&gt;$\beta$-normal form&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;下面是一个简单的利用 $\beta$-reduction 化简的例子：
+$$
+\begin{align}
+(\lambda x.y)((\lambda z.zz)(\lambda w.w))&amp;amp;\to_\beta(\lambda x.y)((\lambda w.w)(\lambda w.w))\\
+&amp;amp;\to_\beta(\lambda x.y)(\lambda w.w)\\
+&amp;amp;\to_\beta y
+\end{align}
+$$
+当然，如果我们选择了最外层的 redex 化简，可以只花一步得到 $y$。不同的 reduction 顺序繁琐程度可能不同，有的顺序可能得不到结果，但所有能得到结果的 reduction order 得到的结果是唯一的。&lt;/p&gt;
+&lt;p&gt;$\beta$-reduction 不一定会使式子变短，甚至可能让式子更长。有些 lambda term 运用 $\beta$-reduction 是无法化简为 $\beta$-normal form 的，例如
+$$
+\begin{align}
+(\lambda x.xx)(\lambda y.yyy)&amp;amp;\to_\beta(\lambda y.yyy)(\lambda y.yyy)\\
+&amp;amp;\to_\beta(\lambda y.yyy)(\lambda y.yyy)(\lambda y.yyy)\\
+&amp;amp;\to_\beta \ldots
+\end{align}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;25-formal-definitions-of-beta-reduction-and-beta-equivalence&#34;&gt;2.5 Formal Definitions of $\beta$-reduction and $\beta$-equivalence&lt;/h2&gt;
+&lt;p&gt;$\beta$-reduction 的规则和可以运用 $\beta$-reduction 的情形规定如下：
+$$
+\frac{}{(\lambda x.M)N\to_\beta M[N/x]}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\frac{M\to_\beta M&amp;rsquo;}{M\space N\to_\beta M&amp;rsquo;\space N}\\
+\frac{N\to_\beta N&amp;rsquo;}{M\space N\to_\beta M\space N&amp;rsquo;}\\
+\frac{M\to_\beta M&amp;rsquo;}{\lambda x.M\to_\beta \lambda x.M&amp;rsquo;}
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ $M\twoheadrightarrow_\beta M&amp;rsquo;$ 当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 得到 $M&amp;rsquo;$。形式化地，$\twoheadrightarrow_\beta$ 定义了 $\to_\beta$ 的传递闭包。&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ 我们称 $M$ 和 $M&amp;rsquo;$ 满足 &lt;strong&gt;$\beta$-equivalence&lt;/strong&gt;，记作 $M=&lt;em&gt;\beta M&amp;rsquo;$，当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 及其逆操作得到 $M&amp;rsquo;$。形式化地，$=&lt;/em&gt;\beta$ 定义了 $\to_\beta$ 的对称闭包。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Chapter 03: Programming in the Untyped Lambda Calculus</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/ch03/</link>
+      <pubDate>Wed, 05 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/ch03/</guid>
+      <description>&lt;p&gt;Untyped lambda calculus 的强大之处在于它可以被用来表示各种各样的数据，比如 boolean, 自然数，复杂数据结构，函数等。这一切都只需要纯粹的 lambda 语法，不需要额外的 syntax 和 axiom。&lt;/p&gt;
+&lt;h2 id=&#34;31-boolean&#34;&gt;3.1 Boolean&lt;/h2&gt;
+&lt;p&gt;True 和 False 的定义：
+$$
+\begin{align}
+\mathbf{True}&amp;amp;\triangleq \lambda x.\lambda y.x\\
+\mathbf{False}&amp;amp;\triangleq \lambda x.\lambda y.y\\
+\end{align}
+$$
+布尔代数的基本操作：
+$$
+\begin{align}
+\mathbf{not}&amp;amp;\triangleq \lambda b.b\space \mathbf{False}\space \mathbf{True}\\
+\mathbf{and}&amp;amp;\triangleq \lambda b.\lambda b&amp;rsquo;.b\space b&amp;rsquo;\space \mathbf{False}\\
+\mathbf{or}&amp;amp;\triangleq \lambda b.\lambda b&amp;rsquo;.b\space \mathbf{True}\space b&#39;
+\end{align}
+$$
+if-then-else：
+$$
+\text{if-then-else}\triangleq \lambda x.x
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+\text{if-then-else }\mathbf{True}\space M\space N&amp;amp;\twoheadrightarrow_\beta M\\
+\text{if-then-else }\mathbf{False}\space M\space N&amp;amp;\twoheadrightarrow_\beta M\\
+\end{align}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;32-natural-numbers&#34;&gt;3.2 Natural Numbers&lt;/h2&gt;
+&lt;p&gt;这里主要介绍 Church numeral 体系。我们定义：
+$$
+\overline{n}\triangleq \lambda f.\lambda x.f^nx
+$$
+接下来可以定义一些作用在 church numeral 上的函数。最基本的是 $\mathbf{succ}\triangleq \lambda n.\lambda f.\lambda x.f\space (n\space f\space x)$。我们可以验证其功能的正确性：对于任意 $\overline n$，
+$$
+\begin{align}
+\mathbf{succ}\space \overline{n}&amp;amp;=(\lambda nfx.f\space (n\space f\space x))(\lambda f.\lambda x.f^nx)\\
+&amp;amp;\to_\beta\lambda fx.f\space ((\lambda f.\lambda x.f^nx)\space f\space x)\\
+&amp;amp;\to_\beta\lambda fx.f(f^n\space x)\\
+&amp;amp;=\lambda fx.f^{n+1}x\\
+&amp;amp;=\overline{n+1}
+\end{align}
+$$
+下面是加法、乘法、乘方的定义：
+$$
+\begin{align}
+\mathbf{add}&amp;amp;\triangleq \lambda nmfx.n\space f\space (m\space f\space x).\\
+\mathbf{mult}&amp;amp;\triangleq \lambda nmfx.n\space (m\space f)\space x.\\
+\mathbf{exp}&amp;amp;\triangleq \lambda nmfx.n\space m\space f\space x.
+\end{align}
+$$
+注意 lambda application 是左结合的，这导致了 $\mathbf{exp}$ 和 $\mathbf{mult}$ 的微小差别。具体的理解细节参考 Software Foundation 和 UCB CS61A HW02。&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ 设 $f:\mathbb{N}^k\to\mathbb N$ 为函数，$M$ 是一个 lambda term，我们称 $M$ 表示了 $f$ 当且仅当对于任意 $n_1,\cdots, n_k\in \mathbb N$，均有
+$$
+M\space \overline{n_1}\space \ldots\space \overline{n_k}\twoheadrightarrow_\beta \overline{f(n_1,\ldots, n_k)}.
+$$
+另一个简单有用的函数是 $\mathbf{iszero}$，接收一个 church numeral，用上一节定义的 boolean 来返回 True/False：
+$$
+\mathbf{iszero}\triangleq \lambda nxy.n\space (\lambda z.y)\space x
+$$
+该函数的核心要义在与如果 $n$ 是 0，那么 $\lambda z.y$ 这个函数不会使用，最后的结果就是 $\lambda xy.x=\mathbf{True}$。只要 $\lambda z.y$ 被使用了一次，最后剩下的就是 $\lambda xy.y=\mathbf{False}$。&lt;/p&gt;
+&lt;h2 id=&#34;33-fixpoints-and-recursive-functions&#34;&gt;3.3 Fixpoints and Recursive Functions&lt;/h2&gt;
+&lt;p&gt;对于函数 $f$，我们称 $x$ 是函数 $f$ 的&lt;strong&gt;不动点 (fixpoint)&lt;/strong&gt; 当且仅当 $f(x)=x$。在 lambda calculus 中，不动点的定义是类似的：对于任意 lambda term $F,N$，若 $N=F\space N$，则称 $N$ 是 $F$ 的 fixpoint。&lt;/p&gt;
+&lt;p&gt;$\fbox{Theorem}$ 在 untyped lambda calculus 中，所有的 lambda term 都有 fixpoint。&lt;/p&gt;
+&lt;p&gt;证明：令 $A=\lambda xy.y(xxy)$，再定义 $\Theta=A\space A$。我们发现对于任意 $F$，$N=\Theta\space F$ 就是 $F$ 的不动点：
+$$
+\begin{align}
+N&amp;amp;=\Theta F\\
+&amp;amp;=A A F\\
+&amp;amp;=(\lambda xy.y(xxy))AF\\
+&amp;amp;=F(AAF)\\
+&amp;amp;=F(\Theta F)\\
+&amp;amp;=F\space N\qquad\qquad\qquad\qquad \square
+\end{align}
+$$
+$\Theta$ 被称为 Turning&amp;rsquo;s fixpoint combinator。&lt;/p&gt;
+&lt;p&gt;有了 fixpoint 这一工具，我们可以通过求解方程的方法来计算一些递归函数，这里以 Fibonacci 数列为例：
+$$
+\mathbf{Fib}\space \overline{n}=\text{if-then-else}(n=?0)(\overline{0})(\text{if-then-else}(n=?1)(\overline{1})(\mathbf{Fib}(\overline{n}-\overline{1})+\mathbf{Fib}(\overline{n}-\overline{2})))
+$$
+注: $=?$ 和减法这些操作可以通过 $\mathbf{iszero}$,$\mathbf{pred}$ 等形式化地定义。&lt;/p&gt;
+&lt;p&gt;我们反过来做一步 $\beta$-reduction，得到
+$$
+\mathbf{Fib}=(\lambda f.\lambda n.\text{if-then-else}(n=?0)(\overline{0})(\text{if-then-else}(n=?1)(\overline{1})(f(\overline{n}-\overline{1})+f(\overline{n}-\overline{2}))))(\mathbf{Fib})
+$$
+令
+$$
+F=\lambda f.\lambda n.\text{if-then-else}(n=?0)(\overline{0})(\text{if-then-else}(n=?1)(\overline{1})(f(\overline{n}-\overline{1})+f(\overline{n}-\overline{2})))
+$$
+则
+$$
+\mathbf{Fib}=F\space \mathbf{Fib}
+$$
+利用 Turning fixpoint combinator 可以直接解出
+$$
+\begin{align}
+\mathbf{Fib}&amp;amp;=\Theta F\\
+&amp;amp;=\Theta(\lambda f.\lambda n.\text{if-then-else}(n=?0)(\overline{0})(\text{if-then-else}(n=?1)(\overline{1})(f(\overline{n}-\overline{1})+f(\overline{n}-\overline{2}))))
+\end{align}
+$$&lt;/p&gt;
+&lt;h2 id=&#34;34-other-data-type-pairs-tuples-lists-trees-etc&#34;&gt;3.4 Other Data Type: Pairs, Tuples, Lists, Trees, etc.&lt;/h2&gt;
+&lt;p&gt;使用 untyped lambda calculus 可以轻松地定义编程语言中常见的数据结构。&lt;/p&gt;
+&lt;h3 id=&#34;pairs&#34;&gt;Pairs&lt;/h3&gt;
+&lt;p&gt;对于 lambda term $M$ 和 $N$，我们定义
+$$
+\begin{align}
+\langle M,N\rangle&amp;amp;\triangleq \lambda z.zMN\\
+\mathbf{left}&amp;amp;\triangleq\lambda p.p(\lambda xy.x)\\
+\mathbf{right}&amp;amp;\triangleq\lambda p.p(\lambda xy.y)
+\end{align}
+$$
+容易验证 $\mathbf{left}\langle M,N\rangle\twoheadrightarrow_\beta M,\mathbf{right}\langle M,N\rangle\twoheadrightarrow_\beta N$。这里的 $\mathbf{left},\mathbf{right}$ 被称为左/右投影。&lt;/p&gt;
+&lt;h3 id=&#34;tuples&#34;&gt;Tuples&lt;/h3&gt;
+&lt;p&gt;在 pairs 的基础上扩展我们很容易定义 tuple：
+$$
+\begin{align}
+\langle M_1,M_2\cdots, M_n\rangle&amp;amp;\triangleq \lambda z.zM_1M_2\cdots M_n\\
+\pi_i^n&amp;amp;\triangleq \lambda p.p(\lambda x_1\cdots x_n.x_i)
+\end{align}
+$$
+容易验证 $\pi_i^n\langle M_1,\cdots, M_n\rangle\twoheadrightarrow_\beta M_i$。&lt;/p&gt;
+&lt;h3 id=&#34;lists&#34;&gt;Lists&lt;/h3&gt;
+&lt;p&gt;list 和 tuple 的区别在于 list 是变长的，可以增加元素。一个 list 需要以 $\mathbf{nil}$ 作为结尾，我们以 $H::T$ 来表示 list 的头部元素是 $H$，剩下的元素组成的尾巴是另一个元素 $T$。我们定义
+$$
+\begin{align}
+\mathbf{nil}&amp;amp;\triangleq\lambda xy.y\\
+H::T&amp;amp;\triangleq \lambda xy.xHT
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;在该定义的基础上，我们可以定义一些有用的函数，例如 $\mathbf{addlist}$ 可以将 list 中所有的数求和：
+$$
+\mathbf{addlist}\space l= l(\lambda ht.\mathbf{add}\space h\space (\mathbf{addlist}\space t))(\overline{0})
+$$
+其中第二个参数 $\overline{0}$ 是专门为 $\mathbf{nil}$ 准备的。这是一个递归的定义，我们可以用 3.3 节的方法将其转化成一个正式的函数。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;我们尝试从方法论的角度对 pair, list 的定义方式做出一点解释。比如 pair 中之所以要在定义中引入 $z$ 这个东西，是方便将来传入一个函数代入 $z$ 对 $M\space N$ 做一些操作。list 中预留的 $xHT$ 中的 $x$ 也是方便将来传入一些操作函数。之所以 list 中我们需要预留 $x,y$ 两个操作函数“占位符”，是因为我们对普通节点和 $\mathbf{nil}$ 的处理方式不同。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;trees&#34;&gt;Trees&lt;/h3&gt;
+&lt;p&gt;二叉树要么是一个叶子 (保存了一个自然数)，要么是一个节点。一个节点有自己的左右孩子，每个孩子也是一个二叉树。我们定义
+$$
+\begin{align}
+\mathbf{leaf}\space n&amp;amp;\triangleq \lambda xn.xn\\
+\mathbf{node}\space L\space R&amp;amp;\triangleq \lambda xy.yLR
+\end{align}
+$$
+和上面类似地，我们定义一个函数 $\mathbf{addtreesq}$，将树中所有叶子节点上的数的平方求和：
+$$
+\mathbf{addtreesq}\space t=t(\lambda n.\mathbf{mult}\space n\space n)(\lambda lr.\mathbf{add}(\mathbf{addtreesq}\space l)(\mathbf{addtreesq}\space r))
+$$&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
