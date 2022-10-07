@@ -35,6 +35,41 @@
     </item>
     
     <item>
+      <title>Slides</title>
+      <link>https://kristoff-starling.github.io/slides/20221007/</link>
+      <pubDate>Thu, 06 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/slides/20221007/</guid>
+      <description>&lt;h2 id=&#34;tf-with-sanitizers&#34;&gt;TF with Sanitizers&lt;/h2&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;addressmemoryub-sanitizer&#34;&gt;Address/Memory/UB Sanitizer&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;asan/msan: build fail (GCC/Clang)&lt;/li&gt;
+&lt;li&gt;ubsan: stuck during linking&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p align=left&gt;GitHub issue (#50892): &#34;Currently we don&#39;t officially support an OSS ASAN build, although one is in the long term roadmap.&#34;&lt;/p&gt;
+&lt;p align=right&gt;Aug 2, 2021&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;compute-sanitizer&#34;&gt;Compute Sanitizer&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Don&amp;rsquo;t need additional flags for compilation, even a binary version works (?)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Command: &lt;code&gt;compute-sanitizer --tool memcheck python3 test.py&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import tensorflow as tf
+_ = tf.config.list_physical_device(&#39;GPU&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;=&amp;gt; terminate w/o error&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;import tensorflow as tf
+_ = tf.abs(1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;=&amp;gt; deadlock&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Chapter 01: Introduction</title>
       <link>https://kristoff-starling.github.io/posts/coursenotes/nju-formal-semantics/material/lambda-calculus/ch01/</link>
       <pubDate>Wed, 05 Oct 2022 00:00:00 +0000</pubDate>
