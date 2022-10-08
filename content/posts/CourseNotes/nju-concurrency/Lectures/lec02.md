@@ -1,5 +1,5 @@
 ---
-title: "Lecture 02: Java Memory Model"
+title: "Lecture 02: Happens-before Memory Model"
 linktitle: 'Lecture 02'
 type: docs
 date: '2022-09-13'

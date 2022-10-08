@@ -404,6 +404,273 @@ $$&lt;/p&gt;
     </item>
     
     <item>
+      <title>Lecture 04: Declarative Semantics for Concurrency</title>
+      <link>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec04/</link>
+      <pubDate>Tue, 04 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec04/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#overview&#34;&gt;Overview&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#execution-graph&#34;&gt;Execution Graph&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#concepts&#34;&gt;Concepts&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#consistency-predicate&#34;&gt;Consistency Predicate&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#sequential-consistency&#34;&gt;Sequential Consistency&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#coherent-consistency&#34;&gt;Coherent Consistency&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#releaseacquire-consistency&#34;&gt;Release/Acquire Consistency&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#happen-before-and-cc11-memory-model&#34;&gt;Happen-before and C/C++11 Memory Model&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
+&lt;p&gt;The basic procedure of declarative/axiomatic concurrency semantics:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Define the notion of a program execution (generalization of an execution trace)&lt;/li&gt;
+&lt;li&gt;Map a program to a set of executions&lt;/li&gt;
+&lt;li&gt;Define a consistency predicate on executions&lt;/li&gt;
+&lt;li&gt;Semantics = the set of consistent executions of a program&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Exception: &amp;ldquo;catch-fire&amp;rdquo; semantics&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&amp;ldquo;catch-fire&amp;rdquo; semantics are those existing at least one &amp;ldquo;bad&amp;rdquo; consistent execution, which implies undefined behavior. (mainly appear in C/C++)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;execution-graph&#34;&gt;Execution Graph&lt;/h2&gt;
+&lt;p&gt;The vertices stands for the events in the program. There are 4 event types: read, write, update, fence. The edges represents relations between events. There are two relation types: program order &lt;code&gt;po&lt;/code&gt; (also called sequenced-before, &lt;code&gt;sb&lt;/code&gt;), and reads-from, &lt;code&gt;rf&lt;/code&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;concepts&#34;&gt;Concepts&lt;/h3&gt;
+&lt;p&gt;$\fbox{Definition}$ (label) A label has one of the following forms:
+$$
+R\space x\space v_r\qquad W\space x\space v_w\qquad U(x\space v_r\space v_w)\qquad F
+$$
+where $x\in \text{Loc}$ and $v_r,v_w\in \text{Val}$.&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ (event) An event is a triple $\langle id, i, l\rangle$ where&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$id\in \mathbb N$ is an event identifier.&lt;/li&gt;
+&lt;li&gt;$i\in \text{Tid}\cup {0}$ is a thread identifier.&lt;/li&gt;
+&lt;li&gt;$l$ is a label.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Note: the thread identifier &amp;ldquo;0&amp;rdquo; is used for some initial statements that don&amp;rsquo;t belong to any specific thread.&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ (execution graph) An execution graph is a tuple $\langle E, po,rf\rangle$, where&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$E$ is a finite set of events.&lt;/li&gt;
+&lt;li&gt;$po$ (program order) is a partial order on $E$.&lt;/li&gt;
+&lt;li&gt;$rf$ (reads-from) is a binary relation on $E$ such that
+&lt;ul&gt;
+&lt;li&gt;For every $\langle w,r\rangle\in rf$:
+&lt;ul&gt;
+&lt;li&gt;$\text{type}(w)\in {W,U},\text{type}(r)\in {R, U}$&lt;/li&gt;
+&lt;li&gt;$\text{loc}(w)=\text{loc}(r)$&lt;/li&gt;
+&lt;li&gt;$val_w=val_r$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;$rf^{-1}$ is a function, i.e., every read operation can read from only one write.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;$\fbox{Definition}$ (sequential) An execution graph $G$ is called sequential if&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$\text{tid}(a)=0$ for every $a\in G.E$.&lt;/li&gt;
+&lt;li&gt;$G.po$ is a total order on $G.E$.&lt;/li&gt;
+&lt;li&gt;$G.rf=\emptyset$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A sequential graph can be constructed from commands by the following rules:&lt;/p&gt;
+&lt;p&gt;Silent:
+$$
+\frac{c,s\overset{\epsilon}{\to}c&amp;rsquo;,s&amp;rsquo;}{c,s,G\Rightarrow c&amp;rsquo;,s&amp;rsquo;,G}
+$$
+Non-silent:
+$$
+\frac{c,s\overset{l}{\to}c&amp;rsquo;,s&amp;rsquo;\qquad a=\langle n,0,l\rangle\qquad n\notin {\text{id}(b)|b\in G.E}}{c,s,G\Rightarrow c&amp;rsquo;,s&amp;rsquo;,Add(a,G)}
+$$
+where $Add(a,G)$ yields an execution graph $G&amp;rsquo;$ givens by&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$G&amp;rsquo;.E=G.E\cup {a}$&lt;/li&gt;
+&lt;li&gt;$G&amp;rsquo;.po=G.po\cup (G.E\times {a})$&lt;/li&gt;
+&lt;li&gt;$G&amp;rsquo;.rf=G.rf$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;$G$ is an execution graph of a command &lt;code&gt;c&lt;/code&gt; with a final store &lt;code&gt;s&lt;/code&gt; if $c,s_0,G_\emptyset\Rightarrow^*\mathbf{skip},s,G$.&lt;/p&gt;
+&lt;h3 id=&#34;consistency-predicate&#34;&gt;Consistency Predicate&lt;/h3&gt;
+&lt;p&gt;The restriction of execution graph is quite loose. Given a program, we can draw a huge number of execution graphs satisfying the requirements above, but not all of them are reasonable. Therefore our goal is to define some consistency rules to specify &amp;ldquo;valid&amp;rdquo; execution graphs.&lt;/p&gt;
+&lt;p&gt;Let $X$ be some consistency predicate. We say an outcome $O$ is allowed for a program $P$ under $X$ if there exists an execution graph $G$ such that $G$ is X-consistent and $G$ belongs to $P$ with outcome $O$.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Exception: &amp;ldquo;catch-fire&amp;rdquo; semantics&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;or if there exists an execution graph $G$ such that $G$ is X-consistent, $G$ is an execution graph of $P$ and $G$ is &amp;ldquo;bad&amp;rdquo;.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;$\fbox{Definition}$ (completeness) An execution graph $G$ is called complete if $codom(G.rf)=G.R$, i.e., every read reads from some write.&lt;/p&gt;
+&lt;h2 id=&#34;sequential-consistency&#34;&gt;Sequential Consistency&lt;/h2&gt;
+&lt;p&gt;$\fbox{Definition}$ (SC-consistent, Lamport) Let $sc$ be a total order of $G.E$, $G$ is called SC-consistent wrt (with respect to) $sc$ if&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If $\langle a,b\rangle\in G.po$, $\langle a, b\rangle \in sc$.&lt;/li&gt;
+&lt;li&gt;If $\langle a, b\rangle\in G.rf$, then $\langle a,b\rangle\in sc$ and there does not exist $c\in G.W_{loc(b)}$ such that $\langle a,c\rangle\in sc$ and $\langle c,b\rangle\in sc$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Notes: the first condition requires that program order should be consistent with the $sc$ total order. The second condition requires that a read should read from a write prior to it and there shouldn&amp;rsquo;t be another write (on the same location) between them, i.e., read from the latest write.&lt;/p&gt;
+&lt;p&gt;There&amp;rsquo;s an alternative version of SC-consistency:&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ (modification order) $mo$ is called a modification order for an execution graph $G$ if $mo=\bigcup_{x\in \text{Loc}}mo_x$, where each $mo_x$ is a total order on $G.W_x$.&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ (SC-consistent, alternative) An execution graph $G$ is called SC-consistent if the following hold:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;$G$ is complete.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;There exists a modification order $mo$ for $G$ such that $G.po\cup G.rf\cup mo\cup rb$ is acyclic.&lt;/p&gt;
+&lt;p&gt;Here $rb\triangleq (G.rf^{-1};mo) -{id}$. The &amp;ldquo;;&amp;rdquo; operator means that if there exists $\langle a,c\rangle\in G.rf^{-1}$ and $\langle c,b\rangle\in mo$, then $\langle a,b\rangle\in rb$. The ${id}$ is used to filter out some dummy relations generated by $U$ (an operation $U$ reads from another write $W$ and $W\to U$ is also in $mo$.)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;$\fbox{Theorem}$ The two SC definitions are equivalent.&lt;/p&gt;
+&lt;p&gt;Proof:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Lamport SC $\Rightarrow$ alternative SC&lt;/strong&gt;: We&amp;rsquo;ve got an total order $sc$ which includes $po$ and $rf$, so we only need to construct $mo$. We let $mo\triangleq [W_x]; sc; [W_x]$. (Here $[W_x]$ is a tricky way of representing the starting node should belong to $G.W_x$.). Since $mo\subseteq sc$, we only need to proof that $rb$ won&amp;rsquo;t generate circle with $sc$. Suppose the opposite, then the execution graph should be like&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph TD
+W1 --&amp;gt;|rf| R
+W1 --&amp;gt;|mo| W2
+W2 --&amp;gt;|sc| R
+R --&amp;gt;|rb| W2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which contradicts the property of $sc$ in Lamport SC&amp;rsquo;s definition.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;alternative SC $\Rightarrow$ Lamport SC&lt;/strong&gt;: We&amp;rsquo;ve got $po,rf,mo$. Let $sc$ be a total order satisfying $po\cup rf\cup mo\cup rb\subseteq sc$. ($po\cup rf\cup mo\cup rb$ is acyclic, so it&amp;rsquo;s reasonable.) We need to prove that the total order $sc$ satisfies the second property in the definition. Suppose the opposite, i.e., there exists $\langle a,b\rangle, \langle a,c\rangle, \langle c,b\rangle\in sc$ and $\langle a,b\rangle\in rf,c\in G.W_{loc(b)}$, it&amp;rsquo;s easy to discover that $b\overset{rb}{\to}c$ (the graph is the same as above), so $\langle b,c\rangle\in sc$, which contradicts the fact that $sc$ is an total order.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;coherent-consistency&#34;&gt;Coherent Consistency&lt;/h2&gt;
+&lt;p&gt;SC with interleaving semantics is (relatively) human-friendly, but it&amp;rsquo;s expensive to implement SC on hardware. What&amp;rsquo;s more, SC prohibits various optimization that are sound for sequential code. What most hardware guarantee and compilers preserve is &amp;ldquo;SC-per-location&amp;rdquo; (aka. coherence)&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ (coherent) an execution graph $G$ is coherent if the following hold:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$G$ is complete.&lt;/li&gt;
+&lt;li&gt;For every location $x$, there exists a total order $sc_x$ satisfying the Lamport SC&amp;rsquo;s properties.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;A few alternative definitions of coherence are shown below:&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ an execution graph $G$ is called coherent if the following hold:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$G$ is complete.&lt;/li&gt;
+&lt;li&gt;There exists a modification order $mo$ such that $G.po|_{loc}\cup G.rf\cup mo\cup rb$ is acyclic.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Note: $rf, mo,rb$ are naturally &amp;ldquo;per-location&amp;rdquo;, here the notation $G.po|_{loc}$ means that we only consider program order edges on the same location.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s have a loot at some prohibited patterns:&lt;/p&gt;
+&lt;p&gt;No future read:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph TD
+S1(Rx) --&amp;gt; |po| S2(Wx)
+S2 -.-&amp;gt; |rf|S1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;RMW-1 (can be triggered by an &lt;code&gt;CAS(x, 1, 1)&lt;/code&gt; instruction):&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph TD
+S1(Ux) -.-&amp;gt;|rf| S1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;coherence-ww/rw/wr/rr:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph TD
+S1(Wx) --&amp;gt; |po| S2(Wx) -.-&amp;gt;|mo| S1
+S3(Wx) -.-&amp;gt; |rf| S4(Rx) --&amp;gt; |po| S5(Wx) -.-&amp;gt; |mo| S3
+S6(Wx) -.-&amp;gt; |mo| S7(Wx) --&amp;gt; |po| S8(Rx)
+S6 -.-&amp;gt; |rf| S8
+S9(Wx) -.-&amp;gt;|rf| S10(Rx) --&amp;gt; |po| S11(Rx)
+S12(Wx) -.-&amp;gt;|rf| S11
+S12(Wx) -.-&amp;gt;|mo| S9
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note: with $rb$ edges, these graphs will have cycles.&lt;/p&gt;
+&lt;p&gt;RMW-2:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph LR
+S1(Wx) -.-&amp;gt; |rf| S2(Ux) -.-&amp;gt; |mo| S1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Atomicity:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph LR
+S1(Wx) -.-&amp;gt;|mo| S2(Wx) -.-&amp;gt;|mo| S3(Ux)
+S1 -.-&amp;gt;|rf| S3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This pattern illustrates that RMW event may only read from the immediate $mo$-predecessor - it has synchronization.&lt;/p&gt;
+&lt;p&gt;It can be proved that the bad patterns above cover all the cases of invalid execution graphs, so&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ an execution graph $G$ is coherent if $G$ is complete and there exists a modification order $mo$ satisfying:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$rf;po$ is irreflexive (no-future-read)&lt;/li&gt;
+&lt;li&gt;$mo;po$ is irreflexive (coherence-ww)&lt;/li&gt;
+&lt;li&gt;$mo;rf;po$ is irreflexive (coherence-rw)&lt;/li&gt;
+&lt;li&gt;$rf^{-1};mo;po$ is irreflexive (coherence-wr)&lt;/li&gt;
+&lt;li&gt;$rf^{-1};mo;rf;po$ is irreflexive (coherence-rr)&lt;/li&gt;
+&lt;li&gt;$rf$ is irreflexive (RMW-1)&lt;/li&gt;
+&lt;li&gt;$mo;rf$ is irreflexive (RMW-2)&lt;/li&gt;
+&lt;li&gt;$rf^{-1};mo;mo$ is irreflexive (RMW-atomicity)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;releaseacquire-consistency&#34;&gt;Release/Acquire Consistency&lt;/h2&gt;
+&lt;p&gt;COH is often too weak. For example, the common implementation of spinlock fails to work in COH since the variables used in the lock have no relation with the variables used in the critical section:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;lock(l):                          unlock(l):
+    r := 0                            l := 0
+    while not r do
+        r := CAS(l, 0, 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;Initially: x = y = 0;
+lock(l);        ||  lock(l);
+x = 1;          ||  y = 1;
+a = y; /* 0 */  ||  b = x; /* 0 */       // store buffering is allowed even with spinlock!
+unlock(l);      ||  unlock(l);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In addition, COH also doesn&amp;rsquo;t support message passing:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;Initially: x = y = 0;
+x = 42;  ||  a = y;
+y = 1;   ||  while (!a) a = y;          // Message passing: y = 1 ==&amp;gt; x = 42 is expected.
+         ||  b = x; // 0                // b = 0 is allowable in COH!
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The lesson we can learn from these examples is that the $rb$ relation in one variable should influence the global program order, i.e., $rb$ should serve as a synchronization. This leads to the RA memory model:&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ (RA-consistent) an execution graph $G$ is RA-consistent if it&amp;rsquo;s complete and there exists a modification order $mo$ such that $(po\cup rf)^+|_{loc}\cup mo\cup rb$ is acyclic.&lt;/p&gt;
+&lt;p&gt;The subtle difference between $po|&lt;em&gt;{loc}\cup rf$ and $(po\cup rf)^+|&lt;/em&gt;{loc}$ is that the latter allow $rf$ relation on one location to connect events on other locations. Let&amp;rsquo;s check it on message passing example:&lt;/p&gt;
+&lt;p&gt;COH on &lt;code&gt;x&lt;/code&gt; : allowed&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph TD
+S1(x=0) --&amp;gt;|po| S2(x=42)
+S1 -.-&amp;gt; |mo| S2
+S1 --&amp;gt; |po| S3(b=x // 0?)
+S1 -.-&amp;gt; |rf| S3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;RA on &lt;code&gt;x&lt;/code&gt; : not allowed&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph TD
+S1(x=0) --&amp;gt; |po| S2(x=42) --&amp;gt; |&amp;quot;(po,rf)+&amp;quot;| S3(y=1)
+S1 --&amp;gt; |po| S4(a=y // 1)
+S3 --&amp;gt;|&amp;quot;(po,rf)+&amp;quot;| S4
+S4 --&amp;gt; |&amp;quot;(po,rf)+&amp;quot;| S5(b=x // 0?)
+S1 -.-&amp;gt; |rf| S5
+S5 -.-&amp;gt; |rb| S2
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In RA,  the $rf$ relation between &lt;code&gt;y=1&lt;/code&gt; and &lt;code&gt;a=y&lt;/code&gt; serves as a bridge that connects &lt;code&gt;x=42&lt;/code&gt; and &lt;code&gt;b=x&lt;/code&gt;. In this situation If &lt;code&gt;b=x&lt;/code&gt; reads from &lt;code&gt;x=0&lt;/code&gt;, the $rb$ edge generated will cause a cycle.&lt;/p&gt;
+&lt;h2 id=&#34;happen-before-and-cc11-memory-model&#34;&gt;Happen-before and C/C++11 Memory Model&lt;/h2&gt;
+&lt;p&gt;We&amp;rsquo;ve already known that according to the strength, COH&amp;lt;RA&amp;lt;SC, but there&amp;rsquo;s still some room between COH and RA: in the message passing example, we only need the $rf$ relation on &lt;code&gt;y&lt;/code&gt; to have the synchronization effect and we don&amp;rsquo;t care about &lt;code&gt;x&lt;/code&gt;. The idea is that we can introduce access modes on variables:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;x =(rlx) 42;  ||  a = y(rlx)
+y =(rel) 1;   ||  while (!a) a = y;
+              ||  a = y(acq)
+              ||  b = x(rlx)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Each memory access has a mode:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Reads: $\text{rlx}$ or $\text{acq}$.&lt;/li&gt;
+&lt;li&gt;Writes: $\text{rlx}$ or $\text{rel}$.&lt;/li&gt;
+&lt;li&gt;RMWs: $\text{rlx}$ or $\text{acq}$ or $\text{rel}$ or $\text{acq-rel}$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The strength order can be represented as the following graph:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph LR
+S1(rlx) --&amp;gt; S2(acq)
+S1 --&amp;gt; S3(rel)
+S2 --&amp;gt; S4(acq-rel)
+S3 --&amp;gt; S4
+S1 --&amp;gt; S4
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And we do synchronization only on $\text{rel/acq}$:
+$$
+\begin{align}
+G.sw&amp;amp;\triangleq [W^{\supseteq\text{rel}}];G.rf;[R^{\supseteq \text{acq}}]\\
+G.hb&amp;amp;\triangleq (G.po\cup G.sw)^+
+\end{align}
+$$
+Here $W^{\supseteq \text{rel}}$ means the set of write events that have access mode not weaker than $\text{rel}$.&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ (C11 Consistency) an execution graph $G$ is C11-consistent if $G$ is complete and there exists a modification order $mo$ such that $hb_{loc}\cup rf\cup mo\cup rb$ is acyclic.&lt;/p&gt;
+&lt;p&gt;Note: the definition of RA-consistency doesn&amp;rsquo;t need to additionally include $rf$ because the transitive closure $(po\cup rf)^+$ has include all the information in $rf$. However, in C11-consistency $hb_{loc}$ only consider $rf$ edges between &amp;ldquo;strong&amp;rdquo; r/w/rmw events so we still need to include $rf$.&lt;/p&gt;
+&lt;p&gt;The full C/C++11 memory model is more general in that it includes more access modes and fences.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Chapter 1: Computer Networks and the Internet</title>
       <link>https://kristoff-starling.github.io/posts/booknotes/network-topdown/ch01/</link>
       <pubDate>Fri, 23 Sep 2022 00:00:00 +0000</pubDate>
@@ -751,7 +1018,7 @@ Runaway takeoff       Airplane routing       Runaway landing
     </item>
     
     <item>
-      <title>Lecture 03: Basic Operational Semantics for Concurrency</title>
+      <title>Lecture 03: Operational Semantics for Concurrency</title>
       <link>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec03/</link>
       <pubDate>Tue, 20 Sep 2022 00:00:00 +0000</pubDate>
       <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec03/</guid>
@@ -1361,7 +1628,7 @@ $$&lt;/p&gt;
     </item>
     
     <item>
-      <title>Lecture 02: Java Memory Model</title>
+      <title>Lecture 02: Happens-before Memory Model</title>
       <link>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec02/</link>
       <pubDate>Tue, 13 Sep 2022 00:00:00 +0000</pubDate>
       <guid>https://kristoff-starling.github.io/posts/coursenotes/nju-concurrency/lectures/lec02/</guid>

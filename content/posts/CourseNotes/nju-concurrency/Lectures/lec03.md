@@ -1,5 +1,5 @@
 ---
-title: "Lecture 03: Basic Operational Semantics for Concurrency"
+title: "Lecture 03: Operational Semantics for Concurrency"
 linktitle: 'Lecture 03'
 type: docs
 date: '2022-09-20'
