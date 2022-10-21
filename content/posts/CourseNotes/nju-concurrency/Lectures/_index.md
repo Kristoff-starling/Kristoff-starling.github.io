@@ -18,7 +18,7 @@ view: 3
 
 ### Table of Contents
 
-* Lecture 01: Introductoin
+* Lecture 01: Introduction
 * Lecture 02: Happens-before Memory Model
 * Lecture 03: Operational Semantics for Concurrency
 * Lecture 04: Declarative Semantics for Concurrency
