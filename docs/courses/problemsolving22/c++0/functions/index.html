@@ -29,10 +29,11 @@
   
     
   
-  <meta name="description" content="该文章主要介绍 C/C&#43;&#43; 最基础的语法知识以及最基本的程序架构。本文力求让编程小白也能读懂并上手，因此会略去一些较为复杂的背景知识和细节。">
+  <meta name="description" content="随着程序规模的扩大，你的 main() 函数可能变得越来越臃肿了。这时候使用函数将不同的模块分开书写，可以让程序变得条理清晰、简明易懂。例如下面是 OJ 习题 &ldquo;环形矩阵&rdquo; 的一段代码：
+int n; int a[100][100]; int main () { scanf(&quot;%d&quot;, &amp;n); for (int k = 1; k &lt;= (n &#43; 1) / 2; k&#43;&#43;) for (int i = k; i &lt;= n &#43; 1 - k; i&#43;&#43;) for (int j = k; j &lt;= n &#43; 1 - k; j&#43;&#43;) a[i][j] = k; for (int i = 1; i &lt;= n; i&#43;&#43;) { for (int j = 1; j &lt;= n; j&#43;&#43;) printf(&quot;%4d&quot;, a[i][j]); puts(&quot;&quot;); } return 0; } 读入、矩阵制作、输出三个步骤全部放在 main() 函数中显得有些冗长。我们可以根据功能将上述代码分成三个模块，每个模块写在一个单独的子函数里：">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/functions/">
 
   
 
@@ -214,14 +215,12 @@
 
 
   
-  <link rel="alternate" href="/courses/problemsolving22/c&#43;&#43;0/index.xml" type="application/rss+xml" title="Academic">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/functions/">
 
   
   
@@ -235,11 +234,13 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/">
-  <meta property="og:title" content="C/C&#43;&#43;基础入门 | Academic">
-  <meta property="og:description" content="该文章主要介绍 C/C&#43;&#43; 最基础的语法知识以及最基本的程序架构。本文力求让编程小白也能读懂并上手，因此会略去一些较为复杂的背景知识和细节。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/functions/">
+  <meta property="og:title" content="函数 | Academic">
+  <meta property="og:description" content="随着程序规模的扩大，你的 main() 函数可能变得越来越臃肿了。这时候使用函数将不同的模块分开书写，可以让程序变得条理清晰、简明易懂。例如下面是 OJ 习题 &ldquo;环形矩阵&rdquo; 的一段代码：
+int n; int a[100][100]; int main () { scanf(&quot;%d&quot;, &amp;n); for (int k = 1; k &lt;= (n &#43; 1) / 2; k&#43;&#43;) for (int i = k; i &lt;= n &#43; 1 - k; i&#43;&#43;) for (int j = k; j &lt;= n &#43; 1 - k; j&#43;&#43;) a[i][j] = k; for (int i = 1; i &lt;= n; i&#43;&#43;) { for (int j = 1; j &lt;= n; j&#43;&#43;) printf(&quot;%4d&quot;, a[i][j]); puts(&quot;&quot;); } return 0; } 读入、矩阵制作、输出三个步骤全部放在 main() 函数中显得有些冗长。我们可以根据功能将上述代码分成三个模块，每个模块写在一个单独的子函数里："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
+    
     
   
 
@@ -247,17 +248,19 @@
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>C/C&#43;&#43;基础入门 | Academic</title>
+
+
+  <title>函数 | Academic</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -463,7 +466,7 @@
   
   
   
-  <div class="docs-toc-item active">
+  <div class="docs-toc-item">
     <a class="docs-toc-link" href="/courses/problemsolving22/c&#43;&#43;0/">Overview</a>
 
   </div>
@@ -496,7 +499,7 @@
         <a href="/courses/problemsolving22/c&#43;&#43;0/nestedloop/">嵌套循环</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/c&#43;&#43;0/functions/">函数</a>
       </li>
       
@@ -521,15 +524,163 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>C/C&#43;&#43;基础入门</h1>
+          <h1>函数</h1>
 
           <div class="article-style">
-            <p>该文章主要介绍 C/C++ 最基础的语法知识以及最基本的程序架构。本文力求让编程小白也能读懂并上手，因此会略去一些较为复杂的背景知识和细节。</p>
-<div class="alert alert-warning">
+            <p>随着程序规模的扩大，你的 <code>main()</code> 函数可能变得越来越臃肿了。这时候使用函数将不同的模块分开书写，可以让程序变得条理清晰、简明易懂。例如下面是 OJ 习题 &ldquo;环形矩阵&rdquo; 的一段代码：</p>
+<pre><code class="language-c++">int n;
+int a[100][100];
+
+int main ()
+{
+    scanf(&quot;%d&quot;, &amp;n);
+    for (int k = 1; k &lt;= (n + 1) / 2; k++)
+        for (int i = k; i &lt;= n + 1 - k; i++)
+            for (int j = k; j &lt;= n + 1 - k; j++)
+                a[i][j] = k;
+    for (int i = 1; i &lt;= n; i++)
+    {
+        for (int j = 1; j &lt;= n; j++)
+            printf(&quot;%4d&quot;, a[i][j]);
+        puts(&quot;&quot;);
+    }
+    return 0;
+}
+</code></pre>
+<p>读入、矩阵制作、输出三个步骤全部放在 <code>main()</code> 函数中显得有些冗长。我们可以根据功能将上述代码分成三个模块，每个模块写在一个单独的子函数里：</p>
+<pre><code class="language-c++">int n;
+int a[100][100];
+
+void input()
+{
+    scanf(&quot;%d&quot;, &amp;n);
+}
+
+void matrix_generation()
+{
+    for (int k = 1; k &lt;= (n + 1) / 2; k++)
+        for (int i = k; i &lt;= n + 1 - k; i++)
+            for (int j = k; j &lt;= n + 1 - k; j++)
+                a[i][j] = k;
+}
+
+void print()
+{
+    for (int i = 1; i &lt;= n; i++)
+    {
+        for (int j = 1; j &lt;= n; j++)
+            printf(&quot;%4d&quot;, a[i][j]);
+        puts(&quot;&quot;);
+    }
+}
+
+int main ()
+{
+    input();
+    matrix_generation();
+    print();
+    return 0;
+}
+</code></pre>
+<p>由于这个程序比较简单，你可能会觉得这样写代码非常拖沓。但随着程序结构的进一步复杂化，你一定会发现将程序分功能分模块书写能帮助你理清思路，也方便 debug。</p>
+<div class="alert alert-note">
   <div>
-    阅读本文前，你应当已经配置好了一个可以书写代码并编译、运行代码的环境。
+    <p><strong>代码风格</strong></p>
+<p>对于初学者来说，养成良好的代码风格极其重要。一方面，条理清晰的代码看起来赏心悦目，方便自己 debug；另一方面，如果你将来与别人合作开发项目，良好的代码风格可以让他人快速理解你书写的模块，方便沟通交流。大家或许听说过一些类似于 “老程序员一走，整个项目就玩不转了，因为没人知道他写了什么” 的笑话，撇开工程复杂性的客观原因，这样的现象也说明很大一部分程序员的代码书写习惯极其糟糕。</p>
+<p>所以无论你是否有编程基础，请一定重视自己的代码风格。我们建议你至少在以下几个方面注意：</p>
+<ul>
+<li>合理的变量命名：不要使用无意义的 <code>a</code> <code>b</code> <code>c</code> <code>_</code> <code>__</code>，而应该使用 <code>arrayLength</code> <code>stuCount</code> 等。有意义的变量名可以让你/他人立刻理解这个变量的用途。至于变量的命名格式，我们建议你搜索驼峰命名法。</li>
+<li>合理的函数使用：不要将一大堆代码塞在一起。</li>
+<li>合理书写注释，对程序的功能做一点解释。</li>
+<li>合理的符号使用 (括号，换行符 etc.)</li>
+<li>合理的缩进</li>
+<li>……</li>
+</ul>
+<p>如果你感兴趣，你可以上网搜索 Google 的代码风格规范。</p>
+<p>最后是一个小笑话：</p>
+<blockquote>
+<p>世界上有两件最讨厌的事情，一个是写注释，一个是别人的代码不写注释。</p>
+</blockquote>
   </div>
 </div>
+<h2 id="定义">定义</h2>
+<p>函数的基本语法如下：</p>
+<pre><code class="language-c++">int func(int a, float b, char c, ...)
+{
+}
+</code></pre>
+<p>其中</p>
+<ul>
+<li>第一个 <code>int</code> 指明了函数的返回值类型为 <code>int</code>。你当然可以选择别的类型，如果你的函数不需要返回值，可以用 <code>void</code>。</li>
+<li><code>func</code> 是函数的名称。这是你可以自由指定的部分。</li>
+<li><code>(int a, float b, ...)</code> 是函数的参数。你可以指定任意个数的参数，但每个参数都要有类型。</li>
+</ul>
+<p>下面是一个简明的例子：</p>
+<pre><code class="language-c++">int abs(int x) {
+    int res = x &gt;= 0 ? x : -x;
+    return res;
+}
+
+int main ()
+{
+    int x = -1;
+    x_abs = abs(x); // x_abs = 1
+    return 0;
+}
+</code></pre>
+<p>注意所有的子函数要写在 main 函数的上方 (这是 C/C++ 的要求)。如果你想要将子函数写在 main 函数的下方，需要在 main 函数之前先<strong>声明</strong>该子函数。声明简单来说就是将函数的定义抄一遍：</p>
+<pre><code class="language-c++">int abs(int x);
+
+int main ()
+{
+    int x = -1;
+    x_abs = abs(x);
+    return 0;
+}
+
+int abs(int x) {
+    int res = x &gt;= 0 ? x : -x;
+    return res;
+}
+</code></pre>
+<h2 id="变量的作用域">变量的作用域</h2>
+<p>有了函数的概念后我们就必须要区分“全局变量“和“局部变量”。顾名思义在函数内部定义的变量是局部变量，该变量只能在当前函数内使用。在所有函数外定义的变量是全局变量，该变量可以在任何函数中使用 (注：一个函数的参数也是该函数的局部变量)。下面是一个例子：</p>
+<pre><code class="language-c++">
+int n = 0;
+
+void func()
+{
+    printf(&quot;%d\n&quot;, n); // 输出结果为 0。
+    printf(&quot;%d\n&quot;, m); // 编译错误：m 是 main() 的局部变量，在 func() 中不可用。
+}
+
+int main ()
+{
+    int n = 1, m = 2;
+    printf(&quot;%d\n&quot;, n); // 输出结果为 1，全局变量和局部变量重名优先使用局部变量。
+}
+</code></pre>
+<h2 id="按值传递和按引用传递">按值传递和按引用传递</h2>
+<p>按值传递和按引用传递是函数中必须提及的另一个重要概念。很多初学者会疑惑：如果我在子函数中对参数的值做了改动，主函数里相应的变量会变吗？你可以做一个小实验探索这一点：</p>
+<pre><code class="language-c++">void func(int x) { x = 2; }
+int main ()
+{
+    int x = 1;
+    func(x);
+    printf(&quot;%d\n&quot;, x); // 输出结果为 1
+}
+</code></pre>
+<p>事实证明子函数的改动不会影响主函数。这是因为 C/C++ 中函数变量参数的传递默认使用<strong>按值传递</strong>，即子函数的参数变量 <code>x</code> 和主函数的变量 <code>x</code> 是两个独立的主体，在函数调用时主函数的 <code>x</code> 的值会被复制到子函数的 <code>x</code> 中，在子函数中对 <code>x</code> 的所有改动都是针对这个“复印件”的，对原件没有影响。</p>
+<p>那么有没有办法可以让子函数直接修改主函数中的变量的值呢？ C++ 提供了引用变量的机制，一个例子如下：</p>
+<pre><code class="language-c++">void func(int x, int &amp;y) { x++; y++; }
+int main ()
+{
+    int x = 1, y = 1;
+    func(x, y);
+    printf(&quot;%d %d\n&quot;, x, y); // 输出结果为 1 2
+}
+</code></pre>
+<p>在这个例子中，<code>x</code> 是按值传递的，<code>y</code> 是<strong>按引用传递</strong>的 (注意函数参数前的 <code>&amp;</code> 符号)。按引用传递可以理解为直接将原件交给了子函数，子函数的改动会影响主函数的值。</p>
 
           </div>
 
@@ -542,6 +693,12 @@
             
 <div class="post-nav">
   
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving22/c&#43;&#43;0/branch/" rel="prev">分支</a>
+  </div>
   
 </div>
 
@@ -562,7 +719,7 @@
   
 
 <p class="edit-page">
-  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/_index.md">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/functions.md">
     <i class="fas fa-pen pr-2"></i>Edit this page
   </a>
 </p>

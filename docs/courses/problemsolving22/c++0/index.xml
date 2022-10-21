@@ -13,6 +13,168 @@
     </image>
     
     <item>
+      <title>函数</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/functions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/functions/</guid>
+      <description>&lt;p&gt;随着程序规模的扩大，你的 &lt;code&gt;main()&lt;/code&gt; 函数可能变得越来越臃肿了。这时候使用函数将不同的模块分开书写，可以让程序变得条理清晰、简明易懂。例如下面是 OJ 习题 &amp;ldquo;环形矩阵&amp;rdquo; 的一段代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int n;
+int a[100][100];
+
+int main ()
+{
+    scanf(&amp;quot;%d&amp;quot;, &amp;amp;n);
+    for (int k = 1; k &amp;lt;= (n + 1) / 2; k++)
+        for (int i = k; i &amp;lt;= n + 1 - k; i++)
+            for (int j = k; j &amp;lt;= n + 1 - k; j++)
+                a[i][j] = k;
+    for (int i = 1; i &amp;lt;= n; i++)
+    {
+        for (int j = 1; j &amp;lt;= n; j++)
+            printf(&amp;quot;%4d&amp;quot;, a[i][j]);
+        puts(&amp;quot;&amp;quot;);
+    }
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;读入、矩阵制作、输出三个步骤全部放在 &lt;code&gt;main()&lt;/code&gt; 函数中显得有些冗长。我们可以根据功能将上述代码分成三个模块，每个模块写在一个单独的子函数里：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int n;
+int a[100][100];
+
+void input()
+{
+    scanf(&amp;quot;%d&amp;quot;, &amp;amp;n);
+}
+
+void matrix_generation()
+{
+    for (int k = 1; k &amp;lt;= (n + 1) / 2; k++)
+        for (int i = k; i &amp;lt;= n + 1 - k; i++)
+            for (int j = k; j &amp;lt;= n + 1 - k; j++)
+                a[i][j] = k;
+}
+
+void print()
+{
+    for (int i = 1; i &amp;lt;= n; i++)
+    {
+        for (int j = 1; j &amp;lt;= n; j++)
+            printf(&amp;quot;%4d&amp;quot;, a[i][j]);
+        puts(&amp;quot;&amp;quot;);
+    }
+}
+
+int main ()
+{
+    input();
+    matrix_generation();
+    print();
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;由于这个程序比较简单，你可能会觉得这样写代码非常拖沓。但随着程序结构的进一步复杂化，你一定会发现将程序分功能分模块书写能帮助你理清思路，也方便 debug。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;代码风格&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;对于初学者来说，养成良好的代码风格极其重要。一方面，条理清晰的代码看起来赏心悦目，方便自己 debug；另一方面，如果你将来与别人合作开发项目，良好的代码风格可以让他人快速理解你书写的模块，方便沟通交流。大家或许听说过一些类似于 “老程序员一走，整个项目就玩不转了，因为没人知道他写了什么” 的笑话，撇开工程复杂性的客观原因，这样的现象也说明很大一部分程序员的代码书写习惯极其糟糕。&lt;/p&gt;
+&lt;p&gt;所以无论你是否有编程基础，请一定重视自己的代码风格。我们建议你至少在以下几个方面注意：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;合理的变量命名：不要使用无意义的 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; &lt;code&gt;_&lt;/code&gt; &lt;code&gt;__&lt;/code&gt;，而应该使用 &lt;code&gt;arrayLength&lt;/code&gt; &lt;code&gt;stuCount&lt;/code&gt; 等。有意义的变量名可以让你/他人立刻理解这个变量的用途。至于变量的命名格式，我们建议你搜索驼峰命名法。&lt;/li&gt;
+&lt;li&gt;合理的函数使用：不要将一大堆代码塞在一起。&lt;/li&gt;
+&lt;li&gt;合理书写注释，对程序的功能做一点解释。&lt;/li&gt;
+&lt;li&gt;合理的符号使用 (括号，换行符 etc.)&lt;/li&gt;
+&lt;li&gt;合理的缩进&lt;/li&gt;
+&lt;li&gt;……&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果你感兴趣，你可以上网搜索 Google 的代码风格规范。&lt;/p&gt;
+&lt;p&gt;最后是一个小笑话：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;世界上有两件最讨厌的事情，一个是写注释，一个是别人的代码不写注释。&lt;/p&gt;
+&lt;/blockquote&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;定义&#34;&gt;定义&lt;/h2&gt;
+&lt;p&gt;函数的基本语法如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int func(int a, float b, char c, ...)
+{
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一个 &lt;code&gt;int&lt;/code&gt; 指明了函数的返回值类型为 &lt;code&gt;int&lt;/code&gt;。你当然可以选择别的类型，如果你的函数不需要返回值，可以用 &lt;code&gt;void&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;func&lt;/code&gt; 是函数的名称。这是你可以自由指定的部分。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;(int a, float b, ...)&lt;/code&gt; 是函数的参数。你可以指定任意个数的参数，但每个参数都要有类型。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;下面是一个简明的例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int abs(int x) {
+    int res = x &amp;gt;= 0 ? x : -x;
+    return res;
+}
+
+int main ()
+{
+    int x = -1;
+    x_abs = abs(x); // x_abs = 1
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意所有的子函数要写在 main 函数的上方 (这是 C/C++ 的要求)。如果你想要将子函数写在 main 函数的下方，需要在 main 函数之前先&lt;strong&gt;声明&lt;/strong&gt;该子函数。声明简单来说就是将函数的定义抄一遍：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int abs(int x);
+
+int main ()
+{
+    int x = -1;
+    x_abs = abs(x);
+    return 0;
+}
+
+int abs(int x) {
+    int res = x &amp;gt;= 0 ? x : -x;
+    return res;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;变量的作用域&#34;&gt;变量的作用域&lt;/h2&gt;
+&lt;p&gt;有了函数的概念后我们就必须要区分“全局变量“和“局部变量”。顾名思义在函数内部定义的变量是局部变量，该变量只能在当前函数内使用。在所有函数外定义的变量是全局变量，该变量可以在任何函数中使用 (注：一个函数的参数也是该函数的局部变量)。下面是一个例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;
+int n = 0;
+
+void func()
+{
+    printf(&amp;quot;%d\n&amp;quot;, n); // 输出结果为 0。
+    printf(&amp;quot;%d\n&amp;quot;, m); // 编译错误：m 是 main() 的局部变量，在 func() 中不可用。
+}
+
+int main ()
+{
+    int n = 1, m = 2;
+    printf(&amp;quot;%d\n&amp;quot;, n); // 输出结果为 1，全局变量和局部变量重名优先使用局部变量。
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;按值传递和按引用传递&#34;&gt;按值传递和按引用传递&lt;/h2&gt;
+&lt;p&gt;按值传递和按引用传递是函数中必须提及的另一个重要概念。很多初学者会疑惑：如果我在子函数中对参数的值做了改动，主函数里相应的变量会变吗？你可以做一个小实验探索这一点：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;void func(int x) { x = 2; }
+int main ()
+{
+    int x = 1;
+    func(x);
+    printf(&amp;quot;%d\n&amp;quot;, x); // 输出结果为 1
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;事实证明子函数的改动不会影响主函数。这是因为 C/C++ 中函数变量参数的传递默认使用&lt;strong&gt;按值传递&lt;/strong&gt;，即子函数的参数变量 &lt;code&gt;x&lt;/code&gt; 和主函数的变量 &lt;code&gt;x&lt;/code&gt; 是两个独立的主体，在函数调用时主函数的 &lt;code&gt;x&lt;/code&gt; 的值会被复制到子函数的 &lt;code&gt;x&lt;/code&gt; 中，在子函数中对 &lt;code&gt;x&lt;/code&gt; 的所有改动都是针对这个“复印件”的，对原件没有影响。&lt;/p&gt;
+&lt;p&gt;那么有没有办法可以让子函数直接修改主函数中的变量的值呢？ C++ 提供了引用变量的机制，一个例子如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;void func(int x, int &amp;amp;y) { x++; y++; }
+int main ()
+{
+    int x = 1, y = 1;
+    func(x, y);
+    printf(&amp;quot;%d %d\n&amp;quot;, x, y); // 输出结果为 1 2
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在这个例子中，&lt;code&gt;x&lt;/code&gt; 是按值传递的，&lt;code&gt;y&lt;/code&gt; 是&lt;strong&gt;按引用传递&lt;/strong&gt;的 (注意函数参数前的 &lt;code&gt;&amp;amp;&lt;/code&gt; 符号)。按引用传递可以理解为直接将原件交给了子函数，子函数的改动会影响主函数的值。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>分支</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/branch/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -501,6 +663,68 @@ int main ()
 &lt;p&gt;除此之外，变量的命名看似自由，其实也有一定的约束条件，比如变量名的第一个字符不能是数字。如果你感兴趣，你也可以上网搜索相关的资料。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>递归</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/recursion/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/recursion/</guid>
+      <description>&lt;p&gt;递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。&lt;/p&gt;
+&lt;p&gt;这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1+2+\cdots+100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;让丞相去计算 $1+2+\cdots +99$，等他把结果返回给我了，我只要计算这个结果+100，答案就出来了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;找一个手下大臣去计算 $1+2+\cdots +98$，等他把结果返回给我了，我只要计算这个结果+99，就能向国王交差了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1+2+3$ 时，把 $1+2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3+3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950+100=5050$，并很高兴地宣称该任务圆满结束。&lt;/p&gt;
+&lt;p&gt;这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1+2+\cdots +n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术：
+$$
+F(n)=F(n-1)+n
+$$
+只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为
+$$
+F(n)=
+\begin{cases}
+3&amp;amp;,n=2\\
+F(n-1)+n&amp;amp;,n\geq 3
+\end{cases}
+$$
+这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $+n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int query_sum(int n)
+{
+    if (n == 2)
+        return 3;
+    else
+        return query_sum(n - 1) + n;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;该函数的执行过程和王国里任务下放再回收的过程完全相同：&lt;code&gt;query_sum(100)&lt;/code&gt; 调用 &lt;code&gt;query_sum(99)&lt;/code&gt; 等待其返回值，&lt;code&gt;query_sum(99)&lt;/code&gt; 又调用了 &lt;code&gt;query_sum(98)&lt;/code&gt;……从而形成了一个长长的调用链。&lt;code&gt;query_sum(3)&lt;/code&gt; 调用 &lt;code&gt;query_sum(2)&lt;/code&gt; 时，&lt;code&gt;query_sum(2)&lt;/code&gt; 不需要再调用子函数，直接返回了结果，从而 &lt;code&gt;query_sum(3)&lt;/code&gt; 执行完加法后也返回了结果，一层层返回结果，直到 &lt;code&gt;query_sum(100)&lt;/code&gt; 返回。&lt;/p&gt;
+&lt;p&gt;大家更加喜闻乐见的可能是小学/中学接触过的斐波那契数列：
+$$
+fib_n=
+\begin{cases}
+0&amp;amp;, n=0\\
+1&amp;amp;, n=1\\
+fib_{n-1}+fib_{n-2}&amp;amp;, n\geq 2
+\end{cases}
+$$&lt;/p&gt;
+&lt;p&gt;能够写出这种递推式的数列一定可以非常简明地用递归实现计算：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int query_fib(int n)
+{
+    if (n == 0)
+        return 0;
+    else if (n == 1)
+        return 1;
+    else
+        return query_fib(n - 1) + query_fib(n - 2);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个例子比上一个例子稍稍复杂一些，因为它把一个大任务分解成了两个小任务，可以想象递归的调用会形成一个树状结构而不是链状结构。你可以自己用纸笔画一画 &lt;code&gt;query_fib(5)&lt;/code&gt; 的递归调用过程，画完之后参考 
+&lt;a href=&#34;https://inst.eecs.berkeley.edu/~cs61a/fa21/assets/slides/09-Tree_Recursion.html#/11&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这个链接&lt;/a&gt; 的动画进行比对。&lt;/p&gt;
 </description>
     </item>
     

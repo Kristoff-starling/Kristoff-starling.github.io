@@ -29,10 +29,16 @@
   
     
   
-  <meta name="description" content="该文章主要介绍 C/C&#43;&#43; 最基础的语法知识以及最基本的程序架构。本文力求让编程小白也能读懂并上手，因此会略去一些较为复杂的背景知识和细节。">
+  <meta name="description" content="递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。
+这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1&#43;2&#43;\cdots&#43;100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：
+让丞相去计算 $1&#43;2&#43;\cdots &#43;99$，等他把结果返回给我了，我只要计算这个结果&#43;100，答案就出来了。
+丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：
+找一个手下大臣去计算 $1&#43;2&#43;\cdots &#43;98$，等他把结果返回给我了，我只要计算这个结果&#43;99，就能向国王交差了。
+这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1&#43;2&#43;3$ 时，把 $1&#43;2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3&#43;3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950&#43;100=5050$，并很高兴地宣称该任务圆满结束。
+这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1&#43;2&#43;\cdots &#43;n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术： $$ F(n)=F(n-1)&#43;n $$ 只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为 $$ F(n)= \begin{cases} 3&amp;,n=2\\ F(n-1)&#43;n&amp;,n\geq 3 \end{cases} $$ 这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $&#43;n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序：">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/recursion/">
 
   
 
@@ -214,14 +220,12 @@
 
 
   
-  <link rel="alternate" href="/courses/problemsolving22/c&#43;&#43;0/index.xml" type="application/rss+xml" title="Academic">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/recursion/">
 
   
   
@@ -235,11 +239,18 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/">
-  <meta property="og:title" content="C/C&#43;&#43;基础入门 | Academic">
-  <meta property="og:description" content="该文章主要介绍 C/C&#43;&#43; 最基础的语法知识以及最基本的程序架构。本文力求让编程小白也能读懂并上手，因此会略去一些较为复杂的背景知识和细节。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/recursion/">
+  <meta property="og:title" content="递归 | Academic">
+  <meta property="og:description" content="递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。
+这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1&#43;2&#43;\cdots&#43;100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：
+让丞相去计算 $1&#43;2&#43;\cdots &#43;99$，等他把结果返回给我了，我只要计算这个结果&#43;100，答案就出来了。
+丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：
+找一个手下大臣去计算 $1&#43;2&#43;\cdots &#43;98$，等他把结果返回给我了，我只要计算这个结果&#43;99，就能向国王交差了。
+这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1&#43;2&#43;3$ 时，把 $1&#43;2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3&#43;3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950&#43;100=5050$，并很高兴地宣称该任务圆满结束。
+这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1&#43;2&#43;\cdots &#43;n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术： $$ F(n)=F(n-1)&#43;n $$ 只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为 $$ F(n)= \begin{cases} 3&amp;,n=2\\ F(n-1)&#43;n&amp;,n\geq 3 \end{cases} $$ 这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $&#43;n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
+    
     
   
 
@@ -247,17 +258,19 @@
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>C/C&#43;&#43;基础入门 | Academic</title>
+
+
+  <title>递归 | Academic</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -463,7 +476,7 @@
   
   
   
-  <div class="docs-toc-item active">
+  <div class="docs-toc-item">
     <a class="docs-toc-link" href="/courses/problemsolving22/c&#43;&#43;0/">Overview</a>
 
   </div>
@@ -500,7 +513,7 @@
         <a href="/courses/problemsolving22/c&#43;&#43;0/functions/">函数</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/c&#43;&#43;0/recursion/">递归</a>
       </li>
       
@@ -521,15 +534,63 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>C/C&#43;&#43;基础入门</h1>
+          <h1>递归</h1>
 
           <div class="article-style">
-            <p>该文章主要介绍 C/C++ 最基础的语法知识以及最基本的程序架构。本文力求让编程小白也能读懂并上手，因此会略去一些较为复杂的背景知识和细节。</p>
-<div class="alert alert-warning">
-  <div>
-    阅读本文前，你应当已经配置好了一个可以书写代码并编译、运行代码的环境。
-  </div>
-</div>
+            <p>递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。</p>
+<p>这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1+2+\cdots+100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：</p>
+<blockquote>
+<p>让丞相去计算 $1+2+\cdots +99$，等他把结果返回给我了，我只要计算这个结果+100，答案就出来了。</p>
+</blockquote>
+<p>丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：</p>
+<blockquote>
+<p>找一个手下大臣去计算 $1+2+\cdots +98$，等他把结果返回给我了，我只要计算这个结果+99，就能向国王交差了。</p>
+</blockquote>
+<p>这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1+2+3$ 时，把 $1+2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3+3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950+100=5050$，并很高兴地宣称该任务圆满结束。</p>
+<p>这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1+2+\cdots +n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术：
+$$
+F(n)=F(n-1)+n
+$$
+只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为
+$$
+F(n)=
+\begin{cases}
+3&amp;,n=2\\
+F(n-1)+n&amp;,n\geq 3
+\end{cases}
+$$
+这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $+n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序：</p>
+<pre><code class="language-c++">int query_sum(int n)
+{
+    if (n == 2)
+        return 3;
+    else
+        return query_sum(n - 1) + n;
+}
+</code></pre>
+<p>该函数的执行过程和王国里任务下放再回收的过程完全相同：<code>query_sum(100)</code> 调用 <code>query_sum(99)</code> 等待其返回值，<code>query_sum(99)</code> 又调用了 <code>query_sum(98)</code>……从而形成了一个长长的调用链。<code>query_sum(3)</code> 调用 <code>query_sum(2)</code> 时，<code>query_sum(2)</code> 不需要再调用子函数，直接返回了结果，从而 <code>query_sum(3)</code> 执行完加法后也返回了结果，一层层返回结果，直到 <code>query_sum(100)</code> 返回。</p>
+<p>大家更加喜闻乐见的可能是小学/中学接触过的斐波那契数列：
+$$
+fib_n=
+\begin{cases}
+0&amp;, n=0\\
+1&amp;, n=1\\
+fib_{n-1}+fib_{n-2}&amp;, n\geq 2
+\end{cases}
+$$</p>
+<p>能够写出这种递推式的数列一定可以非常简明地用递归实现计算：</p>
+<pre><code class="language-c++">int query_fib(int n)
+{
+    if (n == 0)
+        return 0;
+    else if (n == 1)
+        return 1;
+    else
+        return query_fib(n - 1) + query_fib(n - 2);
+}
+</code></pre>
+<p>这个例子比上一个例子稍稍复杂一些，因为它把一个大任务分解成了两个小任务，可以想象递归的调用会形成一个树状结构而不是链状结构。你可以自己用纸笔画一画 <code>query_fib(5)</code> 的递归调用过程，画完之后参考 
+<a href="https://inst.eecs.berkeley.edu/~cs61a/fa21/assets/slides/09-Tree_Recursion.html#/11" target="_blank" rel="noopener">这个链接</a> 的动画进行比对。</p>
 
           </div>
 
@@ -541,6 +602,13 @@
           <div class="article-widget">
             
 <div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving22/c&#43;&#43;0/io/" rel="next">输入输出</a>
+  </div>
   
   
 </div>
@@ -562,7 +630,7 @@
   
 
 <p class="edit-page">
-  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/_index.md">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/recursion.md">
     <i class="fas fa-pen pr-2"></i>Edit this page
   </a>
 </p>
