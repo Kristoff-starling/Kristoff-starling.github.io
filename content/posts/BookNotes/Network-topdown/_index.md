@@ -6,7 +6,7 @@ title: "Computer Networking: A Top-Down Approach"
 draft: false
 type: docs
 
-summary:
+summary: " "
 
 menu:
     network-topdown:
