@@ -822,7 +822,7 @@ Content-Type: text/html
 <p>HTTP/1.1 默认使用 persistent TCP connection，即只使用一个 TCP connection 从一个服务器获取多个文件。这样的做法存在一个 <strong>Head of Line (HOL) blocking</strong> 的问题：假设当前网页的第一个 object 是一个特别大的视频，后面跟着的是一堆小的 object，那么 HTTP/1.1 按顺序传输会导致在第一个 object 上花费很多时间，从而整个网页很久都完全显现不出来。为了绕过这个问题，HTTP/1.1 会开很多个 TCP connection 来并行传输。不过多个 TCP connection 会共享带宽，这使得网络应用会尽可能“多开一点” TCP connection 以占取更大份额的带宽 (比如两个应用各开一个，那么一人一半带宽，但如果有人恶意开了 10 个连接，他就能占据 10/11 的带宽)。</p>
 <h4 id="http2-framing">HTTP/2 Framing</h4>
 <p>HTTP/2 解决这个问题的方法类似于操作系统的分时多任务：在 HTTP/1.1 中一个 response message 没法拆开，但 HTTP/2 允许将一个大的 message 拆成若干个 frame，然后多个 message 轮流一人一个 frame 地传输，这样小 message 就可以很快地传完。</p>
-<img src="https://kristoff-starling.github.io/img/HTTP1vs2-frame.png" style="zoom:50%;" />
+<img src="https://kristoff-starling.github.io/img/top-down/HTTP1vs2-frame.png" style="zoom:50%;" />
 <p>该策略的技术难点是如何将大的 message 拆分。HTTP/2 里专门设计了一个 framing sub-layer，负责 message 的拆分和重组。</p>
 <h4 id="response-message-prioritization-and-server-pushing">Response Message Prioritization and Server Pushing</h4>
 <p>HTTP/2 在“分时多任务”的基础上支持一定程度的“用户自定义”，例如用户可以为各个 request 设置优先级、依赖关系等等。</p>
@@ -898,9 +898,9 @@ Subject: Searching for the meaning of life.
 </ul>
 <p>除了这三类服务器，还有一类服务器称为 <strong>local DNS server</strong> (aka. default name server)，它不属于等级体系中但也非常重要，可以理解为主机使用 DNS 服务的 proxy server。</p>
 <p>一台主机通过 DNS 服务查询另一台主机的 IP 地址的过程大致如下图所示。该查询过程是 iterative + recursive 形式的。Local DNS server 作为 requesting server 的代表，顺序地向各个层级的 DNS server 发送请求，最终将结果返回给 requesting server。</p>
-<img src="https://kristoff-starling.github.io/img/DNS-example1.png" style="zoom:33%;" />
+<img src="https://kristoff-starling.github.io/img/top-down/DNS-example1.png" style="zoom:33%;" />
 <p>该查询过程也可以是 fully recursive 的，每一个服务器都把整个任务交给下一级服务器，并将最终结果返回给上一层服务器。</p>
-<img src="https://kristoff-starling.github.io/img/DNS-example2.png" style="zoom:33%;" />
+<img src="https://kristoff-starling.github.io/img/top-down/DNS-example2.png" style="zoom:33%;" />
 <p>可以看到不论是哪种顺序，在该例子中 requesting server 总是需要 8 次消息传输才能获得 IP 地址，效率不高。</p>
 <h4 id="dns-caching">DNS Caching</h4>
 <p>DNS caching 是减少 DNS 查询过程 delay 的一项关键技术。各个层级的 DNS server 内部都有 cache 维护hostname 到 IP 地址的映射表。这样如果有多次对同一个 hostname 的查询，DNS server 就不用把查询下放到底层的 authoritative server 而可以直接返回。不过由于 hostname 的 IP 地址是可以变的，通常 DNS server 两天就会 flush 一次 cache。</p>
