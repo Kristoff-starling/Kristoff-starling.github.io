@@ -35,6 +35,58 @@
     </item>
     
     <item>
+      <title>【问题求解I-HW4.C】jyy为什么是神</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-4-c/</link>
+      <pubDate>Thu, 27 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-4-c/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;给定字符串 $s$，求 $|\{(i,j,k)|s_i=j,s_j=y,s_k=y\}|$。&lt;/p&gt;
+&lt;p&gt;约束条件：$|s|\leq 10^6$。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;大家容易想到的一个非常简明的做法是使用三重循环计数：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;ans = 0;
+for (int i = 0; i &amp;lt; int(s.size()); i++)
+    for (int j = i + 1; j &amp;lt; int(s.size()); j++)
+        for (int k = j + 1; k &amp;lt; int(s.size()); k++)
+            if (s[i] == &#39;j&#39; &amp;amp;&amp;amp; s[j] == &#39;y&#39; &amp;amp;&amp;amp; s[k] == &#39;y&#39;)
+                ans++;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但由于此题中 $|s|$ 达到了 $10^6$，使用三重循环意味着循环最内层的核心语句被执行了将近 $|s|^3$ 次。计算机一秒钟可以执行的 C/C++ 基本语句数目大约在 $10^8$ 量级，这样的程序显然会超时。&lt;/p&gt;
+&lt;p&gt;本题的出题助教 (aka. dxy) 希望大家构造自动机解题。这里我们给出一个另外的比较简单的思路：&lt;/p&gt;
+&lt;p&gt;我们将上面的程序改写为如下伪代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;ans = 0;
+for (int i = 0; i &amp;lt; int(s.size()); i++)
+    if (s[i] == &#39;j&#39;)
+        ans += &amp;quot;s[i]的后面(可以不连续)的yy的数目&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;之前的代码中我们使用双重循环来数 &amp;ldquo;yy&amp;rdquo; 的个数，但事实上我们有更快速的方法：假设 &lt;code&gt;s[i]&lt;/code&gt; 的后面一共有 &lt;code&gt;n&lt;/code&gt; 个字母y，那么任意挑选两个都可以组成一个yy，所以yy的总数目是 $\binom{n}{2}=\frac{1}{2}n(n-1)$。基于这个想法，我们可以用一个二重循环解决该问题：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;ans = 0;
+for (int i = 0; i &amp;lt; int(s.size()); i++)
+    if (s[i] == &#39;j&#39;)
+    {
+        int y_count = 0;
+        for (int j = i + 1; j &amp;lt; int(s.size()); j++)
+            if (s[j] == &#39;y&#39;) y_count++;
+        ans += C(y_count, 2); // 组合数需要另外实现
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们的算法已经得到了改进，但 $|s|^2$ 次运行仍然无法在规定时间内获得结果，算法还需要进一步的有话。上述方法的瓶颈在于我们每遇到一个j都会把它后面的y数一遍，这样有很多的字母y被反复数了很多遍，这无疑拖慢了速度。&lt;/p&gt;
+&lt;p&gt;事实上，一个巧妙的顺序的改变就可以“柳暗花明”：我们将外层循环的顺序倒过来，一边寻找j一边把j“身后”的y的个数数出来，这样就不需要内层循环了：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;ans = y_count = 0;
+for (int i = int(s.size()) - 1; i &amp;gt;= 0; i--) {
+    if (s[i] == &#39;y&#39;) y_count++;
+    if (s[i] == &#39;j&#39;) ans += C(y_count, 2);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;循环的使用方法博大精深，大家可以仔细体会这段代码。&lt;/p&gt;
+&lt;p&gt;此外，本题由于结果过大，最终需要输出答案对 $998244353$ 取模的结果。大家在本题中可能会使用乘法，此时必须格外小心两个 &lt;code&gt;int&lt;/code&gt; 类型变量相乘 (还没来得及取模时) 结果溢出的情况，一个好的解决方案是使用更大的数据类型存储中间结果。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Chapter 2: Application Layer</title>
       <link>https://kristoff-starling.github.io/posts/booknotes/network-topdown/ch02/</link>
       <pubDate>Fri, 21 Oct 2022 00:00:00 +0000</pubDate>

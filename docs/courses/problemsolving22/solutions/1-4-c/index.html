@@ -29,10 +29,14 @@
   
     
   
-  <meta name="description" content="Undergrad @ NJU">
+  <meta name="description" content="题意概述
+给定字符串 $s$，求 $|\{(i,j,k)|s_i=j,s_j=y,s_k=y\}|$。
+约束条件：$|s|\leq 10^6$。
+大家容易想到的一个非常简明的做法是使用三重循环计数：
+ans = 0; for (int i = 0; i &lt; int(s.size()); i&#43;&#43;) for (int j = i &#43; 1; j &lt; int(s.size()); j&#43;&#43;) for (int k = j &#43; 1; k &lt; int(s.">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-4-c/">
 
   
 
@@ -44,6 +48,9 @@
   
 
   
+  
+  
+  <script src="/js/mathjax-config.js"></script>
   
 
   
@@ -175,9 +182,9 @@
 
       
       
-        
-      
 
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
       
     
       
@@ -211,14 +218,12 @@
 
 
   
-  <link rel="alternate" href="/courses/problemsolving22/index.xml" type="application/rss+xml" title="Academic">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-4-c/">
 
   
   
@@ -232,29 +237,38 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/">
-  <meta property="og:title" content="Problem Solving | Academic">
-  <meta property="og:description" content="Undergrad @ NJU"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-4-c/">
+  <meta property="og:title" content="【问题求解I-HW4.C】jyy为什么是神 | Academic">
+  <meta property="og:description" content="题意概述
+给定字符串 $s$，求 $|\{(i,j,k)|s_i=j,s_j=y,s_k=y\}|$。
+约束条件：$|s|\leq 10^6$。
+大家容易想到的一个非常简明的做法是使用三重循环计数：
+ans = 0; for (int i = 0; i &lt; int(s.size()); i&#43;&#43;) for (int j = i &#43; 1; j &lt; int(s.size()); j&#43;&#43;) for (int k = j &#43; 1; k &lt; int(s."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
-    <meta property="og:updated_time" content="2022-10-27T00:00:00&#43;00:00">
+    
+      <meta property="article:published_time" content="2022-10-27T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2022-10-27T00:00:00&#43;00:00">
   
 
   
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>Problem Solving | Academic</title>
+
+
+  <title>【问题求解I-HW4.C】jyy为什么是神 | Academic</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -427,251 +441,181 @@
 
   
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-  
-  
-    
-  
-<div class="universal-wrapper pt-3">
-  <h1>Problem Solving</h1>
-
-  
-
-  
-</div>
-
-
-
-<div class="universal-wrapper">
-
-  
-
-  
-  
-    
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
       
 
 
 
 
 
-
-
-
-
-  
-
-
-<div class="card-simple">
-
   
     
-
-
-<div class="article-metadata">
-
-  
   
 
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Oct 27, 2022
-  </span>
-  
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
 
   
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
 
+<nav class="collapse docs-links" id="docs-nav">
   
 
   
   
   
-
   
-  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving22/solutions/">Overview</a>
 
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/solutions/">OJ习题讲解</a>
-  </h3>
-
-  
-
-  
-
-</div>
-
-    
-  
-    
-      
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Jan 1, 0001
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/c&#43;&#43;0/">C/C&#43;&#43;基础入门</a>
-  </h3>
-
-  
-  <div class="article-style">
-    <p>该文章主要介绍 C/C++ 最基础的语法知识以及最基本的程序架构。本文力求让编程小白也能读懂并上手，因此会略去一些较为复杂的背景知识和细节。</p>
   </div>
   
-
-  
-
-</div>
-
-    
-  
-    
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving22/solutions/1-4-c/">Contents</a>
+    <ul class="nav docs-sidenav">
       
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
+      <li class="active">
+        <a href="/courses/problemsolving22/solutions/1-4-c/">I-HW04-C</a>
+      </li>
       
+    </ul>
     
-    Jan 1, 0001
-  </span>
-  
 
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/cser0/">一个CSer应当掌握的基础技能合集</a>
-  </h3>
-
-  
-  <div class="article-style">
-    <p>no summary</p>
   </div>
   
-
   
+</nav>
 
-</div>
+    </div>
 
     
-  
 
-  
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
 
+      <article class="article">
 
+        <div class="docs-article-container">
+          <h1>【问题求解I-HW4.C】jyy为什么是神</h1>
+
+          <div class="article-style">
+            <div class="alert alert-note">
+  <div>
+    <p><strong>题意概述</strong></p>
+<p>给定字符串 $s$，求 $|\{(i,j,k)|s_i=j,s_j=y,s_k=y\}|$。</p>
+<p>约束条件：$|s|\leq 10^6$。</p>
+  </div>
 </div>
+<p>大家容易想到的一个非常简明的做法是使用三重循环计数：</p>
+<pre><code class="language-c++">ans = 0;
+for (int i = 0; i &lt; int(s.size()); i++)
+    for (int j = i + 1; j &lt; int(s.size()); j++)
+        for (int k = j + 1; k &lt; int(s.size()); k++)
+            if (s[i] == 'j' &amp;&amp; s[j] == 'y' &amp;&amp; s[k] == 'y')
+                ans++;
+</code></pre>
+<p>但由于此题中 $|s|$ 达到了 $10^6$，使用三重循环意味着循环最内层的核心语句被执行了将近 $|s|^3$ 次。计算机一秒钟可以执行的 C/C++ 基本语句数目大约在 $10^8$ 量级，这样的程序显然会超时。</p>
+<p>本题的出题助教 (aka. dxy) 希望大家构造自动机解题。这里我们给出一个另外的比较简单的思路：</p>
+<p>我们将上面的程序改写为如下伪代码：</p>
+<pre><code class="language-c++">ans = 0;
+for (int i = 0; i &lt; int(s.size()); i++)
+    if (s[i] == 'j')
+        ans += &quot;s[i]的后面(可以不连续)的yy的数目&quot;;
+</code></pre>
+<p>之前的代码中我们使用双重循环来数 &ldquo;yy&rdquo; 的个数，但事实上我们有更快速的方法：假设 <code>s[i]</code> 的后面一共有 <code>n</code> 个字母y，那么任意挑选两个都可以组成一个yy，所以yy的总数目是 $\binom{n}{2}=\frac{1}{2}n(n-1)$。基于这个想法，我们可以用一个二重循环解决该问题：</p>
+<pre><code class="language-c++">ans = 0;
+for (int i = 0; i &lt; int(s.size()); i++)
+    if (s[i] == 'j')
+    {
+        int y_count = 0;
+        for (int j = i + 1; j &lt; int(s.size()); j++)
+            if (s[j] == 'y') y_count++;
+        ans += C(y_count, 2); // 组合数需要另外实现
+    }
+</code></pre>
+<p>我们的算法已经得到了改进，但 $|s|^2$ 次运行仍然无法在规定时间内获得结果，算法还需要进一步的有话。上述方法的瓶颈在于我们每遇到一个j都会把它后面的y数一遍，这样有很多的字母y被反复数了很多遍，这无疑拖慢了速度。</p>
+<p>事实上，一个巧妙的顺序的改变就可以“柳暗花明”：我们将外层循环的顺序倒过来，一边寻找j一边把j“身后”的y的个数数出来，这样就不需要内层循环了：</p>
+<pre><code class="language-c++">ans = y_count = 0;
+for (int i = int(s.size()) - 1; i &gt;= 0; i--) {
+    if (s[i] == 'y') y_count++;
+    if (s[i] == 'j') ans += C(y_count, 2);
+}
+</code></pre>
+<p>循环的使用方法博大精深，大家可以仔细体会这段代码。</p>
+<p>此外，本题由于结果过大，最终需要输出答案对 $998244353$ 取模的结果。大家在本题中可能会使用乘法，此时必须格外小心两个 <code>int</code> 类型变量相乘 (还没来得及取模时) 结果溢出的情况，一个好的解决方案是使用更大的数据类型存储中间结果。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Oct 27, 2022</p>
+
+          
+
+
+
+
+
+  
+  
+
+<p class="edit-page">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/solutions/1-4-C.md">
+    <i class="fas fa-pen pr-2"></i>Edit this page
+  </a>
+</p>
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
 
       
 
@@ -730,6 +674,11 @@
 
     
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
 
     
     
@@ -782,31 +731,6 @@
 
 
   
-  
-  <div class="container">
-    <footer class="site-footer">
-  
-
-  <p class="powered-by">
-    
-
-    <span id="busuanzi_container_site_pv">
-        Total Visit: <span id="busuanzi_value_site_pv"></span>
-    </span>
-
-    
-    <span class="float-right" aria-hidden="true">
-      <a href="#" class="back-to-top">
-        <span class="button_icon">
-          <i class="fas fa-chevron-up fa-2x"></i>
-        </span>
-      </a>
-    </span>
-    
-  </p>
-</footer>
-
-  </div>
   
 
   
