@@ -182,5 +182,5 @@ map<string, int>::iterator iter_pear = m.find("pear");
 bool isEnd = (iter_pear == m.end())          // isEnd = true
 map<string, int>::iterator iter_banana = m.find("banana");
 // 使用 .first 获取 key，.second 获取 value
-cout << *iter.first << ' ' << *iter.second;  // 输出： banana 2
+cout << *iter_banana.first << ' ' << *iter_banana.second;  // 输出： banana 2
 ```

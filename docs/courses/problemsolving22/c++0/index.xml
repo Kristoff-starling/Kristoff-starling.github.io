@@ -169,7 +169,7 @@ map&amp;lt;string, int&amp;gt;::iterator iter_pear = m.find(&amp;quot;pear&amp;q
 bool isEnd = (iter_pear == m.end())          // isEnd = true
 map&amp;lt;string, int&amp;gt;::iterator iter_banana = m.find(&amp;quot;banana&amp;quot;);
 // 使用 .first 获取 key，.second 获取 value
-cout &amp;lt;&amp;lt; *iter.first &amp;lt;&amp;lt; &#39; &#39; &amp;lt;&amp;lt; *iter.second;  // 输出： banana 2
+cout &amp;lt;&amp;lt; *iter_banana.first &amp;lt;&amp;lt; &#39; &#39; &amp;lt;&amp;lt; *iter_banana.second;  // 输出： banana 2
 &lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
