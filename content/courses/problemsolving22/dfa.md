@@ -3,6 +3,7 @@ title: '有限状态机简介'
 date: 2022-11-01
 summary: '鸣谢dxy助教的贡献！'
 math: true
+diagram: true
 authors:
 - Xingyu Du
 ---
@@ -57,11 +58,17 @@ DFA 的作用就是识别字符串，一个自动机$A$ ，若它能识别（接
 
 ![DFA](https://oi-wiki.org/string/images/automaton1.png)
 
-NFA是在DFA的基础上存在某些状态$v$，满足$\delta(v,\epsilon)\neq null$，这里的$\epsilon$表示空字符串，这就导致NFA可能处于多种状态的叠加态中（**这是后面将NFA转化成DFA的关键，将当前的多种状态当成一个新状态！这样记原状态数为k种，此时总状态数就会有$2^k$种，但每一次状态转移都是唯一的！**)，一个NFA的例子如下，我们判断一个字符串是否以"01"结尾，正则表达式表示为"$.*01$"的NFA如下
-
-![NFA](https://images.cnblogs.com/cnblogs_com/blogs/715469/galleries/2237224/o_221031105712_nfa.png)
+NFA是在DFA的基础上存在某些状态$v$，满足$\delta(v,\epsilon)\neq null$，这里的$\epsilon$表示空字符串，这就导致NFA可能处于多种状态的叠加态中（**这是后面将NFA转化成DFA的关键，将当前的多种状态当成一个新状态！这样记原状态数为k种，此时总状态数就会有$2^k$种，但每一次状态转移都是唯一的！**)，一个NFA的例子如下，我们判断一个字符串是否以"01"结尾，正则表达式表示为"$.*01$"的NFA如下 (S3为接收节点)：
 
 
+```mermaid
+graph TD
+
+state1((s1)) -->|0| state2((s2))
+state2 -->|e/任意字母|state1
+state2 --> |1| state3((s3))
+state3 --> |e/任意字母|state1
+```
 
 以上内容节选自<a href="https://oi-wiki.org/string/automaton/">OI-Wiki</a>
 

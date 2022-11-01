@@ -230,8 +230,14 @@ cout &amp;lt;&amp;lt; *iter.first &amp;lt;&amp;lt; &#39; &#39; &amp;lt;&amp;lt; 
 &lt;p&gt;我们扩展定义转移函数 $\delta$，令其第二个参数可以接收一个字符串：$\delta(v,s)=\delta(\delta(v,s[1]),s[2..|s|])$，扩展后的转移函数就可以表示从一个状态起接收一个字符串后转移到的状态。那么，$A(s)=[\delta(start,s)\in F]$。&lt;strong&gt;这里难以理解抽象函数的话，可以当成在字符串中一个个读取字符，然后一步步转移当前状态，最后在最终状态判断是否为接受状态&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;如，一个接受且仅接受字符串 &amp;ldquo;a&amp;rdquo;, &amp;ldquo;ab&amp;rdquo;, &amp;ldquo;aac&amp;rdquo; 的 DFA：&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;https://oi-wiki.org/string/images/automaton1.png&#34; alt=&#34;DFA&#34;&gt;&lt;/p&gt;
-&lt;p&gt;NFA是在DFA的基础上存在某些状态$v$，满足$\delta(v,\epsilon)\neq null$，这里的$\epsilon$表示空字符串，这就导致NFA可能处于多种状态的叠加态中（&lt;strong&gt;这是后面将NFA转化成DFA的关键，将当前的多种状态当成一个新状态！这样记原状态数为k种，此时总状态数就会有$2^k$种，但每一次状态转移都是唯一的！&lt;/strong&gt;)，一个NFA的例子如下，我们判断一个字符串是否以&amp;quot;01&amp;quot;结尾，正则表达式表示为&amp;quot;$.*01$&amp;ldquo;的NFA如下&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://images.cnblogs.com/cnblogs_com/blogs/715469/galleries/2237224/o_221031105712_nfa.png&#34; alt=&#34;NFA&#34;&gt;&lt;/p&gt;
+&lt;p&gt;NFA是在DFA的基础上存在某些状态$v$，满足$\delta(v,\epsilon)\neq null$，这里的$\epsilon$表示空字符串，这就导致NFA可能处于多种状态的叠加态中（&lt;strong&gt;这是后面将NFA转化成DFA的关键，将当前的多种状态当成一个新状态！这样记原状态数为k种，此时总状态数就会有$2^k$种，但每一次状态转移都是唯一的！&lt;/strong&gt;)，一个NFA的例子如下，我们判断一个字符串是否以&amp;quot;01&amp;quot;结尾，正则表达式表示为&amp;quot;$.*01$&amp;ldquo;的NFA如下 (S3为接收节点)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph TD
+
+state1((s1)) --&amp;gt;|0| state2((s2))
+state2 --&amp;gt;|e/任意字母|state1
+state2 --&amp;gt; |1| state3((s3))
+state3 --&amp;gt; |e/任意字母|state1
+&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;以上内容节选自&lt;a href=&#34;https://oi-wiki.org/string/automaton/&#34;&gt;OI-Wiki&lt;/a&gt;&lt;/p&gt;
 &lt;h2 id=&#34;三有限状态机的代码实现&#34;&gt;三.有限状态机的代码实现&lt;/h2&gt;
 &lt;h3 id=&#34;1dfa代码实现&#34;&gt;1.DFA代码实现&lt;/h3&gt;

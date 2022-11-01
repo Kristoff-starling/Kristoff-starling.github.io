@@ -550,8 +550,14 @@
 <p>我们扩展定义转移函数 $\delta$，令其第二个参数可以接收一个字符串：$\delta(v,s)=\delta(\delta(v,s[1]),s[2..|s|])$，扩展后的转移函数就可以表示从一个状态起接收一个字符串后转移到的状态。那么，$A(s)=[\delta(start,s)\in F]$。<strong>这里难以理解抽象函数的话，可以当成在字符串中一个个读取字符，然后一步步转移当前状态，最后在最终状态判断是否为接受状态</strong></p>
 <p>如，一个接受且仅接受字符串 &ldquo;a&rdquo;, &ldquo;ab&rdquo;, &ldquo;aac&rdquo; 的 DFA：</p>
 <p><img src="https://oi-wiki.org/string/images/automaton1.png" alt="DFA"></p>
-<p>NFA是在DFA的基础上存在某些状态$v$，满足$\delta(v,\epsilon)\neq null$，这里的$\epsilon$表示空字符串，这就导致NFA可能处于多种状态的叠加态中（<strong>这是后面将NFA转化成DFA的关键，将当前的多种状态当成一个新状态！这样记原状态数为k种，此时总状态数就会有$2^k$种，但每一次状态转移都是唯一的！</strong>)，一个NFA的例子如下，我们判断一个字符串是否以&quot;01&quot;结尾，正则表达式表示为&quot;$.*01$&ldquo;的NFA如下</p>
-<p><img src="https://images.cnblogs.com/cnblogs_com/blogs/715469/galleries/2237224/o_221031105712_nfa.png" alt="NFA"></p>
+<p>NFA是在DFA的基础上存在某些状态$v$，满足$\delta(v,\epsilon)\neq null$，这里的$\epsilon$表示空字符串，这就导致NFA可能处于多种状态的叠加态中（<strong>这是后面将NFA转化成DFA的关键，将当前的多种状态当成一个新状态！这样记原状态数为k种，此时总状态数就会有$2^k$种，但每一次状态转移都是唯一的！</strong>)，一个NFA的例子如下，我们判断一个字符串是否以&quot;01&quot;结尾，正则表达式表示为&quot;$.*01$&ldquo;的NFA如下 (S3为接收节点)：</p>
+<pre><code class="language-mermaid">graph TD
+
+state1((s1)) --&gt;|0| state2((s2))
+state2 --&gt;|e/任意字母|state1
+state2 --&gt; |1| state3((s3))
+state3 --&gt; |e/任意字母|state1
+</code></pre>
 <p>以上内容节选自<a href="https://oi-wiki.org/string/automaton/">OI-Wiki</a></p>
 <h2 id="三有限状态机的代码实现">三.有限状态机的代码实现</h2>
 <h3 id="1dfa代码实现">1.DFA代码实现</h3>
@@ -1026,6 +1032,8 @@ bool solve(){
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
       
 
       
