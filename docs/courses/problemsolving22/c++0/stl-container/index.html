@@ -29,16 +29,12 @@
   
     
   
-  <meta name="description" content="递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。
-这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1&#43;2&#43;\cdots&#43;100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：
-让丞相去计算 $1&#43;2&#43;\cdots &#43;99$，等他把结果返回给我了，我只要计算这个结果&#43;100，答案就出来了。
-丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：
-找一个手下大臣去计算 $1&#43;2&#43;\cdots &#43;98$，等他把结果返回给我了，我只要计算这个结果&#43;99，就能向国王交差了。
-这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1&#43;2&#43;3$ 时，把 $1&#43;2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3&#43;3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950&#43;100=5050$，并很高兴地宣称该任务圆满结束。
-这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1&#43;2&#43;\cdots &#43;n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术： $$ F(n)=F(n-1)&#43;n $$ 只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为 $$ F(n)= \begin{cases} 3&amp;,n=2\\ F(n-1)&#43;n&amp;,n\geq 3 \end{cases} $$ 这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $&#43;n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序：">
+  <meta name="description" content="之前章节介绍的分支、循环、函数、递归……等概念都是命令式编程语言通用的思想方法。时常有同学问：我们到底学的是 C 还是 C&#43;&#43;？可以说之前大家写的程序基本都是 C 风格的 (除了 cin cout string 等少数内容）。这一章介绍的标准模板库 (Standard Template Library, STL)，是 C&#43;&#43; 区别于 C 的重要内容之一。STL 提供的内容将程序员从复杂的底层算法和数据结构中解放出来，使得程序员写程序更加得心应手。
+标准模板库由四个部分构成：
+算法 (Algorithm) 容器 (Container) 函数 (Function) 迭代器 (Iterator) 这一章主要讲解容器。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/recursion/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/stl-container/">
 
   
 
@@ -225,7 +221,7 @@
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/recursion/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/stl-container/">
 
   
   
@@ -239,19 +235,17 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Academic">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/recursion/">
-  <meta property="og:title" content="递归 | Academic">
-  <meta property="og:description" content="递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。
-这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1&#43;2&#43;\cdots&#43;100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：
-让丞相去计算 $1&#43;2&#43;\cdots &#43;99$，等他把结果返回给我了，我只要计算这个结果&#43;100，答案就出来了。
-丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：
-找一个手下大臣去计算 $1&#43;2&#43;\cdots &#43;98$，等他把结果返回给我了，我只要计算这个结果&#43;99，就能向国王交差了。
-这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1&#43;2&#43;3$ 时，把 $1&#43;2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3&#43;3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950&#43;100=5050$，并很高兴地宣称该任务圆满结束。
-这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1&#43;2&#43;\cdots &#43;n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术： $$ F(n)=F(n-1)&#43;n $$ 只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为 $$ F(n)= \begin{cases} 3&amp;,n=2\\ F(n-1)&#43;n&amp;,n\geq 3 \end{cases} $$ 这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $&#43;n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/stl-container/">
+  <meta property="og:title" content="C&#43;&#43;标准模板库——容器 | Academic">
+  <meta property="og:description" content="之前章节介绍的分支、循环、函数、递归……等概念都是命令式编程语言通用的思想方法。时常有同学问：我们到底学的是 C 还是 C&#43;&#43;？可以说之前大家写的程序基本都是 C 风格的 (除了 cin cout string 等少数内容）。这一章介绍的标准模板库 (Standard Template Library, STL)，是 C&#43;&#43; 区别于 C 的重要内容之一。STL 提供的内容将程序员从复杂的底层算法和数据结构中解放出来，使得程序员写程序更加得心应手。
+标准模板库由四个部分构成：
+算法 (Algorithm) 容器 (Container) 函数 (Function) 迭代器 (Iterator) 这一章主要讲解容器。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
+      <meta property="article:published_time" content="2022-11-01T00:00:00&#43;00:00">
     
+    <meta property="article:modified_time" content="2022-11-01T00:00:00&#43;00:00">
   
 
   
@@ -270,7 +264,7 @@
 
 
 
-  <title>递归 | Academic</title>
+  <title>C&#43;&#43;标准模板库——容器 | Academic</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -513,11 +507,11 @@
         <a href="/courses/problemsolving22/c&#43;&#43;0/functions/">函数</a>
       </li>
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/c&#43;&#43;0/recursion/">递归</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/c&#43;&#43;0/stl-container/">STL-容器</a>
       </li>
       
@@ -538,63 +532,163 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>递归</h1>
+          <h1>C&#43;&#43;标准模板库——容器</h1>
 
           <div class="article-style">
-            <p>递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。</p>
-<p>这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1+2+\cdots+100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：</p>
-<blockquote>
-<p>让丞相去计算 $1+2+\cdots +99$，等他把结果返回给我了，我只要计算这个结果+100，答案就出来了。</p>
-</blockquote>
-<p>丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：</p>
-<blockquote>
-<p>找一个手下大臣去计算 $1+2+\cdots +98$，等他把结果返回给我了，我只要计算这个结果+99，就能向国王交差了。</p>
-</blockquote>
-<p>这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1+2+3$ 时，把 $1+2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3+3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950+100=5050$，并很高兴地宣称该任务圆满结束。</p>
-<p>这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1+2+\cdots +n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术：
-$$
-F(n)=F(n-1)+n
-$$
-只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为
-$$
-F(n)=
-\begin{cases}
-3&amp;,n=2\\
-F(n-1)+n&amp;,n\geq 3
-\end{cases}
-$$
-这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $+n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序：</p>
-<pre><code class="language-c++">int query_sum(int n)
+            <p>之前章节介绍的分支、循环、函数、递归……等概念都是命令式编程语言通用的思想方法。时常有同学问：我们到底学的是 C 还是 C++？可以说之前大家写的程序基本都是 C 风格的 (除了 <code>cin</code> <code>cout</code> <code>string</code> 等少数内容）。这一章介绍的标准模板库 (Standard Template Library, STL)，是 C++ 区别于 C 的重要内容之一。STL 提供的内容将程序员从复杂的底层算法和数据结构中解放出来，使得程序员写程序更加得心应手。</p>
+<p>标准模板库由四个部分构成：</p>
+<ul>
+<li>算法 (Algorithm)</li>
+<li>容器 (Container)</li>
+<li>函数 (Function)</li>
+<li>迭代器 (Iterator)</li>
+</ul>
+<p>这一章主要讲解容器。</p>
+<p>大家最近学习了“抽象数据结构“，STL的容器可以理解为C++库为大家实现好了一批数据结构，你只要读懂这些容器对外暴露的接口的功能说明，合理地使用这些接口，就可以在不知道底层实现的情况下享受这些数据结构的福利。我们在这里介绍几个最常用的STL容器和相关操作。</p>
+<p>注：STL容器的用法极其丰富，这里只是浮光掠影简单介绍，大家可以在 
+<a href="https://en.cppreference.com" target="_blank" rel="noopener">cppreference</a> 上查询详细的方法列表。</p>
+<h2 id="vector"><code>vector</code></h2>
+<p><code>vector</code> 的中文名是向量，但这个容器和数学中的向量几乎毫无关系，vector 其实更像一个可以自由变换长度，完成一系列操作的“动态数组”。当你不能确定数组长度，或者需要在任意位置插入/删除元素时，vector 将会成为你的一大助力。下面我们通过例子展示 vector 的常见使用方法：</p>
+<ul>
+<li>
+<p>初始化</p>
+<pre><code class="language-c++">// 通用格式： vector&lt;类型&gt; 名字(最大容量，初始值)
+#include &lt;vector&gt;  // 大家常用的 &lt;bits/stdc++.h&gt; 已经包括了该头文件
+
+int main ()
 {
-    if (n == 2)
-        return 3;
-    else
-        return query_sum(n - 1) + n;
+    vector&lt;double&gt; v_double(0);  // 一个空的，存储的变量为 double 类型的 vector
+    vector&lt;int&gt; v_int(10, 0);    // 一个长度为 10 的 vector，初始所有元素为 0
 }
 </code></pre>
-<p>该函数的执行过程和王国里任务下放再回收的过程完全相同：<code>query_sum(100)</code> 调用 <code>query_sum(99)</code> 等待其返回值，<code>query_sum(99)</code> 又调用了 <code>query_sum(98)</code>……从而形成了一个长长的调用链。<code>query_sum(3)</code> 调用 <code>query_sum(2)</code> 时，<code>query_sum(2)</code> 不需要再调用子函数，直接返回了结果，从而 <code>query_sum(3)</code> 执行完加法后也返回了结果，一层层返回结果，直到 <code>query_sum(100)</code> 返回。</p>
-<p>大家更加喜闻乐见的可能是小学/中学接触过的斐波那契数列：
-$$
-fib_n=
-\begin{cases}
-0&amp;, n=0\\
-1&amp;, n=1\\
-fib_{n-1}+fib_{n-2}&amp;, n\geq 2
-\end{cases}
-$$</p>
-<p>能够写出这种递推式的数列一定可以非常简明地用递归实现计算：</p>
-<pre><code class="language-c++">int query_fib(int n)
-{
-    if (n == 0)
-        return 0;
-    else if (n == 1)
-        return 1;
-    else
-        return query_fib(n - 1) + query_fib(n - 2);
-}
+</li>
+<li>
+<p>元素访问</p>
+<pre><code class="language-c++">// vector 和数组一样支持用下标访问，下标从 0 开始
+vector&lt;int&gt; v_int(10, 1);
+cout &lt;&lt; v_int[2];  // 输出： 0
+cout &lt;&lt; v_int[10]; // 下标越界，未定义行为！
 </code></pre>
-<p>这个例子比上一个例子稍稍复杂一些，因为它把一个大任务分解成了两个小任务，可以想象递归的调用会形成一个树状结构而不是链状结构。你可以自己用纸笔画一画 <code>query_fib(5)</code> 的递归调用过程，画完之后参考 
-<a href="https://inst.eecs.berkeley.edu/~cs61a/fa21/assets/slides/09-Tree_Recursion.html#/11" target="_blank" rel="noopener">这个链接</a> 的动画进行比对。</p>
+</li>
+<li>
+<p>迭代器</p>
+<p>虽然迭代器的概念有点复杂，但为了更好地使用容器，我们还是简单地介绍一下。迭代器可以理解为指向容器中某个元素的“指针”，如果你不知道什么是指针，你可以把它想象成一个“小箭头”。</p>
+<p>vector 中最常用的几个和迭代器相关的函数有：</p>
+<ul>
+<li><code>begin()</code>：返回一个指向第一个元素的迭代器。</li>
+<li><code>end()</code>：返回一个指向最后一个元素的“下一个位置”的迭代器。</li>
+<li><code>rbegin()</code>：返回指向最后一个元素的迭代器。</li>
+</ul>
+  <br/>
+<p>迭代器可以通过简单的 “+1/-1” 操作向右/左移动。我们通过迭代器可以顺序访问数组中的所有元素：</p>
+<pre><code class="language-c++">// 假设当前 vector&lt;int&gt; v 中有 5 个元素，分别是 1, 2，3, 4, 5
+for (vector&lt;int&gt;::iterator iter = v.begin(); iter != v.end(); iter++)
+    cout &lt;&lt; *iter &lt;&lt; ' ';   // 通过 *iterator 的方式来获取”小箭头“指向的元素的值
+// 输出结果： 1 2 3 4 5
+for (vector&lt;int&gt;::iterator iter = v.rbegin(); iter != v.begin(); iter--)
+    cout &lt;&lt; *iter ** ' ';
+// 输出结果： 5 4 3 2，请体会 end() 与 begin() 的不同之处！
+</code></pre>
+</li>
+<li>
+<p>元素的添加和删除</p>
+<pre><code class="language-c++">vector&lt;int&gt; v_int(3, 1);        // vector 内容：[1, 1, 1]
+// push_back(x) 方法用于在末尾添加元素 x
+v_int.push_back(2)              // vector 内容：[1, 1, 1, 2]
+v_int.push_back(3)              // vector 内容：[1, 1, 1, 2, 3]
+// insert(iter, x) 方法用于在迭代器 iter 指向的位置前插入元素 x
+v_int.insert(v_int.begin(), 3)  // vector 内容：[3, 1, 1, 1, 2, 3]
+// pop_back() 方法用于删除最后一个元素
+v_int.pop_back()                // vector 内容：[3, 1, 1, 1, 2]
+// erase(iter) 方法用于删除迭代器 iter 指向的元素
+v_int.erase(v_int.begin() + 1)  // vector 内容：[3, 1, 1, 2]
+                                // 注：删除了第二个元素
+// clear() 函数用于清空 vector
+v_int.clear()                   // vector 内容：[]
+</code></pre>
+</li>
+<li>
+<p>相关参数</p>
+<pre><code class="language-c++">// 假设当前 vector&lt;int&gt; v 中有 5 个元素，分别是 1, 2，3, 4, 5
+cout &lt;&lt; int(v.size());     // 输出：5
+bool isEmpty = v.empty()   // isEmpty = false
+</code></pre>
+</li>
+</ul>
+<h2 id="stack"><code>stack</code></h2>
+<p>stack (栈) 是一个先进后出的容器，你可以把它想象成一个电梯：第一个进入电梯的人总是最后一个出来。下面是一些简单的用法：</p>
+<pre><code class="language-c++">stack&lt;int&gt; s;                   // 初始为空
+// push(x) 方法向栈顶放入元素 x
+s.push(1);
+s.push(2);
+s.push(3);                      // s的内容:  (底) [1, 2, 3] (顶)
+// top() 方法用于获取栈顶元素
+int currentTop = s.top();       // currentTop = 3, s: [1, 2, 3]
+// pop() 方法用于弹出栈顶元素
+s.pop();                        // s: [1, 2]
+currentTop = s.top();           // currentTop = 2
+// size() 方法用于获取 s 中元素个数
+cout &lt;&lt; int(s.size());     // 输出：2
+// empty() 方法用于判断 s 是否为空
+bool isEmpty = s.empty();       // isEmpty = false
+</code></pre>
+<h2 id="queue"><code>queue</code></h2>
+<p>queue (队列) 是一个先进先出的容器，你可以把它想象成一个双开门电梯：第一个进入电梯的人第一个出来。下面是一些简单的用法：</p>
+<pre><code class="language-c++">queue&lt;int&gt; q;                     // 初始为空
+// push(x) 方法向队列的尾部加入元素 x
+q.push(1);
+q.push(2);
+q.push(3);                        // q的内容: (队首) [1, 2, 3] (队尾)
+// front() 方法用于获取队首元素
+int currentFront = q.front();     // currentFront = 1
+// q.pop() 方法用于弹出队首元素
+q.pop();                          // q: [2, 3]
+currentFront = q.front();         // currentFront = 2
+// size() 方法用于获取 q 中元素个数
+int currentSize = int(q.size());  // currentSize = 2
+// empty() 方法用于判断 q 是否为空
+bool isEmpty = q.empty();         // isEmpty = false
+</code></pre>
+<h2 id="set"><code>set</code></h2>
+<p>set (集合) 顾名思义实现了一个集合应有的功能：插入、去重、判断一个元素是否存在。特别的是 set 中的元素还是按照顺序排列的 (这其实和集合定义中的无序性稍有不符)。下面是一些简单的用法：</p>
+<pre><code class="language-c++">set&lt;int&gt; s;                            // s: {}
+// insert(x) 方法向集合插入元素 x
+s.insert(2);                           // s: {2}
+s.insert(1);                           // s: {1, 2}
+s.insert(1);                           // s: {1, 2}，重复元素不会被反复插入
+s.insert(3);                           // s: {1, 2, 3}
+// find(x) 方法查询 x 是否在集合中，如果在则返回指向该元素的迭代器，否则返回 s.end()
+set&lt;int&gt;::iterator iter_1 = s.find(1);
+cout &lt;&lt; *iter;                    // 输出：1
+set&lt;int&gt;::iterator iter_0 = s.find(0);
+bool isEnd = (iter_0 == s.end());      // isEnd = true
+// erase(x) 方法用于删除元素 x
+s.erase(2);                            // s: {1, 3}
+// 使用迭代器按顺序访问 s,会发现元素是按顺序排列的
+for (set&lt;int&gt;::iterator iter = s.begin(); iter != s.end(); iter++)
+    cout &lt;&lt; *iter &lt;&lt; ' ';         // 输出：1 3
+// clear() 方法用于清空集合
+s.clear();                             // s: {}
+</code></pre>
+<h2 id="映射">映射</h2>
+<p><del>在标题中使用 map 这个单词会被自动渲染成地图。。。因此使用了“映射”作为标题</del></p>
+<p>map (映射) 和数学中的映射一样，维护了一个 key-value pair 的集合。下面是一些简单的用法：</p>
+<pre><code class="language-c++">map&lt;string, int&gt; m;                          // 这是一个从 string 到 int 的映射
+// 映射的插入非常简单：直接使用数组赋值的语法格式即可
+m[&quot;apple&quot;] = 1;
+m[&quot;banana&quot;] = 2;
+// 访问一个 key 对应的 value：直接使用数组访问的语法格式
+cout &lt;&lt; m[&quot;apple&quot;];                          // 输出：1
+cout &lt;&lt; m[&quot;orange&quot;];                         // 对于不存在的 key，通常会输出默认值 0
+m[&quot;apple&quot;] = 3;
+cout &lt;&lt; m[&quot;apple&quot;];                          // 输出：3
+// find(x) 方法用于查询映射中是否有 x 这个 key，如果有则返回指向该 pair 的迭代器，否则返回 m.end()
+map&lt;string, int&gt;::iterator iter_pear = m.find(&quot;pear&quot;);
+bool isEnd = (iter_pear == m.end())          // isEnd = true
+map&lt;string, int&gt;::iterator iter_banana = m.find(&quot;banana&quot;);
+// 使用 .first 获取 key，.second 获取 value
+cout &lt;&lt; *iter.first &lt;&lt; ' ' &lt;&lt; *iter.second;  // 输出： banana 2
+</code></pre>
 
           </div>
 
@@ -610,10 +704,9 @@ $$</p>
   
   
   <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/c&#43;&#43;0/io/" rel="next">输入输出</a>
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving22/c&#43;&#43;0/functions/" rel="prev">函数</a>
   </div>
-  
   
 </div>
 
@@ -622,7 +715,7 @@ $$</p>
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Jan 1, 0001</p>
+          <p>Last updated on Nov 1, 2022</p>
 
           
 
@@ -634,7 +727,7 @@ $$</p>
   
 
 <p class="edit-page">
-  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/recursion.md">
+  <a href="https://github.com/gcushen/hugo-academic/edit/master/content/courses/problemsolving22/c&#43;&#43;0/stl-container.md">
     <i class="fas fa-pen pr-2"></i>Edit this page
   </a>
 </p>
@@ -678,8 +771,6 @@ $$</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 
-      
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
       
 
       

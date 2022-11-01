@@ -67,16 +67,34 @@
     <loc>https://kristoff-starling.github.io/talk/</loc>
     <lastmod>2030-06-01T13:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://kristoff-starling.github.io/authors/</loc>
+    <lastmod>2022-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/</loc>
+    <lastmod>2022-11-01T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://kristoff-starling.github.io/courses/</loc>
-    <lastmod>2022-10-27T00:00:00+00:00</lastmod>
+    <lastmod>2022-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/courses/problemsolving22/</loc>
+    <lastmod>2022-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/stl-container/</loc>
+    <lastmod>2022-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/authors/xingyu-du/</loc>
+    <lastmod>2022-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/courses/problemsolving22/dfa/</loc>
+    <lastmod>2022-11-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/courses/problemsolving22/python-intro/</loc>
+    <lastmod>2022-10-31T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-4-c/</loc>
     <lastmod>2022-10-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</loc>
-    <lastmod>2022-10-27T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://kristoff-starling.github.io/courses/problemsolving22/</loc>
     <lastmod>2022-10-27T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/booknotes/</loc>
@@ -421,9 +439,6 @@
     <loc>https://kristoff-starling.github.io/publication/preprint/</loc>
     <lastmod>2019-04-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://kristoff-starling.github.io/authors/</loc>
-    <lastmod>2019-09-05T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://kristoff-starling.github.io/publication_types/</loc>
     <lastmod>2019-04-07T00:00:00+00:00</lastmod>
   </url><url>
@@ -495,6 +510,8 @@
   </url><url>
     <loc>https://kristoff-starling.github.io/publication/conference-paper/</loc>
     <lastmod>2013-07-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://kristoff-starling.github.io/authors/xingyudu/</loc>
   </url><url>
     <loc>https://kristoff-starling.github.io/posts/booknotes/softwarefoundations/lf/basics/</loc>
   </url><url>
@@ -571,8 +588,6 @@
     <loc>https://kristoff-starling.github.io/posts/coursenotes/ucb-cs61a/lectures/lec19/</loc>
   </url><url>
     <loc>https://kristoff-starling.github.io/publication/test-paper/</loc>
-  </url><url>
-    <loc>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/</loc>
   </url><url>
     <loc>https://kristoff-starling.github.io/courses/problemsolving22/cser0/english/</loc>
   </url><url>
