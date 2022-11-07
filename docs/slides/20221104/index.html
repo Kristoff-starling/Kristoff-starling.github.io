@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  
+  
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/slides/20221104/">
+
+  <title>Slides | Academic</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/css/reveal.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/css/theme/serif.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous">
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/reveal_custom.min.css">
+
+  
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/css/print/pdf.css' : 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+
+</head>
+<body>
+
+  
+<div class="reveal">
+  <div class="slides">
+    
+    
+    
+
+    
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    <section>
+    
+      <h2 id="tfpytorch-with-sanitizers">TF/Pytorch with Sanitizers</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h2 id="pytorch">PyTorch</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="summary">Summary</h3>
+<ul>
+<li>1085 APIs are tested.</li>
+<li>ASan+UBSan / Compute Sanitizer</li>
+<li>Two kinds of false positives are filtered:
+<ul>
+<li>Invalid argument error</li>
+<li>Out-of-memory allocations</li>
+</ul>
+</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="results">Results</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">#APIs</th>
+<th style="text-align:center">#Bugs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">ASan</td>
+<td style="text-align:center">7</td>
+<td style="text-align:center">5</td>
+</tr>
+<tr>
+<td style="text-align:center">UBSan</td>
+<td style="text-align:center">19</td>
+<td style="text-align:center">8</td>
+</tr>
+<tr>
+<td style="text-align:center">CSan</td>
+<td style="text-align:center">2+</td>
+<td style="text-align:center">2+</td>
+</tr>
+</tbody>
+</table>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<ul>
+<li>ASan:
+<ul>
+<li>heap-buffer-overflow</li>
+<li>heap use-after-free</li>
+<li>SEGV on unknown address</li>
+</ul>
+</li>
+<li>UBSan:
+<ul>
+<li>signed integer overflow</li>
+<li>non-zero offset to null pointer</li>
+<li>negative shift exponent</li>
+</ul>
+</li>
+<li>CSan:
+<ul>
+<li>Warp assertion</li>
+<li>CudaInvalidConfiguration</li>
+</ul>
+</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h2 id="tensorflow">TensorFlow</h2>
+
+    </section>
+    
+
+    
+    
+    
+    <section>
+    
+      
+<h3 id="results-1">Results</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:center"></th>
+<th style="text-align:center">#APIs</th>
+<th style="text-align:center">#Bugs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">CSan</td>
+<td style="text-align:center">2+</td>
+<td style="text-align:center">2+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Out-of-bound reads</li>
+</ul>
+
+    </section>
+    
+
+    
+    
+  </div>
+</div>
+
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.8.0/js/reveal.min.js"></script>
+
+  <script>
+    window.revealPlugins = { dependencies: [
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/zoom-js/zoom.js', async: true },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/math/math.js', async: true },
+      
+      { src: 'https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/reveal.js\/3.8.0/plugin/print-pdf/print-pdf.js', async: true },
+      
+      { src: '\/js\/vendor\/reveal.js\/plugin\/notes\/notes.js', async: true }
+    ]};
+
+    let revealDefaults = { center: true, controls: true, history: true, progress: true, transition: 'slide', mouseWheel: true };
+    let revealOptions = Object.assign({}, revealDefaults, revealPlugins);
+    Reveal.initialize(revealOptions);
+  </script>
+
+</body>
+</html>
