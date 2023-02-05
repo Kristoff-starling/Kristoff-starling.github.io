@@ -235,9 +235,9 @@ dup() vs dup2() 创建管道以后，我们会有将子进程的标准输出和�
   
   <meta property="twitter:card" content="summary">
   
-  <meta property="og:site_name" content="Academic">
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/minilabs/minilab03/">
-  <meta property="og:title" content="MiniLab 03: Syscall Profiler | Academic">
+  <meta property="og:title" content="MiniLab 03: Syscall Profiler | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="该实验的主要目标是利用 strace 系统调用实现一个性能监测器，实时输出当前进程运行耗时排名前 5 的系统调用。
 Overview 该实验的大体思路为：我们需要 fork 出一个子进程，让子进程用 strace 运行目标程序，并把 strace 的结果通过管道输送给父进程。本实验只允许使用 execve() 函数，不允许使用带有 p 的库函数，这意味着我们必须手动解析环境变量，将所有的路径一一加在 strace 的前面并调用 execve()，直到找到 strace 的确切位置为止 (如果成功执行，函数不会返回)。父进程负责不断从管道中读取 strace 的输出，解析出系统调用名和消耗的时间并添加到数据结构中，每隔一段时间输出一次。
 以下主要记录实验中遇到的一些有趣的细节。
@@ -266,7 +266,7 @@ dup() vs dup2() 创建管道以后，我们会有将子进程的标准输出和�
 
 
 
-  <title>MiniLab 03: Syscall Profiler | Academic</title>
+  <title>MiniLab 03: Syscall Profiler | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -319,7 +319,7 @@ dup() vs dup2() 创建管道以后，我们会有将子进程的标准输出和�
 
     
     <div class="d-none d-lg-inline-flex">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -332,7 +332,7 @@ dup() vs dup2() 创建管道以后，我们会有将子进程的标准输出和�
 
     
     <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -404,7 +404,7 @@ dup() vs dup2() 创建管道以后，我们会有将子进程的标准输出和�
         
 
         <li class="nav-item">
-          <a class="nav-link " href="/literature"><span>Literature</span></a>
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
         </li>
 
         

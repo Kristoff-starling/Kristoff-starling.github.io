@@ -234,9 +234,9 @@ Designation ucontext() 由于笔者在 L2 中选择了通过汇编执行栈切�
   
   <meta property="twitter:card" content="summary">
   
-  <meta property="og:site_name" content="Academic">
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab03/">
-  <meta property="og:title" content="Lab 03: User Level Processes | Academic">
+  <meta property="og:title" content="Lab 03: User Level Processes | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Overview 该实验的主要内容是实现用户进程。用户进程可以理解为套上了虚拟内存的线程，因此我们需要引入 VME 系列的 API。本实验报告主要记录一些有趣的设计和遇到的 bug。
 Designation ucontext() 由于笔者在 L2 中选择了通过汇编执行栈切换和执行流切换的操作，因此在 L3 的开始要做一些额外的改进。在 L2 中没有虚拟内存和页表切换的概念，因此第一次进入一个线程的时候我们可以很容易地通过一个內联汇编的 wrapper call 直接跳转到线程代码执行。但引入了用户进程后，初始上下文结构体的创建变得比较困难，返回用户态也需要做更多的事情 (比如页表切换，弹栈等)，因此笔者希望使用 AM 的 API。这就产生了一些矛盾。
 幸运的是，笔者发现 AM 中 trap64.S 中的汇编函数 __am_iret() 是有 label 的，这意味着笔者只需要抄写一些 AM 的头文件，就可以调用 __am_iret() 来完成用户态的返回。 笔者最终的代码是这样权衡的："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
@@ -264,7 +264,7 @@ Designation ucontext() 由于笔者在 L2 中选择了通过汇编执行栈切�
 
 
 
-  <title>Lab 03: User Level Processes | Academic</title>
+  <title>Lab 03: User Level Processes | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -317,7 +317,7 @@ Designation ucontext() 由于笔者在 L2 中选择了通过汇编执行栈切�
 
     
     <div class="d-none d-lg-inline-flex">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -330,7 +330,7 @@ Designation ucontext() 由于笔者在 L2 中选择了通过汇编执行栈切�
 
     
     <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -402,7 +402,7 @@ Designation ucontext() 由于笔者在 L2 中选择了通过汇编执行栈切�
         
 
         <li class="nav-item">
-          <a class="nav-link " href="/literature"><span>Literature</span></a>
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
         </li>
 
         

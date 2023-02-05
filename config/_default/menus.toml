@@ -14,8 +14,8 @@
   weight = 20
 
 [[main]]
-  name = "Literature"
-  url = "/literature"
+  name = "CV"
+  url = "files/yuyao_CV.pdf"
   weight = 30
 
 # [[main]]

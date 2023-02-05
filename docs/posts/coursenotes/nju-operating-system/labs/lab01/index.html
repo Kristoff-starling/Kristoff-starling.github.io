@@ -235,9 +235,9 @@ Designation 维护堆区的数据结构应该放在堆区里，所以我们不�
   
   <meta property="twitter:card" content="summary">
   
-  <meta property="og:site_name" content="Academic">
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab01/">
-  <meta property="og:title" content="Lab 01: Physical Memory Manager | Academic">
+  <meta property="og:title" content="Lab 01: Physical Memory Manager | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Overview 该实验的目标是实现一个 (内核使用的) 堆区的内存分配器。以下主要记录一些有趣的设计/性能调优经历。
 Designation 维护堆区的数据结构应该放在堆区里，所以我们不应该开静态数组保存维护堆区的链表等，而应该将链表节点就存储在空闲的内存块上 (反正空闲的内存块当前也没有有效信息)。
 由于 kfree() 只传入了要释放内存块的起始地址，而没有传入 size，所以我们应当在 kalloc() 的时候记录每个释放出去的内存块的大小。笔者最初的实现是维护了一个分配出去的内存块的链表，kfree() 到来时，在链表里查找给定的地址是否存在以及对应的大小。但这样效率太低，于是笔者使用了在地址前打魔数的方法。笔者定义了一个如下的 header：
@@ -266,7 +266,7 @@ Designation 维护堆区的数据结构应该放在堆区里，所以我们不�
 
 
 
-  <title>Lab 01: Physical Memory Manager | Academic</title>
+  <title>Lab 01: Physical Memory Manager | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -319,7 +319,7 @@ Designation 维护堆区的数据结构应该放在堆区里，所以我们不�
 
     
     <div class="d-none d-lg-inline-flex">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -332,7 +332,7 @@ Designation 维护堆区的数据结构应该放在堆区里，所以我们不�
 
     
     <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -404,7 +404,7 @@ Designation 维护堆区的数据结构应该放在堆区里，所以我们不�
         
 
         <li class="nav-item">
-          <a class="nav-link " href="/literature"><span>Literature</span></a>
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
         </li>
 
         

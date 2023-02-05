@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Programming Assignments | Academic</title>
+    <title>Programming Assignments | Yuyao Wang&#39;s Homepage</title>
     <link>https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/</link>
       <atom:link href="https://kristoff-starling.github.io/posts/coursenotes/stanford-compiler/pa/index.xml" rel="self" type="application/rss+xml" />
     <description>Programming Assignments</description>

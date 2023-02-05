@@ -235,9 +235,9 @@ Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模�
   
   <meta property="twitter:card" content="summary">
   
-  <meta property="og:site_name" content="Academic">
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/posts/coursenotes/nju-operating-system/labs/lab02/">
-  <meta property="og:title" content="Lab 02: Kernel Multi-Threads | Academic">
+  <meta property="og:title" content="Lab 02: Kernel Multi-Threads | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Overview 该实验的主要内容是实现内核线程的调度。本实验报告主要记录一些有趣的设计和测试方法。
 Designation spinlock 在 L2 中我们需要实现一个相较于 L1 更加精细的自旋锁。在引入了中断机制后，我们在临界区内需要关闭中断，否则一旦持有锁的线程被调度下了 CPU 一整个时间片就会卡住。我们需要小心地维护中断的嵌套。我们需要一个 per-cpu 的变量来记录中断嵌套的层数，在第一层的时候关闭中断，并在最后一层被解开时打开中断。
 Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模仿 xv6 的设计)，因而是架构相关的 (笔者针对 x86-64 和 x86 各写了一遍汇编)。在这种实现下，一次线程切换 (以时钟中断为例) 会经历如下历程：
@@ -266,7 +266,7 @@ Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模�
 
 
 
-  <title>Lab 02: Kernel Multi-Threads | Academic</title>
+  <title>Lab 02: Kernel Multi-Threads | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -319,7 +319,7 @@ Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模�
 
     
     <div class="d-none d-lg-inline-flex">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -332,7 +332,7 @@ Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模�
 
     
     <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -404,7 +404,7 @@ Inline Assembly 笔者的初代实现使用了內联汇编进行栈切换 (模�
         
 
         <li class="nav-item">
-          <a class="nav-link " href="/literature"><span>Literature</span></a>
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
         </li>
 
         

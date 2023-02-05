@@ -233,9 +233,9 @@ volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return
   
   <meta property="twitter:card" content="summary">
   
-  <meta property="og:site_name" content="Academic">
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/posts/booknotes/ostep/ch30/">
-  <meta property="og:title" content="Chapter 30: Condition Variables | Academic">
+  <meta property="og:title" content="Chapter 30: Condition Variables | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：
 volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return NULL; } int main () { pthread_t c; Pthread_create(&amp;c, NULL, child, NULL); while (done == 0) ; do_something_else(); return 0; } 但这样做主线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
@@ -262,7 +262,7 @@ volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return
 
 
 
-  <title>Chapter 30: Condition Variables | Academic</title>
+  <title>Chapter 30: Condition Variables | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -315,7 +315,7 @@ volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return
 
     
     <div class="d-none d-lg-inline-flex">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -328,7 +328,7 @@ volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return
 
     
     <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -400,7 +400,7 @@ volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return
         
 
         <li class="nav-item">
-          <a class="nav-link " href="/literature"><span>Literature</span></a>
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
         </li>
 
         

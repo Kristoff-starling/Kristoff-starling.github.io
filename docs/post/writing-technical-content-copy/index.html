@@ -233,9 +233,9 @@
   
   <meta property="twitter:card" content="summary_large_image">
   
-  <meta property="og:site_name" content="Academic">
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/post/writing-technical-content-copy/">
-  <meta property="og:title" content="Lecture : Criterion of Estimator | Academic">
+  <meta property="og:title" content="Lecture : Criterion of Estimator | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Unbiasedness $\fbox{Definition 20.1}$ 设 $\hat\theta(X_1,\cdots, X_n)$ 是 $\theta$ 的一个估计量。$\Theta$ 为 $\theta$ 的取值范围。如果对于任意 $\theta\in \Theta$，有 $$ E[\hat\theta(X_1,\cdots, X_n)]=\theta $$ 则称 $\hat\theta$ 是 $\theta$ 的无偏估计量。
 注：该式子的意思在于，虽然 $\theta$ 的估计量因为采样的原因可能和真实值有偏差，但采样次数足够多以后 $\hat\theta\rightarrow\theta$，即无偏性意味着没有系统误差。
 【例】设 $X_1,\cdots, X_n$ 来自总体 $X$，且$E[X^j]=\mu_j$ 存在，则 $A_j=\frac{1}{n}\sum_{k=1}^nX_k^j$ 是 $\mu_j$ 的无偏估计。这是因为 $$ E[A_j]=E\left[\frac{1}{n}\sum_{k=1}^nX_k^j\right]=\frac{1}{n}\sum_{k=1}^nE[X_k^j]=\frac{1}{n}\cdot nE[X^j]=E[X^j] $$ 【例】设 $X_1,\cdots, X_n$ 来自总体 $X$，且 $D(X)=\sigma^2$ 存在，则样本方差 $S^2$ 是 $\sigma^2$ 的无偏估计。这是因为 $$ \begin{align} S^2&amp;=\frac{1}{n-1}\sum_{k=1}^n(X_k-\overline{X})^2\\ &amp;=\frac{1}{n-1}\sum_{k=1}^n(X_k^2-2X_k\overline{X}&#43;\overline{X}^2)\\ &amp;=\frac{1}{n-1}\left(\sum_{k=1}^nX_k^2-2\overline{X}\sum_{k=1}^nX_k&#43;\sum_{k=1}^n\overline{X}^2\right)\\ &amp;=\frac{1}{n-1}\left(\sum_{k=1}^nX_k^2-2n\overline{X}^2&#43;n\overline{X}^2\right)\\ &amp;=\frac{1}{n-1}\sum_{k=1}^nX_k^2&#43;\frac{n}{n-1}\overline{X}^2 \end{align} $$ 从而 $$ \begin{align} E[S^2]&amp;=\frac{1}{n-1}\sum_{k=1}^nE[X_k^2]-\frac{n}{n-1}E[\overline{X}^2]\\ &amp;=\frac{1}{n-1}\sum_{k=1}^n(\sigma^2&#43;\mu^2)-\frac{n}{n-1}E\left[\left(\frac{1}{n}\sum_{k=1}^nX_k\right)^2\right]\\ &amp;=\frac{n}{n-1}(\sigma^2&#43;\mu^2)-\frac{1}{n(n-1)}\left(\sum_{k=1}^nE[X_k^2]&#43;2\sum_{1\leq i&lt;j\leq n}E[X_iX_j]\right)\\ &amp;=\frac{n}{n-1}(\sigma^2&#43;\mu^2)-\frac{1}{n(n-1)}\cdot n(\sigma^2&#43;\mu^2)-\frac{2}{n(n-1)}\binom{n}{2}E[X]^2\\ &amp;=\sigma^2&#43;\mu^2-\mu^2\\ &amp;=\sigma^2 \end{align} $$ $E[S^{*2}]=E[\frac{n-1}{n}S^2]=\frac{n-1}{n}\sigma^2$，因此二阶中心矩不是方差的无偏估计。不过 $\lim_{n\rightarrow \infty}E[S^{*2}]=\sigma^2$，所以称 $S^{*2}$ 是 $\sigma^2$ 的渐进无偏估计。"><meta property="og:image" content="https://kristoff-starling.github.io/post/writing-technical-content-copy/featured.jpg">
@@ -286,7 +286,7 @@
   
   "publisher": {
     "@type": "Organization",
-    "name": "Academic",
+    "name": "Yuyao Wang's Homepage",
     "logo": {
       "@type": "ImageObject",
       "url": "https://kristoff-starling.github.io/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png"
@@ -310,7 +310,7 @@
 
 
 
-  <title>Lecture : Criterion of Estimator | Academic</title>
+  <title>Lecture : Criterion of Estimator | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
@@ -363,7 +363,7 @@
 
     
     <div class="d-none d-lg-inline-flex">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -376,7 +376,7 @@
 
     
     <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
-      <a class="navbar-brand" href="/">Academic</a>
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
     </div>
     
 
@@ -448,7 +448,7 @@
         
 
         <li class="nav-item">
-          <a class="nav-link " href="/literature"><span>Literature</span></a>
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
         </li>
 
         

@@ -38,13 +38,13 @@ education:
 social:
 - icon: envelope
   icon_pack: fas
-  link: 'mailto:yuyaowang@smail.nju.edu.cn'
+  link: 'mailto:yuyao6@outlook.com'
 - icon: github
   icon_pack: fab
   link: https://github.com/kristoff-starling
-- icon: youtube
-  icon_pack: fab
-  link: https://space.bilibili.com/631492694?spm_id_from=333.1007.0.0
+# - icon: youtube
+  # icon_pack: fab
+  # link: https://space.bilibili.com/631492694?spm_id_from=333.1007.0.0
 - icon: qq
   icon_pack: fab
   link: http://wpa.qq.com/msgrd?v=3&uin=1751063411&site=qq&menu=yes
