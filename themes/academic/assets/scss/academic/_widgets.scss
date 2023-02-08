@@ -259,6 +259,10 @@ a.hero-cta-alt:hover {
  *  About widget
  **************************************************/
 
+h1 {
+  font-size: 1.6rem;
+}
+
 #profile {
   text-align: center;
   padding: 30px 10px;
@@ -332,6 +336,11 @@ ul.network-icon {
   font-size: 2rem;
 }
 
+div.intro {
+  font-size: 0.9rem;
+  width: 92%;
+}
+
 ul.ul-interests li {
   font-size: 0.9rem;
 }
@@ -355,6 +364,19 @@ ul.ul-edu li .description p.course {
 
 ul.ul-edu li .description p.institution {
   font-size: 0.75rem;
+  color: rgba(0,0,0,0.6);
+}
+
+ul.ul-publications li .description p {
+  margin: 0;
+}
+
+ul.ul-publications li .description p.title {
+  font-size: 0.9rem;
+}
+
+ul.ul-publications li .description p.authors {
+  font-size: 0.7rem;
   color: rgba(0,0,0,0.6);
 }
 

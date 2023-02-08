@@ -25,7 +25,7 @@
       {{ if site.Params.avatar.gravatar }}
       <img class="avatar {{if eq $avatar_shape "square"}}avatar-square{{else}}avatar-circle{{end}}" src="https://s.gravatar.com/avatar/{{ md5 $person.email }}?s=270')" alt="Avatar">
       {{ else if $avatar }}
-      {{ $avatar_image := $avatar.Fill "270x270 Center" }}
+      {{ $avatar_image := $avatar.Fill "500x500 Center" }}
       <img class="avatar {{if eq $avatar_shape "square"}}avatar-square{{else}}avatar-circle{{end}}" src="{{ $avatar_image.RelPermalink }}" alt="Avatar">
       {{ end }}
 
@@ -72,9 +72,33 @@
     {{/* Only display widget title in explicit instances of about widget, not in author pages. */}}
     {{ if and $page.Params.widget $page.Title }}<h1>{{ $page.Title | markdownify | emojify }}</h1>{{ end }}
 
+    <div class="intro">
     {{ $person_page.Content }}
+    </div>
 
     <div class="row">
+
+      {{ with $person.publications }}
+      <div class="col-md-12">
+        <h1>{{ "Publications" | markdownify }}</h1>
+        <ul class="ul-publications fa-ul">
+          {{ range .conf_papers }}
+          <li>
+            <i class="fa-li fas fa-print"></i>
+            <div class="description">
+              <p class="title">{{ .title }}</p>
+              <p class="authors">{{ .authors | markdownify}}</p>
+            </div>
+            <div class="btn-links">
+              {{ with .preprint }}
+              <a class="btn btn-outline-primary my-1 mr-1 btn-sm" href="{{ . | relURL }}"> pre-print </a>
+              {{ end }}
+            </div>
+          </li>
+          {{ end }}
+        </ul>
+      </div>
+      {{ end }}
 
       {{ with $person.interests }}
       <div class="col-md-5">

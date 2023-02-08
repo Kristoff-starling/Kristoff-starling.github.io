@@ -10,26 +10,28 @@ authors:
 superuser: true
 
 # Role/position
-role: Undergrad @ NJU
+role: Undergraduate (Junior)
 
 # Organizations/Affiliations
 organizations:
 - name: Nanjing University
   url: ""
 
-# Short bio (displayed in user profile at end of posts)
-bio: My research interests include distributed robotics, mobile computing and programmable matter.
+# interests:
+# - Algorithms
+# - Software Engineering
 
-interests:
-- Algorithms
-- Software Engineering
-- Systems
+# education:
+#   courses:
+#   - course: Undergraduate in Nanjing University
+#     institution: Nanjing University
+#     year: 2020
 
-education:
-  courses:
-  - course: Undergraduate in Nanjing University
-    institution: Nanjing University
-    year: 2020
+publications:
+  conf_papers:
+  - title: "NeuRI: Diversifying DNN Generation via Inductive Rule Inference"
+    authors: "Jiawei Liu, Jinjun Peng, <u>**Yuyao Wang**</u>, Lingming Zhang"
+    preprint: pub/NeuRI.pdf
 
 # Social/Academic Networking
 # For available icons, see: https://sourcethemes.com/academic/docs/page-builder/#icons
@@ -45,14 +47,11 @@ social:
 # - icon: youtube
   # icon_pack: fab
   # link: https://space.bilibili.com/631492694?spm_id_from=333.1007.0.0
-- icon: qq
-  icon_pack: fab
-  link: http://wpa.qq.com/msgrd?v=3&uin=1751063411&site=qq&menu=yes
 # Link to a PDF of your resume/CV from the About widget.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.
-# - icon: cv
-#   icon_pack: ai
-#   link: files/cv.pdf
+- icon: cv
+  icon_pack: ai
+  link: files/yuyao_CV.pdf
 
 # Enter email to display Gravatar (if Gravatar enabled in Config)
 email: ""
@@ -64,4 +63,8 @@ user_groups:
 - Visitors
 ---
 
-Yuyao Wang is an undergraduate in Nanjing University studying for a bachelor's degree. His research interests include systems and software engineering. He's also good at algorithm design and has rich experience in competitive programming.
+I am Yuyao Wang (王宇峣), a junior student in Computer Science at [Nanjing University](https://www.nju.edu.cn). My research interest lies in the *correctness*, *programmability* and *performance* of computer systems. 
+
+I have been attached to programming and algorithm design since middle school and aspire to bring elegant solutions for real-world problems.
+
+---
