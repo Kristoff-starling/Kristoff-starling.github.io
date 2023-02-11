@@ -29,7 +29,7 @@ organizations:
 
 publications:
   conf_papers:
-  - title: "NeuRI: Diversifying DNN Generation via Inductive Rule Inference"
+  - title: "NeuRI: Diversifying DNN Generation via Inductive Rule Inference."
     authors: "Jiawei Liu, Jinjun Peng, <u>**Yuyao Wang**</u>, Lingming Zhang"
     preprint: pub/NeuRI.pdf
 
