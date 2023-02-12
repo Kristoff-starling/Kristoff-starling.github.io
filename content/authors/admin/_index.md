@@ -29,7 +29,7 @@ organizations:
 
 publications:
   conf_papers:
-  - title: "NeuRI: Diversifying DNN Generation via Inductive Rule Inference."
+  - title: "NeuRI: Diversifying DNN Generation via Inductive Rule Inference"
     authors: "Jiawei Liu, Jinjun Peng, <u>**Yuyao Wang**</u>, Lingming Zhang"
     preprint: pub/NeuRI.pdf
 
@@ -63,8 +63,8 @@ user_groups:
 - Visitors
 ---
 
-I am Yuyao Wang (王宇峣), a junior student in Computer Science at [Nanjing University](https://www.nju.edu.cn). My research interest lies in the *correctness*, *programmability* and *performance* of computer systems. 
+I am Yuyao Wang (王宇峣), a junior in Computer Science (Elite Class) at [Nanjing University](https://www.nju.edu.cn). My research interest lies in topics related to the *correctness*, *programmability* and *performance* of computer systems. 
 
-I have been attached to programming and algorithm design since middle school and aspire to bring elegant solutions for real-world problems.
+I have been attached to programming and algorithm design since middle school and aspire to bring elegant solutions for tackling *real-world* problems.
 
 ---
