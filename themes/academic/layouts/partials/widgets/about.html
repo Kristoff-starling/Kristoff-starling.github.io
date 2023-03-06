@@ -90,8 +90,11 @@
               <p class="authors">{{ .authors | markdownify}}</p>
             </div>
             <div class="btn-links">
-              {{ with .preprint }}
-              <a class="btn btn-outline-primary my-1 mr-1 btn-sm" href="{{ . | relURL }}"> pre-print </a>
+              {{ with .PDF }}
+              <a class="btn btn-outline-primary my-1 mr-1 btn-sm" href="{{ . | relURL }}" target="_blank"> PDF </a>
+              {{ end }}
+              {{ with .arxiv }}
+              <a class="btn btn-outline-primary my-1 mr-1 btn-sm" href="{{ . }}" target="_blank"> arXiv </a>
               {{ end }}
             </div>
           </li>
