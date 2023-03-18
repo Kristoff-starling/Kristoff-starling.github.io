@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="How to quickly solve homogeneous linear recurrences with the aid of computers :rocket:">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/posts/recurrences/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/posts/recurrences/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/posts/recurrences/">
+  <meta property="og:title" content="Homogeneous Linear Recurrences: An Algorithmic Perspective | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="How to quickly solve homogeneous linear recurrences with the aid of computers :rocket:"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2023-03-18T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-03-18T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Homogeneous Linear Recurrences: An Algorithmic Perspective | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Homogeneous Linear Recurrences: An Algorithmic Perspective</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Mar 18, 2023
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/categories/theoretical-computer-science/">Theoretical Computer Science</a></span>
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <ul>
+<li>
+<a href="#getting-started-fibonacci">Getting Started: Fibonacci</a>
+<ul>
+<li>
+<a href="#a-variation-of-fibonacci">A Variation of Fibonacci</a></li>
+</ul>
+</li>
+<li>
+<a href="#when-it-comes-to-higher-orders">When It Comes to Higher Orders…</a></li>
+<li>
+<a href="#an-eigendecomposition-approach">An “Eigendecomposition” Approach</a>
+<ul>
+<li>
+<a href="#fibonacci-review-i">Fibonacci: Review I</a></li>
+<li>
+<a href="#cayley-hamilton-theorem">Cayley-Hamilton Theorem</a></li>
+<li>
+<a href="#the-characteristic-polynomial-for-homogeneous-linear-recurrence-matrices">The Characteristic Polynomial For Homogeneous Linear Recurrence Matrices</a></li>
+<li>
+<a href="#magical-decomposition">Magical Decomposition</a></li>
+<li>
+<a href="#summary--complexity-analysis">Summary &amp; Complexity Analysis</a></li>
+</ul>
+</li>
+<li>
+<a href="#a-generatingfunctionology-approach">A “Generatingfunctionology” Approach</a>
+<ul>
+<li>
+<a href="#fibonacci-review-ii">Fibonacci: Review II</a></li>
+<li>
+<a href="#generating-function-equation-for-general-linear-recurrences">Generating Function Equation for General Linear Recurrences</a></li>
+<li>
+<a href="#an-even-odd-separation-idea">An Even-Odd Separation Idea</a></li>
+<li>
+<a href="#summary--complexity-analysis-1">Summary &amp; Complexity Analysis</a></li>
+</ul>
+</li>
+<li>
+<a href="#conclusion--misc">Conclusion &amp; Misc</a></li>
+<li>
+<a href="#references">References</a></li>
+</ul>
+<p>The post focuses on solving homogeneous linear recurrences quickly with the aid of computers. Specifically, we are interested in figuring out the $n$-th term of sequences with the following recurrence formula:</p>
+<p>$$
+f_n=\sum_{k=1}^m c_kf_{n-k}
+$$</p>
+<p>Since the answer may be too large, we usually focus on $f&rsquo;_n=f_n\mod M$. We are more interested in cases where $M$ is suitable for FFT, such as $998,244,353$, because polynomial-related techniques can be leveraged to accelerate the computation. In the whole passage, we will use $f_n$ (instead of $f&rsquo;_n$) to represent the answer under modulation for simplicity.</p>
+<h2 id="getting-started-fibonacci">Getting Started: Fibonacci</h2>
+<p>Let’s start with one of the simplest (and most famous) sequences: Fibonacci.</p>
+<p>$$
+F_n=\begin{cases}0&amp;, n=1\\1&amp;, n=2\\F_{n-1}+F_{n-2}&amp;, n\geq 2\end{cases}
+$$</p>
+<p>Computing $F_n$ in $O(n)$ time complexity is trivial. But when $n$ is extremely large, say, $\geq 10^9$, it’s hard for general computers to get the answer within seconds. One of the most common approaches to solving such problems is using matrices.</p>
+<p>Matrices are good at describing linear relationships, and the recurrence formula of Fibonacci happens to be linear. Therefore we can rewrite it in matrix language:</p>
+<p>$$
+\begin{pmatrix}0 &amp; 1\\1 &amp; 1\end{pmatrix}\begin{pmatrix}F_{n-1}\\F_n\end{pmatrix}=\begin{pmatrix}0\cdot F_{n-1}+1\cdot F_n\\1\cdot F_{n-1}+1\cdot F_n\end{pmatrix}=\begin{pmatrix}F_n\\F_{n+1}\end{pmatrix}
+$$</p>
+<p>$\begin{pmatrix}0 &amp; 1\\1 &amp; 1\end{pmatrix}$is a good matrix for “pushing” the computation of $F_n$ by 1. Although this seems trivial, when we repeatedly use the matrix to push forward our computation, things become interesting:</p>
+<p>$$
+\begin{pmatrix}F_n\\F_{n+1}\end{pmatrix}=\begin{pmatrix}0 &amp; 1\\1 &amp; 1\end{pmatrix}\cdots\left(\begin{pmatrix}0 &amp; 1\\1 &amp; 1\end{pmatrix}\left(\begin{pmatrix}0 &amp; 1\\1 &amp; 1\end{pmatrix}\begin{pmatrix}F_0\\F_1\end{pmatrix}\right)\right)
+$$</p>
+<p>Thanks to the associativity of matrix multiplication, we can neatly rewrite the expression as</p>
+<p>$$
+\begin{pmatrix}F_n\\F_{n+1}\end{pmatrix}=\begin{pmatrix}0 &amp; 1\\1 &amp; 1\end{pmatrix}^n\begin{pmatrix}F_0\\F_1\end{pmatrix}
+$$</p>
+<p>So far, we have not simplified the computation of $F_n$, and matrix multiplications even place more burden on the computer. However, we have powerful techniques to deal with exponents: repeated squaring, i.e., denote the transformation matrix as $M$, we first compute $M^2$, then compute $M^4$ by taking the square of $M^2$, and so on. In this way, we can compute $\begin{pmatrix}0 &amp; 1\\1 &amp; 1\end{pmatrix}^n$in $O(\log n)$ complexity, and finally by applying it to the initial vector $\begin{pmatrix}F_0\\F_1\end{pmatrix}$we’ll get $F_n$.</p>
+<p>If you’re an experienced math learner, you must have known several ways to directly compute the general term formula of the Fibonacci sequence and may complain about this “stupid” matrix approach. However, the general term formula containing irrational coefficients is unfriendly for numerical computations. I’m not saying that those approaches are useless - instead, in the following sections we’ll come back to the basic Fibonacci example again and again and see how advanced math gives insights into efficient algorithm design.</p>
+<h3 id="a-variation-of-fibonacci">A Variation of Fibonacci</h3>
+<p>Before delving deeper into the problem, let&rsquo;s consider a slightly varied version of the Fibonacci sequence:</p>
+<p>$$
+F_n=\begin{cases}0&amp;, n=1\\1&amp;, n=2\\F_{n-1}+F_{n-2}+n&amp;, n\geq 2\end{cases}
+$$</p>
+<p>Rigorously, this is not a homogeneous linear recurrence, but we list it here because it’s a nice example of designing transformation matrices. The only difference is the additional $+n$ when $n\geq 2$, but it seems much more challenging because we cannot represent $n$ as the linear combination of $F_{n-1}$ and $F_{n-2}$.</p>
+<p>A general insight is that we can include more terms in the “state vector” ( in the standard Fibonacci sequence it’s $\begin{pmatrix}F_{n} &amp; F_{n+1}\end{pmatrix}$). Apart from necessary terms in the sequence, we can add “helper terms” to help us find the linear combinations of wanted expressions. Let’s try adding $n$ into the state vector:</p>
+<p>$$
+\begin{pmatrix}F_{n-2}\\F_{n-1}\\n\end{pmatrix}\overset{which\ matrix?}{\Longrightarrow}\begin{pmatrix}F_{n-1}\\F_{n}\\n+1\end{pmatrix}
+$$</p>
+<p>Unfortunately, getting $n+1$ from $n$ is impossible because we have nobody to borrow the “1” from - but why don’t we add constant 1 into our state vector as well?</p>
+<p>$$
+\begin{pmatrix}0 &amp; 1 &amp; 0 &amp; 0\\1 &amp; 1 &amp; 1 &amp; 0\\0 &amp; 0 &amp; 1 &amp; 1\\0 &amp; 0 &amp; 0 &amp; 1\end{pmatrix}\begin{pmatrix}F_{n-2}\\F_{n-1}\\n\\1\end{pmatrix}=\begin{pmatrix}F_{n-1}\\F_n\\n+1\\1\end{pmatrix}
+$$</p>
+<p>Once we have the transformation matrix of a sequence, the rest is simple: do matrix multiplications by repeated squaring. To solve this Fibonacci variation, we need a matrix with rank 4, even if it&rsquo;s a second-order recurrence. There&rsquo;s no fixed procedure for devising such a matrix - in some subtle cases, a little human wisdom is necessary.</p>
+<h2 id="when-it-comes-to-higher-orders">When It Comes to Higher Orders…</h2>
+<p>The examples shown above are all constant-order recurrences. In the Fibonacci example, we claim that the time complexity is $O(\log n)$ because the influence from the rank is negligible. However, if we’re confronted with recurrences with higher orders, say $k$, the time complexity of the matrix approach should be $O(k^3\log n)$ (we don’t take into account algorithms like Strassen’s multiplication because they often come with huge constants), which is prohibitively high even if $k$ is only a few thousand.</p>
+<p>The journey has just begun! The following sections introduce 2 directions for optimization: one is related to the characteristic polynomial of matrices, and the other leverages generating functions to tackle the issue.</p>
+<h2 id="an-eigendecomposition-approach">An “Eigendecomposition” Approach</h2>
+<h3 id="fibonacci-review-i">Fibonacci: Review I</h3>
+<p>A common approach to optimizing matrix powering is eigendecomposition, i.e., for a matrix $M$ with rank $n$, if $M$ has $n$ independent eigenvectors, then $M$ is diagonalizable: $M=S\Lambda S^{-1}$, where $\Lambda$ is a diagonal matrix consisting of eigenvalues and $S$ is a matrix consisting of (column) eigenvectors. With this diagonalized form, powering becomes super easy: $M^n=(S\Lambda S^{-1})^n=S\Lambda^nS^{-1}$.</p>
+<p>Come back to the Fibonacci example, the only thing left is to compute the eigenvalues of the transformation matrix. For $2\times 2$ matrices, solving the following quadratic characteristic equation is simple:</p>
+<p>$$
+M=\begin{pmatrix}0&amp;1\\1&amp;1\end{pmatrix}\qquad\qquad
+\begin{align*}f(\lambda)&amp;=\det(M-\lambda I)=0\\&amp;\Longrightarrow\lambda_{1,2}=\frac{1\pm\sqrt 5}{2},\mathbf{x}=\begin{pmatrix} \lambda\\1\end{pmatrix}\end{align*}
+$$</p>
+<p>Therefore,</p>
+<p>$$
+\begin{align*}\begin{pmatrix}F_n\\F_{n+1}\end{pmatrix}&amp;=\begin{pmatrix}0&amp;1\\1&amp;1\end{pmatrix}^n\begin{pmatrix}F_0\\F_1\end{pmatrix}\\&amp;=\left[\begin{pmatrix}\mathbf{x}_1&amp;\mathbf{x}_2\end{pmatrix}\begin{pmatrix}\lambda_1 &amp; \\&amp;\lambda_2\end{pmatrix}\begin{pmatrix}\mathbf{x}_1&amp;\mathbf{x}_2\end{pmatrix}^{-1}\right]^n\begin{pmatrix}F_0\\F_1\end{pmatrix}\\&amp;=\begin{pmatrix}\mathbf{x}_1&amp;\mathbf{x}_2\end{pmatrix}\begin{pmatrix}\lambda_1^n&amp;\\&amp;\lambda_2^n\end{pmatrix}\begin{pmatrix}\mathbf{x}_1&amp;\mathbf{x}_2\end{pmatrix}^{-1}\begin{pmatrix}F_0\\F_1\end{pmatrix}\end{align*}
+$$</p>
+<h3 id="cayley-hamilton-theorem">Cayley-Hamilton Theorem</h3>
+<p>Unfortunately, when it comes to transformation matrices with arbitrary rank, it’s difficult to solve high-order characteristic equations and irrational eigenvalues are hard for numerical computations. However, the general idea still works: we should find nice properties related to characteristic polynomials and try to do decomposition.</p>
+<p>We introduce the Cayley-Hamilton theorem, which describes an interesting property of square matrices.</p>
+<div class="alert alert-note">
+  <div>
+    <p>$\fbox{Theorem}$ <strong>(Cayley-Hamilton)</strong></p>
+<p>In linear algebra, the Cayley-Hamilton theorem states that every square matrix over a commutative ring satisfies its own characteristic equation, i.e., denote $f(\lambda)=\det(\lambda I-A)$ as the characteristic polynomial of $A$, then $f(A)=O$.</p>
+  </div>
+</div>
+<p>Beginners may regard this theorem as trivial by the observation that $\det(AI-A)=0$. However, this “bogus proof” is totally ungrounded because $f(A)$ is a matrix, not a scalar. Since it’s not a rigorous math post, we’ll not prove this theorem in a detailed manner from scratch. Instead, we give the following lemma without proof:</p>
+<p>$\fbox{Lemma}$ Diagonalizable matrices are dense in the space of all matrices.</p>
+<blockquote>
+<p><strong>Proof of Cayley-Hamilton theorem</strong></p>
+<p>We start with diagonalizable matrices. For an arbitrary diagonalizable matrix $A$ with rank $n$, it has $n$ independent eigenvectors satisfying $A\mathbf{x_i}=\lambda_i\mathbf{x_i}$. Consider $f(A)\mathbf{x_i}$, suppose $f(\lambda)$ is a polynomial with coefficient $c_i$ for term $\lambda^i$, then</p>
+<p>$$
+\begin{align*}f(A)\mathbf{x_i}&amp;=\left(\sum_{k=0}^nc_kA^k\right)\mathbf{x_i}=\sum_{k=0}^nc_k(A^k\mathbf{x_i})\\&amp;=\sum_{k=0}^nc_k(\lambda_i^k\mathbf{x_i})\\&amp;=\left(\sum_{k=0}^nc_k\lambda_i^k\right)\mathbf{x_i}\\&amp;=f(\lambda_i)\mathbf{x_i}=\mathbf{0}\end{align*}
+$$</p>
+<p>Therefore, for each eigenvector $\mathbf{x_i}$, $f(A)\mathbf{x_i}=\mathbf{0}$. By combining eigenvectors to a matrix $S=\begin{pmatrix}\mathbf{x_1}&amp;\cdots&amp;\mathbf{x_n}\end{pmatrix}$, we have $f(A)S=O$. Since $S$ is a full-rank matrix, the only possibility is that $f(A)=O$.</p>
+<p>Now let’s move to non-diagonalizable matrices, denoted as $D$. According to the density of diagonalizable matrices in the whole matrix space, there exists a matrix $H$ such that a cluster of matrices $D_t=D+tH$, $t\in (-1, 0)\cup (0, 1)$, are diagonalizable. Since $D_t$ is continuous on $t$, $f_{D_t}(D_t)$ is also continuous on $t$, therefore</p>
+<p>$$
+f(D)=\lim_{t\to 0}f_{D_t}(D_t)=O
+$$</p>
+</blockquote>
+<h3 id="the-characteristic-polynomial-for-homogeneous-linear-recurrence-matrices">The Characteristic Polynomial For Homogeneous Linear Recurrence Matrices</h3>
+<p>For homogeneous linear recurrence transformation matrices, characteristic polynomial $f$ is easy to compute: according to the recurrence formula, we have</p>
+<p>$$
+A=\begin{pmatrix}0&amp; 1\\&amp; &amp; 1\\&amp; &amp; &amp; \ddots\\&amp; &amp; &amp; &amp; 1\\c_1 &amp; c_2 &amp; c_3 &amp;  \cdots &amp; c_k\end{pmatrix}
+$$</p>
+<p>Then</p>
+<p>$$
+f(\lambda)=\det(\lambda I-A)=\begin{vmatrix}\lambda &amp; -1\\&amp; \lambda &amp; -1\\&amp; &amp; \ddots&amp; \ddots\\&amp; &amp; &amp; \lambda &amp; -1\\-c_1 &amp; -c_2 &amp; -c_3&amp;\cdots&amp;\lambda-c_k\end{vmatrix}
+$$</p>
+<p>Expanding the determinant by the last row, we’ll observe that every minor is easy to compute: $A_{k,i}=(-1)^{k-i}\lambda^{i-1}$. Therefore</p>
+<p>$$
+\begin{align*}f(\lambda)&amp;=(-1)^{2k}(\lambda-c_k)\lambda^{k-1}+\sum_{i=1}^{k-1}(-1)^{k+i}\cdot ((-1)^{k-i}\lambda^{i-1})\cdot (-c_i)\\&amp;=\lambda^k-\sum_{i=1}^kc_i\lambda^{i-1}\end{align*}
+$$</p>
+<h3 id="magical-decomposition">Magical Decomposition</h3>
+<p>It’s still unclear how Cayley-Hamilton theorem can help in optimization. The following approach was proposed by Fiduccia in 1985 [2]. For an arbitrary transformation matrix $A$ with rank $k$, consider the following decomposition:</p>
+<p>$$
+x^n=f(x)g(x)+r(x)
+$$</p>
+<p>where $f$ is the characteristic polynomial of $A$ and  $g(x)/r(x)$ can be computed through polynomial division/modulation. In fact, we are more interested in $r(x)$ because when we let $x=A$:</p>
+<p>$$
+A^n=f(A)g(A)+r(A)\overset{\text{Cayley-Hamilton}}{=}r(A)
+$$</p>
+<p>It seems that we haven’t made solid progress because $r$ is a $k$-order polynomial and computing $r(A)$ by brute force requires $O(k^4)$ effort. However, suppose $\displaystyle r(x)=\sum_{i=0}^{k-1}c_ix^i$, actually we’re able to compute $F_n$ in $O(k)$ thanks to the following deduction:</p>
+<p>$$
+\begin{align*}\begin{pmatrix}F_n\\F_{n+1}\\\vdots\\F_{n+k-1}\end{pmatrix}&amp;=A^n\begin{pmatrix}F_0\\F_1\\\vdots\\F_{k-1}\end{pmatrix}=R(A)\begin{pmatrix}F_0\\F_1\\\vdots\\F_{k-1}\end{pmatrix}\\&amp;=\left(\sum_{i=0}^{k-1}c_iA^i\right)\begin{pmatrix}F_0\\F_1\\\vdots\\F_{k-1}\end{pmatrix}\\&amp;=\sum_{i=0}^{k-1}c_i\left(A^i\begin{pmatrix}F_0\\F_1\\\vdots\\F_{k-1}\end{pmatrix}\right)\\&amp;=\sum_{i=0}^{k-1}c_i\begin{pmatrix}F_i\\F_{i+1}\\\vdots\\F_{i+k-1}\end{pmatrix}\end{align*}
+$$</p>
+<p>Therefore</p>
+<p>$$
+F_n=\sum_{i=0}^{k-1}c_iF_i
+$$</p>
+<h3 id="summary--complexity-analysis">Summary &amp; Complexity Analysis</h3>
+<p>Let’s have a quick summary of the whole procedure and analyze the complexity:</p>
+<ol>
+<li>Construct a transformation matrix $A$ according to the recurrence formula.</li>
+<li>Compute the characteristic polynomial $f_A$.</li>
+<li>Compute $r_A(x)=x^n\text{ mod }f_A$.</li>
+<li>Compute $F_n$ according to the coefficients in $r_A$.</li>
+</ol>
+<p>The main complexity lies in the third step. Since $n$ is extremely large, it’s impossible to directly do polynomial modulation. Instead, we can leverage repeated squaring:</p>
+<p>$$
+x\Rightarrow [x^2]=(x)^2 \text{ mod }f_A\Rightarrow [x^4]=[x^2]^2\text{ mod }f_A\Rightarrow \cdots \Rightarrow x^n\text{ mod }f_A
+$$</p>
+<p>In this way, we need to conduct $O(\log n)$ times polynomial multiplication and modulation, which gives a $O(k^2\log n)$ complexity. If the problem is considered in a ring that supports Fast Fourier Transformation (typically an NTT ring), we can further optimize it to $O(k\log k\log n)$.</p>
+<h2 id="a-generatingfunctionology-approach">A “Generatingfunctionology” Approach</h2>
+<h3 id="fibonacci-review-ii">Fibonacci: Review II</h3>
+<p>Generating function is always a powerful weapon for tackling sequence problems. Consider</p>
+<p>$$
+G(x)=\sum_{n=0}^\infty F_nx^n
+$$</p>
+<p>Since $F_n=F_{n-1}+F_{n-2}$ when $n\geq 2$, we can get</p>
+<p>$$
+G(x)=F_0+F_1x+xG(x)+x^2G(x)=x+(x+x^2)G(x)
+$$</p>
+<p>Therefore $\displaystyle G(x)=\frac{x}{1-x-x^2}=\frac{1}{\sqrt 5}\left(\frac{1}{1-\phi x}-\frac{1}{1-\hat\phi x}\right)$, where $\phi=\displaystyle \frac{1+\sqrt 5}{2}$ and $\displaystyle \hat\phi=\frac{1-\sqrt 5}{2}$. Expand it to Taylor series, we have</p>
+<p>$$
+\begin{align*}G(x)&amp;=\frac{1}{\sqrt 5}\left(\sum_{n\geq 0}(\phi x)^n-\sum_{n\geq 0}(\hat\phi x)^n\right)\\&amp;=\sum_{n\geq 0}\left(\frac{1}{\sqrt 5}(\phi^n-\hat\phi^n)\right)x^n\end{align*}
+$$</p>
+<p>Thus $\displaystyle F_n=\frac{1}{\sqrt 5}(\phi^n-\hat\phi^n)$.</p>
+<h3 id="generating-function-equation-for-general-linear-recurrences">Generating Function Equation for General Linear Recurrences</h3>
+<p>However, when it comes to recurrences with arbitrary order, techniques like Taylor expansion will lose its power for computers. Anyway, let’s figure out the equation first. Put the coefficients of linear recurrence into a generation function, denoted as $G(x)$, i.e.,</p>
+<p>$$
+G(x)=\sum_{i=1}^kc_ix^i
+$$</p>
+<p>we have</p>
+<p>$$
+F(x)=F(x)G(x)+R(x)
+$$</p>
+<p>Where $R(x)$ is a polynomial for correcting the first few terms in the sequence and can be obtained by computing $F&rsquo;(x)-F&rsquo;(x)G(x)$, where $F&rsquo;(x)$ is the first $k$ terms of $F(x)$.</p>
+<p>Therefore</p>
+<p>$$
+F(x)=\frac{R(x)}{1-G(x)}
+$$</p>
+<h3 id="an-even-odd-separation-idea">An Even-Odd Separation Idea</h3>
+<p>Since $n$ is extremely huge, computing the polynomial inverse of $1-G(x)$ and then computing  $[x^n]F(x)$ through polynomial multiplication is unreasonable. We need a quick way to compute</p>
+<p>$$
+[x^n]F(x)=[x^n]\frac{P(x)}{Q(x)}
+$$</p>
+<p>where $P(x)$ and $Q(x)$ stands for $R(x)$ and $1-G(x)$ in this case.</p>
+<p>Consider the following transformation:</p>
+<p>$$
+F(x)=\frac{P(x)}{Q(x)}=\frac{P(x)Q(-x)}{Q(x)Q(-x)}
+$$</p>
+<p>$Q(x)Q(-x)$ is an even function. Let $U(x^2)=Q(x)Q(-x)$, and divide $P(x)Q(-x)$ into two parts according to the parity of $x^k$, we have</p>
+<p>$$
+F(x)=\frac{xOdd(x^2)}{U(x^2)}+\frac{Even(x^2)}{U(x^2)}
+$$</p>
+<p>Thanks to the fact that $U(x^2)$ only contains even powers, $F(x)$ is successfully separated as an odd part and an even part, and we can choose the part containing $x^n$ (according to the parity of $n$) to continue our computation.</p>
+<h3 id="summary--complexity-analysis-1">Summary &amp; Complexity Analysis</h3>
+<p>Let’s have a quick summary of the whole procedure and analyze the complexity:</p>
+<ol>
+<li>Compute $R(x)$ and $G(x)$.</li>
+<li>Compute $P(x)Q(-x)$ and $Q(x)Q(-x)$ respectively. Choose the part with the same parity as $n$.</li>
+<li>Repeatedly conduct step 2 until the polynomial becomes a constant one.</li>
+</ol>
+<p>Step 2 contains polynomial multiplications, which requires $O(k^2)$/$O(k\log k)$ depending on whether FFT is supported. Every time we conduct step 2, the formal variable of the generating functions grow from $x$ to $x^2$. Therefore the power grows exponentially and we can terminate within $O(\log n)$ iterations. So the overall complexity is $O(k^2\log n)$/$O(k\log k\log n)$.</p>
+<p>It’s worth noting that although the “generatingfunctionology” approach has the same time complexity as the previous one, it requires simpler polynomial techniques (only multiplication). The paper [3] argues that this approach improves the result of Fiduccia on constant factors.</p>
+<h2 id="conclusion--misc">Conclusion &amp; Misc</h2>
+<p>The post introduces several kinds of techniques for tackling homogeneous linear recurrence problems. Matrix multiplication with repeated squaring optimizes the complexity from the most trivial $O(kn)$ to $O(k^3\log n)$, and the following 2 approaches leverage linear algebra/generating function to further improve it to $O(k^2\log n)$/$O(k\log k\log n)$. Readers can refer to the papers for deeper understanding.</p>
+<p>I learned most of the techniques mentioned above when I was taking part in competitive programming contests during high school. There was no detailed tutorial on the Internet at that time and the knowledge are spread through word of mouth. I would be most happy if the post can bring the wisdom of TCS researchers to more people in the world.</p>
+<h2 id="references">References</h2>
+<ul>
+<li>[1]  
+<a href="https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem" target="_blank" rel="noopener">Cayley-Hamilton Theorem</a>. <em>Wikipedia</em>.</li>
+<li>[2] C. M. Fiduccia. 
+<a href="https://doi.org/10.1137/0214007" target="_blank" rel="noopener">An efficient formula for linear recurrences</a>. <em>SIAM Journal on Computing</em>,
+14(1):106–112, 1985.</li>
+<li>[3] Bostan, A., &amp; Mori, R. (2020). 
+<a href="https://arxiv.org/abs/2008.08822" target="_blank" rel="noopener">A Simple and Fast Algorithm for Computing the N-th Term of a Linearly Recurrent Sequence</a>. <em>ArXiv.</em></li>
+</ul>
+
+    </div>
+
+  
+
+  </div>
+</article>
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" class="back-to-top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="14.1 Types of Memory 在一个 C 程序中，程序使用的内存有两种：
+栈内存，这部分内存的分配和回收由编译器隐式地完成，因此也被称为“自动内存”。在 C 程序中声明使用栈内存是非常简单的，比如 void func() { int x; // declares an integer on the stack ... } 编译器会自动在栈上为变量 x 分配空间，且函数 func() 结束时编译器会自动回收这部分内存。
+堆内存：如果我们想要一些长生存周期 (不只存活在函数内部) 的内存，我们就要使用堆内存。堆内存是由程序员在程序中显式申请的，分配和释放都由程序员负责。一个例子如下：">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch14/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch14/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch14/">
+  <meta property="og:title" content="Chapter 14: Interlude: Memory API | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="14.1 Types of Memory 在一个 C 程序中，程序使用的内存有两种：
+栈内存，这部分内存的分配和回收由编译器隐式地完成，因此也被称为“自动内存”。在 C 程序中声明使用栈内存是非常简单的，比如 void func() { int x; // declares an integer on the stack ... } 编译器会自动在栈上为变量 x 分配空间，且函数 func() 结束时编译器会自动回收这部分内存。
+堆内存：如果我们想要一些长生存周期 (不只存活在函数内部) 的内存，我们就要使用堆内存。堆内存是由程序员在程序中显式申请的，分配和释放都由程序员负责。一个例子如下："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Chapter 14: Interlude: Memory API | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/ch02/">Chapters</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch02/">Chapter 02</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch04/">Chapter 04</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch05/">Chapter 05</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch13/">Chapter 13</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/booknotes/ostep/ch14/">Chapter 14</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch17/">Chapter 17</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch26/">Chapter 26</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch27/">Chapter 27</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch29/">Chapter 29</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch30/">Chapter 30</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch31/">Chapter 31</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch36/">Chapter 36</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch38/">Chapter 38</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch40/">Chapter 40</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/hw26/">Homework</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/booknotes/ostep/hw26/">Homework 26</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/hw27/">Homework 27</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Chapter 14: Interlude: Memory API</h1>
+
+          <div class="article-style">
+            <h2 id="141-types-of-memory">14.1 Types of Memory</h2>
+<p>在一个 C 程序中，程序使用的内存有两种：</p>
+<ul>
+<li>
+<p>栈内存，这部分内存的分配和回收由编译器隐式地完成，因此也被称为“自动内存”。在 C 程序中声明使用栈内存是非常简单的，比如 <!-- more --></p>
+<pre><code class="language-c">void func() {
+    int x; // declares an integer on the stack
+    ...
+}
+</code></pre>
+<p>编译器会自动在栈上为变量 x 分配空间，且函数 func() 结束时编译器会自动回收这部分内存。</p>
+</li>
+<li>
+<p>堆内存：如果我们想要一些长生存周期 (不只存活在函数内部) 的内存，我们就要使用堆内存。堆内存是由程序员在程序中显式申请的，分配和释放都由程序员负责。一个例子如下：</p>
+<pre><code class="language-c">void func() {
+    int *x = (int *)malloc(sizeof(int));
+    ...
+}
+</code></pre>
+<p>malloc() 函数负责在堆区申请了一个 int 大小的内存，而这个内存的地址被保存在了指针变量 x 中，这个地址是存储在栈上的。</p>
+</li>
+</ul>
+<h2 id="142-the-malloc-call">14.2 The <code>malloc()</code> Call</h2>
+<p>malloc() 的声明如下：</p>
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
+void *malloc(size_t size);
+</code></pre>
+<p>传入需要分配的大小，malloc() 要么返回 NULL 表示分配失败，要么返回一个地址表示分配区域的起始位置。</p>
+<blockquote>
+<p><strong>小心 sizeof() 的行为！</strong></p>
+<p>下面两段代码的输出行为是不同的！</p>
+<pre><code class="language-c">int x[10];
+printf(&quot;%d\n&quot;, sizeof(x));
+</code></pre>
+<p>这里 sizeof() 会返回整个数组的大小 40。</p>
+<pre><code class="language-c">int *x = malloc(10 * sizeof(int));
+printf(&quot;%d\n&quot;, sizeof(x));
+</code></pre>
+<p>这里 sizeof() 会认为你只是想知道 int 指针的大小，因此会返回 4 (32/64bit machine)。</p>
+</blockquote>
+<h2 id="143-the-free-call">14.3 The <code>free()</code> Call</h2>
+<p>free() API 的参数只有一个，只需要给他传某个 malloc() 返回的首地址指针即可。分配区域的大小是由内存分配库自己记录的。</p>
+<h2 id="144-common-errors">14.4 Common Errors</h2>
+<p>程序员自己管理 malloc() 和 free() 总是会出现各种细微的错误，因此很多现代的编程语言支持自动内存分配，即某些场景下即使程序员只管分配不管回收，垃圾收集器 (garbage collector) 也会帮你把回收的脏活干完。</p>
+<h3 id="forgetting-to-allocate-memory">Forgetting To Allocate Memory</h3>
+<p>错误的例子：</p>
+<pre><code class="language-c">char *src = &quot;Hello&quot;;
+char *dst;
+strcpy(dst, src);
+</code></pre>
+<p>正确的例子：</p>
+<pre><code class="language-c">char *src = &quot;Hello&quot;;
+char *dst = (char *)malloc(strlen(src) + 1); // 小心！别忘了+1,'\0'也要被复制过来
+strcpy(dst, src);
+</code></pre>
+<p>事实上 glibc 还提供了 strdup() 函数，我们只需要指定需要复制的函数，它就会自动帮我们 malloc() 空间，复制字符串，并返回指向复制字符串的指针。</p>
+<h3 id="not-allocating-enough-memory">Not Allocating Enough Memory</h3>
+<p>分配的内存不够不一定会暴露问题，但一旦有别的变量被覆盖就会导致严重的后果。</p>
+<h3 id="forgetting-to-initialize-allocated-memory">Forgetting to Initialize Allocated Memory</h3>
+<p>对 malloc() 得到的内存中的初始值作出任何假设都属于 undefined behavior。</p>
+<h3 id="forgetting-to-free-memory">Forgetting to Free Memory</h3>
+<p>内存泄漏是一种常见的错误。如果程序员总是忘了释放内存，那么长时间运行的软件就有可能将堆区消耗殆尽，最终只能重启机器。需要注意的是，即使你使用的是带有 garbage collector 的语言，你仍然可能无法避免这种错误：如果你还有任何一个指针指向某段内存，即使你将来不再用这段内存，garbage collector 也不会将其回收。</p>
+<p>在某些情况下不使用 free() 可能是无害的，比如你写一个短生命周期的程序 (OJ程序)，那么进程退出的时候操作系统会把该进程使用的所有资源释放。但只分配不释放是很坏的编程习惯。</p>
+<h3 id="freeing-memory-before-you-are-done-with-it">Freeing Memory Before You Are Done With It</h3>
+<p>在释放了一段内存后仍然使用其中的内容是危险的，这种指针被称为 dangling pointer。use-after-free 属于 undefined behavior，可能导致严重后果：比如如果内存分配器将这段内存又分配给了别人，就会出现两人同时使用一段内存的情况。</p>
+<h3 id="freeing-memory-repeatly">Freeing Memory Repeatly</h3>
+<p>double free 也是 undefined behavior，可能导致内存分配器崩溃。</p>
+<h3 id="calling-free-incorrectly">Calling <code>free()</code> Incorrectly</h3>
+<p>给 free() 传递错误的指针 (不是之前某个 malloc() 的返回值) 也可能造成严重的后果。</p>
+<h2 id="145-underlying-os-support">14.5 Underlying OS Support</h2>
+<p>操作系统提供 brk() 和 sbrk() 两个系统调用，用于修改进程的 break：break 指向进程堆区的顶部。需要注意的是 malloc() 和 free() 这两个库函数会使用 OS 的系统调用，在程序员层面我们不要跨级去使用系统调用，否则可能导致意想不到的结果，在用户层面我们只要使用库函数即可。</p>
+<p>另外一个可以获得内存的系统调用是 mmap()，传入正确的参数后，mmap() 可以返回一段匿名的内存区域，这个区域并不属于任何一个文件，而是磁盘上交换空间 (swap space) 的一部分。对于应用程序来说，这样一段内存可以被当作堆区内存使用。</p>
+<h2 id="146-other-calls">14.6 Other Calls</h2>
+<p>一些其他有用的库函数包括但不限于：</p>
+<ul>
+<li>calloc()：先 malloc() 再将分配的内存清零。</li>
+<li>realloc()：当你调用 malloc() 分配了一段内存，但发现大小不足时，可以调用 realloc()，它会分配一段更大的内存，将旧内存中的内容复制到新内存区域中，并返回新内存的指针。</li>
+</ul>
+<h2 id="147-summary">14.7 Summary</h2>
+<p>略。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/booknotes/ostep/ch13/" rel="next">Chapter 13: The Abstraction: The Address Space</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/booknotes/ostep/ch17/" rel="prev">Chapter 17: Free Space Management</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Take an example: $$ A\mathbf{x}=\left[\begin{matrix}1 &amp; 2 &amp; 2 &amp; 2\\2 &amp; 4 &amp; 6 &amp; 8\\3 &amp; 6 &amp; 8 &amp; 10\end{matrix}\right]\left(\begin{matrix}x_1\\x_2\\x_3\end{matrix}\right)\left(\begin{matrix}b_1\\b_2\\b_3\end{matrix}\right)=\mathbf{b} $$
+$$ \left[\begin{matrix}1 &amp; 2 &amp; 2 &amp; 2 &amp; b_1\\2 &amp; 4 &amp; 6 &amp; 8 &amp; b_2\\3 &amp; 6 &amp; 8 &amp; 10 &amp; b_3\end{matrix}\right] \overset{elimination}{\longrightarrow} \left[\begin{matrix}1 &amp; 2 &amp; 2 &amp; 2 &amp; b_1\\0 &amp; 0 &amp; 2 &amp; 4 &amp; b_2-2b_1\\0 &amp; 0 &amp; 0 &amp; 0 &amp; b_3-b_2-b_1\end{matrix}\right] $$">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec08/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec08/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec08/">
+  <meta property="og:title" content="MIT-18.06 Lecture 08: Complete Solutions of Equations | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Take an example: $$ A\mathbf{x}=\left[\begin{matrix}1 &amp; 2 &amp; 2 &amp; 2\\2 &amp; 4 &amp; 6 &amp; 8\\3 &amp; 6 &amp; 8 &amp; 10\end{matrix}\right]\left(\begin{matrix}x_1\\x_2\\x_3\end{matrix}\right)\left(\begin{matrix}b_1\\b_2\\b_3\end{matrix}\right)=\mathbf{b} $$
+$$ \left[\begin{matrix}1 &amp; 2 &amp; 2 &amp; 2 &amp; b_1\\2 &amp; 4 &amp; 6 &amp; 8 &amp; b_2\\3 &amp; 6 &amp; 8 &amp; 10 &amp; b_3\end{matrix}\right] \overset{elimination}{\longrightarrow} \left[\begin{matrix}1 &amp; 2 &amp; 2 &amp; 2 &amp; b_1\\0 &amp; 0 &amp; 2 &amp; 4 &amp; b_2-2b_1\\0 &amp; 0 &amp; 0 &amp; 0 &amp; b_3-b_2-b_1\end{matrix}\right] $$"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>MIT-18.06 Lecture 08: Complete Solutions of Equations | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/mit-linearalgebra/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/mit-linearalgebra/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec01/">Lecture 01</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec02/">Lecture 02</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec03/">Lecture 03</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec04/">Lecture 04</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec05/">Lecture 05</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec06/">Lecture 06</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec07/">Lecture 07</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec08/">Lecture 08</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec09/">Lecture 09</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec10/">Lecture 10</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>MIT-18.06 Lecture 08: Complete Solutions of Equations</h1>
+
+          <div class="article-style">
+            <p>Take an example:
+$$
+A\mathbf{x}=\left[\begin{matrix}1 &amp; 2 &amp; 2 &amp; 2\\2 &amp; 4 &amp; 6 &amp; 8\\3 &amp; 6 &amp; 8 &amp; 10\end{matrix}\right]\left(\begin{matrix}x_1\\x_2\\x_3\end{matrix}\right)\left(\begin{matrix}b_1\\b_2\\b_3\end{matrix}\right)=\mathbf{b}
+$$</p>
+<p>$$
+\left[\begin{matrix}1 &amp; 2 &amp; 2 &amp; 2 &amp; b_1\\2 &amp; 4 &amp; 6 &amp; 8 &amp; b_2\\3 &amp; 6 &amp; 8 &amp; 10 &amp; b_3\end{matrix}\right]
+\overset{elimination}{\longrightarrow}
+\left[\begin{matrix}1 &amp; 2 &amp; 2 &amp; 2 &amp; b_1\\0 &amp; 0 &amp; 2 &amp; 4 &amp; b_2-2b_1\\0 &amp; 0 &amp; 0 &amp; 0 &amp; b_3-b_2-b_1\end{matrix}\right]
+$$</p>
+<p>So the equations have solutions exactly when $b_3=b_1+b_2$.</p>
+<p>Let&rsquo;s talk about the solvability. $A\mathbf{x}=\mathbf{b}$ is solvable exactly when $b\in C(A)$. Another equivalent description is that: <strong>If a combination of rows of $A$ gives zero row, then the same combination of components of $\mathbf{b}$ must give 0.</strong></p>
+<p>To find the complete solutions to $A\mathbf{x}=\mathbf{b}$:</p>
+<ol start="0">
+<li>Ensure that the zero rows = 0.</li>
+<li>Find a particular solution $\mathbf{x_p}$: set all free variables to 0 and solve $A\mathbf{x}=\mathbf{b}$ for pivot variables.</li>
+<li>Find $N(A)$, then the complete solution set is $X_c={\mathbf{x}=\mathbf{x_p}+\mathbf{x_n}:\mathbf{x_n}\in N(A)}$</li>
+</ol>
+<hr>
+<p>Let&rsquo;s focus on a bigger picture: an $m\times n$ matrix with rank $r$ (it&rsquo;s obvious that $r\leq m,r\leq n$):</p>
+<ul>
+<li>
+<p>Case 1: Full column rank $(r=n&lt;m)$</p>
+<p>No free variable, so $N(A)={\mathbf{0}}$. The reduced row echelon form $R=\left[\begin{matrix}I\\0\end{matrix}\right]$.</p>
+<p>If the particular solution $\mathbf{x_p}$ exists, then it&rsquo;s the unique solution. The equations have 0 or 1 solutions.</p>
+</li>
+<li>
+<p>Case 2: Full row rank $(r=m&lt;n)$</p>
+<p>We can solve $A\mathbf{x}=\mathbf{b}$ for arbitrary $\mathbf{b}$. The reduced row echelon form $R=\left[\begin{matrix}I &amp; F\end{matrix}\right]$. (Notice that the columns of $I$ and $F$ may mix together)</p>
+<p>Since $F$ exists, $N(A)$ contains more than $\mathbf{0}$, the equations have $\infty$ solutions.</p>
+</li>
+<li>
+<p>Case 3: $r=n=m$</p>
+<p>In this case $R=I$, which indicates that $A$ is invertible. And the equations have a unique solution.</p>
+</li>
+<li>
+<p>Case 4: $r&lt;n,r&lt;m$</p>
+<p>The row reduced echelon form $R=\left[\begin{matrix}I &amp; F\\0 &amp; 0\end{matrix}\right]$. The equations have either no solution (zero rows don&rsquo;t match $\mathbf{b}$) or $\infty$ solutions.</p>
+</li>
+</ul>
+<p>One sentence to summarize:  <strong>the rank $r$ tells you all the information about the number of solutions</strong>.</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec07/" rel="next">MIT-18.06 Lecture 07: Computing Null Space, Pivot Variables and Special Solutions</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/mit-linearalgebra/lectures/lec09/" rel="prev">MIT-18.06 Lecture 09: Linear Dependence, Basis and Dimension</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

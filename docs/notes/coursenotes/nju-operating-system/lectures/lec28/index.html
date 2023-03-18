@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="内存在掉电后丢失数据是可以被接受的，但在持久化存储设备上我们必须保证数据的可靠性。硬盘损坏虽然是小概率事件，但只要有大量的重复 (比如数据中心)，这类事情还是经常发生的。我们希望即使发生这样的事情，系统仍然能照常运转。
+RAID Redundant Array of Inexpensive Disks 的核心思想是：把多个 (不可靠的) 虚拟磁盘虚拟成一块非常可靠且性能极高的虚拟磁盘。RAID 的虚拟化是一种“反向”的虚拟化：我们之前接触的虚拟化，比如进程把一个 CPU 分时虚拟成多个 virtual CPU，虚拟内存把一份内存通过 MMU 虚拟成多个 virtual address space，文件把一个物理设备虚拟成多个 virtual disk……而 RAID 是 $多\to 1$ 的虚拟化。
+RAID 的 Fault Model 为：任何一块磁盘都可能突然坏掉，就好像“突然消失了”。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec28/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec28/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec28/">
+  <meta property="og:title" content="Lecture 28: Reliability of Persistent Storage | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="内存在掉电后丢失数据是可以被接受的，但在持久化存储设备上我们必须保证数据的可靠性。硬盘损坏虽然是小概率事件，但只要有大量的重复 (比如数据中心)，这类事情还是经常发生的。我们希望即使发生这样的事情，系统仍然能照常运转。
+RAID Redundant Array of Inexpensive Disks 的核心思想是：把多个 (不可靠的) 虚拟磁盘虚拟成一块非常可靠且性能极高的虚拟磁盘。RAID 的虚拟化是一种“反向”的虚拟化：我们之前接触的虚拟化，比如进程把一个 CPU 分时虚拟成多个 virtual CPU，虚拟内存把一份内存通过 MMU 虚拟成多个 virtual address space，文件把一个物理设备虚拟成多个 virtual disk……而 RAID 是 $多\to 1$ 的虚拟化。
+RAID 的 Fault Model 为：任何一块磁盘都可能突然坏掉，就好像“突然消失了”。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 28: Reliability of Persistent Storage | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec02/">02: OS上的程序</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec03/">03: 并发编程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec04/">04: 理解并发</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec05/">05: 并发-互斥</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec06/">06: 并发-同步</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec07/">07: 并发-应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec08/">08: 并发bug</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec09/">09: OS的状态机</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec10/">10: 状态机应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec11/">11: OS的进程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec12/">12: 地址空间</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec13/">13: 系统调用和 Shell</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec14/">14: LibC</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec15/">15: fork()</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec16/">16: 可执行文件</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec17/">17: 链接和加载</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec18/">18: xv6 概览</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec19/">19: 上下文切换</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec20/">20: 处理器调度</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec21/">21: OS设计</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec22/">22: OSLab速通</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec23/">23: 1Bit的存储</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec24/">24: I/O设备</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec25/">25: 设备驱动</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec26/">26: FS API</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec27/">27: FAT和UNIX文件系统</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec28/">28: 存储可靠性</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec29/">29: Xv6 FS</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec30/">30: 现代存储</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 28: Reliability of Persistent Storage</h1>
+
+          <div class="article-style">
+            <p>内存在掉电后丢失数据是可以被接受的，但在持久化存储设备上我们必须保证数据的可靠性。硬盘损坏虽然是小概率事件，但只要有大量的重复 (比如数据中心)，这类事情还是经常发生的。我们希望即使发生这样的事情，系统仍然能照常运转。</p>
+<h2 id="raid">RAID</h2>
+<p>Redundant Array of Inexpensive Disks 的核心思想是：把多个 (不可靠的) 虚拟磁盘虚拟成一块非常可靠且性能极高的虚拟磁盘。RAID 的虚拟化是一种“反向”的虚拟化：我们之前接触的虚拟化，比如进程把一个 CPU 分时虚拟成多个 virtual CPU，虚拟内存把一份内存通过 MMU 虚拟成多个 virtual address space，文件把一个物理设备虚拟成多个 virtual disk……而 RAID 是 $多\to 1$ 的虚拟化。</p>
+<p>RAID 的 Fault Model 为：任何一块磁盘都可能突然坏掉，就好像“突然消失了”。</p>
+<h3 id="raid-1">RAID-1</h3>
+<p>最简单的想法：准备两块磁盘 $A$ 和 $B$，它们存储了同一份虚拟磁盘的镜像，这样损坏的概率就从 $p$ 变成了 $p^2$。该做法还能提升读取的效率：比如我要从虚拟磁盘中读取 10000 个 block，那么我可以从 $A$ 中读取前 5000 块，$B$ 中读取后 5000 块，只要 CPU core 个数足够，内存带宽足够，这件事是可以做到的 (不过该做法牺牲了一些存储空间)。</p>
+<h3 id="raid-0">RAID-0</h3>
+<p>如果我们不考虑容错，专注于提升性能：假设两块磁盘 $A$ 和 $B$，有 $A_1,A_2$，$B_1,B_2$ 四块。虚拟磁盘有 $V_1,V_2,V_3,V_4$ 四块。如果我们的映射是 $A_1\to V_1,A_2\to V_2,B_1\to A_3,B_2\to V_4$，那么如果我们读写前两个块，就只有 $A$ 在工作，$B$ 在摸鱼；如果我们采取交错映射：$A_1\to V_1,B_1\to V_2,A_2\to V_3,B_2\to V_4$，那么我们读取任意连续的两块都能让 $A,B$ 并行地工作，性能翻倍。</p>
+<h3 id="raid-1-0">(RAID-1)-0</h3>
+<p>当我们有多块盘的时候，令 $f(i,j)$ 表示第 $i$ 块物理盘的第 $j$ 个区域对应到虚拟磁盘的哪一个区域，这里的函数 $f$ 有很大的设计空间。比如当我们有 4 块盘的时候，我么可以将之前的两种设计方法综合起来，组合成一个 (RAID-1)-0。这个写法有点像函数的复合，我们每两块盘做一个 RAID-1，这样有两组 RAID-1，再把它们用 RAID-0 连起来，这样我们就兼顾了容量、容错和性能。</p>
+<p>这个做法有一个很有意思的点：我们可以保证任意一块物理盘出错都不会丢失信息，但我们不能保证两块盘出错时不会丢失信息——如果我们在两个 RAID-1 中各丢了一块盘，那么我们仍然能恢复信息；但如果我们丢失了第一个 RAID-1 中的所有两块盘，那么我们就真的丢失了数据。如果我们认为同时丢失了两块盘属于几乎不可能发生的小概率事件，那么这个 (RAID-1)-0 的做法似乎在容错方面就有一些“性能过剩”，有没有什么非常经济实惠的做法呢？</p>
+<h3 id="raid-4">RAID-4</h3>
+<p>一个块的信息可以抽象成一个 bit，于是这个问题等价于我们如何用最少的冗余信息来保证一个 bit 的错误和纠正。我们容易联想到可以用校验码来完成这件事。要保证可以纠一位错，我们只需要使用奇偶检验码即可。</p>
+<p>假设我们现在用 $A,B,C,D$ 四块盘组合出一个虚拟磁盘，则我们的映射为 $V_1\to A_1,V_2\to B_1,V_3\to C_1$，$D_1=V_1\oplus V_2\oplus V_3$。之后 $V_4,V_5,V_6$ 依次类推。这样如果 $A,B,C$ 三块盘中的某个损坏，我们可以用 $D$ 来恢复；如果 $D$ 损坏，我们没有丢失任何实际信息，再插一块新盘算一遍异或即可。</p>
+<p>RAID-4 在保证坏一块盘不会丢失数据的情况下将冗余数据量做到了最小，使得我们的虚拟磁盘容量大。此外，我们将 $V_1,V_2,\cdots$ 交错映射在多个盘上，这样我们在连续读取/写入时，可以同时把三块盘的性能拉满，并行度高。</p>
+<p>但这个设计有一个微妙的缺陷：它应对随机读写的效果较差。假设我们有多次随机的写操作，我们会发现每次写操作都要奇偶校验盘 $D$ 中的数据进行修改。此外因为 $D_i=A_i\oplus B_i\oplus C_i$，所以我们还没法直接去修改 $D_i$，假设我们现在要修改 $A_1$，那么我们必须先 <code>bread(A1, D1)</code>，然后 <code>D1^=A1</code>，将 <code>A1</code> 修改为 <code>A1'</code> 后，<code>D1'=D1^A1'</code>，最后 <code>bwrite(A1, D1)</code>。每次随机写 (不论是 $A,B,C$ 中的哪一个盘)，我们都要对 $D$ 一读一写，奇偶校验盘成为了性能瓶颈。</p>
+<h3 id="raid-5">RAID-5</h3>
+<p>RAID-5 的设计非常聪明：我们不用单独安排一块盘作为奇偶校验盘，我们可以把奇偶检验的信息分散到各各盘上去，每块盘上既有数据也有校验：</p>
+<img src="/img/raid5.png" alt="RAID5" style="zoom: 33%;" />
+<p>在连续读写上，$n$ 块盘可以达到 $n-1$ 块的带宽 (每 $n$ 个 block 就有一个是冗余的校验 block)，在随机读上，由于每个盘都存储了数据，因此带宽接近 100%。在随机写上，校验信息的读写仍然是瓶颈，但由于校验信息的修改被平摊到了所有盘的头上，所以基本可以保证随着盘数量的增多效率提高，有 scalability。</p>
+<h2 id="crash-consistency">Crash Consistency</h2>
+<p>另一种 Fault model：磁盘并没有故障，但操作系统可能会 crash (比如掉电)。即使是文件系统中的简单操作也可能涉及若干个 block，如果我们在一轮操作的中途掉电，那么文件系统就会进入一个 inconsistent 的状态，这样的状态可能导致严重的错误或安全问题。磁盘本身无法直接支持原子操作 (all or nothing)，甚至为了效率它不会保证 bwrite 操作是按顺序进行的 (因此 block layer 还额外提供了 bflush 操作来保证数据落盘 (和并发中的 barrier(mfence) 是类似的) )。</p>
+<h3 id="file-system-checking-fsck">File System Checking (FSCK)</h3>
+<p>FSCK 的核心原理是当磁盘上出现 inconsistent 的现象时，根据磁盘上已有的信息恢复出“最可能”的数据结构。但这套方案不是完美的：有一些无法恢复的文件可能会被放入 lost&amp;found 中，造成一些麻烦；此外，如果 fsck 执行过程中又发生掉电，可能会产生意想不到的后果。因此 FSCK 不是一个根本的解决方法。</p>
+<h3 id="journaling">Journaling</h3>
+<p>我们通常看文件系统的视角，比如目录树，是文件系统的直观表示，它是 crash unsafe 的。但如果我们从状态机视角去看文件系统，我们可以把文件系统看作一系列修改操作的序列。如果我们可以把这个 append-only 的序列存储下来，我们就可以在 crash 之后恢复出文件系统。</p>
+<p>因此我们的想法是：在数据结构修改操作发生时，先不去做实际的修改，而是记录下一条修改日志。当日志落盘后，根据日志内容修改实际的数据结构。这样如果发生 crash，我们可以重放日志 (redo log) 来恢复文件系统。</p>
+<p>在 bread(), bwrite() 和 bflush() 三个 API 的基础上我们可以写出一个 journal.append() 的伪代码：</p>
+<pre><code class="language-python">Journal_append(operations)
+    using bread() to find the end of current journal
+    bwrite(Transaction_begin)
+       for operation in operation: bwrite(operation)
+       bflush() # 确保所有 operation 落盘
+       bwrite(Transaction_end)
+       bflush() # 确保 TxEnd 标记落盘
+</code></pre>
+<p>再之后我们就可以将日志的内容付诸实施，实施结束后删掉日志。如果实施的过程中掉电，重启后 TxEnd 标签将成为我们确认日至是否完整的唯一标志：因为我们有 bflush() 保证同步性，因此如果 TxEnd 标志存在，那么之前所有操作的信息一定已经写入了，我们可以安全地重放日志；如果 TxEnd 标志不存在，那我们就忽略这次日志，且这时日志中的操作尚未对数据结构产生真正影响。这样就做到了 all or nothing。</p>
+<blockquote>
+<p><strong>OSLAB 中的小彩蛋</strong></p>
+<p>为了提高 journaling 的效率，很多系统做出了很多的优化。比如 git 采用 metadata journaling，提升效率的同时降低了一致性，这导致有时强行关闭虚拟机会导致 git repo 处于一个不一致的状态，因此 OSLAB 的 <code>Makefile.lab</code> 中添加了一条命令：</p>
+<pre><code class="language-diff">git:
+    @git add $(shell find . -name &quot;*.c&quot;) $(shell find . -name &quot;*.h&quot;) -A --ignore-errors
+    @while (test -e .git/index.lock); do sleep 0.1; done
+    @(uname -a &amp;&amp; uptime) | git commit -F - -q --author='tracer-nju &lt;tracer@nju.edu.cn&gt;' --no-verify --allow-empty
++   @sync
+</code></pre>
+<p>sync 的作用是 &ldquo;synchronize cached writes to persistent storage&rdquo;。</p>
+</blockquote>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec27/" rel="next">Lecture 27: FAT and UNIX File System</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec29/" rel="prev">Lecture 29: Xv6 File System Implementation</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

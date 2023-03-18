@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="实验进度 我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。
+必答题 理解上下文结构体的前世今生 点击 这里跳转到解答。
+理解穿越时空的旅程 点击 这里跳转到解答。
+hello程序是什么, 它从何而来, 要到哪里去 点击 这里跳转到解答
+仙剑奇侠传究竟如何运行 运行仙剑奇侠传时会播放启动动画, 动画里仙鹤在群山中飞过. 这一动画是通过navy-apps/apps/pal/repo/src/main.c中的PAL_SplashScreen()函数播放的. 阅读这一函数, 可以得知仙鹤的像素信息存放在数据文件mgo.mkf中. 请回答以下问题: 库函数, libos, Nanos-lite, AM, NEMU是如何相互协助, 来帮助仙剑奇侠传的代码从mgo.mkf文件中读出仙鹤的像素信息, 并且更新到屏幕上? 换一种PA的经典问法: 这个过程究竟经历了些什么? (Hint: 合理使用各种trace工具, 可以帮助你更容易地理解仙剑奇侠传的行为)">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-ics/pa/pa3/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-ics/pa/pa3/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-ics/pa/pa3/">
+  <meta property="og:title" content="PA3 - 穿越时空的旅程: 批处理系统 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="实验进度 我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。
+必答题 理解上下文结构体的前世今生 点击 这里跳转到解答。
+理解穿越时空的旅程 点击 这里跳转到解答。
+hello程序是什么, 它从何而来, 要到哪里去 点击 这里跳转到解答
+仙剑奇侠传究竟如何运行 运行仙剑奇侠传时会播放启动动画, 动画里仙鹤在群山中飞过. 这一动画是通过navy-apps/apps/pal/repo/src/main.c中的PAL_SplashScreen()函数播放的. 阅读这一函数, 可以得知仙鹤的像素信息存放在数据文件mgo.mkf中. 请回答以下问题: 库函数, libos, Nanos-lite, AM, NEMU是如何相互协助, 来帮助仙剑奇侠传的代码从mgo.mkf文件中读出仙鹤的像素信息, 并且更新到屏幕上? 换一种PA的经典问法: 这个过程究竟经历了些什么? (Hint: 合理使用各种trace工具, 可以帮助你更容易地理解仙剑奇侠传的行为)"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>PA3 - 穿越时空的旅程: 批处理系统 | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-ics/pa/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-ics/pa/pa0/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-ics/pa/pa0/">PA0</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-ics/pa/pa1/">PA1</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-ics/pa/pa2/">PA2</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-ics/pa/pa3/">PA3</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-ics/pa/pa4/">PA4</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>PA3 - 穿越时空的旅程: 批处理系统</h1>
+
+          <div class="article-style">
+            <h2 id="实验进度">实验进度</h2>
+<p>我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。</p>
+<h2 id="必答题">必答题</h2>
+<h3 id="理解上下文结构体的前世今生">理解上下文结构体的前世今生</h3>
+<p>点击
+<a href="#answer1">这里</a>跳转到解答。</p>
+<h3 id="理解穿越时空的旅程">理解穿越时空的旅程</h3>
+<p>点击
+<a href="#answer2">这里</a>跳转到解答。</p>
+<h3 id="hello程序是什么-它从何而来-要到哪里去">hello程序是什么, 它从何而来, 要到哪里去</h3>
+<p>点击
+<a href="#answer3">这里</a>跳转到解答</p>
+<h3 id="仙剑奇侠传究竟如何运行">仙剑奇侠传究竟如何运行</h3>
+<blockquote>
+<p>运行仙剑奇侠传时会播放启动动画, 动画里仙鹤在群山中飞过. 这一动画是通过<code>navy-apps/apps/pal/repo/src/main.c</code>中的<code>PAL_SplashScreen()</code>函数播放的. 阅读这一函数, 可以得知仙鹤的像素信息存放在数据文件<code>mgo.mkf</code>中. 请回答以下问题: 库函数, libos, Nanos-lite, AM, NEMU是如何相互协助, 来帮助仙剑奇侠传的代码从<code>mgo.mkf</code>文件中读出仙鹤的像素信息, 并且更新到屏幕上? 换一种PA的经典问法: 这个过程究竟经历了些什么? (Hint: 合理使用各种trace工具, 可以帮助你更容易地理解仙剑奇侠传的行为)</p>
+</blockquote>
+<p>程序的行为总体上是读出仙鹤的像素信息，然后不断更新到屏幕上并修改仙鹤的位置。在软件层面，程序会使用fseek 和 fread 库函数来定位和读取像素信息，使用SDL库函数来输出。fseek 和 fread 函数最终会使用<code>lseek</code> 和  <code>read</code> 系统调用，SDL库函数基于我们对系统调用进一步封装的NDL库实现，NDL库会使用系统调用 <code>lseek</code> 和 <code>write</code> 来实现像素的定位和写入（注意VGA被抽象成了文件，读写像素不需要专门的 I/O 相关函数。）<code>lseek</code> <code>read</code> 和 <code>write</code> 最终会调用 libos 中的 _read, _write 和 _lseek，传递对应的系统调用号和相关参数，使用 <code>ecall</code> 指令触发中断。</p>
+<p>Nanos-lite 中会识别系统调用的类型，并调用 <code>fs_read</code> <code>fs_write</code> 和 <code>fs_lseek</code> 。<code>fs_lseek</code> 比较简单，只是修改文件当前的 offset，<code>fs_read</code> 会使用 <code>/bin/pal</code> 对应的读函数 <code>ramdisk_read</code> 来从“硬盘”中读取信息（事实上已经被加载到内存中）<code>ramdisk_read</code> 使用的是 AM 的函数 memcpy；<code>fs_write</code> 会使用 <code>/dev/fb</code> 文件对应的写函数 <code>fb_write</code> 。<code>fb_write</code> 会使用 AM 提供的 VGA 相关的抽象寄存器和一段像素空间来写入信息。</p>
+<p>AM 和 nemu 之间有一套内存 I/O 的映射规定，nemu 会根据这些 I/O 空间的信息进行硬件层面的修改。memcpy 是 klib 中的函数，可以直接访问 nemu 的大数组（内存），实现信息的读取。</p>
+<hr>
+<p>以下是我的自由报告内容，我在做实验的过程中详细记录了自己遇到的所有问题和查阅的所有资料。这些笔记按照章节排列，每章通常有两个部分：</p>
+<ul>
+<li>思考题：包含笔者针对思考题查阅的资料和我尝试给出的答案。</li>
+<li>补充：这里的内容是没有在讲义中提及的问题，以及讲义中建议自学的东西。</li>
+</ul>
+<h2 id="最简单的操作系统">最简单的操作系统</h2>
+<h3 id="思考题">思考题</h3>
+<h4 id="二周目-什么是操作系统">[二周目] 什么是操作系统？</h4>
+<blockquote>
+<p>这可是个大问题, 我们也鼓励你学习完操作系统课程之后再回来重新审视它.</p>
+</blockquote>
+<p>留坑，二周目再填。目前笔者认为操作系统是直接与硬件接触的一个程序，它将硬件支持的功能封装成系统调用作为服务提供给上层应用程序，并负责上层应用程序之间的运行调度。</p>
+<h3 id="补充">补充</h3>
+<h4 id="初次运行-nanos-lite-报错">初次运行 nanos-lite 报错</h4>
+<p>初次运行 nanos-lite 显示程序访问了非法的地址，经过定位后发现 AM 中的 printf 没有实现 <code>%p</code> 打印指针的功能，触发了 UB。这为我们敲响了编写好的代码的警钟：如果函数的参数输入出现了“未定义“的行为，函数应该输出一些提示信息，从而快速定位问题。（例如此处就应该让 printf 报错，而不是通过非法的地址访问去寻找 fault）。</p>
+<h2 id="穿越时空的旅程">穿越时空的旅程</h2>
+<h3 id="必答题-1">必答题</h3>
+<h4 id="理解上下文结构体的前世今生a-idanswer1a">理解上下文结构体的前世今生<a id=answer1></a></h4>
+<blockquote>
+<p>你会在<code>__am_irq_handle()</code>中看到有一个上下文结构指针<code>c</code>, <code>c</code>指向的上下文结构究竟在哪里? 这个上下文结构又是怎么来的? 具体地, 这个上下文结构有很多成员, 每一个成员究竟在哪里赋值的? <code>$ISA-nemu.h</code>, <code>trap.S</code>, 上述讲义文字, 以及你刚刚在NEMU中实现的新指令, 这四部分内容又有什么联系?</p>
+<p>如果你不是脑袋足够灵光, 还是不要眼睁睁地盯着代码看了, 理解程序的细节行为还是要从状态机视角入手.</p>
+</blockquote>
+<p><code>trap.S</code> 文件的前半部分负责组织上下文结构体。这个上下文结构体作为函数的参数，保存在栈上。<code>trap.S</code> 的行为和正常的 C 程序调用函数前准备参数的过程是一样的。第一句</p>
+<pre><code class="language-assembly">addi sp, sp, -CONTEXT_SIZE
+</code></pre>
+<p>为 Context 结构体开辟了空间。接下来的</p>
+<pre><code class="language-c">MAP(REGS, PUSH)
+</code></pre>
+<p>利用了一点元编程技巧，其含义是将通用寄存器的值按顺序上栈。</p>
+<p>接下来还要将特权寄存器的值上栈。特权寄存器不能用 store 指令直接上栈，因此要先将其值保存到通用寄存器中再上栈。代码是如下6行：</p>
+<pre><code class="language-assembly">csrr t0, mcause
+csrr t1, mstatus
+csrr t2, mepc
+
+sd t0, OFFSET_CAUSE(sp)
+sd t1, OFFSET_STATUS(sp)
+sd t2, OFFSET_EPC(sp)
+</code></pre>
+<p>在进入处理函数之前，最后一句话是</p>
+<pre><code class="language-assembly">mv a0, sp
+</code></pre>
+<p>根据 RISCV 的 calling convention，a0 寄存器保存了第一个参数的值。我们后面要调用的函数 <code>__am_irq_handle</code> 的参数是 <code>Context *c</code>，因此将当前的 sp 值传进 a0，进入函数后指针 c 就指向了在栈上保存的上下文结构体的首地址。</p>
+<p>这整个过程充分利用了 C 和汇编语言的紧密联系。</p>
+<h4 id="理解穿越时空的旅程a-idanswer2a">理解穿越时空的旅程<a id=answer2></a></h4>
+<blockquote>
+<p>从Nanos-lite调用<code>yield()</code>开始, 到从<code>yield()</code>返回的期间, 这一趟旅程具体经历了什么? 软(AM, Nanos-lite)硬(NEMU)件是如何相互协助来完成这趟旅程的? 你需要解释这一过程中的每一处细节, 包括涉及的每一行汇编代码/C代码的行为, 尤其是一些比较关键的指令/变量. 事实上, 上文的必答题&quot;理解上下文结构体的前世今生&quot;已经涵盖了这趟旅程中的一部分, 你可以把它的回答包含进来.</p>
+<p>别被&quot;每一行代码&quot;吓到了, 这个过程也就大约50行代码, 要完全理解透彻并不是不可能的. 我们之所以设置这道必答题, 是为了强迫你理解清楚这个过程中的每一处细节. 这一理解是如此重要, 以至于如果你缺少它, 接下来你面对bug几乎是束手无策.</p>
+</blockquote>
+<p>Nanos-lite 调用 <code>yield()</code> 之后，执行了两条汇编指令（这两条汇编指令是用内联汇编的方式直接嵌入的）：</p>
+<pre><code class="language-c">asm volatile(&quot;li a7, -1; ecall&quot;);
+</code></pre>
+<p>其中第一条指令向 <code>a7</code> 寄存器写入 -1，<code>a7</code> 寄存器是约定中传递中断类型的寄存器。第二条指令 <code>ecall</code>  则是“中断”指令。</p>
+<p>在硬件层面，nemu 对 <code>ecall</code> 指令译码后，执行时会调用 <code>isa_raise_intr</code> 函数，该函数将 <code>a7</code> 寄存器传递的事件类型存放到 mcause 寄存器中，向 mepc 寄存器写入当前的 pc，然后将 pc 跳转到 mtvec 寄存器预先存好的一个地址开始执行。mtvec 中的地址是函数 <code>__am_asm_trap</code> 的地址，在 <code>cte_init</code> 中的</p>
+<pre><code class="language-c">asm volatile(&quot;csrw mtvec, %0&quot; : : &quot;r&quot;(__am_asm_trap));
+</code></pre>
+<p>完成了 mtvec 内容的初始化。</p>
+<p><code>__am_asm_trap</code> 函数在 <code>trap.S</code> 中定义，是用内联汇编写的。该函数首先组织上下文结构体，组织方式见上一道必答题。然后跳转进入处理函数 <code>__am_irq_handle</code>。函数 <code>__am_irq_handle</code> 会根据上下文结构体的内容打包出一个事件结构体 <code>ev</code>。根据上下文结构体中的 mcause 寄存器的值，可以识别事件的类型，如自陷事件的事件号为 -1。打包完事件结构体后，<code>__am_irq_handle</code> 会将上下文结构体和事件结构体一起传给处理函数。这个处理函数是在 <code>cte_init</code> 中传进来的 <code>do_event</code>。</p>
+<p><code>do_event</code> 函数检查事件结构体中的事件类型，当看到是 EVENT_YIELD 时，它判定这个中断没有必要重复，因此给 mepc 的值 +4，这个 +4 操作直接修改了上下文结构体中的 mepc 的保存值。</p>
+<p>这时进入 <code>trap.S</code> 的后半部分，后半部分将栈上保存的寄存器内容恢复，然后调用 <code>mret</code> 指令。在硬件层面，nemu 识别出 <code>mret</code> 指令后，直接将 pc 恢复为 mepc 的值。至此，时空穿越的旅程结束。</p>
+<h3 id="思考题-1">思考题</h3>
+<h4 id="二周目-特殊的原因">[二周目] 特殊的原因？</h4>
+<blockquote>
+<p>这些程序状态(x86的eflags, cs, eip; mips32的epc, status, cause; riscv32的mepc, mstatus, mcause)必须由硬件来保存吗? 能否通过软件来保存? 为什么?</p>
+</blockquote>
+<p>留坑，二周目再做。</p>
+<h4 id="异常号的保存">异常号的保存</h4>
+<blockquote>
+<p>x86通过软件来保存异常号, 没有类似cause的寄存器. mips32和riscv32也可以这样吗? 为什么?</p>
+</blockquote>
+<p>x86的寄存器比较复杂，有类似于EFLAGS等大量的功能专一的寄存器，这些寄存器的值也是可以上栈的。而 riscv32 中只有通用寄存器的值可以上栈，如果一定要用软件来保存异常号的话，则必须硬件和软件约定好使用一个通用寄存器来专门保存异常号，这在本质上已经和cause寄存器没有区别了。</p>
+<h4 id="对比异常处理与函数调用">对比异常处理与函数调用</h4>
+<blockquote>
+<p>我们知道进行函数调用的时候也需要保存调用者的状态: 返回地址, 以及calling convention中需要调用者保存的寄存器. 而CTE在保存上下文的时候却要保存更多的信息. 尝试对比它们, 并思考两者保存信息不同是什么原因造成的.</p>
+</blockquote>
+<p>异常处理比函数调用更复杂一些：函数调用能保证 callee 的操作满足 calling convention，但中断之后会涉及更复杂的操作，比如特权级切换等，这个过程中每个寄存器的值都可能会被改写。为了保证恢复上下文时程序的状态机不会变，我们需要保存更多的信息。</p>
+<h4 id="诡异的-x86-代码">诡异的 x86 代码</h4>
+<blockquote>
+<p>x86的<code>trap.S</code>中有一行<code>pushl %esp</code>的代码, 乍看之下其行为十分诡异. 你能结合前后的代码理解它的行为吗? Hint: 程序是个状态机.</p>
+</blockquote>
+<p>这句话和 riscv 的 <code>trap.S</code> 中的 <code>mv a0, sp</code> 没有本质区别，都是在为即将执行的 <code>__am_irq_handle</code> 准备参数。这里的 esp 的内容就是上下文结构体的地址。</p>
+<h4 id="从加4操作看cisc和risc">从加4操作看CISC和RISC</h4>
+<blockquote>
+<p>事实上, 自陷只是其中一种异常类型. 有一种故障类异常, 它们返回的PC和触发异常的PC是同一个, 例如缺页异常, 在系统将故障排除后, 将会重新执行相同的指令进行重试, 因此异常返回的PC无需加4. 所以根据异常类型的不同, 有时候需要加4, 有时候则不需要加.</p>
+<p>这时候, 我们就可以考虑这样的一个问题了: 决定要不要加4的, 是硬件还是软件呢? CISC和RISC的做法正好相反, CISC都交给硬件来做, 而RISC则交给软件来做. 思考一下, 这两种方案各有什么取舍? 你认为哪种更合理呢? 为什么?</p>
+</blockquote>
+<p>我认为从抽象层的角度来看由软件处理是否+4更加合理，因为是否需要+4取决于中断的类型，而判断中断类型的是操作系统。因此软件判断中断类型后由软件决定这次中断是否需要再次执行。</p>
+<h4 id="mips32延迟槽和异常">mips32延迟槽和异常</h4>
+<blockquote>
+<p>我们在PA2中提到, 标准的mips32处理器采用了分支延迟槽技术. 思考一下, 如果标准的mips32处理器在执行延迟槽指令的时候触发了异常, 从异常返回之后可能会造成什么问题? 该如何解决? 尝试RTFM对比你的解决方案.</p>
+</blockquote>
+<p>mips32引入了分支延迟槽，所以在遇到跳转指令且确实发生跳转时的指令执行流为：</p>
+<pre><code>跳转指令 --&gt; 分支延迟槽 --&gt; 跳转的目标指令
+</code></pre>
+<p>如果在分支延迟槽指令处出现了异常陷入内核态处理，处理结束之后我们不能按照惯例回到分支延迟槽的 snpc 执行。因为在流水线 CPU 中，经过了异常处理程序之后，跳转指令早就不在 CPU 中了，如果进入 snpc 则无法跳转。所以我们应该将 pc 拨回到跳转指令，将跳转指令再次送入流水线，然后按照顺序再做一次分支延迟槽，这一次分支延迟槽不一定再会触发异常（比如前一次已经处理了缺页），然后就能正确跳转到目标指令继续执行。</p>
+<h3 id="补充-1">补充</h3>
+<h4 id="关于-ecall-指令">关于 <code>ecall</code> 指令</h4>
+<p>ecall 指令没有任何参数，那么如何直到应该向 mcause 寄存器里写入哪种中断原因呢？RTFSC 或者查看 riscv-linux 的约定可以看到 ecall 指令利用 <code>a7</code> 寄存器来保存调用号。因此将 <code>a7</code> 的内容写入 mcause 即可。</p>
+<h4 id="关于恢复上下文中的软件-4">关于恢复上下文中的软件 +4</h4>
+<p>硬件恢复上下文的方法是在 <code>mret</code> 指令中将 dnpc 设置为 mpec+4，但按照讲义中所写，riscv 应该用软件恢复上下文。笔者刚开始尝试了写入一段内联汇编的代码，利用 <code>csrr</code> <code>csrw</code> 指令直接修改 mepc 的值，但失败了。经过分析发现处理完中断之后 trap.S 会根据上下文结构体 c 的内容来恢复上下文，所以即使中间修改了 mepc 的值，最后仍然会被恢复为没有 +4 的原始值。因此软件+4的方法非常简单：在 do_event 中的 EVENT_YIELD 部分，将 c-&gt;mepc 直接 +4 即可。</p>
+<h2 id="用户程序和系统调用">用户程序和系统调用</h2>
+<h3 id="必答题-2">必答题</h3>
+<h4 id="hello程序是什么-它从何而来-要到哪里去a-idanswer3a">hello程序是什么, 它从何而来, 要到哪里去<a id=answer3></a></h4>
+<blockquote>
+<p>我们知道<code>navy-apps/tests/hello/hello.c</code>只是一个C源文件, 它会被编译链接成一个ELF文件. 那么, hello程序一开始在哪里? 它是怎么出现内存中的? 为什么会出现在目前的内存位置? 它的第一条指令在哪里? 究竟是怎么执行到它的第一条指令的? hello程序在不断地打印字符串, 每一个字符又是经历了什么才会最终出现在终端上?</p>
+</blockquote>
+<p>由于此时还没有实现文件系统，所以 <code>ramdisk.img</code> 中只有 hello 程序。nanos-lite 中的内联汇编程序 <code>resources.S</code> 将 <code>ramdisk.img</code> 的内容加载到了内存中。<code>resources.S</code> 的内容如下：</p>
+<pre><code class="language-assembly">.section .data
+.global ramdisk_start, ramdisk_end
+ramdisk_start:
+.incbin &quot;build/ramdisk.img&quot;
+ramdisk_end:
+
+.section .rodata
+.globl logo
+logo:
+.incbin &quot;resources/logo.txt&quot;
+.byte 0
+</code></pre>
+<p>一个有意思的细节是 <code>resources.S</code> 中定义了全局变量 <code>ramdisk_start</code> 和 <code>ramdisk_end</code> ，这样在 C 程序中我们可以很方便地定位 <code>ramdisk.img</code> 被加载到了内存中的哪个位置。从硬件层面来说，由于现在还没有引入虚拟内存，<code>ramdisk.img</code>  被放在了地址 0x83000000 处，Makefile 的 LNK_ADDR 实现了这一点。</p>
+<p>在调用了 <code>naive_uload</code> 函数后，系统会进入 <code>hello</code> 程序的汇编代码（elf文件中有入口地址），hello程序输出字符的时候，会使用 <code>write</code> 系统调用（直接使用 write 或者通过 printf 库函数使用 write），nanos-lite 中的 <code>fs_write</code> 函数会使用 AM 提供的接口来输出（在实现了文件系统之后，<code>fs_write</code> 会直接使用 <code>stdout</code> 文件对应的写函数 <code>serial_write</code>）。</p>
+<h3 id="思考题-2">思考题</h3>
+<h4 id="堆和栈在哪里">堆和栈在哪里？</h4>
+<blockquote>
+<p>我们提到了代码和数据都在可执行文件里面, 但却没有提到堆(heap)和栈(stack). 为什么堆和栈的内容没有放入可执行文件里面? 那程序运行时刻用到的堆和栈又是怎么来的? AM的代码是否能给你带来一些启发?</p>
+</blockquote>
+<p>AM 的作用就是在硬件层的基础上进行了一定程度的抽象，提供了运行时环境。堆和栈是一种必要的运行时环境（事实上就是 nemu 内存大数组的一部分），因此可执行文件中只需要刻画如何使用堆和栈，并不需要把堆和栈放在文件里。</p>
+<h4 id="如何识别不同格式的可执行文件">如何识别不同格式的可执行文件？</h4>
+<blockquote>
+<p>如果你在GNU/Linux下执行一个从Windows拷过来的可执行文件, 将会报告&quot;格式错误&quot;. 思考一下, GNU/Linux是如何知道&quot;格式错误&quot;的?</p>
+</blockquote>
+<p>可执行文件的前几个字符是文件的魔数，用于标识文件的类型。GNU/Linux 在执行文件之前可以先检查魔数来判断这是否是一个 ELF 格式的可执行文件。</p>
+<h4 id="冗余的属性">冗余的属性？</h4>
+<blockquote>
+<p>使用<code>readelf</code>查看一个ELF文件的信息, 你会看到一个segment包含两个大小的属性, 分别是<code>FileSiz</code>和<code>MemSiz</code>, 这是为什么? 再仔细观察一下, 你会发现<code>FileSiz</code>通常不会大于相应的<code>MemSiz</code>, 这又是为什么?</p>
+</blockquote>
+<p>该问题的解答见下一道思考题“为什么要清零”。</p>
+<h4 id="为什么要清零">为什么要清零？</h4>
+<blockquote>
+<p>为什么需要将 <code>[VirtAddr + FileSiz, VirtAddr + MemSiz)</code> 对应的物理区间清零?</p>
+</blockquote>
+<p>SFTW 后发现这是一个非常有意思的问题。ELF 文件中的 Filesize 指的是这个段在 ELF 文件中占据的大小，而 Memsize 指的是这个段最终在内存中占据的大小。这两者之所以不一样是因为 .bss 节（未初始化变量）在 ELF 中是没有分配具体的空间的，只是一个占位符，但最终在运行状态下它们也需要被分配内存空间。</p>
+<p>将 <code>[VirtAddr + FileSiz, VirtAddr + MemSiz]</code> 对应的物理区间清零，相当于使得 .bss 中的变量的初值都为 0。我们在 C 语言程序中定义未初始化的全局变量，其默认初值为0，正是因为加载器在加载时将这一段内存置为了0。经过笔者的实验，如果将这一清空语句删除，运行程序将会触发段错误。
+<a href="https://stackoverflow.com/questions/13437732/elf-program-headers-memsiz-vs-filesiz" target="_blank" rel="noopener">这篇回答</a>对这个问题给出了较为详细的解释。</p>
+<h4 id="系统调用的必要性">系统调用的必要性</h4>
+<blockquote>
+<p>对于批处理系统来说, 系统调用是必须的吗? 如果直接把AM的API暴露给批处理系统中的程序, 会不会有问题呢?</p>
+</blockquote>
+<p>AM 的 API 只能负责完成相应的功能，而系统调用应该还具有统一调度各个程序对硬件的使用的功能。比如系统调用 read，为了安全性的考虑，它应该只能读取本用户程序相关的内存区域，不能访问别的用户程序的内存。这部分安全检查就应该由系统调用及其背后的操作系统来完成。AM 的 API 只是硬件功能的简单封装，无法实现这样的功能。</p>
+<h4 id="risc-v系统调用号的传递">RISC-V系统调用号的传递</h4>
+<blockquote>
+<p>如果你选择的是RISC-V, 你会发现它并不是通过<code>a0</code>来传递系统调用号. 事实上, 我们参考了RISC-V Linux的系统调用参数传递的约定: 即在RISC-V Linux上也是通过这个寄存器来传递系统调用号的. 你觉得RISC-V Linux为什么没有使用<code>a0</code>来传递系统调用号呢?</p>
+</blockquote>
+<p>RISC-V Linux 调用约定中使用 <code>a7</code> 来传递系统调用号，且规定系统调用最多有 6 个参数，存放在 <code>a0~a5</code> 中。我认为这样设计可能的目的是保持系统调用和函数调用在传递参数上的一致性。</p>
+<h3 id="补充-2">补充</h3>
+<h4 id="检查-elf-文件的魔数">检查 ELF 文件的魔数</h4>
+<blockquote>
+<p>我们知道ELF文件的开头都有一个特殊的魔数, 为了防止loader加载了一个非ELF格式的文件, 我们可以在loader中对魔数进行检查:</p>
+<pre><code class="language-c">assert(*(uint32_t *)elf-&gt;e_ident == 0xBadC0de);
+</code></pre>
+<p>你需要把上述的<code>0xBadC0de</code>换成正确的魔数.</p>
+<p>别小看这个表面上很蠢的<code>assert()</code>, 当你哪天手抖不知道做了什么而又被它抓到的时候, 你就知道谢天谢地了.</p>
+</blockquote>
+<p>ELF文件开头的四个字节是 <code>7f 45 4c 46</code> ，注意到 riscv 是小端机，所以正确的魔数为 0x464c457f。</p>
+<h4 id="检测-elf-文件的isa类型">检测 ELF 文件的ISA类型</h4>
+<blockquote>
+<p>你很有可能会因为疏忽, 从而让<code>native</code>的Nanos-lite来加载运行一个x86/mips32/riscv32的dummy. 从ISA规范的角度来说, 这种行为显然属于UB, 具体而言通常会发生一些难以理解的错误. 为了避免这种情况, 你可以在loader中检测ELF文件的ISA类型. 我们可以根据AM中定义的一些宏来筛选出预期的ISA类型，然后和ELF信息中的某个域进行对比, 如果发现要加载的ELF文件的ISA类型和预期不一致, 就报错. 如果你不知道AM中的宏在哪里定义, RTFSC. 如果你不知道应该和ELF中的哪个域进行对比, RTFM.</p>
+</blockquote>
+<p>当前可能需要用到的 ISA 应该只有 native 的 x86-64 和 nemu 的 riscv32，因此笔者使用了如下代码来定义宏 <code>EXPECT_ISA</code>：</p>
+<pre><code class="language-c">#if defined(__ISA_AM_NATIVE)
+# define EXPECT_TYPE EM_X86_64
+#elif defined(__ISA_RISCV32__)
+# define EXPECT_TYPE EM_RISCV    // 阅读 elf.h 中的宏可以找到 RISC-V 对应 EM_RISCV
+#else
+# error Unsupported ISA
+#endif
+</code></pre>
+<p>ELF 文件中的 ISA 属性存放在 elf_header 的 e_machine 字段中。因此用一个 assert 语句进行比较即可。</p>
+<h4 id="关于内存的读写">关于内存的读写</h4>
+<p>笔者曾经想了很久也不明白应该如何读写内存（因为在 AM 的 nemu 相关文件夹中没有找到 API）。后来想起来内存的读写作为一条架构无关的功能，放在了 klib 里面。因此直接调用 memset, memcpy 等即可。从 ELF 文件中读出来的 vaddr 虽然是变量，但里面存储的就是地址，直接将其转换成指针类型即可。</p>
+<h4 id="关于跳转">关于跳转</h4>
+<p>编译器编译并生成可执行文件时，会寻找 <code>start.S</code> 并将其作为程序的入口。这个入口保存在了 elf header 的 e_entry 字段中，因此直接访问该字段即可。框架代码中有一个很好的细节：</p>
+<pre><code class="language-c">((void *)())entry) ();
+</code></pre>
+<p>它将保存有客户程序入口地址的变量 entry 强制转换成了一个函数指针。然后调用这个函数，相当于跳转到函数指针指向的地址，而这个地址就是 entry 原来存储的值。这一句代码用 C 的方式完成了汇编级别的跳转。</p>
+<h4 id="关于返回值">关于返回值</h4>
+<blockquote>
+<p>为什么我使用了框架代码给定的宏 GPRx 来存储返回值，但堆区的实现还是失败了？</p>
+</blockquote>
+<p>检查框架代码可以发现，除了 <code>GPR1</code> 对应到了正确的 <code>a7</code> 以外，其他的都是错的！根据 riscv-linux 的 syscall 约定，我们应该将 <code>GPR2~GPR4</code> 对应到 <code>a0~a2</code>，返回寄存器 <code>GPRx</code> 对应到 <code>a0</code>，这样就可以正确地提供返回值了。</p>
+<h2 id="文件系统">文件系统</h2>
+<h3 id="补充-3">补充</h3>
+<h4 id="关于-file-test-中文件读入的溢出问题">关于 <code>file-test</code> 中文件读入的溢出问题</h4>
+<p>笔者起初认为进行读取操作时，读取的范围是不能超过本文件大小的，因此在读取的时候对 offset 和 len 进行了 assert，结果触发了 fail。</p>
+<p>笔者打印了每次读取的 len，发现 fscanf 是<strong>批量读取</strong>的：由于有一次读取在四千多的位置一下读取了 1024 个字符，所以触发了断言。</p>
+<p>笔者再次阅读了 read 系统调用的手册，发现其返回值理应是实际读取到的字符个数。处于安全性的考虑，一个应用程序不应该可以读取到别的用户程序的数据信息，所以如果在文件系统中剩余的数据不足给定的 len，则应该只将剩余的数据放入缓冲区，并返回真实的读取到的字符数。</p>
+<h2 id="精彩纷呈的应用程序">精彩纷呈的应用程序</h2>
+<h3 id="思考题-3">思考题</h3>
+<h4 id="比较-fixedpt-和-float">比较 fixedpt 和 float</h4>
+<blockquote>
+<p><code>fixedpt</code>和<code>float</code>类型的数据都是32位, 它们都可以表示2^32个不同的数. 但由于表示方法不一样, <code>fixedpt</code>和<code>float</code>能表示的数集是不一样的. 思考一下, 我们用<code>fixedpt</code>来模拟表示<code>float</code>, 这其中隐含着哪些取舍?</p>
+</blockquote>
+<p>fixedpt 中每相邻的两个数之间的差都是 $2^{-8}$，而 float 在越小的数据范围下表示的精度越高。通常来说我们在表示大数的时候会对其小数点后的精度要求不那么高，也就是我们更在意数据的“相对误差”而不是“绝对误差”，在这一点上 float 会更加合理。</p>
+<h4 id="神奇的fixedpt_rconst">神奇的fixedpt_rconst</h4>
+<blockquote>
+<p>阅读<code>fixedpt_rconst()</code>的代码, 从表面上看, 它带有非常明显的浮点操作, 但从编译结果来看却没有任何浮点指令. 你知道其中的原因吗?</p>
+</blockquote>
+<p>笔者暂时没有研究出来，留坑。</p>
+<h4 id="神奇的ld_preload">神奇的LD_PRELOAD</h4>
+<blockquote>
+<p><code>bmp-test</code>需要打开一个路径为<code>/share/pictures/projectn.bmp</code>的文件, 但在Linux native中, 这个路径对应的文件并不存在. 但我们还是把<code>bmp-test</code>成功运行起来了, 你知道这是如何实现的吗? 如果你感兴趣, 可以在互联网上搜索<code>LD_PRELOAD</code>相关的内容.</p>
+</blockquote>
+<p><code>LD_PRELOAD</code> 可以实现路径的重定向，PA4.1 的 busybox 也使用了相似的技术实现了将 shell 命令的地址重定向到 busybox 中的程序。具体内容尚未了解，留坑。</p>
+<h4 id="仙剑奇侠传是如何工作的">仙剑奇侠传是如何工作的？</h4>
+<blockquote>
+<p>我们在PA2中讨论过一个游戏的基本框架, 尝试阅读仙剑奇侠传的代码, 找出基本框架是通过哪些函数实现的. 找到之后, 可能会对你调试仙剑奇侠传带来一定的帮助. 虽然仙剑奇侠传的代码很多, 但为了回答这个问题, 你并不需要阅读大量的代码.</p>
+</blockquote>
+<p>PA2 中提到的一个游戏的基本框架大致为：</p>
+<pre><code class="language-c">while (1) {
+  等待新的一帧();  // AM_TIMER_UPTIME
+  处理用户按键();  // AM_INPUT_KEYBRD
+  更新游戏逻辑();  // TRM
+  绘制新的屏幕();  // AM_GPU_FBDRAW
+}
+</code></pre>
+<p>仙剑奇侠传中的 <code>PAL_GameMain()</code> 中的 while 循环大抵做了相似的工作：</p>
+<pre><code class="language-c">while (TRUE)
+   {
+      //
+      // Do some initialization at game start.
+      //
+      if (gpGlobals-&gt;fGameStart)
+      {
+         PAL_GameStart();
+         gpGlobals-&gt;fGameStart = FALSE;
+      }
+
+      //
+      // Load the game resources if needed.
+      //
+      PAL_LoadResources();
+
+      //
+      // Clear the input state of previous frame.
+      //
+      PAL_ClearKeyState();
+
+      //
+      // Wait for the time of one frame. Accept input here.
+      //
+      PAL_DelayUntil(dwTime);
+
+      uint32_t now = SDL_GetTicks();
+      UpdateFPS(now);
+
+      //
+      // Set the time of the next frame.
+      //
+      dwTime = now + FRAME_TIME;
+
+      //
+      // Run the main frame routine.
+      //
+      PAL_StartFrame();
+   }
+</code></pre>
+<p><code>PAL_LoadResources()</code> 用于加载需要的游戏资源。<code>PAL_ClearKeyState()</code> 清空之后，<code>PAL_DelayUntil()</code> 会持续执行一段时间并接收设备的输入（主要使用了 <code>SDL_Delay()</code> 和 <code>PAL_ProcessEvent()</code>）。<code>PAL_StartFrame()</code> 用于更新游戏逻辑（比如根据输入来改变人物的位置）并绘制图像。</p>
+<h4 id="仙剑奇侠传的脚本引擎">仙剑奇侠传的脚本引擎</h4>
+<blockquote>
+<p>在<code>navy-apps/apps/pal/repo/src/game/script.c</code>中有一个<code>PAL_InterpretInstruction()</code>的函数, 尝试大致了解这个函数的作用和行为. 然后大胆猜测一下, 仙剑奇侠传的开发者是如何开发这款游戏的? 你对&quot;游戏引擎&quot;是否有新的认识?</p>
+</blockquote>
+<p>这个函数的行为有一点像一个 cpu：它拿到“指令”之后，会进行译码，执行，函数会返回下一条应该执行的“指令”的地址。</p>
+<p>仙剑的开发者在开发这款游戏的时候，可能发明了一款专用于 pal 的 ISA，然后所有和游戏相关的逻辑更新的操作都通过这个 ISA 支持的指令来完成。 游戏引擎其实就是一个虚拟机。如果我们认为 nemu 是真机的话，那么 pal 里的这个专门执行 pal-ISA 指令集的 &ldquo;cpu&rdquo; 就是游戏引擎；如果我们认为 native 是真机的话，笔者目前的 nemu 就是一个执行 riscv32-ISA 指令集的“游戏引擎”。</p>
+<h4 id="不再神秘的秘技">不再神秘的秘技</h4>
+<blockquote>
+<p>网上流传着一些关于仙剑奇侠传的秘技, 其中的若干条秘技如下:</p>
+<ol>
+<li>很多人到了云姨那里都会去拿三次钱, 其实拿一次就会让钱箱爆满! 你拿了一次钱就去买剑把钱用到只剩一千多, 然后去道士那里, 先不要上楼, 去掌柜那里买酒, 多买几次你就会发现钱用不完了.</li>
+<li>不断使用乾坤一掷(钱必须多于五千文)用到财产低于五千文, 钱会暴增到上限, 如此一来就有用不完的钱了</li>
+<li>当李逍遥等级到达99级时, 用5~10只金蚕王, 经验点又跑出来了, 而且升级所需经验会变回初期5~10级内的经验值, 然后去打敌人或用金蚕王升级, 可以学到灵儿的法术(从五气朝元开始); 升到199级后再用5~10只金蚕王, 经验点再跑出来, 所需升级经验也是很低, 可以学到月如的法术(从一阳指开始); 到299级后再用10~30只金蚕王, 经验点出来后继续升级, 可学到阿奴的法术(从万蚁蚀象开始).</li>
+</ol>
+<p>假设这些上述这些秘技并非游戏制作人员的本意, 请尝试解释这些秘技为什么能生效.</p>
+</blockquote>
+<p>笔者没有仔细玩过仙剑奇侠传，因此对其中的一些游戏机制不太了解。但是从上述的某些 bug 的现象中（比如第二个）可以推测有一些无符号数在下溢出之后直接变成了 UINT_MAX，从而导致问题。</p>
+<h4 id="在-navy-中运行-microbench">在 Navy 中运行 microbench</h4>
+<blockquote>
+<p>尝试把microbench编译到Navy并运行, 你应该会发现运行错误, 请尝试分析原因.</p>
+</blockquote>
+<p>笔者暂时还未实现 Navy 中的 AM，留坑。</p>
+<h4 id="如何在-navy-上运行-nanos-lite">如何在 Navy 上运行 Nanos-lite?</h4>
+<blockquote>
+<p>既然能在Navy上运行基于AM的FCEUX, 那么为了炫耀, 在Navy上运行Nanos-lite也并不是不可能的. 思考一下, 如果想在Navy上实现CTE, 我们还需要些什么呢?</p>
+</blockquote>
+<p>我们需要支持 CTE 的中断机制。在 Nanos-lite 中有一些汇编操控特权寄存器的语句，这些语句直接与硬件交互。但现在 Navy-Nanos-lite 是在 Nanos-lite 上跑的，所以特权寄存器的一套机制需要有一种软的处理方案。</p>
+<h4 id="rtfsc">RTFSC???</h4>
+<blockquote>
+<p>机智的你也许会想: 哇塞, 下学期的oslab0我不就有优秀代码可以参考了吗? 不过我们已经对发布的代码进行了某种特殊的处理. 在沮丧之余, 不妨思考一下, 如果要你来实现这一特殊的处理, 你会如何实现? 这和PA1中的表达式求值有什么相似之处吗?</p>
+</blockquote>
+<p>观察 oslab0 的代码，我们基本可以确定代码的发布者对代码中的变量名，函数名等进行了替换，将其换成了冗长的不可读字符串。PA1 中用正则表达式匹配字符串的技术在这里可以派上用场。</p>
+<h4 id="终极拷问">终极拷问</h4>
+<blockquote>
+<p>自古以来, 计算机系统方向的课程就有一个终极拷问:</p>
+<blockquote>
+<p>当你在终端键入<code>./hello</code>运行Hello World程序的时候, 计算机究竟做了些什么?</p>
+</blockquote>
+<p>你已经实现了批处理系统, 并且成功通过NTerm来运行其它程序. 尽管我们的批处理系统经过了诸多简化, 但还是保留了计算机发展史的精髓. 实现了批处理系统之后, 你对上述的终极拷问有什么新的认识?</p>
+</blockquote>
+<p>一个简单的流程如下：</p>
+<ul>
+<li>键入 <code>./hello</code> 以后，shell 解析命令之后发现要运行 hello 文件（可执行程序），于是使用 <code>execve</code> 系统调用，将文件名 hello 和相应的参数，环境变量传进去。</li>
+<li>陷入内核态之后，操作系统检查 hello 文件是否存在，是否有足够的访问权限等，如果有问题会返回相应的错误号。shell 如果发现 <code>execve</code> 系统调用返回，则会根据错误号报错。</li>
+<li>如果一切正常，<code>execve</code> 系统调用不会返回。操作系统会为 hello 程序创建一个初始的上下文结构体，然后调度 hello 作为下一个执行的进程。（在 pa3 中暂时没有进程的概念，会直接使用 naive_uload 来加载 hello 并跳转到 entry 执行）。</li>
+<li>hello 程序使用 printf 库函数打印字符串 &ldquo;Hello, world!\n&rdquo;，printf 库函数的底层会使用 <code>write</code> 系统调用，陷入内核态之后，操作系统使用 <code>write</code> 系统调用相关的服务程序，向 stdout (屏幕) 输出字符。</li>
+</ul>
+<h3 id="补充-4">补充</h3>
+<h4 id="关于-convertsh-的报错">关于 <code>convert.sh</code> 的报错</h4>
+<p>直接运行 <code>convert.sh</code> 会报错</p>
+<pre><code>attempt to perform an operation not allowed by the security policy `PDF'
+</code></pre>
+<p>STFW后得知，只需将 <code>/etc/ImageMagick-6/policy.xml</code> 中的</p>
+<pre><code class="language-html">&lt;policy domain=&quot;coder&quot; rights=&quot;none&quot; pattern=&quot;PDF&quot; /&gt;
+</code></pre>
+<p>中的 <code>&quot;none&quot;</code> 改为 <code>&quot;read | write&quot;</code> 即可。</p>
+<h4 id="关于仙剑奇侠传的红蓝颜色">关于仙剑奇侠传的红蓝颜色</h4>
+<p>笔者的仙剑奇侠传刚开始启动页面出现的是红色的旗子，游戏中的所有人物都是青色的脸庞。仔细阅读 SDL 部分的源码后发现，SDL 中对于 32 位颜色数据的解读和讲义中写的略有不同：正确的解读方法应该是 <code>aabbggrr</code>，和讲义中的相比正好红色和蓝色颠倒了。</p>
+<h4 id="关于仙剑奇侠传的字幕黑框">关于仙剑奇侠传的字幕黑框</h4>
+<p>笔者的仙剑奇侠传曾经出现所有有字幕的地方（比如人物的对话区域，以及“新的故事”“旧的回忆”的选择区域）全部是黑框的现象。仔细阅读 SDL 手册后发现 <code>SDL_UpdateRect()</code> 函数实现的有一些问题，导致一直在取屏幕左上角的一小块矩形来更新像素，那一部分恰好是黑色的。修正矩形区域的坐标后问题解决。</p>
+<h4 id="仙剑奇侠传与-sdl_fillrect">仙剑奇侠传与 <code>SDL_FillRect()</code></h4>
+<p><code>SDL_FillRect()</code> 的官方文档的描述是将画布中指定矩形区域的颜色都置为 color。其中的参数 color 是一个 32 位数。但仙剑奇侠传中是使用调色盘来表示颜色的，pixels 里存放的是颜色在调色盘中的索引，应该怎么将这个 color 赋过去呢？</p>
+<p>笔者起初以为仙剑中调用该函数时传入的 color 应该是 32 位的 <code>aaggbbrr</code> 格式的颜色，因此将调色盘中的所有颜色取出和 color 一一比对，但发现 color 并不一定在调色盘中。笔者尝试使用曼哈顿距离最小的颜色来代替 color，但效果很差。笔者又尝试了从调色盘中随机挑一个颜色，将 color 替换进去。这样虽然可以达到正确的效果，但存在一定的隐患。</p>
+<p>笔者在阅读了 pal 的源码之后，发现其中调用 <code>SDL_FillRect()</code> 的时候传递的 color 参数都是 8 位二进制数，明白其实传进去的就是颜色的调色盘索引，所以直接赋值即可。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-ics/pa/pa2/" rel="next">PA2 - 简单复杂的机器: 冯诺依曼计算机系统</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-ics/pa/pa4/" rel="prev">PA4 - 虚实交错的魔法: 分时多任务</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

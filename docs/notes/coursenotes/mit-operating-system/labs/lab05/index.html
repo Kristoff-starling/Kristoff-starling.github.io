@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Progress Eliminate allocation from sbrk() (easy) Lazy allocation (moderate) Lazytests and Usertests (moderate) Eliminate allocation from sbrk() (easy) 该部分要做的事情很简单：在 sbrk() 系统调用的处理函数中，不要分配内存，只修改进程的 sz 即可。由于我们只修改了 sz 而没有为新申请的空间绑定页面，所以当用户程序使用这块内存的时候 (load/store指令)，就会因为页表无法翻译虚拟地址而报 kernel panic。
+Lazy allocation (moderate) 在该部分需要做的修改和注意事项在课上基本讲过，可以参考 Lecture 08 的课堂笔记。总体来说，我们需要在 usertrap() 中识别出缺页异常并写一个缺页异常的处理函数：申请一个物理页面，将导致错误的虚拟地址所在的虚拟页面映射过去。此外，由于延迟分配的存在，我们在 uvmunmap() 时释放的不一定是已经映射过的地址，应当取消其中的一些 panic 语句。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/labs/lab05/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/labs/lab05/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/labs/lab05/">
+  <meta property="og:title" content="MIT-6.S081 Lab 05: Lazy allocation | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Progress Eliminate allocation from sbrk() (easy) Lazy allocation (moderate) Lazytests and Usertests (moderate) Eliminate allocation from sbrk() (easy) 该部分要做的事情很简单：在 sbrk() 系统调用的处理函数中，不要分配内存，只修改进程的 sz 即可。由于我们只修改了 sz 而没有为新申请的空间绑定页面，所以当用户程序使用这块内存的时候 (load/store指令)，就会因为页表无法翻译虚拟地址而报 kernel panic。
+Lazy allocation (moderate) 在该部分需要做的修改和注意事项在课上基本讲过，可以参考 Lecture 08 的课堂笔记。总体来说，我们需要在 usertrap() 中识别出缺页异常并写一个缺页异常的处理函数：申请一个物理页面，将导致错误的虚拟地址所在的虚拟页面映射过去。此外，由于延迟分配的存在，我们在 uvmunmap() 时释放的不一定是已经映射过的地址，应当取消其中的一些 panic 语句。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>MIT-6.S081 Lab 05: Lazy allocation | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/mit-operating-system/labs/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/mit-operating-system/labs/lab01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/labs/lab01/">Lab util</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/labs/lab02/">Lab syscall</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/labs/lab03/">Lab pgtbl</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/labs/lab04/">Lab traps</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/mit-operating-system/labs/lab05/">Lab lazy</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/labs/lab06/">Lab cow</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/labs/lab07/">Lab thread</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>MIT-6.S081 Lab 05: Lazy allocation</h1>
+
+          <div class="article-style">
+            <h2 id="progress">Progress</h2>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Eliminate allocation from sbrk() (easy)</li>
+<li><input checked="" disabled="" type="checkbox"> Lazy allocation (moderate)</li>
+<li><input checked="" disabled="" type="checkbox"> Lazytests and Usertests (moderate)</li>
+</ul>
+<h2 id="eliminate-allocation-from-sbrk-easy">Eliminate allocation from sbrk() (easy)</h2>
+<p>该部分要做的事情很简单：在 <code>sbrk()</code> 系统调用的处理函数中，不要分配内存，只修改进程的 sz 即可。由于我们只修改了 sz 而没有为新申请的空间绑定页面，所以当用户程序使用这块内存的时候 (load/store指令)，就会因为页表无法翻译虚拟地址而报 kernel panic。</p>
+<h2 id="lazy-allocation-moderate">Lazy allocation (moderate)</h2>
+<p>在该部分需要做的修改和注意事项在课上基本讲过，可以参考 Lecture 08 的课堂笔记。总体来说，我们需要在 usertrap() 中识别出缺页异常并写一个缺页异常的处理函数：申请一个物理页面，将导致错误的虚拟地址所在的虚拟页面映射过去。此外，由于延迟分配的存在，我们在 uvmunmap() 时释放的不一定是已经映射过的地址，应当取消其中的一些 panic 语句。</p>
+<h2 id="lazytests-and-usertests-moderate">Lazytests and Usertests (moderate)</h2>
+<p>在该部分我们要额外处理 <code>sbrk()</code> 系统调用的一些细节：</p>
+<ul>
+<li>
+<p>当 <code>sbrk()</code> 传入的参数是负数时，我们应当调用 uvmdealloc() 正常进行释放。uvmdealloc() 释放的虚拟页面可能已经映射了物理页面，可能还没有映射物理页面。我们在上一个部分中已经取消了 uvmunmap() 函数中对该内容的检查，所以没有问题。</p>
+</li>
+<li>
+<p>当 <code>sbrk()</code> 进行了非法的操作，如引起错误的虚拟地址不在堆区范围内，或者内存不足、无法分配新物理页面，则杀死当前进程。</p>
+</li>
+<li>
+<p>除了缺页异常中需要处理延迟分配的问题，<code>read()</code> / <code>write()</code> 系统调用中也要处理延迟分配问题。该系统调用的函数调用路径 (以 write() 为例) 为  sys_write() $\rightarrow$ filewrite() $\rightarrow$ writei() $\rightarrow$ either_copyin() $\rightarrow$ copyin() $\rightarrow$  walkaddr()。内核为了在内核空间和用户空间之间传递数据，会调用 copyin()/copyout()/copyinstr()。这些函数会抓着用户虚拟地址在用户页表中进行一次 page table walk，以翻译出其物理地址。该过程中可能会因为延迟分配的问题翻译失败，我们要判断这种情况，并进行分配，代码细节和 usertrap() 中的非常类似，但需要注意的是由于 usertests 的设置问题，<u>在 walkaddr() 中遇到非法情况不能直接杀死进程</u>。</p>
+<p>(注：事实上，如果将 lab pgtbl 中的代码添加进来，用户进程和内核共用一份页表，就可以由硬件完成所有的 page table walk，延迟分配的处理函数也只需要写一遍。)</p>
+</li>
+</ul>
+<p>该实验中还有如下的几个细节：</p>
+<ul>
+<li>笔者查阅了一些网上的代码，发现它们处理 “用户栈地址” 的方式各不相同：有的人使用 p-&gt;kernel_sp，这实际上是进程的内核栈的栈顶地址。有的人使用 p-&gt;trapframe-&gt;sp，这是用户进程在陷入内核时的用户栈指针，由于用户栈此时不一定空，所以 p-&gt;trapframe-&gt;sp 并不一定指向栈底。从严谨的角度来说，获取栈底地址应该使用 <code>PGROUNDUP(p-&gt;trapframe-&gt;sp)</code>。笔者采用的另一种稍愚笨一些的方法为：在 proc 结构体中新建一个 ustack 变量，在 <code>exec()</code> 系统调用中把用户栈底的地址保存在其中。</li>
+<li>该实验中对于边界情况的判断要格外小心，usertest 中有很多针对边界情况的测试。p-&gt;sz，即 program break，指向的是用户内存顶部的下一个地址，第一个未被使用的地址，因此判断合法范围时一定是 <code>va &lt; p-&gt;sz</code>。此外 <code>PGROUNDUP(p-&gt;trapframe-&gt;sp)</code> 得到的地址为用户栈底地址的下一位，因此下界一定是 <code>PGROUNDUP(p-&gt;trapframe-&gt;sp) &lt;= va</code> 。(usertest 中的 copyinstr3 测试了当参数字符串的结束符处于未分配空间时程序是否能返回 -1)</li>
+</ul>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/mit-operating-system/labs/lab06/" rel="next">MIT-6.S081 Lab 06: Copy-on-write fork</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/mit-operating-system/labs/lab03/" rel="prev">MIT-6.S081 Lab 03: Page tables</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

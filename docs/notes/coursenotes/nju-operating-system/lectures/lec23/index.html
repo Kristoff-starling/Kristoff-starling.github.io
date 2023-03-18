@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="机器指令模型只有两种当前状态：寄存器和物理内存。这些状态在物理世界中应当有真实的对应。我们的需求是：
+可以寻址：比如可以根据编号访问某个单元格。 访问速度尽可能快 (甚至不惜掉电后丢失状态)。 “当前状态”的存储
+延迟线 (delay line)：像一根存储了数据的绳子不断地转，信号会随着时间衰减，因此数据会不断通过放大器来保持不丢失。
+磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。
+&ldquo;Segmentation fault (core dumped)&rdquo;
+这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 ulimit -a 查看)，可以通过 ulimit -c size 来修改。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec23/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec23/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec23/">
+  <meta property="og:title" content="Lecture 23: 1Bit Storage | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="机器指令模型只有两种当前状态：寄存器和物理内存。这些状态在物理世界中应当有真实的对应。我们的需求是：
+可以寻址：比如可以根据编号访问某个单元格。 访问速度尽可能快 (甚至不惜掉电后丢失状态)。 “当前状态”的存储
+延迟线 (delay line)：像一根存储了数据的绳子不断地转，信号会随着时间衰减，因此数据会不断通过放大器来保持不丢失。
+磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。
+&ldquo;Segmentation fault (core dumped)&rdquo;
+这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 ulimit -a 查看)，可以通过 ulimit -c size 来修改。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 23: 1Bit Storage | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec02/">02: OS上的程序</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec03/">03: 并发编程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec04/">04: 理解并发</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec05/">05: 并发-互斥</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec06/">06: 并发-同步</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec07/">07: 并发-应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec08/">08: 并发bug</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec09/">09: OS的状态机</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec10/">10: 状态机应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec11/">11: OS的进程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec12/">12: 地址空间</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec13/">13: 系统调用和 Shell</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec14/">14: LibC</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec15/">15: fork()</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec16/">16: 可执行文件</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec17/">17: 链接和加载</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec18/">18: xv6 概览</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec19/">19: 上下文切换</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec20/">20: 处理器调度</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec21/">21: OS设计</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec22/">22: OSLab速通</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec23/">23: 1Bit的存储</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec24/">24: I/O设备</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec25/">25: 设备驱动</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec26/">26: FS API</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec27/">27: FAT和UNIX文件系统</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec28/">28: 存储可靠性</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec29/">29: Xv6 FS</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec30/">30: 现代存储</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 23: 1Bit Storage</h1>
+
+          <div class="article-style">
+            <p>机器指令模型只有两种当前状态：寄存器和物理内存。这些状态在物理世界中应当有真实的对应。我们的需求是：</p>
+<ul>
+<li>可以寻址：比如可以根据编号访问某个单元格。</li>
+<li>访问速度尽可能快 (甚至不惜掉电后丢失状态)。</li>
+</ul>
+<p>“当前状态”的存储</p>
+<ul>
+<li>
+<p>延迟线 (delay line)：像一根存储了数据的绳子不断地转，信号会随着时间衰减，因此数据会不断通过放大器来保持不丢失。</p>
+</li>
+<li>
+<p>磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。</p>
+<blockquote>
+<p><strong>&ldquo;Segmentation fault (core dumped)&rdquo;</strong></p>
+<p>这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 <code>ulimit -a</code> 查看)，可以通过 <code>ulimit -c size</code> 来修改。</p>
+<p>此外，在 Ubuntu 系统中，我们还需要在 root 权限下通过</p>
+<pre><code class="language-bash">echo core &gt; /proc/sys/kernel/core_pattern
+</code></pre>
+<p>修改对应文件。这样发生段错误后，系统将在程序当前目录下生成一个 core 文件。我们可以用 <code>segfault.c</code> 做一个实验。段错误后，使用 <code>gdb segfault core</code> 再次运行，就可以恢复 crash 的现场。</p>
+</blockquote>
+</li>
+<li>
+<p>SRAM/DRAM：flip-flop</p>
+</li>
+</ul>
+<h2 id="magnetism">Magnetism</h2>
+<p>用小磁铁的方向来表示 0 和 1，不同方向的小磁铁会有不同方向的磁场，从而可以感应出不同方向的电流。此外，电流产生的磁场也可以用来修改小磁铁的方向。</p>
+<h3 id="magnetic-tape-1928">Magnetic Tape (1928)</h3>
+<p>磁带本质上是一个 1D 的存储设备，但我们可以通过把磁带卷起来使其变成一个近似 2D 的存储设备。因此可以在小空间内存放大量的 bit。在中间位置放一个读写头，然后通过机械转轮来定位当前读写的位置。</p>
+<ul>
+<li>优点：便宜，容量大，存储时间相对较长</li>
+<li>缺点：完全无法随机读取 (只能靠机械转轮移动)</li>
+</ul>
+<p>因此磁带主要用于大量冷数据的长时间存储。</p>
+<h3 id="magnetic-drum-1932">Magnetic Drum (1932)</h3>
+<p>磁鼓一定程度解决了磁带无法随机读取的问题：将磁带一圈一圈绕在一个金属棒上，然后在棒子的侧面放很多读写头，这样读取一个 bit 的时间控制在棒子转一圈的时间之内。磁鼓的缺点是：占用的空间太大了</p>
+<h3 id="hard-disk-1956">Hard Disk (1956)</h3>
+<p>将磁带内卷在一个二维平面上，中间是转轴。磁盘中只有一个读写头，但读写头上有一个电动机，读写头的移动可以使其快速定位磁带的某个圈，磁带的旋转可以使圈上某个位置的信息到达读写头的位置。这样不仅速度快，而且占用体积大幅下降。</p>
+<p>工程上对磁盘还有一些优化，比如在 z 轴上排列若干个圆盘，放置多个读写头等等。此外磁盘中的每个盘实际上不是用磁带绕出来的，而是使用了更先进的生产工艺。</p>
+<ul>
+<li>优点：便宜，容量大，有勉强可用的随机读取能力</li>
+<li>缺点：可靠性低，存在机械部件，磁头划伤盘片可能导致数据丢失。</li>
+</ul>
+<p>磁盘是当今计算机系统的主力数据存储。</p>
+<p>磁盘当中有很多事情是可以调度的，从前这个调度由操作系统负责，但现在的磁盘越做越复杂，很多内部参数已经超出了操作系统的控制，因此现代的磁盘通常会有一个片上系统 (system on chip, SoC)，这种写死的固件负责磁盘中的调度算法。</p>
+<h3 id="floppy-disk-1971">Floppy Disk (1971)</h3>
+<p>能不能将盘片和读写头分开，从而实现数据移动？这就有了软盘。刚开始软盘真的是软的，后来的 3.5 英寸软盘为了可靠性已经是硬的了。</p>
+<ul>
+<li>优点：价格低，数据可移动</li>
+<li>缺点：由于是暴露的存储介质，所以可靠性低，且数据密度不能太大。</li>
+</ul>
+<h2 id="pits">Pits</h2>
+<p>在一个平整的平面上挖一些坑，这样光照在平整的地方可以很好地反射，照在坑上就不能很好地反射，从而实现 0 和 1。</p>
+<h3 id="compact-disk-cd-1980">Compact Disk (CD, 1980)</h3>
+<p>在反射平面 (1) 上挖上粗糙的坑 (0)，激光扫过表面，就可以读出信息。CD 的一大问题在于只读性——挖坑容易填坑难。有一些例如 PCM (phase-change material) 的材料可以做出 rewritable disk。</p>
+<ul>
+<li>
+<p>优点：价格低，容量大，可靠性很高</p>
+<p>光盘的一个很有意思的优点是它很容易通过“压盘”来复制：我们可以制作一个母盘，在该挖坑的地方凸起，然后一张平整盘往上一压就是一张盘。</p>
+</li>
+<li>
+<p>缺点：随机读取能力不高，改写困难。</p>
+</li>
+</ul>
+<h2 id="electricity">Electricity</h2>
+<p>之前的持久存储介质都有一个致命的缺陷：存在一些机械部件，机械部件可靠性不高且速度跟不上，要跟上电路的速度，我们必须用电来做存储介质。</p>
+<h3 id="solid-state-drive-ssd-1991">Solid State Drive (SSD, 1991)</h3>
+<p>Flash memory 的 floating gate 的充电放电实现了 0-1。</p>
+<ul>
+<li>
+<p>优点：大规模集成电路价格低，容量很大；flash memory 的最大优势在于读写速度，而且它有一个不讲道理的特性：容量越大速度越快 (电路级并行)；可靠性非常高：没有机械部件，所以可以随便摔。</p>
+</li>
+<li>
+<p>缺点：几乎无。</p>
+</li>
+</ul>
+<h3 id="usb-flash-disk-1999">USB Flash Disk (1999)</h3>
+<p>迅速击败软盘，成为人手 $n$ 个的移动存储设备。</p>
+<hr>
+<p>Flash memory 有一个关键的问题：放电会放不干净，一个 cell 经过了成千上万次读写操作后，剩余的电子就会多到好像是 1 的状态，这个 cell 成为了一个 dead cell。</p>
+<p>该问题的解决方法类似于虚拟内存：在 OS 眼中不论是 SSD 还是 HDD 都类似于一个大数组，但事实上 SSD 里面有一个小型的计算机系统：系统会根据每个 cell 的读写次数，将所谓的 “100号cell&quot; 映射到一个其他的 cell，就像一个 MMU 一样。这样可以保证每个 cell 使用次数差不多，也可以绕开一些 dead cell。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec22/" rel="next">Lecture 22: OSLab Speedrun</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec24/" rel="prev">Lecture 24: I/O Devices</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

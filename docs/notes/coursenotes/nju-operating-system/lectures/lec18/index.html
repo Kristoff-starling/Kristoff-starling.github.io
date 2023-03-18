@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Xv6 中的 .d .sym .asm 文件是什么？
+.d 文件描述了 Makefile 中文件所需的依赖关系。我们考虑如下程序：
+a.o: a.c gcc -c a.c // a.c #include &quot;a.h&quot; // a.h // Cannot compile Makefile 的逻辑是：a.o 依赖文件 a.c，在执行 make 时，如果 a.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec18/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec18/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec18/">
+  <meta property="og:title" content="Lecture 18: Xv6 Code Guide | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Xv6 中的 .d .sym .asm 文件是什么？
+.d 文件描述了 Makefile 中文件所需的依赖关系。我们考虑如下程序：
+a.o: a.c gcc -c a.c // a.c #include &quot;a.h&quot; // a.h // Cannot compile Makefile 的逻辑是：a.o 依赖文件 a.c，在执行 make 时，如果 a."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 18: Xv6 Code Guide | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec02/">02: OS上的程序</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec03/">03: 并发编程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec04/">04: 理解并发</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec05/">05: 并发-互斥</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec06/">06: 并发-同步</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec07/">07: 并发-应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec08/">08: 并发bug</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec09/">09: OS的状态机</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec10/">10: 状态机应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec11/">11: OS的进程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec12/">12: 地址空间</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec13/">13: 系统调用和 Shell</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec14/">14: LibC</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec15/">15: fork()</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec16/">16: 可执行文件</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec17/">17: 链接和加载</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec18/">18: xv6 概览</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec19/">19: 上下文切换</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec20/">20: 处理器调度</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec21/">21: OS设计</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec22/">22: OSLab速通</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec23/">23: 1Bit的存储</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec24/">24: I/O设备</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec25/">25: 设备驱动</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec26/">26: FS API</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec27/">27: FAT和UNIX文件系统</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec28/">28: 存储可靠性</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec29/">29: Xv6 FS</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec30/">30: 现代存储</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 18: Xv6 Code Guide</h1>
+
+          <div class="article-style">
+            <blockquote>
+<p>Xv6 中的 <code>.d</code> <code>.sym</code> <code>.asm</code> 文件是什么？</p>
+</blockquote>
+<p><code>.d</code> 文件描述了 Makefile 中文件所需的依赖关系。我们考虑如下程序：</p>
+<pre><code class="language-makefile">a.o: a.c
+	gcc -c a.c
+</code></pre>
+<pre><code class="language-c">// a.c
+#include &quot;a.h&quot;
+</code></pre>
+<pre><code class="language-c">// a.h
+// Cannot compile
+</code></pre>
+<p>Makefile 的逻辑是：<code>a.o</code> 依赖文件 <code>a.c</code>，在执行 make 时，如果 <code>a.c</code> 相较于上一次 make 发生过改动，则会再次执行编译指令，如果没有改动则不执行。但当我们的 <code>a.c</code> include 了 <code>a.h</code> 之后，实际上 <code>a.o</code> 多了一个间接的依赖关系：当 <code>a.h</code> 发生改动时，我们也应该重新执行编译指令。但很遗憾，除非在 Makefile 中添加 <code>a.h</code> 依赖，否则 Makefile 不会自己做到这一点。</p>
+<p>大型项目中一个 C 程序可能有很多很多的 include。如果将这些 include 全部填到 Makefile 中，Makefile 将变得难以维护。因此我们利用编译器生成了 <code>.d</code> 文件，<code>.d</code> 文件中包含了一个程序依赖的头文件列表，且这个列表是 Makefile 可以直接解析的，这样我们解决了依赖问题。</p>
+<h2 id="xv6-framework">Xv6 Framework</h2>
+<p><code>/kernel</code> 是内核代码，Makefile 会将所有的源代码文件编译后根据 <code>/kernel/kernel.ld</code> 的链接脚本链接生成一个 <code>kernel</code> 可执行文件。<code>/user</code> 是用户程序代码，Makefile 会给将每个形如 <code>name.c</code> 的用户程序编译生成一个 <code>_name</code> 可执行文件。<code>/mkfs</code> 是生成文件系统的代码，<code>/user</code> 中所有下划线开头的可执行文件会被放入文件系统。</p>
+<blockquote>
+<p><strong>工具的配置</strong></p>
+<p>好的工具会提升阅读代码的体验，使用 vscode 是一个很好的选择。为 vscode 添加正确的 <code>compile_command.json</code> 可以使 vscode 正确地跳转。<code>compile_command.json</code> 的原理是提供每个文件依赖的 include path。我们可以用 bear 工具直接爬 <code>make qemu</code> 的信息，它会自动生成 <code>.json</code> 文件。</p>
+</blockquote>
+<h2 id="code-xv6-system-call">Code: xv6 System Call</h2>
+<p>因为启动第一个进程的时候 xv6 还没有初始化文件系统，无法通过 exec() 系统调用来加载 image，所以 xv6 的第一个进程 initcode 是写死的一段汇编代码 (在 forkret() 中有初始化文件系统的相关代码)，具体的信息可以见 MIT 6.S081 Lecture 03。</p>
+<p>通过 <code>ecall</code> 指令走 trampoline 然后进入 usertrap() 的流程可以见 MIT 6.S081 Lecture 6。</p>
+<blockquote>
+<p><strong>为什么我在 GDB 中加断点 <code>b *0x0</code> 会报错：&ldquo;cannnot access memory?&rdquo;</strong></p>
+<p>2020版之前的 xv6 需要在 <code>.gdbinit.tmpl-riscv</code> 中添加一条配置：</p>
+<pre><code class="language-bash">set riscv use-compressed-breakpoints yes
+</code></pre>
+</blockquote>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec17/" rel="next">Lecture 17: Linking and Loading</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec19/" rel="prev">Lecture 19: Context Switching</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

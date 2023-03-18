@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。
+40.1 The Way To Think 设计文件系统我们通常考虑两件事情：
+数据结构：我们准备使用什么数据结构来组织磁盘上的数据和元数据？在简单的文件系统实现中我们通常使用简单的块链表，在一些比较精密的文件系统实现中也有使用树状结构的。 访问方式：进程使用的 open(), read(), write() 等函数该如何对应到文件系统的结构上？对于一个特定的系统调用，哪些数据需要被读写？每一步的效率如何？ 40.2 Overall Organization vsfs (very simple file system，一个 UNIX 文件系统的精简版本) 的结构如下：
+整个磁盘被划分成 64 个 block，每个 block 的大小是 4KB。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch40/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch40/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch40/">
+  <meta property="og:title" content="Chapter 40: File System Implementation | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。
+40.1 The Way To Think 设计文件系统我们通常考虑两件事情：
+数据结构：我们准备使用什么数据结构来组织磁盘上的数据和元数据？在简单的文件系统实现中我们通常使用简单的块链表，在一些比较精密的文件系统实现中也有使用树状结构的。 访问方式：进程使用的 open(), read(), write() 等函数该如何对应到文件系统的结构上？对于一个特定的系统调用，哪些数据需要被读写？每一步的效率如何？ 40.2 Overall Organization vsfs (very simple file system，一个 UNIX 文件系统的精简版本) 的结构如下：
+整个磁盘被划分成 64 个 block，每个 block 的大小是 4KB。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Chapter 40: File System Implementation | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/ch02/">Chapters</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch02/">Chapter 02</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch04/">Chapter 04</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch05/">Chapter 05</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch13/">Chapter 13</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch14/">Chapter 14</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch17/">Chapter 17</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch26/">Chapter 26</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch27/">Chapter 27</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch29/">Chapter 29</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch30/">Chapter 30</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch31/">Chapter 31</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch36/">Chapter 36</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch38/">Chapter 38</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/booknotes/ostep/ch40/">Chapter 40</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/hw26/">Homework</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/booknotes/ostep/hw26/">Homework 26</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/hw27/">Homework 27</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Chapter 40: File System Implementation</h1>
+
+          <div class="article-style">
+            <p>文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。<!-- more --></p>
+<h2 id="401-the-way-to-think">40.1 The Way To Think</h2>
+<p>设计文件系统我们通常考虑两件事情：</p>
+<ul>
+<li>数据结构：我们准备使用什么数据结构来组织磁盘上的数据和元数据？在简单的文件系统实现中我们通常使用简单的块链表，在一些比较精密的文件系统实现中也有使用树状结构的。</li>
+<li>访问方式：进程使用的 open(), read(), write() 等函数该如何对应到文件系统的结构上？对于一个特定的系统调用，哪些数据需要被读写？每一步的效率如何？</li>
+</ul>
+<h2 id="402-overall-organization">40.2 Overall Organization</h2>
+<p>vsfs (very simple file system，一个 UNIX 文件系统的精简版本) 的结构如下：</p>
+<img src="https://kristoff-starling.github.io/img/OSTEP-vsfs.png" alt="vsfs" style="zoom:50%;" />
+<p>整个磁盘被划分成 64 个 block，每个 block 的大小是 4KB。</p>
+<ul>
+<li>后面的 56 个 block 是 data region，用来存储用户数据。</li>
+<li>3~7 这 5 个 block 是 inode table 区，存储了一个 inode 数组，注意到一个 inode 通常没有一个 block 那么大——只有 128 或 256 字节，这里假设 256 字节，则 5 个 block 可以存储 80 个 inode，即我们的文件系统中最多可以有 80 个文件 (在更大的磁盘上，我们的 inode table 可以更大，从而可以存储更多的文件)。</li>
+<li>block 1 是 inode bitmap，block 2 是 data bitmap，bitmap 存储了每个 inode/data block 处于空闲状态还是正在使用的状态。</li>
+<li>block 0 是 superblock，存储了文件系统的元数据，比如 inode 的个数，磁盘的大小，inode table 的起始位置，文件系统的魔数等等。</li>
+</ul>
+<h2 id="403-file-organization-the-inode">40.3 File Organization: The Inode</h2>
+<p>几乎所有的文件系统都有类似于 inode 的结构：它保存了一个文件的元数据，比如大小、权限等等。inode 的全称是 index node，这是因为一般 inode 被整齐地存放在一个数组里面，因此给定一个下标，我们很容易索引到一个对应的 inode。以我们的 vsfs 为例，inode table 的起始地址 <code>inodeStartAddr = 12KB</code>，每个 inode 的大小是 256B，因此给定一个 inumber，我们有如下的计算公式：</p>
+<pre><code class="language-c">blk = (inumber * sizeof(inode_t)) / blockSize;
+sector = ((blk * blockSize) + inodeStartAddr) / sectorSize;
+</code></pre>
+<p>(注：磁盘不是 byte addressable 的，所以我们只算出精确的地址没有用，而要算出它在哪个 sector 中，把整个 sector 读出来，再根据 offset 定位 inode。)</p>
+<p>inode 中有关于一个文件的所有信息：比如它的类型 (文件/文件夹/设备 etc.)，它的大小，它包含的 block 数目，它的访问权限，它的创建/修改日期等。这些信息通常被称为文件的元数据 (metadata) (通常文件系统中和用户数据无关的其他数据都被称为元数据)。下面展示了一个简化的 ext2 文件系统的 inode 中存储的元数据：</p>
+<img src="https://kristoff-starling.github.io/img/OSTEP-40.1.png" alt="40.1" style="zoom:33%;" />
+<p>inode 中最重要的部分就是指示 data block 位置的部分。一种简单的方法是在 inode 中存储若干个 direct pointers，每个指针保存一个 data block 的地址。这种方法的局限性在于无法保存大文件的所有 data block。</p>
+<h3 id="the-multi-level-index">The Multi-Level Index</h3>
+<p>解决大文件存储的方法通常是所谓的 indirect pointer：我们从数据区分配一个 block，让 inode 中的 indirect pointer 指向这个 block，然后这个 block 里存放一堆 direct pointer。假设一个地址占 4B，那么一个 block 里可以存放 1024 个 direct pointer，这意味着只需要一个 indirect pointer 就可以记录一个 1024*4 KB 的文件的所有 data block 的位置。</p>
+<p>这个思想有点像页表。正如页表可以有多级，文件系统中我们也可以有 double indirect pointer 和 triple indirect pointer，这样我们用树状结构存下了很多 data block 的地址。值得一提的是，通常 inode 里会有 12 个左右的 direct pointer 和一个 indirect pointer，存放如此多的 direct pointer 是因为从统计规律上，大部分的文件都非常小，用 direct pointer 直接存地址可以略去遍历“页表”的过程，更加高效。</p>
+<blockquote>
+<p><strong>Linked-Based Approaches</strong></p>
+<p>inode 的另一种常见的设计方案是使用链表。在这种设计下我们不需要在 inode 中存储所有 data block 的地址，而只要存储第一个 data block 的地址。每个 data block 自己有一个 next 指针存储下一个 data block 的地址，这样也可以存储大文件。</p>
+<p>朴素的想法是将每个 data block 的 next 指针存储在 data block 内部。但这样文件系统在 random access 的 workload 下表现得会很坏：注意到磁盘是一个块设备，如果我们要访问一个文件尾部的内容，我们就必须顺着链表往后找，而每次我们要获得一个 next 指针都要把整个 data block 读出来，大量的磁盘读取会使得访问非常慢。</p>
+<p>一个优化是把所有的 next 指针放在一起做成一张表集中存储。这样我们只要将这个 next 指针表从磁盘读进内存，就可以定位一个大文件的任何一个 data block 的位置，再去磁盘中抓取对应的 data block 即可。</p>
+<p>这就是 FAT 的主要思想。</p>
+</blockquote>
+<h2 id="404-directory-organization">40.4 Directory Organization</h2>
+<p>在很多文件系统中，目录文件的内容就是一系列的 <code>(文件名, inode)</code> 键值对。举一个例子，比如一个 inode 为 5 的目录文件 dir 中包含了文件 foo, bar 和 foobar_is_a_pretty_longname，那么 dir 文件的内容就大约长这样：</p>
+<table>
+<thead>
+<tr>
+<th>inum</th>
+<th>reclen</th>
+<th>strlen</th>
+<th>name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5</td>
+<td>12</td>
+<td>2</td>
+<td>.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>12</td>
+<td>3</td>
+<td>..</td>
+</tr>
+<tr>
+<td>12</td>
+<td>12</td>
+<td>4</td>
+<td>foo</td>
+</tr>
+<tr>
+<td>13</td>
+<td>12</td>
+<td>4</td>
+<td>bar</td>
+</tr>
+<tr>
+<td>24</td>
+<td>36</td>
+<td>36</td>
+<td>foobar_is_a_pretty_longname</td>
+</tr>
+</tbody>
+</table>
+<p>这里的 strlen 表示文件名的实际长度 (包括末尾的 <code>\0</code>)，reclen 则表示当前分配给这个目录项文件名的长度 (名字的长度和可能存在的若干空闲空间)。每个目录文件中都有两个文件：<code>.</code> 表示当前目录，<code>..</code> 表示上一级目录。</p>
+<p>如果我们在一个目录下删去一个文件，那么它对应的目录项就会被挖空。通常我们会使用 inode 0 来表示该目录项是空闲的。删除也是我们留有 reclen 字段的原因：比如一个长名文件被删除后，一个短名文件被加进目录，那么新文件可以复用旧文件的目录项，包括之前分配的长文件名的空间，因此文件名后可能会有空格。</p>
+<p>目录文件也是一种文件，因此在文件系统中它也有对应的 inode，上面描述的这些键值对就存在该文件的 data block 中。值得一提的是并不是所有文件系统都使用这种顺序列表的方式存储键值对——数据结构有很多的选择空间，比如有的文件系统使用 B 树存储键值对，这样它们在搜索文件名时就可以避免穷举遍历。</p>
+<h2 id="405-free-space-management">40.5 Free Space Management</h2>
+<p>在 vsfs 中，我们为 inode table 和 data region 各准备了一个 bitmap 来记录每个 inode/data block 是否处于空闲状态。分配的时候，我们遍历 bitmap 寻找空闲的 inode/data block 即可。</p>
+<p>分配中也有一些“花活”可以玩，比如 ext2/ext3 文件系统中，当一个新文件被创建且需要数据块时，文件系统会去寻找空闲的连续数据块 (8 个或更多)，这样文件在文件系统中存储的更加连续，有助于提升性能。</p>
+<h2 id="406-access-paths-reading-and-writing">40.6 Access Paths: Reading and Writing</h2>
+<h3 id="reading-a-file-from-disk">Reading A File From Disk</h3>
+<p>我们首先考虑这样一个系统调用：<code>open(&quot;/foo/bar&quot;, O_RDONLY)</code>。我们的目标是找到 bar 文件的 inode，但这是无法直接做到的，因此我们必须得通过文件名一层一层地去找。一个文件的 inode 编号存放在它的父目录的文件内容中，因此我们需要去读取 <code>/foo</code> 目录文件的内容，从而需要其 inode 编号，再向上我们需要 <code>/</code> 目录文件的内容，以及 <code>/</code> 的 inode 编号。</p>
+<p>根目录没有父目录，因此根目录文件的 inode 编号必须被显式或隐式地规定。在绝大多数的 UNIX 文件系统中，根目录文件的 inode 编号都是 2。因此整个过程如下：</p>
+<ul>
+<li>读取根目录的 inode 2，根据 inode 中的指针找到根目录文件内容，从目录项中找到 <code>/foo</code> 文件的 inode 号。</li>
+<li>读取 <code>/foo</code> 的 inode，根据 inode 中的指针找到 <code>/foo</code> 文件内容，从目录项中找到 <code>/foo/bar</code> 的 inode 号。</li>
+<li>读取 <code>/foo/bar</code> 的 inode，进行一系列权限检查，返回给当前进程一个指向 <code>/foo/bar</code> 的文件描述符。</li>
+</ul>
+<p>打开文件后，程序就可以通过 read() 系统调用来读取文件内容。对于一次 read() 系统调用，文件系统首先要读取 inode，根据 read 的 offset 找到对应 data block 的地址，然后读取对应的 data block，最后还要修改文件的 inode，更新最近访问时间等字段。在文件系统之外，文件描述符的 offset 也要更新。</p>
+<p>在某个时刻，该文件会被关闭。关闭文件需要释放掉对应的文件描述符，不过这不是文件系统层面的动作，close() 的时候没有任何的 disk I/O 操作。</p>
+<p>下图展示了整个过程各部分数据的读写情况：</p>
+<img src="https://kristoff-starling.github.io/img/OSTEP-40.3.png" alt="40.3" style="zoom: 50%;" />
+<h3 id="writing-a-file-to-disk">Writing A File To Disk</h3>
+<p>写入的过程和读取的过程基本类似，但写入更麻烦的地方在于我们有时候要分配新的 inode/data block，因此还要读写 bitmap。通常来说在文件已经打开的情况下，一次 write 操作要对应 5 次磁盘 I/O 操作：一次读取数据区的 bitmap (寻找可用数据块)，一次写入数据区的 bitmap (更新使用情况)，读取和写入该文件的 inode，以及对数据块的写入。</p>
+<p>如果我们考虑文件的创建，涉及到的 disk I/O 次数则更多：创建文件时我们要为文件创建 inode，因此我们需要读写 inode 的 bitmap；我们要初始化新分配的 inode，因此需要写入新文件的 inode；我们需要更新该文件的父目录的键值对，因此我们要修改父目录的 data block，从而还要读写父目录文件的 inode。如果父目录文件的 data block 容量不足，我们还要为父目录文件分配新的 data block，这又要涉及数据区 bitmap 的读写……</p>
+<p>由此我们可以看出，文件系统 disk I/O 的次数非常多，负担很重，我们需要想办法让频繁的 I/O 更加高效。</p>
+<h2 id="407-caching-and-buffering">40.7 Caching and Buffering</h2>
+<p>为了缓解文件系统大量的磁盘 I/O 开销，大多数文件系统使用内存作为磁盘的 cache，在内存中保存一些常用的/重要的 block。早期的文件系统使用固定大小的 cache，通常是 DRAM 的 10%，这种静态分区的做法不太高效——当前空闲的文件系统 cache slot 无法作为其他东西使用。因此现代的文件系统采用 dynamic partitioning 的方法，把虚拟内存的页面和文件系统的页面放在一起统一管理。</p>
+<blockquote>
+<p><strong>Understand Static VS. Dynamic Partitioning</strong></p>
+<p>当我们将资源分成若干种不同用途的时候，我们通常有静态和动态两种方法。静态方法提前将资源划分成固定的比例，每种用途取一份；动态方法则根据当前的 workload 动态调整每种用途的使用量。静态实现简单，效率更稳定；而动态可以达到更好的资源利用率，但实现起来比较复杂。两者各有千秋。</p>
+</blockquote>
+<p>简单分析 caching 对于文件系统读写的好处：在读取方面，如果我们遍历一个目录下的所有文件，那么目录文件以及其 inode 就可以一直放在 cache 中供读取，节省了很多 I/O 操作；在写入方面，write buffering 带来的延迟写入可以将多次操作 batch 在一起，减少 I/O 次数 (比如创建文件再删除=什么都不用做)，系统还可以调度多次写入的顺序以获得更好的效率。</p>
+<blockquote>
+<p><strong>Durability/Performance Trade-Off</strong></p>
+<p>存储系统通常面临 durability/performance trade-off。如果用户希望写入的数据能立刻变得持久，那么文件系统就必须将新数据立刻落盘，但这样会很慢；如果用户可以忍受小量的数据丢失，那么文件系统就可以将数据在内存中放一会儿，每隔一段时间落盘一次，这样效率会有明显提升。至于如何在 trade-off 中选择，这与用户需求息息相关。</p>
+</blockquote>
+<p>一些应用 (比如数据库) 不喜欢这种 trade-off，因此它们会通过使用 fsync()，或者跳过文件系统层直接使用磁盘 I/O API 等方式来强制落盘。它们牺牲了效率但获得了稳定性。</p>
+<h2 id="408-summary">40.8 Summary</h2>
+<p>略。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/booknotes/ostep/ch38/" rel="next">Chapter 38: Redundant Arrays of Inexpensive Disks (RAIDs)</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/booknotes/ostep/hw26/" rel="prev">Homework 26</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

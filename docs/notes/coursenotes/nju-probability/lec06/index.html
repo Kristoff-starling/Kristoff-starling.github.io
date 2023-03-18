@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="$\fbox{Definition 6.1}$ 设存在一个非负的可积函数 $p(x)$，若 $X$ 的分布函数 $F(x)=\int_{-\infty}^xp(u)du$，则称 $X$ 为连续型随机变量，$p(x)$ 为密度函数。
+根据定义，我们可以得到 $$ \begin{align} P(X\leq a)&amp;=F(a)=\int_{-\infty}^ap(x)dx\\ P(a&lt;X\leq b)&amp;=F(b)-F(a)=\int_a^b p(x)dx \end{align} $$ 一些注意点：
+$F(x)$ 连续。
+显然 $p(x)$ 有界，设 $p(x)\leq M&lt;&#43;\infty$，对于固定的 $x_0$， $$ |F(x)-F(x_0)|=\left|\int_{x_0}^xp(u)d(u)\right|\leq \int_{x_0}^x |p(u)|du\leq |x-x_0|M $$ $\forall \varepsilon&gt;0$，当 $|x-x_0|\leq \frac{\varepsilon}{M}$ 时，$|F(x)-F(x_0)|\leq \varepsilon$。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-probability/lec06/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-probability/lec06/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-probability/lec06/">
+  <meta property="og:title" content="Lecture 06: Continuous Random Variables | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="$\fbox{Definition 6.1}$ 设存在一个非负的可积函数 $p(x)$，若 $X$ 的分布函数 $F(x)=\int_{-\infty}^xp(u)du$，则称 $X$ 为连续型随机变量，$p(x)$ 为密度函数。
+根据定义，我们可以得到 $$ \begin{align} P(X\leq a)&amp;=F(a)=\int_{-\infty}^ap(x)dx\\ P(a&lt;X\leq b)&amp;=F(b)-F(a)=\int_a^b p(x)dx \end{align} $$ 一些注意点：
+$F(x)$ 连续。
+显然 $p(x)$ 有界，设 $p(x)\leq M&lt;&#43;\infty$，对于固定的 $x_0$， $$ |F(x)-F(x_0)|=\left|\int_{x_0}^xp(u)d(u)\right|\leq \int_{x_0}^x |p(u)|du\leq |x-x_0|M $$ $\forall \varepsilon&gt;0$，当 $|x-x_0|\leq \frac{\varepsilon}{M}$ 时，$|F(x)-F(x_0)|\leq \varepsilon$。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 06: Continuous Random Variables | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-probability/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-probability/hw1/">Homework</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/hw1/">Homework 1</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/hw2/">Homework 2</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-probability/lec01/">Lectures</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec01/">Lecture 01</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec02/">Lecture 02</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec03/">Lecture 03</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec04/">Lecture 04</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec05/">Lecture 05</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-probability/lec06/">Lecture 06</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec07/">Lecture 07</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec08/">Lecture 08</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec09/">Lecture 09</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec10/">Lecture 10</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec11/">Lecture 11</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec12/">Lecture 12</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec13/">Lecture 13</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec14/">Lecture 14</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec15/">Lecture 15</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec16/">Lecture 16</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec21/">Lecture 21</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec22/">Lecture 22</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-probability/mgf/">Materials</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/mgf/">MGF</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 06: Continuous Random Variables</h1>
+
+          <div class="article-style">
+            <p>$\fbox{Definition 6.1}$ 设存在一个非负的可积函数 $p(x)$，若 $X$ 的分布函数 $F(x)=\int_{-\infty}^xp(u)du$，则称 $X$ 为连续型随机变量，$p(x)$ 为密度函数。</p>
+<p>根据定义，我们可以得到
+$$
+\begin{align}
+P(X\leq a)&amp;=F(a)=\int_{-\infty}^ap(x)dx\\
+P(a&lt;X\leq b)&amp;=F(b)-F(a)=\int_a^b p(x)dx
+\end{align}
+$$
+一些注意点：</p>
+<ul>
+<li>
+<p>$F(x)$ 连续。</p>
+<blockquote>
+<p>显然 $p(x)$ 有界，设 $p(x)\leq M&lt;+\infty$，对于固定的 $x_0$，
+$$
+|F(x)-F(x_0)|=\left|\int_{x_0}^xp(u)d(u)\right|\leq \int_{x_0}^x |p(u)|du\leq |x-x_0|M
+$$
+$\forall \varepsilon&gt;0$，当 $|x-x_0|\leq \frac{\varepsilon}{M}$ 时，$|F(x)-F(x_0)|\leq \varepsilon$。</p>
+</blockquote>
+</li>
+<li>
+<p>$p(x)$ 并不能表示 $P(X=x)$。事实上对于任意 $x_0$，$P(X=x_0)=0$。$p(x)$ 只能理解为 $X$ 在 $x$ 的一个小邻域内的概率与该邻域的长度的近似比，即
+$$
+P(x&lt;X\leq x+ \Delta x)=\int_{x}^{x+\Delta x}p(u)du\approx p(x)\Delta x
+$$
+关于 $P(X=x_0)=0$ 的说明：
+$$
+0\leq P(X=x_0)\leq P(x_0-\Delta x&lt;X\leq x_0)=F(x_0)-F(x_0-\Delta x)\overset{\Delta x\rightarrow 0}{\longrightarrow} 0
+$$</p>
+</li>
+<li>
+<p>若 $p(x)$ 在 $x_0$ 连续，则 $F(x)$ 在 $x_0$ 处可导，且 $F&rsquo;(x_0)=p(x_0)$。</p>
+<blockquote>
+<p>$$
+\begin{align}
+F(x)-F(x_0)&amp;=\int_{x_0}^x p(u)du\\
+&amp;=\int_{x_0}^x(p(u)-p(x_0))du+\int_{x_0}^xp(x_0)du\\
+&amp;=\int_{x_0}^x(p(u)-p(x_0))du+p(x_0)(x-x_0)
+\end{align}
+$$</p>
+<p>于是
+$$
+\left|\frac{F(x)-F(x_0)}{x-x_0}-p(x_0)\right|\leq \frac{1}{|x-x_0|}\int_{x_0}^x|p(u)-p(x_0)|du\quad (*)
+$$
+$\forall \varepsilon&gt; 0,\exists \delta,|x-x_0|&lt;\delta \Rightarrow |p(u)-p(x_0)|&lt;\varepsilon \Rightarrow (*)\leq \frac{1}{|x-x_0|}\cdot \varepsilon |x-x_0|=\varepsilon$。</p>
+</blockquote>
+</li>
+</ul>
+<p>【例】 (均匀分布) $[a,b]$ 的均匀分布 $U[a,b]$ 中，$X$ 的密度函数和分布函数为
+$$
+\begin{align}
+p(x)&amp;=\begin{cases}\frac{1}{b-a}&amp;,a\leq x\leq b\\0&amp;, otherwise\end{cases}\\
+F(x)&amp;=\begin{cases}0&amp;,x&lt;a\\\int_a^x\frac{du}{b-a}=\frac{x-a}{b-a}&amp;,a\leq x\leq b\\1&amp;,x&gt;b\end{cases}
+\end{align}
+$$
+【例】 (正态分布) $X$ 服从正态分布，记为 $X\sim N(\mu, \sigma^2)$ ，若
+$$
+p(x)=\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu)^2}{2\sigma^2}}，-\infty&lt;x&lt;\infty
+$$</p>
+<blockquote>
+<p>$$
+\begin{align}
+\left(\int_{-\infty}^{+\infty}p(x)dx\right)^2&amp;=\left(\int_{-\infty}^{+\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(x-\mu)^2}{2\sigma^2}}dx\right)\left(\int_{-\infty}^{+\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-\mu)^2}{2\sigma^2}}dy\right)\\
+&amp;\overset{u=\frac{x-\mu}{\sigma},v=\frac{y-\mu}{\sigma}}{=}
+\frac{1}{2\pi}\int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}e^{-\frac{u^2+v^2}{2}}dudv\\
+&amp;\overset{u=r\cos \theta,v=r\sin \theta}{=}
+\frac{1}{2\pi}\int_0^{2\pi}\int_{0}^{+\infty}e^{-\frac{r^2}{2}}rdrd\theta\\
+&amp;=1
+\end{align}
+$$</p>
+</blockquote>
+<p>正态分布 $p(x)$ 的图像有以下性质：</p>
+<ul>
+<li>$p(x)$ 关于 $x=\mu$ 轴对称。$F(\mu-a)+F(\mu+a)=1$。</li>
+<li>$\sigma^2$ 越大，$p(x)$ 的图像越平。(最大值变小，两头变高，方差 $\uparrow$)</li>
+</ul>
+<p>当 $\mu=0,\sigma=1$ 时，$X$ 称为标准正态分布：
+$$
+\begin{align}
+\varphi(x)&amp;=\frac{1}{\sqrt{2\pi}}e^{-\frac{x^2}{2}}\\
+\Phi(x)&amp;=\int_{-\infty}^x\varphi(u)du
+\end{align}
+$$
+$\fbox{Theorem 6.2}$ 设 $X\sim N(\mu, \sigma^2)$，则 $Z=\frac{X-\mu}{\sigma}\sim N(0,1)$。</p>
+<blockquote>
+<p>$$
+\begin{align}
+F_Z(x)&amp;=P(\frac{X-\mu}{\sigma}\leq x)=P(X\leq \sigma x+\mu)\\
+&amp;=\int_{-\infty}^{\sigma x+\mu}\frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{(v-\mu)^2}{2\sigma^2}}dv\\
+&amp;\overset{\frac{v-\mu}{\sigma}=z}{=}\int_{-\infty}^x\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{z^2}{2}}d(\sigma z+\mu)\\
+&amp;=\int_{-\infty}^x\varphi(u)du
+\end{align}
+$$</p>
+</blockquote>
+<p>利用该定理，我们可以将所有的正态分布转换为标准正态分布的计算：
+$$
+P(X\leq a)=P\left(\frac{X-\mu}{\sigma}\leq \frac{a-\mu}{\sigma}\right)=\Phi\left(\frac{a-\mu}{\sigma}\right)\\
+P(a&lt;X\leq b)=\Phi\left(\frac{b-\mu}{\sigma}\right)-\Phi\left(\frac{a-\mu}{\sigma}\right)
+$$</p>
+<p>&ldquo;3-$\sigma$&rdquo; 准则：
+$$
+\begin{align}
+P(|X-\mu|\leq \sigma)&amp;=\Phi(1)-\Phi(-1)\approx 0.6826\\
+P(|X-\mu|\leq 2\sigma)&amp;\approx 0.9544\\
+P(|X-\mu|\leq 3\sigma)&amp;\approx 0.9974
+\end{align}
+$$</p>
+<p>当某个样本超过均值三个标准差以上时，可以怀疑它存在一些问题。</p>
+<p>$\fbox{Theorem 6.3}$
+$$
+(\frac{1}{x}-\frac{1}{x^3})\varphi(x)\leq 1-\Phi(x)\leq \frac{1}{x}\varphi(x)
+$$
+且当 $x$ 充分大时，$1-\Phi(x)\approx \frac{1}{x}\varphi(x)$。</p>
+<p>【例】 (指数分布) 称 $X$ 服从参数为 $\lambda(\lambda &gt; 0)$ 的指数分布，记为 $X\sim E(\lambda)$，若
+$$
+\begin{align}
+p(x)&amp;=\begin{cases}
+\lambda e^{-\lambda x}&amp;,x\geq 0\\
+0&amp;, x&lt;0
+\end{cases}\\
+F(x)&amp;=\begin{cases}
+\int_0^x \lambda e^{-\lambda u}du=1-e^{-\lambda x}&amp;, x&gt;0\\
+0&amp;, x&lt;0
+\end{cases}
+\end{align}
+$$
+注：指数分布具有无记忆性，i.e. $P(X&gt;s+t|x&gt;t)=P(X&gt;s)$。指数分布和几何分布是唯二具有无记忆性的分布。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-probability/lec05/" rel="next">Lecture 05: Random Variable and Distribution Function</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-probability/lec07/" rel="prev">Lecture 07: Distribution of Random Variable Function</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

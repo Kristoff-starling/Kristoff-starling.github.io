@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="在操作系统眼里，I/O 设备 = 一组寄存器 &#43; 一个控制协议。不同设备的控制协议千差万别，如果让软件直接和这些设备寄存器打交道，即使操作系统仔细地管理好访问权限，应用程序也很容易出错。所以我们的想法是：对不同的设备做一个抽象，使得上层应用可以通过尽可能统一的接口来访问设备。
+Overview I/O 设备最基本的需求就是 read 和 write。UNIX 世界里的设备通常分为两种：
+字符设备 (character device)，设备与 OS 之间传送的是字节流。我们可以把这种设备想象成一个管道。终端、打印机等都是典型的字符设备。
+块设备 (block device)，我们可以把这种设备想象成一个字符数组，这样的设备通常有 persistence 的需求，比如磁盘。
+显卡是一种什么样的设备？
+显卡中其实既有字节流 (比如控制信号修改显卡的参数)，又有字节数组 (显卡里面有显存)。(不过显存不是按照块设备的方式来抽象的)
+操作 I/O 设备，我们至少需要如下的三个 API：">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec25/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec25/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec25/">
+  <meta property="og:title" content="Lecture 25: Device Drivers | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="在操作系统眼里，I/O 设备 = 一组寄存器 &#43; 一个控制协议。不同设备的控制协议千差万别，如果让软件直接和这些设备寄存器打交道，即使操作系统仔细地管理好访问权限，应用程序也很容易出错。所以我们的想法是：对不同的设备做一个抽象，使得上层应用可以通过尽可能统一的接口来访问设备。
+Overview I/O 设备最基本的需求就是 read 和 write。UNIX 世界里的设备通常分为两种：
+字符设备 (character device)，设备与 OS 之间传送的是字节流。我们可以把这种设备想象成一个管道。终端、打印机等都是典型的字符设备。
+块设备 (block device)，我们可以把这种设备想象成一个字符数组，这样的设备通常有 persistence 的需求，比如磁盘。
+显卡是一种什么样的设备？
+显卡中其实既有字节流 (比如控制信号修改显卡的参数)，又有字节数组 (显卡里面有显存)。(不过显存不是按照块设备的方式来抽象的)
+操作 I/O 设备，我们至少需要如下的三个 API："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 25: Device Drivers | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec02/">02: OS上的程序</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec03/">03: 并发编程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec04/">04: 理解并发</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec05/">05: 并发-互斥</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec06/">06: 并发-同步</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec07/">07: 并发-应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec08/">08: 并发bug</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec09/">09: OS的状态机</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec10/">10: 状态机应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec11/">11: OS的进程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec12/">12: 地址空间</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec13/">13: 系统调用和 Shell</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec14/">14: LibC</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec15/">15: fork()</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec16/">16: 可执行文件</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec17/">17: 链接和加载</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec18/">18: xv6 概览</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec19/">19: 上下文切换</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec20/">20: 处理器调度</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec21/">21: OS设计</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec22/">22: OSLab速通</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec23/">23: 1Bit的存储</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec24/">24: I/O设备</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec25/">25: 设备驱动</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec26/">26: FS API</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec27/">27: FAT和UNIX文件系统</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec28/">28: 存储可靠性</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec29/">29: Xv6 FS</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec30/">30: 现代存储</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 25: Device Drivers</h1>
+
+          <div class="article-style">
+            <p>在操作系统眼里，I/O 设备 = 一组寄存器 + 一个控制协议。不同设备的控制协议千差万别，如果让软件直接和这些设备寄存器打交道，即使操作系统仔细地管理好访问权限，应用程序也很容易出错。所以我们的想法是：对不同的设备做一个抽象，使得上层应用可以通过尽可能统一的接口来访问设备。</p>
+<h2 id="overview">Overview</h2>
+<p>I/O 设备最基本的需求就是 read 和 write。UNIX 世界里的设备通常分为两种：</p>
+<ul>
+<li>
+<p>字符设备 (character device)，设备与 OS 之间传送的是字节流。我们可以把这种设备想象成一个管道。终端、打印机等都是典型的字符设备。</p>
+</li>
+<li>
+<p>块设备 (block device)，我们可以把这种设备想象成一个字符数组，这样的设备通常有 persistence 的需求，比如磁盘。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>显卡是一种什么样的设备？</strong></p>
+<p>显卡中其实既有字节流 (比如控制信号修改显卡的参数)，又有字节数组 (显卡里面有显存)。(不过显存不是按照块设备的方式来抽象的)</p>
+</blockquote>
+<p>操作 I/O 设备，我们至少需要如下的三个 API：</p>
+<ul>
+<li>read：从设备的某个指定的位置读出数据 (如果是字符设备，则是从当前的最新位置)。</li>
+<li>write：向设备的某个指定的位置写入数据。</li>
+<li>ioctl：读取/设置设备的状态 (比如对于 GPU 来说，设置分辨率，对于打印机来说，检查纸张等)。</li>
+</ul>
+<p>设备驱动程序的作用之一就是将这些统一的系统调用 API 翻译成对应到具体设备的寄存器的操作。在计算机系统的世界中这样的抽象层很多：</p>
+<ul>
+<li>
+<p>Shell 负责将人类发出的命令行指令翻译成底层的系统调用；</p>
+</li>
+<li>
+<p>Driver 负责将系统调用翻译成设备相关的寄存器操作；</p>
+</li>
+<li>
+<p>……</p>
+</li>
+</ul>
+<p>计算机系统世界就是这样一层一层抽象垒起来的。</p>
+<blockquote>
+<p><strong>虚拟设备</strong></p>
+<p>在操作系统眼里，设备就是在执行系统调用的时候运行对应的驱动程序，操作系统不关心驱动程序究竟干了什么，因此我们可以有虚拟设备的概念：驱动程序可以真的和一个物理设备进行了交互，也可以只是模拟了一些行为。</p>
+<p><code>/dev/null</code> 就是一个典型的虚拟设备。它像一个黑洞一样，可以吃掉所有向它输出的内容。它的设备驱动程序非常简单：对于 write，不论写入的内容是什么，它直接返回一个写入成功即可。对于 read，不论要读入什么，也都直接返回。</p>
+</blockquote>
+<blockquote>
+<p><strong>设备的复杂性</strong></p>
+<p>虽然设备的数据传输是其“主要”的功能，但剩下的控制功能种类繁多：比如现代的键盘可以支持呼吸灯、跑马灯、按键编程，现代打印机可以控制打印质量、卡纸、清洁、自动装订等等。这些控制功能全部依赖 ioctl 系统调用，导致其中有无比复杂的 hidden specification。</p>
+</blockquote>
+<h2 id="linux-device-drivers">Linux Device Drivers</h2>
+<p>这里有一个非常简单的，用于“引爆核弹”的设备驱动：</p>
+<pre><code class="language-c">// launcher.c
+#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/init.h&gt;
+#include &lt;linux/cdev.h&gt;
+#include &lt;linux/device.h&gt;
+#include &lt;linux/fs.h&gt;
+#include &lt;linux/uaccess.h&gt;
+
+#define MAX_DEV 2
+
+static int dev_major = 0;
+static struct class *lx_class = NULL;
+static struct cdev cdev;
+
+static ssize_t lx_read(struct file *, char __user *, size_t, loff_t *);
+static ssize_t lx_write(struct file *, const char __user *, size_t, loff_t *);
+
+static struct file_operations fops = {
+  .owner = THIS_MODULE,
+  .read = lx_read,
+  .write = lx_write,
+};
+
+static struct nuke {
+  struct cdev cdev;
+} devs[MAX_DEV];
+
+static int __init lx_init(void) {
+  dev_t dev;
+  int i;
+
+  // allocate device range
+  alloc_chrdev_region(&amp;dev, 0, 1, &quot;nuke&quot;);
+
+  // create device major number
+  dev_major = MAJOR(dev);
+
+  // create class
+  lx_class = class_create(THIS_MODULE, &quot;nuke&quot;);
+
+  for (i = 0; i &lt; MAX_DEV; i++) {
+    // register device
+    cdev_init(&amp;devs[i].cdev, &amp;fops);
+    cdev.owner = THIS_MODULE;
+    cdev_add(&amp;devs[i].cdev, MKDEV(dev_major, i), 1);
+    device_create(lx_class, NULL, MKDEV(dev_major, i), NULL, &quot;nuke%d&quot;, i);
+  }
+  return 0;    
+}
+
+static void __exit lx_exit(void) {
+  device_destroy(lx_class, MKDEV(dev_major, 0));
+  class_unregister(lx_class);
+  class_destroy(lx_class);
+  unregister_chrdev_region(MKDEV(dev_major, 0), MINORMASK);
+}
+
+static ssize_t lx_read(struct file *file, char __user *buf, size_t count, loff_t *offset) {
+  if (*offset != 0) {
+    return 0;
+  } else {
+    uint8_t *data = &quot;This is dangerous!\n&quot;;
+    size_t datalen = strlen(data);
+    if (count &gt; datalen) {
+      count = datalen;
+    }
+    if (copy_to_user(buf, data, count)) {
+      return -EFAULT;
+    }
+    *offset += count;
+    return count;
+  }
+}
+
+static ssize_t lx_write(struct file *file, const char __user *buf, size_t count, loff_t *offset) {
+  char databuf[4] = &quot;\0\0\0\0&quot;;
+  if (count &gt; 4) {
+    count = 4;
+  }
+
+  copy_from_user(databuf, buf, count);
+  if (strncmp(buf, &quot;\x01\x14\x05\x14&quot;, 4) == 0) {
+    const char *EXPLODE[] = {
+      &quot;    ⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣀⣀⠀⠀⣀⣤⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⠀⠀⣀⣠⣤⣤⣾⣿⣿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣶⣿⣿⣿⣶⣤⡀⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⢠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⡀⠀&quot;,
+      &quot;    ⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀&quot;,
+      &quot;    ⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠟⠁⠀&quot;,
+      &quot;    ⠀⠀⠻⢿⡿⢿⣿⣿⣿⣿⠟⠛⠛⠋⣀⣀⠙⠻⠿⠿⠋⠻⢿⣿⣿⠟⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⠀⠀⠀⠀⠀⠈⠉⣉⣠⣴⣷⣶⣿⣿⣿⣿⣶⣶⣶⣾⣶⠀⠀⠀⠀⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠋⠈⠛⠿⠟⠉⠻⠿⠋⠉⠛⠁⠀⠀⠀⠀⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⣷⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⠀⠀⠀⠀⠀⢀⣀⣠⣤⣤⣤⣤⣶⣿⣿⣷⣦⣤⣤⣤⣤⣀⣀⠀⠀⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⠀⠀⠀⢰⣿⠛⠉⠉⠁⠀⠀⠀⢸⣿⣿⣧⠀⠀⠀⠀⠉⠉⠙⢻⣷⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⠀⠀⠀⠀⠙⠻⠷⠶⣶⣤⣤⣤⣿⣿⣿⣿⣦⣤⣤⣴⡶⠶⠟⠛⠁⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀&quot;,
+      &quot;    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠒⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠓⠀⠀⠀⠀⠀⠀⠀⠀⠀&quot;,
+    };
+    int i;
+
+    for (i = 0; i &lt; sizeof(EXPLODE) / sizeof(EXPLODE[0]); i++) {
+      printk(&quot;\033[01;31m%s\033[0m\n&quot;, EXPLODE[i]);
+    }
+  } else {
+    printk(&quot;nuke: incorrect secret, cannot lanuch.\n&quot;);
+  }
+  return count;
+}
+
+module_init(lx_init);
+module_exit(lx_exit);
+MODULE_LICENSE(&quot;GPL&quot;);
+MODULE_AUTHOR(&quot;jyy&quot;);
+</code></pre>
+<p>该驱动在 linux 系统启动后被编译成一个 <code>.ko</code> 文件后“动态加载”，其中 lx_init() 和 lx_exit() 的内容非常琐碎 (所以驱动是 bug 重灾区！)，lx_read() 和 lx_write() 是 read()/write() 系统调用会使用的驱动函数。如果我们读 <code>/dev/nuke0</code> 这个设备，会得到 “This is dangerous!&quot;，如果我们向这个设备写入数据，lx_write() 会检查写入的数据是否是 SECRET，如果是就会打印核弹爆炸的图案。</p>
+<blockquote>
+<p><strong>为什么 Linux 中有两种 ioctl?</strong></p>
+<p>在单处理器时代 Linux 中只有 ioctl，后来多处理器时代 Linux 内核加装了 big kernel lock (BKL)，ioctl 执行时默认持有 BKL，从而驱动的执行 (本身较慢) 会使得很多线程被阻塞。后来 Linux 推出了 unlocked_ioctl，高性能的驱动可以使用该 ioctl 来避免上锁，再后来 ioctl 被删除，只剩下 unlocked_ioctl。</p>
+<p>compact_ioctl 是在 64-bit 机器的兼容模式下运行 32-bit 程序时使用的 ioctl。</p>
+</blockquote>
+<h2 id="programming-for-gpu">Programming for GPU</h2>
+<p>GPU 使用的是一种 SIMT (single instruction multiple thread) 的架构：相当于 GPU 里有很多的 CPU core，每个 CPU core 有自己的寄存器，core 之间共享内存 (显存)，但使用同一个 &ldquo;PC指针&rdquo;。因此 GPU 适合处理大量计算的简单任务，众核的优势可以使得重复计算被并行分解。</p>
+<pre><code class="language-c">// mandelbrot.cu
+#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+
+#define MAX_ITER 100
+#define DIM 12800
+static uint32_t colors[MAX_ITER + 1];
+static uint32_t data[DIM * DIM];
+
+__device__ uint32_t mandelbrot(double x, double y) {
+  double zr = 0, zi = 0, zrsqr = 0, zisqr = 0;
+  int i;
+
+  for (i = 0; i &lt; MAX_ITER; i++) {
+    zi = zr * zi * 2 + y;
+    zr = zrsqr - zisqr + x;
+    zrsqr = zr * zr;
+    zisqr = zi * zi;
+    if (zrsqr + zisqr &gt; 4.0) break;
+  }
+  
+  return i;
+}
+
+__global__ void mandelbrot_kernel(uint32_t *data, double xmin, double ymin, double step, uint32_t *colors) {
+  int pix_per_thread = DIM * DIM / (gridDim.x * blockDim.x);
+  int tId = blockDim.x * blockIdx.x + threadIdx.x;
+  int offset = pix_per_thread * tId;
+  for (int i = offset; i &lt; offset + pix_per_thread; i++) {
+    int x = i % DIM;
+    int y = i / DIM;
+    double cr = xmin + x * step;
+    double ci = ymin + y * step;
+    data[y * DIM + x]  = colors[mandelbrot(cr, ci)];
+  }
+  if (gridDim.x * blockDim.x * pix_per_thread &lt; DIM * DIM
+      &amp;&amp; tId &lt; (DIM * DIM) - (blockDim.x * gridDim.x)) {
+    int i = blockDim.x * gridDim.x * pix_per_thread + tId;
+    int x = i % DIM;
+    int y = i / DIM;
+    double cr = xmin + x * step;
+    double ci = ymin + y * step;
+    data[y * DIM + x] = colors[mandelbrot(cr, ci)];
+  }
+}
+
+int main() {
+  float freq = 6.3 / MAX_ITER;
+  for (int i = 0; i &lt; MAX_ITER; i++) {
+    char r = sin(freq * i + 3) * 127 + 128;
+    char g = sin(freq * i + 5) * 127 + 128;
+    char b = sin(freq * i + 1) * 127 + 128;
+    colors[i] = b + 256 * g + 256 * 256 * r;
+  }
+  colors[MAX_ITER] = 0;
+
+  uint32_t *dev_colors, *dev_data;
+  cudaMalloc((void**)&amp;dev_colors, sizeof(colors));
+  cudaMalloc(&amp;dev_data, sizeof(data));
+  cudaMemcpy(dev_colors, colors, sizeof(colors), cudaMemcpyHostToDevice);
+
+  double xcen = -0.5, ycen = 0, scale = 3;
+  mandelbrot_kernel&lt;&lt;&lt;512, 512&gt;&gt;&gt;(dev_data, xcen - (scale / 2), ycen - (scale / 2), scale / DIM, dev_colors);
+
+  cudaMemcpy(data, dev_data, sizeof(data), cudaMemcpyDeviceToHost);
+  cudaFree(dev_data);
+  cudaFree(dev_colors);
+
+  FILE *fp = fopen(&quot;mandelbrot.ppm&quot;, &quot;w&quot;);
+  fprintf(fp, &quot;P6\n%d %d 255\n&quot;, DIM, DIM);
+  for (int i = 0; i &lt; DIM * DIM; i++) {
+    fputc((data[i] &gt;&gt; 16) &amp; 0xff, fp);
+    fputc((data[i] &gt;&gt;  8) &amp; 0xff, fp);
+    fputc((data[i] &gt;&gt;  0) &amp; 0xff, fp);
+  }
+  
+  return 0;
+}
+</code></pre>
+<p><code>mandelbrot.cu</code> 绘制了一个 $12800\times 12800$ (16亿像素) 的图片，每个像素迭代 100 次。程序中的 <code>__device__</code> 使得代码可以被编译成 GPU 可以运行的语言。main() 函数中使用了几个 cuda 的 API：cudaMalloc() 在显存中申请了一些空间，cudaMemcpy() 把计算所需的数据拷贝了过去 (当然是通过 DMA)，cudaFree() 释放显存空间。这样庞大的计算量 GPU 只需要 1.7s 左右就可以完成。</p>
+<p>GPU 上有一套完整的工具链：比如 gcc &ndash;&gt; nvcc，objdump &ndash;&gt; cuobjdump，gdb &ndash;&gt; cuda-gdb，perf &ndash;&gt; nvprof 等等。全套工具链的实现都在驱动里，因此 NVIDIA 的驱动非常复杂。</p>
+<h2 id="abstraction-of-storage-devices">Abstraction of Storage Devices</h2>
+<p>存储设备属于块设备，数据块 (block) 是访问的最小单元，且不支持任意的随机访问。应用程序通常通过文件系统来读写存储设备。</p>
+<p>Linux 的 bio (Block I/O) layer 是文件系统和磁盘设备之间的接口。通常一次磁盘访问会包括多个块的读/写，因此 bio layer 中可以有一些调度策略，比如 Linux 总是优先满足 read 操作 (因为执行 read 的程序一般总是依赖数据继续执行)，延缓 write 操作 (只要没有超过 ddl)。</p>
+<p>简单来说，block I/O layer 的 API 是 bread()，bwrite() 和 bflush()，其中最后一个用于处理一些同步问题。我们的文件系统就是在 bio API 的基础上构建一个持久数据结构，并向上层应用提供更简单易用的接口。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec24/" rel="next">Lecture 24: I/O Devices</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec26/" rel="prev">Lecture 26: File System API</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

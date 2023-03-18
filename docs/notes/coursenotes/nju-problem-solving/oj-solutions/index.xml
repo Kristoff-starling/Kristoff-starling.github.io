@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Solutions to OJ | Yuyao Wang&#39;s Homepage</title>
+    <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/</link>
+      <atom:link href="https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/index.xml" rel="self" type="application/rss+xml" />
+    <description>Solutions to OJ</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 13 Dec 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Solutions to OJ</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/</link>
+    </image>
+    
+    <item>
+      <title>问题求解 II - Final 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/ii-final/</link>
+      <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/ii-final/</guid>
+      <description>&lt;h2 id=&#34;a-为世界所有美好而战&#34;&gt;A. 为世界所有美好而战&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;yjher&lt;/code&gt; 是一名带学生，他有一个梦想，为世界所有美好而战。作为带学生，他首先要解决一个问题，就是选课问题。俗话说，选课一时爽，期末火葬场，为了避免这种情况，他决定根据期末最后的总复习时间 $m$ 来确定选课方案。(每门课只能选一次）&lt;/li&gt;
+&lt;li&gt;已知现在一共有 $n$ 门课，每门课有两个属性 $v_i$ 和 $t_i$，分别表示这门课修完能获得的学分和复习需要花的时间。&lt;/li&gt;
+&lt;li&gt;现在问你复习所花时间的和不超过 $m$ 的情况下，能获得的最高分数。&lt;/li&gt;
+&lt;li&gt;$n\leq 1000,m\leq 10^9,v_i\leq 300,t\leq 3e6$​​​。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;由于 $m$ 的范围过大，而学分 $v_i$​​ 的范围相对较小，因此考虑将学分作为背包dp的状态。&lt;/p&gt;
+&lt;p&gt;令 $dp[i][j]$ 表示当前考虑到第 $i$ 门课，获得 $j$ 学分的情况下所需使用的最小时间，转移是简单的： $dp[i][j]=min{dp[i-1][j],dp[i-1][j-v[i]]+t[i]}$​​。&lt;/p&gt;
+&lt;p&gt;时间复杂度 $O(n\sum v_i)$，可以通过，但空间复杂度 $O(n\sum v_i)$​​ 不能接受。&lt;/p&gt;
+&lt;p&gt;背包dp有一种简单的空间优化的方式，考虑将dp状态压缩成一维 $dp[j]$，双重循环的第 $i$ 轮结束时表示获得 $j$ 学分所需的最小时间。我们只要在内循环中倒序循环，就能保证 $dp[j]$ 的更新来源都是上一层的数据，从而保证了正确性，这样空间复杂度压缩到 $O(\sum v_i)$​。&lt;/p&gt;
+&lt;h2 id=&#34;b-数列&#34;&gt;B. 数列&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 个数的数列 $a[i]$，对于每个 $i$ ,在右边找到一个最靠右的位置 $k$（即 $k$ 尽可能大），满足 $a[k]&amp;lt;a[i]$，输出 $k-i-1$，如果一个都找不到，输出 $-1$。对于序列的每个元素都要输出。&lt;/li&gt;
+&lt;li&gt;$n\leq 500000$​。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;考虑按照权值从小到大的顺序向空序列中依次添加这些数，这样做的好处是，某一次添加 $a[i]$​ 时，数列中已经存在的数一定是比当前数小的数，因此我们只需要一边加数，一边更新下标的最大值即可。（如果下标最大值小于当前数的下标，则答案为-1）。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(nlogn)$​。&lt;/p&gt;
+&lt;h2 id=&#34;c-只有一种英雄主义&#34;&gt;C. 只有一种英雄主义&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;这个世界上只有一种英雄主义，那就是在认清生活的真相后依然热爱它。&lt;code&gt;yjher&lt;/code&gt; 面对着 $n$​​ 个生活的真相，这些生活的真相按序依次排好成为一个数列，&lt;code&gt;yjher&lt;/code&gt; 对每个生活的真相都有 $m$​​ 种热爱等级可选（即可以理解为每个生活真相可以对应于一个 $1$​​ 到 $m$​​ 的热爱等级)。为了让生活看起来不要那么单调，要求相邻的生活真相有不同热爱等级（即如果你在第 $i$​​ 个生活真相中热爱等级是5，那么第 $i+1$​​ 个生活真相的热爱等级就不能是5），且 &lt;code&gt;yjher&lt;/code&gt; 比较偏好数字 $k$​​，他希望所有生活真相总共使用的热爱等级数为恰好 $k$​​ 个。（就比如 $k=3,n=5,m=4$​​，那么 $1,2,3,2,1$​​ 和 $2,3,4,3,2$​​ 就是两个可行方案，但是 $1,2,3,4,3$​​​ 就不是，因为他用了超过3个不同的热爱等级）。&lt;/p&gt;
+&lt;p&gt;现在问你所有可行的方案数。两个方案数认为是不同的，当前仅当两个方案的某个生活真相有不同的热爱等级（就比如 $1,2,3$ 和 $2,3,4$ 就是不同的方案），因为答案可能很大，令答案对 $1e9+7$取模。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$n,m\leq 10^9,k\leq 10^6$​。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-2&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;首先从 $m$ 个等级中选出 $k$ 个来进行安排，这一部分的方案数是 $\binom{m}{k}$，之后的计算默认可选的等级为 1~k。&lt;/p&gt;
+&lt;p&gt;恰好选满了 $k$​ 种等级较难控制，考虑容斥。令 $C(i)$​ 表示在 $k$​ 种等级的其中 $i$​ 种的范围中进行选择的方案数。为了保证相邻不相同的约束，第一个真相有 $i$​ 种选择，后面每一种都只有 $i-1$​ 种选择，因此 $C(i)=i\cdot (i-1)^{n-1}$​。&lt;/p&gt;
+&lt;p&gt;根据容斥原理，&lt;/p&gt;
+&lt;p&gt;$$\begin{align*}ans &amp;amp;= \binom mk\sum_{i=0}^{n-2}(-1)^i\sum_{1\leq a_1,a_2,&amp;hellip;,a_{k-i}\leq k}C(a_1,a_2,&amp;hellip;,a_{k-i}) \\ &amp;amp;= \binom mk \sum_{i=0}^{n-2}(-1)^i\binom kiC(i) \\ &amp;amp;= \binom mk\sum_{i=0}^{n-2}(-1)^i\binom ki(k-i)(k-i-1)^{n-1} \end{align*}$$$\binom mk$ 可以通过下降幂的方式 $O(k)$ 地计算。预处理阶乘及其逆元之后，循环内部的组合数可以 $O(1)$ 计算， $(k-i-1)^{n-1}$ 需要使用快速幂，综上，总时间复杂度为 $O(klogn)$​。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>问题求解 III - 01 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-01/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-01/</guid>
+      <description>&lt;h2 id=&#34;a-最短路1&#34;&gt;A. 最短路1&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给一张 $n$ 个点 $m$ 条边的有向带权图，求 $1$ 号点到所有点的最短路长度。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^5,m\leq 2\times 10^5,1\leq w_i\leq 10^9$​。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;直接使用 Dijkstra 算法求单源最短路即可，注意开 long long。&lt;/p&gt;
+&lt;h2 id=&#34;b-最短路2&#34;&gt;B. 最短路2&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;给一张 $n$ 个点 $m$ 条边的有向带权图，求 $1$ 号点到所有点的最短路长度。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$n\leq 2000,m\leq 5000,-10^9\leq w_i\leq 10^9$​。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;本题图中有负权边，因此应该使用 Bellman-Ford 算法求最短路。总时间复杂度 $O(nm)$。&lt;/p&gt;
+&lt;h2 id=&#34;c-最短路计数&#34;&gt;C. 最短路计数&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给一张 $n$ 个点 $m$ 条边的有向带权图，求 $1$ 号点到所有点的最短路的条数。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^6,m\leq 2\times 10^6,1\leq w_i\leq 10^9$​。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-2&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;先用 Dijkstra 算法求出最短路，然后以最短路长度为顺序进行 dp，对于满足 $dist[u]+w(u,v)=dist[v]$ 的边 $(u,v)$ 进行转移。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(mlogm+n)$。&lt;/p&gt;
+&lt;h2 id=&#34;d-le-mythe-de-acesrc&#34;&gt;D. Le Mythe De Acesrc&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-3&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 个数的集合 ${a_1,a_2,&amp;hellip;,a_n}$，有 $q$ 个询问，每次给定一个 $x$ ，问 $x$ 是否能用集合中的若干个数相加得到（一个数可以用多次）。&lt;/li&gt;
+&lt;li&gt;$n\leq 10000,1\leq a_i\leq 20000,x\leq 10^9$​​，$a_i$ 按照递增序给出。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-3&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;考虑最短路对 $a_n$​ 取模的值，令 $f[i]=argmin_{x}[(x\cdot a_n+i)$​可以构造出来$]$。如果求出了数组 $f$ ，对于一个询问 $x$ ，只要 $\left\lfloor x/a_n\right\rfloor&amp;gt;f[x\space mod \space a_n]$，就可以构造出来（因为有无限个 $a_n$​​ 可用），否则不行。&lt;/p&gt;
+&lt;p&gt;现考虑如何计算 $f[i]$。建图，对于 $i$ 和 $j$，如果存在一个 $a_k$ 使得 $i+a_k=j$​ ，则建一条从 $i$ 到 $j$ ，边权为 $0$ 的有向边；如果存在一个 $a_k$ 使得 $i+a_k=a_n+j$，则建一条从 $i$ 到 $j$ ，边权为 $1$ 的边。这样只要在图上跑一个 01bfs 即可。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(na_n+q)$。&lt;/p&gt;
+&lt;h2 id=&#34;补充题1-luogu1462-通往奥格瑞玛的道路&#34;&gt;补充题1. [Luogu1462] 通往奥格瑞玛的道路&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-4&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;https://www.luogu.com.cn/problem/P1462&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;传送门&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;给一个 $n$ 个点 $m$ 条边的无向图。每条边有一个权值 $w_i$ 表示经过这条边需要耗费的血量。每个顶点有一个权值 $f_i$ 表示经过这个点需要耗费的钱。现从 $1$ 号点出发到 $n$ 号点，对于一条路径，其耗费血量定义为经过的所有边的耗费之和，其耗费的钱定义为经过的所有节点的耗费的最大值。给定初始血量 $b$，问在能够到达终点的情况下耗费钱的最小值。&lt;/li&gt;
+&lt;li&gt;$n\leq 10000,m\leq 500000$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-4&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;二分答案，这样我们每次只要将大于答案的点以及与之相关的边从图中去掉，在剩下的图中跑最短路即可。&lt;/p&gt;
+&lt;h2 id=&#34;补充题2-luogu2371-墨墨的等式&#34;&gt;补充题2. [Luogu2371] 墨墨的等式&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-5&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;https://www.luogu.com.cn/problem/P2371&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;传送门&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;给定 $a_1,a_2,&amp;hellip;,a_n$ 和 $[l,r]$ ，对于方程组 $\sum_{i=1}^na_ix_i=b$​​，求有多少个 $b\in [l,r]$ 使得原方程组有非负整数解。&lt;/li&gt;
+&lt;li&gt;$n\leq 12,1\leq a_i\leq 5\times 10^5,1\leq l\leq r\leq 10^{12}$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-5&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;D题是本题的弱化版。欲解决本题，在求出 dist 数组之后，只需要分类枚举 $a_n$ 的所有余数，然后计算有多少个数落在了 $[l,r]$ 区间内即可。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(na_n)$。&lt;/p&gt;
+&lt;h2 id=&#34;补充题3-luogu4822-冻结&#34;&gt;补充题3. [Luogu4822] 冻结&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-6&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;https://www.luogu.com.cn/problem/P4822&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;传送门&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;给定一张 $n$ 个点 $m$ 条边的图。每条边有一个权值，保证是偶数。现在可以使用不超过 $k$ 次魔法，使用一次魔法可以使得一条边的权值变为原来的一半，每条边至多只能被使用一次魔法。求最短路。&lt;/li&gt;
+&lt;li&gt;$n\leq 50,m\leq 1000$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-6&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;由于最短路经过的边数不会超过 $n$ ，因此实际上 $k$ 可以和 $n$ 取 min（在本题的原限制中 $k$ 已经满足该条件）。&lt;/p&gt;
+&lt;p&gt;考虑重新建图。令 $dist[u][i]$ 表示到点 $u$ ，恰好使用了 $i$ 次魔法的情况下的最小代价。对于原图中的每一条边 $(u,v,w)$，在新图中连边 $((u,i),(v,i),w)$ 和 $((u,i),(v,i+1),w/2)$。&lt;/p&gt;
+&lt;p&gt;新图共有 $n\times k$ 个节点，$m\times k$ 条边，在这张图上跑 Dijkstra 即可。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(mklog(mk))$。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解 III - 02 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-02/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-02/</guid>
+      <description>&lt;h2 id=&#34;a-最长路&#34;&gt;A. 最长路&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。&lt;/li&gt;
+&lt;li&gt;$1\leq n\leq 2\times 10^{5},1\leq m\leq min\{\frac{n(n-1)}{2},5\times 10^5\}$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- more --&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;令 $dp[u]$ 表示从节点 $u$ 出发的最长路长度，则 $dp[u]=max_{(u,v)\in E} dp[v]+w(u,v)$。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(n+m)$。&lt;/p&gt;
+&lt;h2 id=&#34;b-旅行问题&#34;&gt;B. 旅行问题&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 个点的完全图，$A_{ij}$ 表示从 $i$ 到 $j$ 的边权。现要求从任意一点出发，至少经过每个点一次，到任意一点结束，求最小路径长度。&lt;/li&gt;
+&lt;li&gt;$n\leq 20$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;先用 Floyd 预处理两两之间的最短路 $dist[i][j]$。然后考虑状压 dp: 令 $dp[Mask][i]$ 表示当前在节点 $i$ ，已经经过的点的状态为 $Mask$ 的情况下的最小距离，转移考虑枚举上一个节点 $j$ 即可。即
+$$
+dp[Mask][i]=\min_{j\in Mask,j\neq i}dp[Mask-j][j]+dist[i][j]
+$$ 注意我们无需担心在从 $i$ 到 $j$ 的最短路上经过的其他点没有被标注进 $Mask$，因为如果没有被标注进是对答案的损失，而事实上一定有一种转移方式是正确的。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(2^nn^2)$。&lt;/p&gt;
+&lt;h2 id=&#34;c-修建公路&#34;&gt;C. 修建公路&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 个点，没有边的图。再给定 $m$ 条有向边，将其一一加入图中。问对于每一个 $1\leq i\leq m$，在第 $i$ 条边被加入后，有多少个有序对 $(u,v),u\neq v$ 满足有从 $u$ 到 $v$ 的路径。&lt;/li&gt;
+&lt;li&gt;$n\leq 400$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解1&#34;&gt;题解1&lt;/h3&gt;
+&lt;p&gt;考虑给每条边一个权值：它被加入图的时间。定义一条路径的长度为经过的所有边的权值的最大值。则我们用 Floyd-Warshall 算法可以求出多源最短路（考虑 Floyd 的动态规划过程易证其正确性），这个最短路长度 $d(u,v)$ 的意义是从时刻 $d(u,v)$ 开始，以后一直存在从 $u$ 到 $v$ 的路径。因此我们枚举每个点对，根据 $d$ 值看它对答案的贡献即可。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(n^3)$。&lt;/p&gt;
+&lt;h3 id=&#34;题解2&#34;&gt;题解2&lt;/h3&gt;
+&lt;p&gt;对于每条新加的边 $(u,v)$ ，如果在此之前 $u$ 已经可以到 $v$ ，则这条边加的没有意义。否则我们考虑这条边的加入会给传递闭包带来什么影响。&lt;/p&gt;
+&lt;p&gt;考虑对每个节点维护两个 bitset，$b_1(u)$ 表示 $u$ 目前可达的点，$b_2(u)$ 表示目前可达 $u$ 的点。那么对于 $(u,v)$，我们考虑 $b_2(u)$ 中的所有点，给它们的 $b_1$ bitset 或上 $b_1(v)$ 即可，同理对于$b_1(v)$ 中的所有点给它们的 $b_2$ bitset 或上 $b_2(u)$。这样的复杂度为 $O(\frac{mn^2}{w})$，不能通过。&lt;/p&gt;
+&lt;p&gt;考虑做一个简单的优化：对于 $b_2(u)$ 中的点，如果它们可以在加入 $(u,v)$ 之前就可以到达 $v$ ，那么显然这次或操作是无效的，因此我们只对那些 &lt;strong&gt;可以到 $u$ 但不能到 $v$ 的节点&lt;/strong&gt; 进行或操作（这些节点可以通过位运算快速得出）。我们可以证明这样进行或操作的次数最多 $O(n^2)$ 次：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;$n$ 个点的 bitset 中一共有 $O(n^2)$ 个位置，每次或操作至少可以使 bitset 中到 $v$ 的那个位置从 0 变成 1，因此每次或操作都会使 1 的个数增加，所以最多有 $O(n^2)$ 次或操作。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;对于 &lt;strong&gt;$v$ 可到但 $u$ 不能到&lt;/strong&gt; 的节点也是同理。通过复杂度分析，我们可以看到该算法的复杂度降到 $O(\frac{n^3}{w})$。&lt;/p&gt;
+&lt;h2 id=&#34;d-倍数&#34;&gt;D. 倍数&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-3&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定整数 $n$ ，问所有的 $n\times k (k&amp;gt;0)$ 在二进制表示下 $1$​ 的个数最少是多少。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^6$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-2&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;任何一个 $n$ 的倍数都可以通过这个方式生成：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;进行以下操作有限次：&lt;/p&gt;
+&lt;p&gt;给当前数 $+n$ 并 $\times 2$ ，或者给当前数 $+0$ 并 $\times 2$。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这样生成的数必定可以被表示为 $\sum n\times 2^k$ 的形式，因此可以表示所有的 $n$ 的倍数。&lt;/p&gt;
+&lt;p&gt;考虑如下动态规划：令 $dp[i]$ 表示生成一个前缀为 $i$ 的数，在 $i$ 之后的部分最少有多少个 $1$ 。考虑向后转移：进行一次上述的操作可以确定二进制下的一位，所以
+$$
+\begin{align}
+dp[i&amp;gt;&amp;gt;1] &amp;amp;\leftarrow dp[i]+(i\&amp;amp;1) \\
+dp[(i+n)&amp;gt;&amp;gt;1]\ &amp;amp;\leftarrow dp[i]+((i+n)\&amp;amp;1)
+\end{align}
+$$ 由于我们不能确定转移的顺序，所以可以建图之后跑最短路。注意到边权只有 $0$ 和 $1$ 两种，所以用 01bfs 即可。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(n)$。&lt;/p&gt;
+&lt;h2 id=&#34;补充题1-poj1734-sightseeing-trip&#34;&gt;补充题1. [POJ1734] Sightseeing Trip&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-4&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;http://poj.org/problem?id=1734&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;传送门&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;给定一个 $n$ 个点 $m$ 条边的无向图，要求在其中找到一个点数大于 $2$ 的环，使其边权之和最小，输出这个圈或者输出 &lt;code&gt;No solution.&lt;/code&gt; 。&lt;/li&gt;
+&lt;li&gt;$n\leq 100,m\leq 10000$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-3&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;对 Floyd-Warshall 算法的应用。考虑 Floyd 原式的动态规划思想，在第 $k$ 轮循环开始时，$dist[i][j]$ 保存的是从 $i$ 到 $j$ 且中间只经过了 $1$~$k-1$ 的最短距离。因此在第 $k$ 轮循环开始时，我们考虑所有编号最大的点是 $k$ 的环，我们枚举与 $k$ 相邻的两个点 $i$ 和 $j$ $(i,j&amp;lt;k)$，用 $dist[i][j]$ 和 $k$ 与 $i$ ，$k$ 与 $j$ 的边权之和来更新答案。&lt;/p&gt;
+&lt;p&gt;欲打印这个圈，我们对每个 $dist[i][j]$ 额外记录一个 $mid[i][j]$ 表示最短路中权值最大的点是哪个。这样可以将路径分成 $i\rightsquigarrow mid[i][j]$ 和 $mid[i][j]\rightsquigarrow j$ 两部分，递归求解。须要注意的是，路径必须在找到更短路径的同时就出来，否则在后续循环中 $mid[i][j]$ 会被更新。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(n^3)$。&lt;/p&gt;
+&lt;h2 id=&#34;补充题2-luogu1119-灾后重建&#34;&gt;补充题2. [Luogu1119] 灾后重建&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-5&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;https://www.luogu.com.cn/problem/P1119&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;传送门&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;给定一个 $n$ 个点 $m$ 条边的图，第 $i$ 个点会在 $t_i$ 时刻以及之后开放。有 $q$ 个询问，每个询问给定 $x,y,t$ ，问在 $t$ 时刻从 $x$ 到 $y$ 的最短距离。&lt;/li&gt;
+&lt;li&gt;$n\leq 200,q\leq 50000$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-4&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;仍然是对 Floyd-Warshall 算法的应用。我们按照节点开放的时间顺序作为中转点进行 floyd 并实时计算当前应该计算的询问即可。总时间复杂度 $O(n^3)$。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解 III - 03 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-03/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-03/</guid>
+      <description>&lt;h2 id=&#34;a-拓扑排序&#34;&gt;A. 拓扑排序&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个点 $m$ 条边的有向无环图，求字典序最小的拓扑序。&lt;/li&gt;
+&lt;li&gt;$n,m\leq 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;将所有入度为 0 的点加入小根堆，每次取堆顶元素，更新其相邻节点的入度，并将新产生的入度为 0 的点入堆即可。总时间复杂度 $O(m+nlogn)$。&lt;/p&gt;
+&lt;h2 id=&#34;b-acesrc-riding-the-fences&#34;&gt;B. Acesrc Riding the Fences&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个点 $m$ 条边的无向图，保证存在欧拉路径/欧拉回路。求字典序最小的欧拉回路/路径。&lt;/li&gt;
+&lt;li&gt;$n\leq 500,m\leq 1024$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;基于 Fleury 算法的基本思想，给出如下的核心代码。该算法直接贪心地走尽可能小的邻边，不去详细分析某条边是否是桥，如果在有其他选择的时候走了桥，那么在回溯的时候会被自动视为最后走了桥。&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;void fleury(int cur)
+{
+    sta[++stot]=cur;
+    rep(i,1,500) if (ga[cur][i])
+    {
+        ga[cur][i]--;ga[i][cur]--;
+        fleury(i);
+    }
+    ans[++tot]=sta[stot--];
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;时间复杂度 $O(nm)$，使用邻接表存储图可以做到 $O(n+m)$。&lt;/p&gt;
+&lt;h2 id=&#34;c-旅行家&#34;&gt;C. 旅行家&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一张 $n$ 个点 $m$ 条边的带权无向图。一条路径的代价是所有边的边权依次连接起来组成的数的大小。求 1 号节点到每个节点的代价的最小值对 $1e9+7$ 取模的结果。&lt;/li&gt;
+&lt;li&gt;$n,m\leq 10^5,1\leq w\leq 10^9$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-2&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;将每条边拆成位数条边，每条边的权值都是一位数，这样对这幅图做宽搜，边数最少的路径一定也是组成的数位数最小的路径。&lt;/p&gt;
+&lt;p&gt;一个困难点是如何处理权值相同的点。例如 $x$ 和 $y$ 的权值都是 123，$x$ 先出队并更新 $z$ 的权值为 1234 入队，$y$ 再出队并更新 $w$ 的权值为 1231 入队，这时队列中的单调性就被打破了。&lt;/p&gt;
+&lt;p&gt;因此我们应该将权值相同的点一并考虑，对于某种权值，对于所有满足该权值的点，从小到大枚举邻边，并将所有满足条件的相邻点打包起来放进队列。&lt;/p&gt;
+&lt;p&gt;新建的图中将有 $10m$ 级别的边，对于宽搜来说量级是可以接受的。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(\mid w\mid (n+m))$。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解 III - 04 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-04/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-04/</guid>
+      <description>&lt;h2 id=&#34;a-acesrcs-bizarre-adventure&#34;&gt;A. Acesrc&amp;rsquo;s Bizarre Adventure&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个红色的点和 $n$ 个蓝色的点，每个点有坐标 $(x,y)$。如果一个蓝色的点满足两个坐标都是某个红色点坐标的两倍以上，则该蓝点和红点可以配对。问最多能配成多少对。&lt;/li&gt;
+&lt;li&gt;$n\leq 100$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;!-- more --&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;在可以配对的蓝点和红点之间连边，该问题即转化为二分图最大匹配。可以利用匈牙利算法求解，也可以建立超级源点、超级汇点后求最大流。&lt;/p&gt;
+&lt;h2 id=&#34;b-acesrc-doesnt-want-to-bite-the-dust&#34;&gt;B. Acesrc Doesn&amp;rsquo;t Want To Bite The Dust&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;有 $n$ 个二次函数，第 $i$ 个形如 $f_i(x)=a_ix^2+b_ix+c_i$，要求 $x_i\in [L_i,R_i]$。有 $m$ 个额外的限制，每个限制是一个三元组 $(u,v,d)$，表示要求 $x_u\leq x_v+d$。求在满足所有限制的情况下，$\sum_{i=1}^nf_i(x_i)$ 的最大值。&lt;/li&gt;
+&lt;li&gt;$n\leq 50,m\leq 100,-100\leq L_i,R_i\leq 100$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;原型是洛谷3227切糕，比较难想的最小割建模。&lt;/p&gt;
+&lt;p&gt;如果没有额外限制，那么一个最小割模型是显然的：对于每个函数，建一条有 $R-L+1$ 条边的链。每条边的容量是二次函数自变量在该处取值时的函数值。将 $n$ 条链的首尾分别与超级源点，超级汇点连接即可。&lt;/p&gt;
+&lt;p&gt;现在考虑如何满足额外限制。&lt;strong&gt;最小割建模模拟限制的核心思想在于使网络在约束不满足时有无法割去的 $s-t$ 通路。&lt;/strong&gt; 对于一个 $x_u\leq x_v+d$，当 $x_v=x$ 时，我们在 $v$ 的函数上割去的是对应 $x$ 的边，那么 $x+1$ 即以上的边都属于 $T$ 集合。如果此时 $x_u\geq x+d+1$，那么边 $x+d+1$ 左边的节点一定在 $S$ 集合中。因此，我们只要对于每个 $x$，从 $u$ 函数的 $x+d+1$ 边左端点向 $v$ 函数的 $x+1$ 边左端点连容量为 $\infty$ 的边即可。&lt;/p&gt;
+&lt;p&gt;还有一个微小的问题是这样求出的是目标函数的最小值，而我们要求的是最大值。我们可以设定一个很大的阈值 $M$，然后令 $f&amp;rsquo;(x)=M-f(x)$，这样最小化 $\sum_{i=1}^nf&amp;rsquo;(x_i)$ 就是最大化 $\sum_{i=1}^nf(x_i)$。&lt;/p&gt;
+&lt;h2 id=&#34;c-最小化&#34;&gt;C. 最小化&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;有 $n$ 个变量，每个取值可以是 $-w$ 或 $w$。有 $q$ 个限制和一些目标函数，求目标函数最小值。&lt;/li&gt;
+&lt;li&gt;$n\leq 1000，q\leq 3000$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-2&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;每个变量只有两种取值，这种给一些变量进行二分类的需求是最小割模型的典型特征。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;我们建立超级源点、超级汇点，并给每个变量建一个点。在最终完成最小割的残余网络中，如果一个点连向 $s$ 表示它最终的取值是 $-w$，连向 $t$ 表示它最终的取值是 $w$。考虑如何建边以满足约束。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;每个节点向 $s$ 连容量为 $w$ 的边，表示割去这条边意味着该点去了 $T$，会付出 $w$ 的代价。类似地，每个节点向 $t$ 连容量为 $-w$ 的边。&lt;/li&gt;
+&lt;li&gt;对于限制 $w_x\leq w_y$，建立从 $y$ 到 $x$ ，容量为 $\infty$ 的边。这样如果 $y\in S,x\in T$，将会存在无法割去的 $s-t$ 通路。&lt;/li&gt;
+&lt;li&gt;对于限制 $w_x=w_y$ ，分别建立从 $x$ 到 $y$ 和从 $y$ 到 $x$，容量为 $\infty$ 的边。一旦这两个点分属于不同的集合，将会存在无法割去的 $s-t$ 通路。&lt;/li&gt;
+&lt;li&gt;对于限制 $w_x&amp;lt;w_y$，相当于规定了 $w_x=-w,w_y=w$，我们在第一步的约束中修改 $(s,x)$ 和 $(y,t)$ 的容量为 $\infty$ 即可。&lt;/li&gt;
+&lt;li&gt;对于代价函数中的 $c|w_x-w_y|$ 部分，当 $w_x\neq w_y$ 时会产生 $2cw$ 的代价，否则没有代价。因此分别建立从 $x$ 到 $y$ 和从 $y$ 到 $x$，容量为 $2cw$ 的边。一旦这两个点分属于不同的集合，就必须割掉这条边付出相应的代价。&lt;/li&gt;
+&lt;li&gt;对于代价函数中的 $c(w_x-w_y)$ 部分，可以拆括号将系数分到每个变量自己头上。我们再次修改第一步中的权值，提前计算好每个变量在目标函数中被累加的次数，边权乘上该系数即可。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;该网络已经可以模拟原题，但还有一个问题在于该网络中存在负权，不方便使用最大流算法求解。&lt;strong&gt;解决负权的常用手法是先预计算一个小的代价，如果最终选择了大的再补差价&lt;/strong&gt;。以第一种建边为例，我们先预先在答案中加上 $-w\cdot n$，表示先认为每个变量的取值都是 $-w$，这样建边时如果它确实是 $-w$，则代价为0，如果是 $w$ 则代价为 $2w$，从而转为非负权。其他部分的处理手法类似。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解 III - 05 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-05/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-05/</guid>
+      <description>&lt;h2 id=&#34;a-常系数线性递推&#34;&gt;A. 常系数线性递推&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定递推式 $a_n=x_0+\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。&lt;/li&gt;
+&lt;li&gt;$k\leq 60,p\leq 2\times 10^9$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;令向量
+$$
+x_{n}=
+\left(
+\begin{matrix}
+a_n\\a_{n+1}\\ \vdots\\a_{n+k-1}\\x_0
+\end{matrix}
+\right)
+$$
+则令
+$$
+A=\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; \cdots &amp;amp; 0 &amp;amp; 0\\0 &amp;amp; 1 &amp;amp; \cdots &amp;amp; 0 &amp;amp; 0\\
+\vdots &amp;amp; \vdots &amp;amp; &amp;amp; \vdots &amp;amp; \vdots\\0 &amp;amp; 0 &amp;amp; \cdots &amp;amp; 1 &amp;amp; 0\\
+x_k &amp;amp; x_{k-1} &amp;amp; \dots &amp;amp; x_1 &amp;amp; 1\\0 &amp;amp; 0 &amp;amp; \cdots &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
+$$
+有
+$$
+Ax_n=x_{n+1}
+$$
+因此只要求 $A^{p-k+1}x_0$，即可求得 $a_p$。矩阵乘法可以用快速幂加速。总时间复杂度 $O(k^3logp)$。&lt;/p&gt;
+&lt;h2 id=&#34;b-骨牌覆盖&#34;&gt;B. 骨牌覆盖&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $m$ 行 $n$ 列的棋盘，要求用 $1\times 2$ 的骨牌铺满，求方案数。&lt;/li&gt;
+&lt;li&gt;$n\leq 3,m\leq 10^{18}$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;当 $n=1$ 时，显然当 $m$ 为偶数时有 1 种方案，$m$ 为奇数时没有方案。&lt;/p&gt;
+&lt;p&gt;当 $n=2$ 时，容易发现答案是 Fibonacci 数列的第 $m$ 项，使用矩阵快速幂计算答案即可。&lt;/p&gt;
+&lt;p&gt;当 $n=3$ 时，首先考虑一个状压 dp 的思路：令 $dp[i][Mask]$ 表示当前看到第 $i$ 行，第 $i$ 行已经被覆盖的状态为 $Mask$ 的方案数。由于骨牌的长度不超过 2，所以在第 $i$ 行放骨牌只会影响第 $i$ 行和第 $i+1$ 行，从 $dp[i][Mask]$ 可以轻松转移到 $dp[i+1][Mask&amp;rsquo;]$。&lt;/p&gt;
+&lt;p&gt;但此题 $m$ 过大，需要优化该 dp 思路。我们可以把 $dp[i][Mask]\rightarrow dp[i+1][Mask&amp;rsquo;]$ 的转移方式写成一个 $8\times 8$ 的矩阵，将 $dp[i]$ 写成一个 $8$ 维向量，使得乘上该矩阵即可从 $i$ 转移到 $i+1$ ，这样就可以用矩阵快速幂优化了。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(2^nlogm)$。&lt;/p&gt;
+&lt;h2 id=&#34;c-简单的题&#34;&gt;C. 简单的题&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定有 $t$ 条边的无向图，求从 $s$ 到 $t$ 恰好经过了 $n$ 条边的最短路。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^6,t\leq 100$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-2&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;由于边数不多，所以图中的点数至多是百级。设该图的邻接矩阵为 $A$，考虑 $A^n$，其中重新定义矩阵乘法的运算，用 $+$ 代替 $\times$，用 $\min$ 代替 $+$，可以证明这种新式矩阵乘法仍然满足结合律，所以仍然可以矩阵快速幂。$A^n$ 中保存的即为恰好经过 $n$ 条边的最短路。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(t^3logn)$。&lt;/p&gt;
+&lt;h2 id=&#34;d-线段覆盖&#34;&gt;D. 线段覆盖&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-3&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 条线段，第 $i$ 条线段为 $[l_i,r_i]$。每条线段有一个代价 $c_i$，表示可以花费 $c_i$ 的代价使线段向左或向右延长一个单位长度。问要使得这些线段覆盖全部 $[0,m]$ 至少需要多少代价。&lt;/li&gt;
+&lt;li&gt;$n\leq 1000,m\leq 10^6$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-3&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;考虑 $[0,m]$ 上有多少段还没有被线段覆盖，显然“空白段”的数量是 $O(n)$ 级别的。我们发现有如下重要性质：在最优的覆盖方案中，一个空白段不会被多个线段覆盖。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;如果两个线段交汇在一个空白段的中间，那我们总可以缩短代价长的那个线段，增长代价小的线段，使得代价变小。&lt;/li&gt;
+&lt;li&gt;如果两个线段同时覆盖了一整个空白段，可以发现代价小的线段一定能以相同或更小的代价完成两个线段要覆盖的线段，因此不需要大代价线段付出。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;基于以上重要性质，我们可以进行动态规划。令 $dp[i][j]$ 表示当前考虑到第 $i$ 个空白段，第 $i$ 个空白段是被第 $j$ 个线段覆盖的情况下的最小代价。转移分为两种情况：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第 $i-1$ 段空白段也是被第 $j$ 个线段覆盖的，此时只需要根据第 $i-1$ 个空白段，第 $i$ 个空白段和第 $j$ 个线段的位置关系计算第 $j$ 个线段要完整覆盖住第 $i$ 个空白段所需的额外代价即可。&lt;/li&gt;
+&lt;li&gt;第 $i-1$ 段空白段不是被第 $j$ 个线段覆盖的。根据之前分析的性质，我们只需要考虑第 $i-1$ 段空白段被 $min(j,i)$ 之前的线段覆盖，因此只需要维护一个 dp 数组的前缀 min 即可。事实上在写代码时，我们可以直接用 $i-1$ 的全局最小值来更新答案，因为这样只会误计算一些非最优解的值，仍然可以保证我们算出最优解的代价。（当然维护前缀 min也是可以的）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;总时间复杂度 $O(n^2)$。&lt;/p&gt;
+&lt;p&gt;此外在发现性质之后也可以建图跑最短路：为每条线段建一个点，为起点 0 和 终点 $m$ 也各建立一个点。之前的性质可以被翻译为：两条线段在延伸之后的相交处必然在某条线段的端点处。对于两条线段代表的点，我们只需要建从一条线段到另一条线段（左端点和右端点中较近的一个，取决于线段之间的相对位置）延伸所需的代价即可。该图是一个阶数为 $n$ 的稠密图，在上面跑不带堆优化的 Dijkstra 算法，也可在 $O(n^2)$ 内得到结果。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解 III - 06 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-06/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-06/</guid>
+      <description>&lt;h2 id=&#34;a-最大内切球&#34;&gt;A. 最大内切球&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个半平面，求半平面围出的三维凸包的最大内切球的半径。&lt;/li&gt;
+&lt;li&gt;$\sum n\leq 2500$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;设球的半径为 $r$，则我们的约束是球心到每个平面的距离不小于 $r$。此处根据空间解析几何的知识，如果一个半平面形如 $ax+by+cz+d\leq 0$，那么将其单位化之后（即令 $cos\alpha=\frac{a}{\sqrt{a^2+b^2+c^2}},cos\beta=\frac{b}{\sqrt{a^2+b^2+c^2}},$$cos\gamma=\frac{c}{\sqrt{a^2+b^2+c^2}}$，将方程改写为 $cos\alpha\cdot x+cos\beta\cdot y+cos\gamma\cdot z+\rho=0$的形式），直接将点的坐标代入即可得到点到平面的距离，因此每个约束都是一个线性不等式，共有 4 个变量，我们要最大化的式子就是 $r$，用单纯形求解即可。&lt;/p&gt;
+&lt;h2 id=&#34;b-文理分科&#34;&gt;B. 文理分科&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定排成矩阵的 $n\times m$ 个学生，每个学生学文有 $a_{ij}$ 的收益，学理有 $b_{ij}$ 的收益。如果一个学生和他相邻的所有学生都学文/理，可以额外获得 $sa_{ij}/sb_{ij}$ 的收益。求最大收益。&lt;/li&gt;
+&lt;li&gt;$n,m\leq 100$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;考虑最小割，我们先假设所有人拿满了学文学理的收益和区域相同的收益，考虑最少需要扣除多少收益。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;建立超级源点 $S$ 和超级汇点 $T$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对于每个学生，从 $S$ 向他连容量为 $a_{ij}$ 的边，表示如果割去，他去学理，则会损失该部分收益。相似地，从他向 $T$ 连容量为 $b_{ij}$ 的边。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对于每个学生和其相邻人同时学文的情况，我们需要扣除该部分收益当且仅当这些人中至少有一个学理。因此我们从 $S$ 向该学生的一个“副本点”连容量为 $sa_{ij}$ 的边，再从该副本点向该学生及其相邻人连容量为 $\infty$ 的边。这样这些人中一旦有一个人学理，就不得不割去容量为 $sa_{ij}$ 的边。$sb$ 的处理方法类似。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;c-did-you-just-say--acesrc&#34;&gt;C. Did You Just Say &amp;hellip;&amp;hellip; Acesrc?&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $2\times n$ 的“梯子”图，求该图有多少个连通的子图。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^{18}$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-2&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;考虑动态规划。如果从左向右考虑，我们发现一个性质：到第 $i$ 列时，之前的点要么是连通的，要么分属两个连通块，且第 $i$ 列的两个点不连通。令 $f(i)$ 表示当前考虑到第 $i$ 列，只有一个连通块的方案数，$g(i)$ 表示当前考虑到第 $i$ 列，有两个连通块的方案数。稍微考虑以下第 $i$ 个“梯子格子”中的三条边，转移是容易的：
+$$
+\begin{align}
+f(i)=4f(i-1)+g(i-1)\\
+g(i)=2f(i-1)+g(i-1)
+\end{align}
+$$注意到该动态规划是线性递推，因此可以将 $f$ 和 $g$ 写成一个列向量，用矩阵表示转移，从而用矩阵快速幂优化转移。总时间复杂度 $O(logn)$。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解 III - 07 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-07/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-07/</guid>
+      <description>&lt;h2 id=&#34;a-多项式乘法模板&#34;&gt;A. 多项式乘法模板&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 次多项式 $A$ 和一个 $m$ 次多项式 $B$，求乘积。&lt;/li&gt;
+&lt;li&gt;$1\leq n,m\leq 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;可以使用 FFT，介于多项式的系数不会太大，也可以使用 NTT。&lt;/p&gt;
+&lt;h2 id=&#34;b-一个叫yjher的同学决定去做ab-problem&#34;&gt;B. 一个叫yjher的同学决定去做A*B Problem&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定两个大整数 $a,b$，求乘积。&lt;/li&gt;
+&lt;li&gt;$1\leq a,b\leq 10^{200000}$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;设 $a=\overline{a_na_{n-1}\cdots a_1a_0}$，考虑生成函数 $A(x)=a_0+a_1x+\cdots+a_nx^n$​，则 $a=A(10)$，$b$ 也是同理。因此只要求两个生成函数的乘积再将 10 代入即可。&lt;/p&gt;
+&lt;h2 id=&#34;c-方程求解&#34;&gt;C. 方程求解&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;$T$ 组数据，每次给定正整数 $n$，求四元不定方程 $ab+cd=n$ 的解的个数。&lt;/li&gt;
+&lt;li&gt;$T\leq 10000,n\leq 5\times 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-2&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;设 $ab=n$ 的解的个数为 $f(n)$，显然有 $f(n)=\sigma(n)$，其中 $\sigma(n)$ 表示 $n$ 的约数个数。那么原不定方程解的个数为
+$$
+F(n)=\sum_{i=1}^{n-1}f(i)f(n-i)
+$$
+该表达式是卷积形式，可以用 FFT 优化。&lt;/p&gt;
+&lt;p&gt;至于如何求 $\sigma(n)$ ，可以在线性筛素数的同时保存每个数的最小质因子，这样便可在 $O(nlogn)$ 的时间内完成 1-n 所有数的标准分解，从而确定每个数的约数个数。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(nlogn+T)$。&lt;/p&gt;
+&lt;h2 id=&#34;d-讨厌质数的人&#34;&gt;D. 讨厌质数的人&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-3&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个数的集合，求其最大的一个子集，使得子集中的数两两之和都不是质数。&lt;/li&gt;
+&lt;li&gt;$n\leq 3000,1\leq a_i\leq 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-3&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;对于任意两个数，如果它们的和是质数，就在它们之间连一条边。那么该问题就转化为了求图的最大独立集。&lt;/p&gt;
+&lt;p&gt;如果不考虑 1 的参与，那么有边的两个数一定是一个奇数一个偶数，所以这个图是一个二分图。此时再考虑 1，显然最终的集合里不会有两个1，因此如果有多个 1，只保留一个参与最大独立集的计算即可。&lt;/p&gt;
+&lt;p&gt;二分图的最大独立集等于总点数减去最大匹配，用网络流求解即可。一个不太紧的时间复杂度的上界是 $O(n^{2.5})$。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解 III - 10 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-10/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-10/</guid>
+      <description>&lt;h2 id=&#34;a-加密&#34;&gt;A. 加密&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;使用题目中给定的一套类 RSA 算法加密，公钥 $E=2^{30}+3$。已知密文 $w^E\equiv C(mod\space n)$，给定 $n,C$，求原文 $w$。&lt;/li&gt;
+&lt;li&gt;$T\leq 10^5,n\leq 10^{18}$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;根据题目中 $n$ 的生成方式可知，$n=pq$ 且 $p,q$ 的差非常小，因此可以从 $\sqrt n$ 开始往上往下枚举第一个 $n$ 的因子，即可得到 $p$ 和 $q$。那么 $\phi(n)=(p-1)(q-1)$，从而可以用扩展欧几里得求出 $E$ 关于 $\phi(n)$ 的逆元 $D$（密钥）。&lt;/p&gt;
+&lt;p&gt;根据数论知识，我们有 $C^{DE}\equiv w^{DE}\equiv w(mod\space n)$。因此使用快速幂求解 $C^{DE}$ 即可。&lt;/p&gt;
+&lt;p&gt;注：如果使用嵌套快速乘的快速幂，时间复杂度将达到 $O(T\log^2n)$，可能会超时。使用 &lt;code&gt;__int128&lt;/code&gt; 类型可以避免这个问题。&lt;/p&gt;
+&lt;h2 id=&#34;b-可以看见的点&#34;&gt;B. 可以看见的点&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n\times n$ 的方格纸，问从 $(0,0)$ 出发可以画出多少种不同斜率的直线（直线必须经过至少两个格点）。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;设直线经过的另一个格点是 $(a,b)$ ，那么显然只有 $a,b$ 互质我们才应该将其计入答案，否则会导致重复计数。因此
+$$
+\begin{align}
+ans&amp;amp;=\sum_{i=1}^n\sum_{j=1}^n[\gcd(i,j)=1]\\
+&amp;amp;=1+2\sum_{i=1}^n\sum_{j=1}^{i-1}[\gcd(i,j)=1]\\
+&amp;amp;=1+2\sum_{i=1}^n\varphi(i)
+\end{align}
+$$因为此题 $n$ 只有 1e5，所以 $O(\log n)$ 地求每个数的欧拉函数值再求和即可。当 $n$ 更大时可以借助线性筛或数论筛法来解决。&lt;/p&gt;
+&lt;h2 id=&#34;c-powermod&#34;&gt;C. POWERMOD&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $a,b,m$，求 $a^b(mod\space m)$。&lt;/li&gt;
+&lt;li&gt;$a,b,m\leq 10^{18}$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-2&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;此题的难点在于普通的快速幂在执行乘法时会爆 long long，所以我们应当用“快速乘”来代替普通的乘法。快速乘用 $O(\log n)$ 次加法来代替一次乘法，其原理和快速幂完全一样，大致的代码如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;#define LL long long
+LL quick_mul(LL x, LL y, LL m) {
+    LL res = 0;
+    while (y)
+    {
+        if (y &amp;amp; 1) res = (res + x) % m;
+        x = (x + x) % m; y &amp;gt;&amp;gt;= 1;
+    }
+    return res;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样我们可以在 $O(\log ^2n)$ 的时间复杂度内完成快速幂。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解 IV - 02 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iv-02/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iv-02/</guid>
+      <description>&lt;h2 id=&#34;a-majority-3-sat&#34;&gt;A. Majority 3-SAT&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;现有 $k$ 个逻辑变量 $x_1,\cdots, x_k$，给出 $n$ 个三元组 $(a_i,b_i,c_i)$，其中每个逻辑式可以取任意一个逻辑变量或其否定，每个三元组表示三个逻辑式至少两个为真，问是否能找到一种赋值法，满足所有 $n$ 个三元组。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$k, n\leq 10^4$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;对于一个三元组 $(a_i,b_i,c_i)$，由于至少要有两个表达式为 true，所以我们可以将其翻译成如下的一些蕴含式：如果 $a_i$ 为假，则 $b_i$ 为真；如果 $a_i$ 为假，则 $c_i$ 为真……这些逻辑式上的蕴含式最终可以转化成逻辑变量上的蕴含式，每个蕴含式形如“如果 $x_i$ 为真/假，则 $x_j$ 为真/假”。于是这个问题被转化为了一个 2-SAT 问题，以下给出 2-SAT 问题的通用解法：&lt;/p&gt;
+&lt;p&gt;我们为每个逻辑变量建立两个节点，一个表示该逻辑变量取 true，一个表示该逻辑变量取 false。这样我们可以将之前得到的所有蕴含式通过有向边表达在这张图上。我们求出这张图中所有的强连通分量，一个强连通分量中的点的意义是：只要有一个成立，则剩下的所有的都成立。因此如果一个逻辑变量的 true 节点和 false 节点在同一个强连通分量中，则原问题无解；否则我们一定能找到一种安排方案满足所有蕴含式，从而满足所有三元组的要求。&lt;/p&gt;
+&lt;h2 id=&#34;b-旅行问题&#34;&gt;B. 旅行问题&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 个点的带权图，求从任意点出发，遍历所有节点至少一次并在任意点结束的最小距离。&lt;/li&gt;
+&lt;li&gt;$n\leq 20$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;考虑状态压缩动态规划。令 $dp(Mask, i)$ 表示当前在节点 $i$，已经经历过的点为 $Mask$ 的最小距离。转移是容易的：枚举下一个去的节点 $j$，则
+$$
+dp(Mask+j, j)=\min(dp(Mask\cup j,j),dp(Mask, i)+w_{ij})
+$$
+总时间复杂度 $O(n^2\cdot 2^n)$。&lt;/p&gt;
+&lt;h2 id=&#34;c-极大团&#34;&gt;C. 极大团&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个点 $m$ 条边的图，求图中极大团的个数。&lt;/li&gt;
+&lt;li&gt;$n\leq 18$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-2&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;我们枚举所有可能的点集 $S$，然后检查图中的每个节点 $v$：对于任意 $v\in S$，应当有 $S\subseteq neigh(v)$；对于任意 $v\notin S$，应当有 $S-neigh(v)\neq \emptyset$。提前预处理每个点 $v$ 的 $neigh(v)$，检查可以在线性时间内完成。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(n\cdot 2^n)$。&lt;/p&gt;
+&lt;h2 id=&#34;d-扫地机器人&#34;&gt;D. 扫地机器人&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-3&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n\times m$ 的方格纸，求一条从 $(x,y)$ 出发，将所有格子经过恰好一次，在任意格子结束的路径。&lt;/li&gt;
+&lt;li&gt;$n,m\leq 500$，且 $n,m$ 中至少有一个是偶数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-3&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;下面的讨论中我们假设 $m$ 是偶数。偶数给了我们这样一个好的性质：要么 $y$ 和 $m-y$ 都是偶数，要么 $y-1$ 和 $m+1-y$ 都是偶数，因此我们可以给出一个形如这样的哈密尔顿回路构造方法：&lt;/p&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/PS4.2-SweepingRobot.JPEG&#34; alt=&#34;img&#34; style=&#34;zoom: 33%;&#34; /&gt;
+&lt;p&gt;（注：上图是 $y$ 是偶数的情况；如果 $y$ 是奇数则先向右走。）&lt;/p&gt;
+&lt;p&gt;为了代码书写的简便，我们可以先在旋转/翻转的地图上走出路径，然后再将路径逆旋转/翻转回去。这样代码量会减小很多。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解 IV - 03 题解</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iv-03/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iv-03/</guid>
+      <description>&lt;h2 id=&#34;a-game&#34;&gt;A. Game&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 个节点的树，现要求将一些节点涂黑，使得每条边的两个端点都至少有一个被涂黑。求涂黑节点的最小个数。&lt;/li&gt;
+&lt;li&gt;$n\leq 1500$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;考虑树上动态规划：令 $dp(u,0/1)$ 表示当前考虑以 $u$ 为根的子树，$u$ 这个节点不涂黑/涂黑的情况下子树内最小需要涂黑的节点个数，转移是简单的：
+$$
+\begin{align}
+dp(u,0)&amp;amp;=\sum_{v\in son(u)}dp(v,1)\\
+dp(u,1)&amp;amp;=1+\sum_{v\in son(u)}\min(dp(v,0),dp(v,1))
+\end{align}
+$$
+总时间复杂度 $O(n)$。&lt;/p&gt;
+&lt;h2 id=&#34;b-01背包问题&#34;&gt;B. 01背包问题&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-1&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个物品，第 $i$ 个物品的体积是 $v_i$，价值是 $c_i$。现给定背包容量 $V$，问背包容量限制下可以取到的最大价值是多少。&lt;/li&gt;
+&lt;li&gt;$n\leq 40,v_i,c_i\leq 10^9$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
+&lt;p&gt;该题的题面是经典的01背包问题，但由于体积和价值都过大，所以无法使用动态规划求解。&lt;/p&gt;
+&lt;p&gt;考虑折半搜索：将物品分成前 $n/2$ 个和后 $n/2$ 个两部分，对于每一部分都枚举所有可能的选取子集，从而得到两堆 &lt;code&gt;(体积,价值)&lt;/code&gt; 对。我们现在的目标是从第一个堆和第二个堆里各选出一个 pair，使得它们的体积之和不超过上限且价值之和最大。&lt;/p&gt;
+&lt;p&gt;我们将两堆数对都按照体积从小到大排序，然后倒序枚举第一堆里的每个 pair，随着第一个堆里体积的减小，第二个堆里可行的体积上限逐渐增大，这个过程是单调的，因此我们枚举的过程中动态维护第二个堆中可行 pair 的价值的最大值即可。&lt;/p&gt;
+&lt;p&gt;总时间复杂度 $O(\frac{n}{2}\cdot 2^{\frac{n}{2}})$。&lt;/p&gt;
+&lt;h2 id=&#34;c-虫食算&#34;&gt;C. 虫食算&lt;/h2&gt;
+&lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个字母竖式，求出一个字母-数字的映射，使得竖式成立。&lt;/li&gt;
+&lt;li&gt;竖式中数的位数 $\leq 21$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;题解-2&#34;&gt;题解&lt;/h2&gt;
+&lt;p&gt;按照竖式从右到左的顺序搜索+剪枝。剪枝主要关注数字不能重复使用，以及每一列枚举了两个数字第三个数字就可以直接算出来这两个特性。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

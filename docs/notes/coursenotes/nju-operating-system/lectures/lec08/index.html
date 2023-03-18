@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。
+Defensive Programming 一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。
+assert() 虽然不一定能写得对，但如果 assert() 和代码出错的概率是独立的，那么写 assert() 就使得程序出错的概率降低了一个数量级。
+Concurrent Bugs Deadlock 一个中断相关的死锁
+void os_run() { spin_lock(&amp;lk); spin_lock(&amp;xxx); spin_unlock(&amp;xxx); //------&#43; }	// | //	| Interrupt void on_interrupt()	//	| {	//	| spin_lock(&amp;lk); // &lt;-------&#43; .">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec08/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec08/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec08/">
+  <meta property="og:title" content="Lecture 08: Concurrent Bugs and Confrontation | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。
+Defensive Programming 一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。
+assert() 虽然不一定能写得对，但如果 assert() 和代码出错的概率是独立的，那么写 assert() 就使得程序出错的概率降低了一个数量级。
+Concurrent Bugs Deadlock 一个中断相关的死锁
+void os_run() { spin_lock(&amp;lk); spin_lock(&amp;xxx); spin_unlock(&amp;xxx); //------&#43; }	// | //	| Interrupt void on_interrupt()	//	| {	//	| spin_lock(&amp;lk); // &lt;-------&#43; ."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 08: Concurrent Bugs and Confrontation | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec02/">02: OS上的程序</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec03/">03: 并发编程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec04/">04: 理解并发</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec05/">05: 并发-互斥</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec06/">06: 并发-同步</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec07/">07: 并发-应用</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec08/">08: 并发bug</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec09/">09: OS的状态机</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec10/">10: 状态机应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec11/">11: OS的进程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec12/">12: 地址空间</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec13/">13: 系统调用和 Shell</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec14/">14: LibC</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec15/">15: fork()</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec16/">16: 可执行文件</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec17/">17: 链接和加载</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec18/">18: xv6 概览</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec19/">19: 上下文切换</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec20/">20: 处理器调度</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec21/">21: OS设计</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec22/">22: OSLab速通</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec23/">23: 1Bit的存储</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec24/">24: I/O设备</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec25/">25: 设备驱动</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec26/">26: FS API</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec27/">27: FAT和UNIX文件系统</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec28/">28: 存储可靠性</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec29/">29: Xv6 FS</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec30/">30: 现代存储</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 08: Concurrent Bugs and Confrontation</h1>
+
+          <div class="article-style">
+            <p>Bug 多的根本原因：软件是需求在计算机世界的投影，人类世界的很多性质在编程语言中丧失了。</p>
+<h2 id="defensive-programming">Defensive Programming</h2>
+<p>一个好的策略是添加很多的 assert()，assert() 的核心意义在于将程序的需求表达出来。</p>
+<p>assert() 虽然不一定能写得对，但如果 assert() 和代码出错的概率是独立的，那么写 assert() 就使得程序出错的概率降低了一个数量级。</p>
+<h2 id="concurrent-bugs">Concurrent Bugs</h2>
+<h3 id="deadlock">Deadlock</h3>
+<blockquote>
+<p><strong>一个中断相关的死锁</strong></p>
+<pre><code class="language-c">void os_run()
+{
+ spin_lock(&amp;lk);
+ spin_lock(&amp;xxx);
+ spin_unlock(&amp;xxx); //------+
+}					   //  	   |
+					   //	   | Interrupt
+void on_interrupt()	   //	   |
+{					   //	   |
+ spin_lock(&amp;lk); // &lt;-------+
+ ...
+ spin_unlock(&amp;lk);
+}
+</code></pre>
+<p>上锁的时候要关中断，且锁出现嵌套的时候，需要一个计数器来维护嵌套层数，只有完全无锁的时候才能开中断 (释放锁的时候不能莽开中断)。</p>
+</blockquote>
+<ul>
+<li>
+<p>AA-deadlock：某个线程在试图获得自己已经获得的锁。这很容易检测出来。在编程的时候理应多使用如下的防御性编程：</p>
+<pre><code class="language-c">if (holding(lk)) panic();
+</code></pre>
+</li>
+<li>
+<p>ABBA-deadlock：进程在互相等待别人的锁。lock-ordering 是一种好的防御方法：系统中所有的锁必须排出一个无环的拓扑序。</p>
+<blockquote>
+<p>model checker 可以可视化地帮我们检查是否有死锁。如果某个节点所有的出边都指向自己，这就是一个陷入死锁的状态。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="data-race">Data Race</h3>
+<p>两个线程在同一时间访问同一个地址，且至少有一个是写。之所以被称为“竞争”是因为运行的结果取决于“谁跑赢了”。</p>
+<h3 id="atomicity-violation-av--order-violation-ov">Atomicity Violation (AV) &amp; Order Violation (OV)</h3>
+<p>TOCTTOU (time of check to time of use)：某段代码通常会检查某个条件 (time to check)，然后在认为这个条件的成立是 invariant 的情况下对其进行某种操作 (time of use)，但如果其他程序在中间插入做了某个改变 invariant 的操作，就会产生 bug。</p>
+<pre><code>                       TIME		
+/home/abc/mailbox       |
+a symbolic link?        |
+      |                 |   Delete /home/abc/mailbox
+      |                 |
+      | No              |   Create symbolic link
+      |                 |   ~/mailbox, pointing to 
+      |                 |   /etc/passwd
+Append the new message  |
+to /home/abc/mailbox    |
+</code></pre>
+<p>在上述过程中，如果攻击者利用 TOC 和 TOU 之间的窗口期将 <code>/home/abc/mailbox</code> 指向某个非法的文件 (打破了 kernel 之前检查的条件)，kernel 就可能会给普通用户 root 权限。</p>
+<h2 id="bugs-confrontation">Bugs Confrontation</h2>
+<h3 id="lockdep">Lockdep</h3>
+<p>我们可以为每把锁一个全局唯一的 allocation site。在所有获得锁/释放锁的时间点记录一份日志，然后对日志进行分析 (观察上锁顺序)，如果对于某两把锁 $x,y$，我们能观测到 $x\rightsquigarrow y\and y\rightsquigarrow x$，则检测出了可能的死锁。</p>
+<pre><code class="language-c">// lock-site.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;assert.h&gt;
+
+typedef struct lock {
+  int locked;
+  const char *site;
+} lock_t;
+
+#define STRINGIFY(s) #s
+#define TOSTRING(s)  STRINGIFY(s)
+#define LOCK_INIT() \
+  ( (lock_t) { .locked = 0, .site = __FILE__ &quot;:&quot; TOSTRING(__LINE__), } )
+
+lock_t lk1 = LOCK_INIT();
+lock_t lk2 = LOCK_INIT();
+
+void lock(lock_t *lk) {
+  printf(&quot;LOCK   %s\n&quot;, lk-&gt;site);
+}
+
+void unlock(lock_t *lk) {
+  printf(&quot;UNLOCK %s\n&quot;, lk-&gt;site);
+}
+
+struct some_object {
+  lock_t lock;
+  int data;
+};
+
+void object_init(struct some_object *obj) {
+  obj-&gt;lock = LOCK_INIT();
+}
+
+int main() {
+  lock(&amp;lk1);
+  lock(&amp;lk2);
+  unlock(&amp;lk1);
+  unlock(&amp;lk2);
+
+  struct some_object *obj = malloc(sizeof(struct some_object));
+  assert(obj);
+  object_init(obj);
+  lock(&amp;obj-&gt;lock);
+
+  lock(&amp;lk2);
+  lock(&amp;lk1);
+  return 0;
+}
+</code></pre>
+<p>上面的 <code>lock-site.c</code> 提供了一种简单的为每个锁提供唯一 allocation site 的方法，其中的一些宏定义值得学习。</p>
+<h3 id="sanitizer">Sanitizer</h3>
+<p>运行时的动态检查。AddressSanitizer 可以检查内存访问的 bug (监控所有的内存访问)，ThreadSanitizer 可以检查数据竞争 (内存访问 + lock/unlock)，此外还有 UBSanitizer, MemorySanitizer 等。</p>
+<pre><code class="language-c">// uaf.c
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+int main() {
+  int *ptr = malloc(sizeof(int));
+  *ptr = 1;
+  free(ptr);
+  *ptr = 1;
+}
+</code></pre>
+<p>上述程序存在 use-after-free 问题。在编译时加入 <code>-fsanitize=address</code>，运行程序时，我们可以得到丰富的报错信息。</p>
+<h3 id="lightweight-tools">Lightweight Tools</h3>
+<h4 id="stack-canary">Stack Canary</h4>
+<p>在栈顶和栈底设置一些存储了特殊值的内存单元 (金丝雀) 并定期检查这些单元。如果这些单元被修改了，说明发生了栈溢出。我们只需很短的代码就可以完成 stack canary：</p>
+<pre><code class="language-c">#define MAGIC 0x55555555
+#define BOTTOM (STK_SZ / sizeof(u32) - 1)
+struct stack { char data[STK_SZ]; };
+
+void canary_init(struct stack *s) {
+  u32 *ptr = (u32 *)s;
+  for (int i = 0; i &lt; CANARY_SZ; i++)
+    ptr[BOTTOM - i] = ptr[i] = MAGIC;
+}
+
+void canary_check(struct stack *s) {
+  u32 *ptr = (u32 *)s;
+  for (int i = 0; i &lt; CANARY_SZ; i++) {
+    panic_on(ptr[BOTTOM - i] != MAGIC, &quot;underflow&quot;);
+    panic_on(ptr[i] != MAGIC, &quot;overflow&quot;);
+  }
+}
+</code></pre>
+<p>我们有时在 windows 中会看到的 &ldquo;烫烫烫&rdquo; 等字，其实是 stack canary 在 GB2312 编码下的结果：</p>
+<ul>
+<li>未初始化栈: <code>0xcccccccc</code></li>
+<li>未初始化堆: <code>0xcdcdcdcd</code></li>
+<li>对象头尾: <code>0xfdfdfdfd</code></li>
+<li>已回收内存: <code>0xdddddddd</code></li>
+</ul>
+<p>我们可以用</p>
+<pre><code class="language-python">(b'\xcc' * 80).decode('gb2312')
+</code></pre>
+<p>查看使用未初始化栈时得到的内容 (烫烫烫)。</p>
+<h4 id="lightweight-lockdep">Lightweight Lockdep</h4>
+<p>很多情况下，我们可以在自旋锁自旋次数过多的时候直接报警，然后利用 GDB 的 backtrace 功能观察是否真的发生了死锁。</p>
+<pre><code class="language-c">int spin_cnt = 0;
+while (xchg(&amp;locked, 1)) {
+  if (spin_cnt++ &gt; SPIN_LIMIT) {
+    printf(&quot;Too many spin @ %s:%d\n&quot;, __FILE__, __LINE__);
+  }
+}
+</code></pre>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec07/" rel="next">Lecture 07: Concurrent Programming: Real World</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec09/" rel="prev">Lecture 09: State Machine of OS</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

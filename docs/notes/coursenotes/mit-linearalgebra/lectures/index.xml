@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Lectures | Yuyao Wang&#39;s Homepage</title>
+    <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/</link>
+      <atom:link href="https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/index.xml" rel="self" type="application/rss+xml" />
+    <description>Lectures</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Lectures</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/</link>
+    </image>
+    
+    <item>
+      <title>MIT-18.06 Lecture 01: The Geometric Interpretation of Equations</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec01/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec01/</guid>
+      <description>&lt;p&gt;Consider 2 equations with 2 unknowns. Here&amp;rsquo;s an example:
+$$
+\begin{cases}
+2x-y=0\\
+-x+2y=3
+\end{cases}
+$$
+In linear algebra, we have $A=\left [\begin{matrix}2 &amp;amp; -1\\-1 &amp;amp; 2\end{matrix}\right ]$ the coefficient matrix, vector $\mathbf{x}=\left(\begin{matrix}x\\y\end{matrix}\right)$,  $\mathbf{b}=\left(\begin{matrix}0\\3\end{matrix}\right)$. Then the equations can be written in the form
+$$
+A\mathbf{x}=\mathbf{b}
+$$
+If we focus on the &amp;ldquo;column picture&amp;rdquo;, the equations can be regarded as &lt;strong&gt;linear combinations&lt;/strong&gt; of vectors
+$$
+x\begin{bmatrix}2 \\-1\end{bmatrix}+y\begin{bmatrix}-1\\2\end{bmatrix}=\begin{bmatrix}0\\3\end{bmatrix}
+$$
+The column picture of the solution to the equations is shown below:&lt;/p&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/mit1806-lec01.png&#34; alt=&#34;image-20210826223648690&#34; style=&#34;zoom:33%;&#34; /&gt;
+&lt;p&gt;Under the idea of linear combinations, the question&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Can I solve $A\mathbf{x}=\mathbf{b}$ for every $\mathbf{b}\in \mathbb{R}^n$ ?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;is equivalent to the question&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Do the combinations of the columns fill the n-dimensional space?&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The answer is not always &amp;ldquo;yes&amp;rdquo;. For instance, if one vector is the combination of another 2 vectors, the combinations of the columns cannot fill the whole space. This case is called a &lt;strong&gt;singular&lt;/strong&gt; case and the coefficient matrix $A$ is &lt;strong&gt;not invertible&lt;/strong&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;The product of a matrix and a vector
+$$
+\left [\begin{matrix}a &amp;amp; b\\c &amp;amp; d\end{matrix}\right]\left (\begin{matrix}x\\y\end{matrix}\right)=\left (\begin{matrix}ax+by\\cx+dy\end{matrix}\right)
+$$
+can be understood as
+$$
+\left [\begin{matrix}a &amp;amp; b\\c &amp;amp; d\end{matrix}\right]\left (\begin{matrix}x\\y\end{matrix}\right)=x\left(\begin{matrix}a\\c\end{matrix}\right)+y\left(\begin{matrix}b\\d\end{matrix}\right)
+$$
+which means that $A\mathbf{x}$ can be interpreted as the linear combinations of vectors.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-18.06 Lecture 02: Elimination Matrices</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec02/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec02/</guid>
+      <description>&lt;p&gt;Consider the 3 equations with 3 unknowns:
+$$
+\begin{cases}
+x+2y+z = 2\\
+3x+8y+z = 12\\
+4y+z = 2
+\end{cases}
+$$
+The coefficient matrix
+$$
+A=\left[
+\begin{matrix}
+1 &amp;amp; 2 &amp;amp; 1\\
+3 &amp;amp; 8 &amp;amp; 1\\
+0 &amp;amp; 4 &amp;amp; 1
+\end{matrix}
+\right]
+$$
+The process of elimination is
+$$
+\left[
+\begin{matrix}
+1 &amp;amp; 2 &amp;amp; 1\\
+3 &amp;amp; 8 &amp;amp; 1\\
+0 &amp;amp; 4 &amp;amp; 1
+\end{matrix}
+\right]
+\overset{(2,1)}{\rightarrow}
+\left[
+\begin{matrix}
+1 &amp;amp; 2 &amp;amp; 1\\
+0 &amp;amp; 2 &amp;amp; -2\\
+0 &amp;amp; 4 &amp;amp; 1
+\end{matrix}
+\right]
+\overset{(3,2)}{\rightarrow}
+\left[
+\begin{matrix}
+1 &amp;amp; 2 &amp;amp; 1\\
+0 &amp;amp; 2 &amp;amp; -2\\
+0 &amp;amp; 0 &amp;amp; 5
+\end{matrix}
+\right]
+$$
+The basic procedure is repeatedly choosing pivots (Pivots cannot be zero) and using the pivot to eliminate other lines. The final target is the upper triangle matrix $U$.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;When a non-zero pivot cannot be chosen from the currently available equations, the elimination failed.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To find the solution to the equations, we need to apply the elimination steps on the &lt;strong&gt;augmented matrix&lt;/strong&gt;. Augmented matrix means the coefficient matrix with an extra column.
+$$
+\left[
+\begin{matrix}
+1 &amp;amp; 2 &amp;amp; 1 &amp;amp; 2\\
+3 &amp;amp; 8 &amp;amp; 1 &amp;amp; 12\\
+0 &amp;amp; 4 &amp;amp; 1 &amp;amp; 2
+\end{matrix}
+\right]
+\overset{(2,1)}{\rightarrow}
+\left[
+\begin{matrix}
+1 &amp;amp; 2 &amp;amp; 1 &amp;amp; 2\\
+0 &amp;amp; 2 &amp;amp; -2 &amp;amp; 6\\
+0 &amp;amp; 4 &amp;amp; 1 &amp;amp; 2
+\end{matrix}
+\right]
+\overset{(3,2)}{\rightarrow}
+\left[
+\begin{matrix}
+1 &amp;amp; 2 &amp;amp; 1 &amp;amp; 2\\
+0 &amp;amp; 2 &amp;amp; -2 &amp;amp; 6\\
+0 &amp;amp; 0 &amp;amp; 5 &amp;amp; -10
+\end{matrix}
+\right]
+$$&lt;/p&gt;
+&lt;p&gt;Typically, we call the target of $\mathbf{b}$​​​ the vector $\mathbf{c}$​​​. The target of elimination is to transform $A\mathbf{x}=\mathbf{b}$​ into $U\mathbf{x}=\mathbf{c}$. After back substitution, the solution is $x=2, y=1,z=-2$​​​.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;In the last lecture we mentioned that a matrix multiplying a column vector can be interpreted as linear combinations of the column vectors of the matrix. In the same way,&lt;/p&gt;
+&lt;p&gt;$$
+(x,y,z)\begin{bmatrix}a_1 &amp;amp; a_2 &amp;amp; a_3\\b_1 &amp;amp; b_2 &amp;amp; b_3\\c_1 &amp;amp; c_2 &amp;amp; c_3\end{bmatrix}=x\cdot (a_1,a_2,a_3)+y\cdot (b_1,b_2,b_3)+z\cdot (c_1,c_2,c_3)
+$$&lt;/p&gt;
+&lt;p&gt;a row vector multiplying a matrix can be interpreted as linear combinations of the row vectors of the matrix.&lt;/p&gt;
+&lt;p&gt;So we can use “matrix language” to explain the above elimination steps.&lt;/p&gt;
+&lt;p&gt;Step 1: Subtract $3\times row_1$ from $row_2$​ (the target is to eliminate (2,1), so we call it $E_{2,1}$, here $E$ means elementary or elimination)
+$$
+E_{2,1}=\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\-3 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
+$$
+Step 2: Subtract $2\times row_2$ from $row_3$
+$$
+E_{3,2}=\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\0 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; -2 &amp;amp; 1\end{matrix}\right]
+$$
+So in matrix language, the above elimination steps can be written as
+$$
+E_{3,2}\cdot (E_{2,1}\cdot A)=U
+$$
+which is extremely simple. Notice that matrix multiplication satisfies the associative law, so we can use an $E=E_{3,2}\cdot E_{2,1}$ to directly achieve the goal.&lt;/p&gt;
+&lt;p&gt;In this case we only need one type of elementary matrix: subtract $x\times row_i$ from $row_j$. But in some cases we need to do row exchanges, and we need another type of elementary matrix: the &lt;strong&gt;permutation matrix&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Under the idea of linear combinations of row vectors, it’s super-easy to construct a permutation matrix. Take the $2\times 2$ matrix as an example:
+$$
+\left[\begin{matrix}0 &amp;amp; 1\\1 &amp;amp; 0\end{matrix}\right]
+\left[\begin{matrix}a &amp;amp; b\\c &amp;amp; d\end{matrix}\right]=
+\left[\begin{matrix}c &amp;amp; d\\a &amp;amp; b\end{matrix}\right]
+$$&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Permutation matrices that do column exchanges have the similar principle. But notice that matrices multiplied on the left are responsible for row transformation, if we want to do column transformation we need to multiply the matrix on the right, that is&lt;/p&gt;
+&lt;p&gt;$$
+\begin{bmatrix}a &amp;amp; b\\c &amp;amp; d\end{bmatrix}\begin{bmatrix}0 &amp;amp; 1\\1 &amp;amp; 0\end{bmatrix}=\begin{bmatrix}b &amp;amp; a\\d &amp;amp; c\end{bmatrix}
+$$&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;p&gt;Take the elementary matrix from the last lecture as an example to talk a little about inverse:
+$$
+\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\-3 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
+$$
+the function of the matrix is to subtract $3\times row_1$ from $row_2$. So if there’s a matrix that can “undo” the operation, its function is to add $3\times row_1$ to $row_2$, which leads to
+$$
+\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\3 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
+\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\-3 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]=
+\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\0 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
+$$
+we can simply write it as $E^{-1}\cdot E=I$. The matrix on the left is the &lt;strong&gt;inverse matrix&lt;/strong&gt; of the matrix on the right.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-18.06 Lecture 03: Multiplication and Inverse Matrix</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec03/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec03/</guid>
+      <description>&lt;p&gt;Suppose $AB=C$ and $A,B,C$ are matrices, the formula for calculating a single entry of $C$ is
+$$
+C_{i,j}=(row_i\space of\space A)\cdot(col_j\space of\space B)=\sum_{k=1}^nA_{i,k}B_{k,j}
+$$
+To apply matrix multiplication, we must ensure that the number of columns of $A$​ equals the number of row s of $B$​. If $A$​ is $m\times n$​ in size and $B$​ is $n\times p$​ in size, then C is $m\times p$​ in size.&lt;/p&gt;
+&lt;p&gt;According to what we’ve covered in the last two lectures, if we divide $B$ into several columns, then $C$ can be interpreted as several linear combinations of column vectors of $A$ sitting together. Similarly, if we divide $A$ into several rows, $C$​ can be interpreted as several linear combinations of row vectors of $B$ sitting together.&lt;/p&gt;
+&lt;p&gt;The fourth way of doing matrix multiplication is
+$$
+C=\sum_{k=1}^n(col_i\space of A)\times (row_i\space of\space B)
+$$
+notice that here we use the cross product. The matrix produced by $(col_i\space of\space A)\times (row_i\space of\space B)$ has some good properties: each column of the result matrix is multiples of $(col_i\space of\space A)$ and each row of the result matrix is multiples of $(row_i\space of\space B)$. In other words, the row space and column space of the result matrix are both a single line.&lt;/p&gt;
+&lt;p&gt;The fifth way is block multiplication. For example, if $A$ and $B$ are square matrices, we divide $A$ and $B$ into four blocks, then
+$$
+C=\left[\begin{matrix}C_1 &amp;amp; C_2\\C_3 &amp;amp; C_4\end{matrix}\right]
+=\left[\begin{matrix}A_1 &amp;amp; A_2\\A_3 &amp;amp; A_4\end{matrix}\right]
+\left[\begin{matrix}B_1 &amp;amp; B_2\\B_3 &amp;amp; B_4\end{matrix}\right]
+$$
+$C_1=A_1B_1+A_2B_3$ ,here the multiplication are all matrix multiplication. Other blocks follow the same rule.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;For convenience, let’s focus on the inverses of square matrices.&lt;/p&gt;
+&lt;p&gt;If a square matrix $A$ has an inverse, then $A^{-1}A=I$. Here for square matrices, the left inverse equals to the right inverse, so $AA^{-1}$ will also give $I$​.&lt;/p&gt;
+&lt;p&gt;Let’s consider the cases that a square matrix has no inverse, which we call it singular or non-invertible.
+$$
+A=\left[\begin{matrix}1 &amp;amp; 3\\2 &amp;amp; 6\end{matrix}\right]
+$$
+Why doesn’t it have an inverse? Suppose it has an inverse matrix, consider the linear combinations of the row vectors of $A$. The two vectors are collinear, so it’s impossible to make the linear combinations equals $(1,0)$ and $(0,1)$.&lt;/p&gt;
+&lt;p&gt;We can consider it in another way: &lt;strong&gt;We can find a non-zero vector $\mathbf{x}$ such that $A\mathbf{x}=0$​&lt;/strong&gt;. For this example, $\mathbf{x}=\left(\begin{matrix}3\\-1\end{matrix}\right)$ is a suitable column vector. If there exists a non-zero vector $\mathbf{x}$ such that $A\mathbf{x}=0$, then suppose $A$​ has an inverse, then $A^{-1}(A\mathbf{x})=(A^{-1}A)\mathbf{x}=I\mathbf{x}=\mathbf{x}\neq 0$，however, $A^{-1}\cdot 0=0$, which leads to a contradiction.&lt;/p&gt;
+&lt;p&gt;The two ways describe the same thing: &lt;strong&gt;If one of the row/column is useless, i.e. it can be constructed by other rows/columns, the matrix is non-invertible.&lt;/strong&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;For the invertible/non-singular matrices, how to calculate the inverse? Here we introduce the Gauss-Jordan method.&lt;/p&gt;
+&lt;p&gt;Consider an invertible $2\times 2$ square matrix
+$$
+\left[\begin{matrix}1 &amp;amp; 3\\2 &amp;amp; 7\end{matrix}\right]
+$$
+let’s put the identity matrix besides it to make it an augmented matrix.
+$$
+\left[\begin{matrix}1 &amp;amp; 3 &amp;amp; 1 &amp;amp; 0\\2 &amp;amp; 7 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
+$$
+Let’s do eliminations on the left matrix. Different from the classic Gauss elimination whose target is to get the upper triangle matrix,here we need to get the identity matrix. To implement that, after we choose a pivot, we should eliminate all the elements that are in the same column and not in the current row, including the elements above.
+$$
+\left[\begin{matrix}1 &amp;amp; 3 &amp;amp; 1 &amp;amp; 0\\2 &amp;amp; 7 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]\overset{(2,1)}{\rightarrow}\left[\begin{matrix}1 &amp;amp; 3 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 1 &amp;amp; -2 &amp;amp; 1\end{matrix}\right]
+\overset{(1,2)}{\rightarrow}\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 7 &amp;amp; -3\\0 &amp;amp; 1 &amp;amp; -2 &amp;amp; 1\end{matrix}\right]
+$$
+The matrix on the right $\left[\begin{matrix}7 &amp;amp; -3\\-2 &amp;amp; 1\end{matrix}\right]$ is the inverse.&lt;/p&gt;
+&lt;p&gt;The principle is easy: according to the last lectures, elimination steps can be interpreted as several elimination matrices. Consider all the elimination steps give us $E$, then $EA=I$, which means that $E=A^{-1}$. The right matrix is $EI=E=A^{-1}$, so we get the right solution.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-18.06 Lecture 04 - A’s LU Decomposition</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec04/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec04/</guid>
+      <description>&lt;p&gt;What’s the inverse of $AB$, supposing $A$ and $B$​ are both invertible matrices? We can use $B^{-1}A^{-1}$ to check:
+$$
+\begin{align}
+(B^{-1}A^{-1})AB=B^{-1}(A^{-1}A)B=B^{-1}B=I\\
+AB(B^{-1}A^{-1})=A(BB^{-1})A^{-1}=AA^{-1}=I
+\end{align}
+$$
+So $(AB)^{-1}=B^{-1}A^{-1}$.&lt;/p&gt;
+&lt;p&gt;What’s the inverse of $A^T$? Consider $AA^{-1}=I$. Transpose both sides and we get
+$$
+(AA^{-1})^T=(A^{-1})^TA^T=(I)^T=I
+$$
+so $(A^T)^{-1}=(A^{-1})^T$. In other words, you can change the order of inversing and transposing.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Consider a $2\times 2$ matrix
+$$
+A=\left[
+\begin{matrix}
+2 &amp;amp; 1\\
+8 &amp;amp; 7
+\end{matrix}
+\right]
+$$
+To eliminate it to an upper triangle matrix $U$， we use the elementary matrix
+$$
+E_{2,1}=\left[\begin{matrix}1 &amp;amp; 0\\-4 &amp;amp; 1\end{matrix}\right],E_{2,1}A=U=\left[\begin{matrix}2 &amp;amp; 1\\0 &amp;amp; 3\end{matrix}\right]
+$$
+To write it in the form of $A=LU$，we can easily find that $L=E^{-1}$ and for elementary matrices, the inverse is easy to calculate - just add a negative sign &amp;lsquo;-&amp;rsquo;. So $L=\left[\begin{matrix}1 &amp;amp; 0\\4 &amp;amp; 1\end{matrix}\right]$. Here $L$ represents lower triangle matrix.
+$$
+A=LU=\left[\begin{matrix}1 &amp;amp; 0\\4 &amp;amp; 1\end{matrix}\right]\left[\begin{matrix}2 &amp;amp; 1\\0 &amp;amp; 3\end{matrix}\right]
+$$&lt;/p&gt;
+&lt;p&gt;In some cases, we write
+$$
+A=LDU=\left[\begin{matrix}1 &amp;amp; 0\\4 &amp;amp; 1\end{matrix}\right]\left[\begin{matrix}2 &amp;amp; 0\\0 &amp;amp; 3\end{matrix}\right]\left[\begin{matrix}1 &amp;amp; \frac{1}{2}\\0 &amp;amp; 1\end{matrix}\right]
+$$
+We extract the diagonal matrix $D$ from $U$ to makes it cleaner.&lt;/p&gt;
+&lt;p&gt;Here we cannot see differences between $EA=U$ and  $A=LU$. Let&amp;rsquo;s consider a $3\times 3$ example. Say there&amp;rsquo;s no row exchanges, $E_{3,2}E_{3,1}E_{2,1}A=U$，$E_{3,1}$ is an identity matrix and
+$$
+E_{3,1}=\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\-2 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
+,
+E_{3,2}=\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\0 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; -5 &amp;amp; 1\end{matrix}\right]
+$$
+so
+$$
+E=E_{3,2}E_{3,1}E_{2,1}=
+\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\-2 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
+\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\0 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; -5 &amp;amp; 1\end{matrix}\right]
+= \left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\-2 &amp;amp; 1 &amp;amp; 0\\10 &amp;amp; -5 &amp;amp; 1\end{matrix}\right]
+$$
+It&amp;rsquo;s not obvious to tell why the number $10$ appears. Actually it&amp;rsquo;s because that we firstly subtract $2\times row_1$ from $row_2$，then we subtract $5\times (new)row_2$ from $row_3$, and in total we add $10\times row_1$ to $row_3$.&lt;/p&gt;
+&lt;p&gt;If we use the $A=LU$ form, then
+$$
+L=E_{2,1}^{-1}E_{3,1}^{-1}E_{3,2}^{-1}=\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\2 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\0 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 5 &amp;amp; 1\end{matrix}\right]=\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 0\\2 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 5 &amp;amp; 1\end{matrix}\right]
+$$
+We can see that due to the elaborate order, operations will not interfere with each other. &lt;strong&gt;If there&amp;rsquo;s no row exchange, the multipliers during eliminations will go directly into $L$.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;That&amp;rsquo;s the advantage of $A=LU$. With $L$ and $U$ we can completely forget about $A$ since $LU$ contains all the information about $A$. What&amp;rsquo;s more, $L$ , the inverse of $E$, has the beautiful property that it contains the complete information about elimination steps.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;How many operations on $A$ during elimination?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;For a $n\times n$ matrix, it takes us approximately $n^2$ operations to tackle with the first row and the first column, then the problem becomes a $(n-1)\times (n-1)$ one. So the cost is
+$$
+\sum_{k=1}^nk^2\sim \int_1^nx^2\mathrm{d}x\sim \frac{1}{3}n^3
+$$
+And for a column vector, say $\mathbf{b}$, the cost is approximately $n^2$.&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-18.06 Lecture 05: Permutation, Transpose and Vector Spaces</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec05/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec05/</guid>
+      <description>&lt;p&gt;Now let&amp;rsquo;s allow row exchanges to come in during elimination, so we need permutation matrices.&lt;/p&gt;
+&lt;p&gt;Permutation matrices can be regarded as identity matrices with some rows exchanged. For $n\times n$ matrix, there are $n!$ kinds of permutation matrices (the identity matrix is a special permutation matrix).&lt;/p&gt;
+&lt;p&gt;An important property of permutation matrices is that
+$$
+P^{-1}=P^T
+$$
+The property is easy to understand: only the $i_{th}$ row and the $i_{th}$ column have $1$ in the same position, so $P^TP=I$.&lt;/p&gt;
+&lt;p&gt;If we take row exchanges into consideration, the formula will be
+$$
+PA=LU
+$$
+where $P$ is one of the permutation matrices to make the pivots at the right positions.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Transpose is defined as follows:
+$$
+(A^T)&lt;em&gt;{ij}=A&lt;/em&gt;{ji}
+$$
+&lt;strong&gt;Symmetric matrices&lt;/strong&gt; are those satisfying $A^T=A$. It&amp;rsquo;s easy to construct a symmetric matrix because  &lt;strong&gt;for any matrix $R$, $R^TR$ is a symmetric matrix.&lt;/strong&gt;   ($(R^TR)^T=R^T(R^T)^{T}=R^TR$)&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Vector spaces are bunches of vectors. There are two basic operations: vector addition and multiplying a scalar to a vector. There are some rules for these two operations (refer to the textbook). The most important one is:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The result of addition and multiplication (i.e. linear combinations of vectors) should stay in the vector space.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;We can easily check that $\mathbb{R}^n$ is a vector space, it contains all the column vectors with $n$  real components, while the first quadrant of $\mathbb{R}^2$ is not a vector space because it&amp;rsquo;s not closed under multiplication by all real numbers.&lt;/p&gt;
+&lt;p&gt;Let consider subspaces of $\mathbb{R}^2$. There are three types of subspaces:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$\mathbb{R}^2$ itself&lt;/li&gt;
+&lt;li&gt;Any line that crosses through $\left(\begin{matrix}0\\0\end{matrix}\right)$ (we call it $L$)&lt;/li&gt;
+&lt;li&gt;Zero vector only (we call it $Z$)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The conclusion can be easily extended to $\mathbb{R}^n$.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Let&amp;rsquo;s see how we can use matrices to produce vector spaces. Take the $3\times 2$ matrix
+$$
+\left[\begin{matrix}1 &amp;amp; 3\\2 &amp;amp; 3\\4 &amp;amp; 1\end{matrix}\right]
+$$
+as an example, the columns of the matrix (i.e. two column vectors $\left(\begin{matrix}1\\2\\4\end{matrix}\right)$ and $\left(\begin{matrix}3\\3\\1\end{matrix}\right)$) span a subspace in $\mathbb{R}^3$. In geometry, the subspace is a plane going through the origin in $\mathbb{R}^3$.&lt;/p&gt;
+&lt;p&gt;In general, all the linear combinations of the column vectors of a matrix $A$ form a subspace called &lt;strong&gt;column space, denoted as $C(A)$&lt;/strong&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-18.06 Lecture 06: Column Space, Null space</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec06/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec06/</guid>
+      <description>&lt;p&gt;Suppose there are two vector spaces $S$ and $T$, their intersection $S\cap T$ is also a subspace.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Proof: suppose $v,w\in S\cap T$ are vectors, then consider a linear combination $av+bw$, since $v,w\in S$, $av+bw\in S$ , also we have $av+bw\in T$, so $av+bw\in S\cap T$, which proves the theorem.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;p&gt;Consider
+$$
+A=\left[\begin{matrix}1 &amp;amp; 1 &amp;amp; 2\\2 &amp;amp; 1 &amp;amp; 3\\3 &amp;amp; 1 &amp;amp; 4\\4 &amp;amp; 1 &amp;amp; 5\end{matrix}\right]
+$$
+all the linear combinations of the three column vectors of $A$ forms a column space $C(A)$. It&amp;rsquo;s a subspace of $\mathbb{R}^4$ since all the vectors have 4 dimensions.&lt;/p&gt;
+&lt;p&gt;We can find that the subspace cannot fill the whole $\mathbb{R}^4$. Let&amp;rsquo;s consider the linear equations
+$$
+A\mathbf{x}=
+\left[\begin{matrix}1 &amp;amp; 1 &amp;amp; 2\\2 &amp;amp; 1 &amp;amp; 3\\3 &amp;amp; 1 &amp;amp; 4\\4 &amp;amp; 1 &amp;amp; 5\end{matrix}\right]
+\left(\begin{matrix}x_1\\x_2\\x_3\end{matrix}\right)
+=\left(\begin{matrix}b_1\\b_2\\b_3\\b_4\end{matrix}\right)=\mathbf{b}
+$$
+There are four equations with three unknowns. The equations don&amp;rsquo;t necessarily have solutions. We care about what b&amp;rsquo;s allow the equations to be solved.&lt;/p&gt;
+&lt;p&gt;If we use linear combinations to understand matrix multiplications, we can find that $A\mathbf{x}$ is the linear combinations of the column vectors of $A$, so &lt;strong&gt;$\mathbf{b}$ allows the equations to be solved exactly when $\mathbf{b}\in C(A)$&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;What&amp;rsquo;s more, we can find that the third column vector makes no contribution: $col_1+col_2=col_3$. If we delete the third column vector, the column space won&amp;rsquo;t be changed. So actually $C(A)$ is a 2-dimensional subspace of $\mathbb{R}^4$. We call the first two columns &lt;strong&gt;pivot columns&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;(Actually we can choose any column and discard it, but by convention we choose the first several columns that are independent.)&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;The null space of a matrix $A$, denoted as $N(A)$, contains all the solutions to $A\mathbf{x}=\mathbf{0}$. For the example $A$, all the vectors $\left(\begin{matrix}c\\c\\-c\end{matrix}\right)$ are in the null space, $N(A)$ is a line in $\mathbb{R}^3$.&lt;/p&gt;
+&lt;p&gt;The null space is really a subspace because for any $A\mathbf{v}=\mathbf{0}$ and  $A\mathbf{w}=\mathbf{0}$, $A\mathbf{(v+w)}=A\mathbf{v}+A\mathbf{w}=\mathbf{0}$.&lt;/p&gt;
+&lt;p&gt;From column spaces and null spaces we can see that there are two ways to construct a subspace:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;use the linear combinations of several vectors to form a subspace.&lt;/li&gt;
+&lt;li&gt;add constraints to linear equations to form a subspace.&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-18.06 Lecture 07: Computing Null Space, Pivot Variables and Special Solutions</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec07/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec07/</guid>
+      <description>&lt;p&gt;We solve the equation $A\mathbf{x}=\mathbf{0}$ through elimination. Obviously, elimination won&amp;rsquo;t change the null space of $A$. For example, let
+$$
+A=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2\\2 &amp;amp; 4 &amp;amp; 6 &amp;amp; 8\\3 &amp;amp; 6 &amp;amp; 8 &amp;amp; 10\end{matrix}\right]
+$$
+through elimination we get the echelon matrix $U$:
+$$
+A=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2\\2 &amp;amp; 4 &amp;amp; 6 &amp;amp; 8\\3 &amp;amp; 6 &amp;amp; 8 &amp;amp; 10\end{matrix}\right]\overset{(2,1),(3,1)}{\longrightarrow}\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2\\0 &amp;amp; 0 &amp;amp; 2 &amp;amp; 4\\0 &amp;amp; 0 &amp;amp; 2 &amp;amp; 4\end{matrix}\right]\overset{(3,3)}{\longrightarrow}\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2\\0 &amp;amp; 0 &amp;amp; 2 &amp;amp; 4\\0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0\end{matrix}\right]=U
+$$
+The number of pivots is call the &lt;strong&gt;rank&lt;/strong&gt; of $A$. There are two pivots, so $rank(A)=2$.&lt;/p&gt;
+&lt;p&gt;By convention, we choose 1st and 3rd column as pivot columns, and the rest are free columns. Accordingly, $x_1$ and $x_3$ are pivot variables, $x_2$ and $x_4$ are free variables. We can assign values to free variables freely, and for every set of values, there&amp;rsquo;s a unique solution to the pivot variables.&lt;/p&gt;
+&lt;p&gt;In particular, if we assign $x_2=1,x_4=0$ , and $x_2=0,x_4=1$, we can get two solutions:
+$$
+\mathbf{x_1}=
+\left(\begin{matrix}-2\\1\\0\\0\end{matrix}\right)
+\qquad
+\mathbf{x_2}=
+\left(\begin{matrix}2\\0\\-2\\1\end{matrix}\right)
+$$
+These solutions are called &lt;strong&gt;special solutions&lt;/strong&gt;. The linear combinations of the special solutions forms the null space. That is
+$$
+N(A)=c\left(\begin{matrix}-2\\1\\0\\0\end{matrix}\right)+d\left(\begin{matrix}2\\0\\-2\\1\end{matrix}\right),c,d\in \mathbb{R}
+$$
+And for a matrix $A$ with size $m\times n$, the number of special solutions is $(n-rank(A))$.&lt;/p&gt;
+&lt;p&gt;We can work harder on $U$ to get the &lt;strong&gt;reduced row echelon form&lt;/strong&gt;, denoted as $R$ or $rref(A)$. It eliminates values both above and below the pivots, and transform pivots to 1:
+$$
+U=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2\\0 &amp;amp; 0 &amp;amp; 2 &amp;amp; 4\\0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0\end{matrix}\right]\overset{(1,3)}{\longrightarrow}\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 0 &amp;amp; -2\\0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 2\\0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0\end{matrix}\right]=R
+$$
+To make it clear, we do column exchanges so that we put pivots columns together on the left and free columns together on the right:
+$$
+\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 0 &amp;amp; -2\\0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 2\\0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0\end{matrix}\right]\overset{2\leftrightarrow 3}{\longrightarrow}\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 2 &amp;amp; -2\\0 &amp;amp; 1 &amp;amp; 0 &amp;amp; 2\\0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0\end{matrix}\right]
+$$
+The advantage of $R$ is that we can directly see the special solutions from the matrix. If we ignore the rows with all 0s, we find that $R=\left[\begin{matrix}I \mid F\end{matrix}\right]$.  $I$ is an identity matrix with size $r\times r$ ( $r$ means the rank) and $F$ is $r\times (n-r)$ in size. We can construct all the $(n-r)$ special solutions as a matrix:
+$$
+N=\left[\begin{matrix}-F\\I\end{matrix}\right]=\left[\begin{matrix}-2 &amp;amp; 2\\0 &amp;amp; -2\\1 &amp;amp; 0\\0 &amp;amp; 1\end{matrix}\right]
+$$
+$N$ is $n\times (n-r)$ in size. (Here the $I$ may have the different size from the $I$ in $R$) If we use block multiplication of matrices, we can find out that $RN$ gives a matrix with all 0s.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-18.06 Lecture 08: Complete Solutions of Equations</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec08/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec08/</guid>
+      <description>&lt;p&gt;Take an example:
+$$
+A\mathbf{x}=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2\\2 &amp;amp; 4 &amp;amp; 6 &amp;amp; 8\\3 &amp;amp; 6 &amp;amp; 8 &amp;amp; 10\end{matrix}\right]\left(\begin{matrix}x_1\\x_2\\x_3\end{matrix}\right)\left(\begin{matrix}b_1\\b_2\\b_3\end{matrix}\right)=\mathbf{b}
+$$&lt;/p&gt;
+&lt;p&gt;$$
+\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2 &amp;amp; b_1\\2 &amp;amp; 4 &amp;amp; 6 &amp;amp; 8 &amp;amp; b_2\\3 &amp;amp; 6 &amp;amp; 8 &amp;amp; 10 &amp;amp; b_3\end{matrix}\right]
+\overset{elimination}{\longrightarrow}
+\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 2 &amp;amp; 2 &amp;amp; b_1\\0 &amp;amp; 0 &amp;amp; 2 &amp;amp; 4 &amp;amp; b_2-2b_1\\0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0 &amp;amp; b_3-b_2-b_1\end{matrix}\right]
+$$&lt;/p&gt;
+&lt;p&gt;So the equations have solutions exactly when $b_3=b_1+b_2$.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s talk about the solvability. $A\mathbf{x}=\mathbf{b}$ is solvable exactly when $b\in C(A)$. Another equivalent description is that: &lt;strong&gt;If a combination of rows of $A$ gives zero row, then the same combination of components of $\mathbf{b}$ must give 0.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;To find the complete solutions to $A\mathbf{x}=\mathbf{b}$:&lt;/p&gt;
+&lt;ol start=&#34;0&#34;&gt;
+&lt;li&gt;Ensure that the zero rows = 0.&lt;/li&gt;
+&lt;li&gt;Find a particular solution $\mathbf{x_p}$: set all free variables to 0 and solve $A\mathbf{x}=\mathbf{b}$ for pivot variables.&lt;/li&gt;
+&lt;li&gt;Find $N(A)$, then the complete solution set is $X_c={\mathbf{x}=\mathbf{x_p}+\mathbf{x_n}:\mathbf{x_n}\in N(A)}$&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;p&gt;Let&amp;rsquo;s focus on a bigger picture: an $m\times n$ matrix with rank $r$ (it&amp;rsquo;s obvious that $r\leq m,r\leq n$):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Case 1: Full column rank $(r=n&amp;lt;m)$&lt;/p&gt;
+&lt;p&gt;No free variable, so $N(A)={\mathbf{0}}$. The reduced row echelon form $R=\left[\begin{matrix}I\\0\end{matrix}\right]$.&lt;/p&gt;
+&lt;p&gt;If the particular solution $\mathbf{x_p}$ exists, then it&amp;rsquo;s the unique solution. The equations have 0 or 1 solutions.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Case 2: Full row rank $(r=m&amp;lt;n)$&lt;/p&gt;
+&lt;p&gt;We can solve $A\mathbf{x}=\mathbf{b}$ for arbitrary $\mathbf{b}$. The reduced row echelon form $R=\left[\begin{matrix}I &amp;amp; F\end{matrix}\right]$. (Notice that the columns of $I$ and $F$ may mix together)&lt;/p&gt;
+&lt;p&gt;Since $F$ exists, $N(A)$ contains more than $\mathbf{0}$, the equations have $\infty$ solutions.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Case 3: $r=n=m$&lt;/p&gt;
+&lt;p&gt;In this case $R=I$, which indicates that $A$ is invertible. And the equations have a unique solution.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Case 4: $r&amp;lt;n,r&amp;lt;m$&lt;/p&gt;
+&lt;p&gt;The row reduced echelon form $R=\left[\begin{matrix}I &amp;amp; F\\0 &amp;amp; 0\end{matrix}\right]$. The equations have either no solution (zero rows don&amp;rsquo;t match $\mathbf{b}$) or $\infty$ solutions.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;One sentence to summarize:  &lt;strong&gt;the rank $r$ tells you all the information about the number of solutions&lt;/strong&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-18.06 Lecture 09: Linear Dependence, Basis and Dimension</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec09/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec09/</guid>
+      <description>&lt;p&gt;suppose $A$ is $m\times n$ in size $(m&amp;lt;n)$, then the equation $A\mathbf{x}=\mathbf{0}$ has nonzero solutions because there will be at least one free variable.&lt;/p&gt;
+&lt;p&gt;Vectors $\mathbf{x_1},\mathbf{x_2},&amp;hellip;,\mathbf{x_n}$ are &lt;strong&gt;independent&lt;/strong&gt; if no combination gives zero vector. (except the zero combination)&lt;/p&gt;
+&lt;p&gt;i.e. for any $c_1,c_2,&amp;hellip;,c_n$, $\sum_{i=1}^n c_i\mathbf{x_i}\neq \mathbf{0}$ ($c_i$ are not all 0s). Otherwise they&amp;rsquo;re &lt;strong&gt;dependent&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;If $\mathbf{v_1},\mathbf{v_2},&amp;hellip;,\mathbf{v_n}$ are column vectors of matrix $A$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;They&amp;rsquo;re independent if $N(A)={\mathbf{0}}$. In this case $rank(A)=n$. (No free variable, the essence of free columns is that it belongs to the linear combinations of previous pivot columns)&lt;/li&gt;
+&lt;li&gt;They&amp;rsquo;re dependent if for some nonzero vector $\mathbf{c}$, $A\mathbf{c}=\mathbf{0}$. In this case $rank(A)&amp;lt;n$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;$n$ m-dimensional vectors $\mathbf{x_1},&amp;hellip;,\mathbf{x_n}$ $(m&amp;lt;n)$ is absolutely dependent. That&amp;rsquo;s because if we put the vectors together to form a matrix $A=\left[\mathbf{x_1}\space \mathbf{x_2} \cdots \mathbf{x_m}\right]$, $A\mathbf{x}=\mathbf{0}$ has nonzero solutions.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Vectors $v_1,v_2,..,v_l$ &lt;strong&gt;span&lt;/strong&gt; a space means that the space consists of all the combinations of those vectors.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Basis&lt;/strong&gt; for a vector space is a sequence of vectors $\mathbf{v_1},\mathbf{v_2},&amp;hellip;,\mathbf{v_d}$ satisfying&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;They&amp;rsquo;re independent.&lt;/li&gt;
+&lt;li&gt;They span the whole space.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;(In other words, the number of vectors is exactly &amp;ldquo;right&amp;rdquo;.)&lt;/p&gt;
+&lt;p&gt;$n$ vectors in $\mathbb{R}^n$ give basis if the $n\times n$ matrix with those columns is invertible.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;if they&amp;rsquo;re independent, then every column is pivot column, so the reduced echelon form $R=I$. And eliminations can be represented as matrices. So the original matrix is invertible.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Given a space, every basis for the space has the same number of vectors, and we call this number the &lt;strong&gt;dimension&lt;/strong&gt; of the space.&lt;/p&gt;
+&lt;p&gt;Take an example,
+$$
+A=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 3 &amp;amp; 1\\1 &amp;amp; 1 &amp;amp; 2 &amp;amp; 1\\1 &amp;amp; 2 &amp;amp; 3 &amp;amp; 1\end{matrix}\right]
+$$
+The column vectors are dependent because $\left(\begin{matrix}-1\\-1\\1\\0\end{matrix}\right)\in N(A)$. $rank(A)=2$ and $dimC(A)=2$. We find a important property: &lt;strong&gt;the rank of a matrix $A$ equals the dimension of $C(A)$, $dimC(A)=r$&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Column vectors 1 and 2 gives a basis of $C(A)$ and 1 and 3, 2 and 3 are basis too.&lt;/p&gt;
+&lt;p&gt;The two special solutions in $N(A)$ are
+$$
+\mathbf{x_1}=\left(\begin{matrix}-1\\-1\\1\\0\end{matrix}\right)\qquad\mathbf{x_2}=\left(\begin{matrix}-1\\0\\0\\1\end{matrix}\right)
+$$
+In fact, $span{\mathbf{x_1},\mathbf{x_2}}=N(A)$. We see that the dimension of $N(A)$ equals the number of free variables. That is $dimN(A)=n-r$.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>MIT-18.06 Lecture 10: 4 Fundamental Subspaces</title>
+      <link>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec10/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec10/</guid>
+      <description>&lt;p&gt;4 fundamental subspaces:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;column space $C(A)$.&lt;/li&gt;
+&lt;li&gt;null space $N(A)$.&lt;/li&gt;
+&lt;li&gt;row space. It contains all the combinations of the row vectors of $A$. In other words, it contains all the combinations of the column vectors of $A^T$, so the notation is $C(A^T)$.&lt;/li&gt;
+&lt;li&gt;left null space. It&amp;rsquo;s the null space of $A^T$, denoted as $N(A^T)$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If $A$ is a matrix with size $m\times n$, then $C(A),N(A^T)\subseteq \mathbb{R}^m$ while $C(A^T),N(A)\subseteq \mathbb{R}^n$. We&amp;rsquo;ve known that $\dim C(A)=r,\dim N(A)=n-r$. Here an amazing fact is that $\dim C(A)=\dim C(A^T)=r$. Thus $\dim N(A^T)=m-r$. The beautiful property is that $\dim C(A)+\dim N(A^T)=m$ and $\dim C(A^T)+\dim N(A)=n$, which corresponds to the fact that the number of pivot variables pluses the number of free variables equals $n$.&lt;/p&gt;
+&lt;p&gt;About basis, the pivot columns are a set of basis of $C(A)$ and the special solutions of $A\mathbf{x}=\mathbf{0}$ form a basis of $N(A)$.&lt;/p&gt;
+&lt;p&gt;Of course we can transpose $A$ and do row operations on $A^T$ to get a basis of $C(A^T)$. But here&amp;rsquo;s an easier way: we can get a basis of $C(A^T)$ through the reduced row echelon form. Let&amp;rsquo;s take an example:
+$$
+A=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 3 &amp;amp; 1\\1 &amp;amp; 1 &amp;amp; 2 &amp;amp; 1\\1 &amp;amp; 2 &amp;amp; 3 &amp;amp; 1\end{matrix}\right]
+\rightarrow
+U=\left[\begin{matrix}1 &amp;amp; 2 &amp;amp; 3 &amp;amp; 1\\0 &amp;amp; -1 &amp;amp; -1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0\end{matrix}\right]
+\rightarrow
+R=\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 1 &amp;amp; 1\\ 0 &amp;amp; 1 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 0\end{matrix}\right]
+$$
+Through $R$, we can see that the first two columns are pivot columns, so the first two columns of $A$ are basis of $C(A)$. Here we do row operations on $A$, so $C(A)\neq C(R)$ of course, but &lt;strong&gt;considering the fact that doing row operations is just doing linear combinations of row vectors of $A$, $C(A^T)=C(R^T)$.&lt;/strong&gt; And we can easily tell that $\dim R^T=2=r$ and &lt;strong&gt;the first $r$ row vectors of $R$ are basis of $C(A^T)$.&lt;/strong&gt; (They&amp;rsquo;re independent and if we do the row operations inversely, we can get all the rows of $A$)&lt;/p&gt;
+&lt;p&gt;To find out a basis for $N(A^T)$. Firstly we want to figure out the matrix that represents the row operations of $A\rightarrow R$, i.e. we want to find a matrix $E$ such that $EA=R$.&lt;/p&gt;
+&lt;p&gt;According to Gauss-Jordan, we put a identity matrix besides $A$, i.e. $A&amp;rsquo;=[A_{m\times n}\quad I_{m\times m}]$. Suppose $EA&amp;rsquo;=$&lt;/p&gt;
+&lt;p&gt;$E[A\quad I]=[R\quad E&amp;rsquo;]$, then we have $E=E&amp;rsquo;$, so by applying all the row operations on $I$, we can get $E$. In the above example, we can get
+$$
+E=\left[\begin{matrix}-1 &amp;amp; 2 &amp;amp; 0\\1 &amp;amp; -1 &amp;amp; 0\\-1 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
+$$
+We claim &lt;strong&gt;that the last $m-r$ row vectors of $E$ form a basis of $N(A^T)$&lt;/strong&gt; because the last $m-r$ lines of $R$ are zero lines.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

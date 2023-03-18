@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Isolation We want strong isolation between applications so that if there&rsquo;s a bug in one application, the others will not be damaged. We also want isolation between applications and the operating system so that if weird arguments were passed to the OS, OS wouldn&rsquo;t crash.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/lectures/lec03/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/lectures/lec03/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/lectures/lec03/">
+  <meta property="og:title" content="MIT-6.S081 Lecture 03: OS Organization and System Calls | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Isolation We want strong isolation between applications so that if there&rsquo;s a bug in one application, the others will not be damaged. We also want isolation between applications and the operating system so that if weird arguments were passed to the OS, OS wouldn&rsquo;t crash."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>MIT-6.S081 Lecture 03: OS Organization and System Calls | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/mit-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/mit-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/mit-operating-system/lectures/lec03/">03: OS设计&amp;系统调用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/lectures/lec04/">04: 页表</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/lectures/lec05/">05: RISCV相关</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/lectures/lec06/">06: Traps</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/lectures/lec07/">07: Q&amp;A Lab1</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/lectures/lec08/">08: 页错误</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/lectures/lec09/">09: 中断</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/lectures/lec10/">10: 多核&amp;锁</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/mit-operating-system/lectures/lec11/">11: 线程切换</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>MIT-6.S081 Lecture 03: OS Organization and System Calls</h1>
+
+          <div class="article-style">
+            <h2 id="isolation">Isolation</h2>
+<ul>
+<li>We want strong isolation between applications so that if there&rsquo;s a bug in one application, the others will not be damaged.</li>
+<li>We also want isolation between applications and the operating system so that if weird arguments were passed to the OS, OS wouldn&rsquo;t crash.</li>
+</ul>
+<p>Let&rsquo;s consider what happens if there&rsquo;s no operating system, a strawman design. In this case, several applications (e.g. <code>shell</code>, <code>echo</code> etc.) run on the hardware, there is no abstraction layer between H/W and applications.</p>
+<ul>
+<li>
+<p>There&rsquo;s a demand for switching between applications. Because there&rsquo;s no OS, <code>shell</code> needs to proactively &ldquo;give up&rdquo; and &ldquo;quit&rdquo; the CPU to let others use the hardware. This is the so-called cooperating schedule. However, if there&rsquo;s a dead loop in <code>shell</code> or <code>shell</code> is a malware, it will not quit and the hardware is completely occupied by this application. Therefore, we need a kind of &ldquo;enforced multipliexing&rdquo;: <strong>no matter what the application does, it will be forced to give up the CPU once in a while</strong>.</p>
+</li>
+<li>
+<p>Different applications share the same memory space. For example, <code>shell</code>&rsquo;s memory may start at address 1000 and <code>echo</code>&rsquo;s memory may start at address 2000. There&rsquo;s no boundary between their memory space and it&rsquo;s easy for one application to overwrite others&rsquo; memory and cause tricky bugs.</p>
+</li>
+</ul>
+<p>In summary, we need operating systems to <strong>enforce both multiplexing and strong memory isolation</strong>. Strawman design is not very common in today&rsquo;s computer system. Some real-time system doesn&rsquo;t have OS because applications trust each other, but in most cases we need OS to ensure isolation.</p>
+<p>Unix inferfaces are sophisticated design. They abstracts the hardware resources and make isolation possible. For example,</p>
+<ul>
+<li>Process is the abstraction of CPU. Applications use <code>fork()</code> to create new processes, but it cannot assign a CPU core directly. How to schedule the processes on the CPU and how to arrange different CPU cores are the jobs of OS.</li>
+<li><code>Exec</code> is the abstraction of memory. Application use <code>exec()</code> to load a new applications, during which it loads the <strong>memory image</strong> which describes the text, data segments etc. During execution, applications can use system calls like <code>sbrk()</code> to modify the memory image, but they cannot act directly on the physical memory. OS is responsible for allocating physical memory to the memory image.</li>
+<li>File is the abstraction of disk blocks. Applications do operations on the files but they don&rsquo;t have direct access to the physical storage device. They don&rsquo;t know where the &ldquo;file&rdquo; is actually stored, which is the job belongs to OS.</li>
+</ul>
+<p>OS should be defensive: it should treat all the processes as malicious applications written by attackers and ensure that</p>
+<ul>
+<li>Apps cannot crash the OS.</li>
+<li>Apps cannot break out of the isolation.</li>
+</ul>
+<p>Strong isolation is totally depend on the OS. The kernel is call &ldquo;trusted computing base&rdquo; (TCB). Kernels must have as few bugs as possible because any bug may be taken advantage of and becomes an exploit.</p>
+<p>Strong isolation between applications and the OS are typically implemented by hardware support. Ususally there&rsquo;re two: use/kernel mode and virtual memory.</p>
+<h3 id="userkernel-mode">User/Kernel mode</h3>
+<p>When running in kernel mode, CPU can execute privileged instructions which interact directly with CSRs e.g. setting up page table register, disable clock interrupts etc.</p>
+<p>In user mode, CPU can only execute unprivileged instructions such as <code>add</code> <code>jmp</code> etc. There is a bit in the CSR to let hardware check which mode the current process/thread is in (0 for kernel, 1 for user). If the CPU decode one instruction, find out that it&rsquo;s a privileged one and the mode bit is 1, it will deny executing the instruction. (Of course, the instruction for changing the mode bit is a privileged one.)</p>
+<p>If a user application wants to execute privileged instructions, it should transfer from user mode to kernel mode first and let the kernel execute the instruction.</p>
+<p>There is a method for applications to enter the kernel. In RISC-V, the instruction is <code>ecall</code>. The user store ssystem call number in a particular register and <code>ecall</code>, the PC jumps to a specific address in the kernel, and kernel checks the syetem call number, does security checks and jumps to corresponding service functions.</p>
+<h3 id="virtual-memory">Virtual Memory</h3>
+<p>Each process has its own page table: it maps virtual addresses to physical addresses. If the OS allocates different memory space to different processes, processes will not be able to access other processes&rsquo;s memory space because those addresses are not in its page table. In this way, the OS provides strong memory isolation.</p>
+<h2 id="kernel-design">Kernel Design</h2>
+<p>An instant question is: since kernel should be TCB, what kind of code should be run in kernel mode? Most Unix-like operating system put the whole OS into the kernel mode(including xv6). This style is call monolithic kernel design. Though this design contains more code and increases the risk of having serious bugs, it&rsquo;s helpful for tight integration between different modules (file system, virtual memory, processes etc.) and can achieve better performance.</p>
+<p>Another style, which aims at running as fewer lines as possible in the kernel to avoid bug risks, is called micro kernel design. The kernel only contains some core modules and other modules like file system are run in user mode and treated like ordinary user applications. The challenge for this design is how to improve performance. For example, if an application wants to access the file system, frequent jumps between kernel mode and user mode are needed to achieve that. (app(u) $\rightarrow$ IPC(k) $\rightarrow$ FS(u) $\rightarrow$ IPC(k) $\rightarrow$ app(u))</p>
+<h2 id="xv6-code-details">Xv6 Code Details</h2>
+<p>Xv6 uses monolithic kernel design. All the <code>*.c</code> programs in <code>/kernel</code> are run in kernel mode. The Makefile grabs all the C files in <code>/kernel</code> and generates relocatable files: <code>*.c</code>$\overset{CC}{\rightarrow}$<code>*.S</code>$\overset{AS}{\rightarrow}$<code>*.o</code>. ld is responsible for linking all the <code>*.o</code> files and generate an executable file <code>/kernel/kernel</code>. <code>/kernel/kernel.asm</code> containing disassembled code of the kernel will also be generated for debugging.</p>
+<p>Xv6 starts at address 0x80000000. The code is written directly in assembly and is in <code>/kernel/entry.S</code>. <code>/kernel/kernel.ld</code> ensures that the assembly code will be linked to 0x80000000. Currently, xv6 runs in machine mode - no protection, no virtual memory etc. The job for xv6 is to enter supervisor mode(kernel mode) as soon as possible.</p>
+<p>When xv6 jumps to <code>main()</code> in <code>/kernel/main.c</code>, it has been in supervisor mode. Here we use <code>make CPUS=1 qemu-gdb</code> to fire up xv6, so there&rsquo;s only one CPU core in our simulated CPU. The code in <code>main()</code> is shown as below:</p>
+<pre><code class="language-c">if(cpuid() == 0){
+    consoleinit();
+    printfinit();
+    printf(&quot;\n&quot;);
+    printf(&quot;xv6 kernel is booting\n&quot;);
+    printf(&quot;\n&quot;);
+    kinit();         // physical page allocator
+    kvminit();       // create kernel page table
+    kvminithart();   // turn on paging
+    procinit();      // process table
+    trapinit();      // trap vectors
+    trapinithart();  // install kernel trap vector
+    plicinit();      // set up interrupt controller
+    plicinithart();  // ask PLIC for device interrupts
+    binit();         // buffer cache
+    iinit();         // inode cache
+    fileinit();      // file table
+    virtio_disk_init(); // emulated hard disk
+    userinit();      // first user process
+    __sync_synchronize();
+    started = 1;
+}
+</code></pre>
+<p>Xv6 initializes lots of things and then jumps to <code>userinit()</code> run the first process. <code>userinit()</code> (in <code>/kernel/proc.c</code>) loads the first process. Because currently xv6 hasn&rsquo;t built the file system and cannot load images, the assembly code is statically declared in the array <code>initcode[]</code>. The assembly code of the &ldquo;first process loader&rdquo; is in <code>/user/initcode.S</code>:</p>
+<pre><code class="language-assembly"># Initial process that execs /init.
+# This code runs in user space.
+
+#include &quot;syscall.h&quot;
+
+# exec(init, argv)
+.globl start
+start:
+        la a0, init
+        la a1, argv
+        li a7, SYS_exec
+        ecall
+
+# for(;;) exit();
+exit:
+        li a7, SYS_exit
+        ecall
+        jal exit
+
+# char init[] = &quot;/init\0&quot;;
+init:
+  .string &quot;/init\0&quot;
+
+# char *argv[] = { init, 0 };
+.p2align 2
+argv:
+  .long init
+  .long 0
+</code></pre>
+<p><code>initcode.S</code> prepares arguments for the <code>SYS_exec</code> system call and uses <code>ecall</code> instruction to go back to kernel space. <code>ecall</code> will lead us to <code>syscall()</code> in <code>/kernel/syscall.c</code>:</p>
+<pre><code class="language-c">void
+syscall(void)
+{
+  int num;
+  struct proc *p = myproc();
+
+  num = p-&gt;trapframe-&gt;a7;
+  if(num &gt; 0 &amp;&amp; num &lt; NELEM(syscalls) &amp;&amp; syscalls[num]) {
+    p-&gt;trapframe-&gt;a0 = syscalls[num]();
+  } else {
+    printf(&quot;%d %s: unknown sys call %d\n&quot;,
+            p-&gt;pid, p-&gt;name, num);
+    p-&gt;trapframe-&gt;a0 = -1;
+  }
+}
+</code></pre>
+<p>The variable num&rsquo;s value, after the instruction <code>num = p-&gt;trapframe-&gt;a7</code>, equals 7, which is <code>SYS_exec</code>&rsquo;s value defined in <code>/kernel/syscall.h</code>. The kernel knows that some user program wants to use the exec system call, so it goes to <code>syscalls[num]()</code>, which is a function table for providing system call services.</p>
+<p>The function <code>sys_exec()</code> is in <code>/kernel/sysfile.c</code>. In line 444:</p>
+<pre><code class="language-c">int ret = exec(path, argv)
+</code></pre>
+<p>If we print the value of &ldquo;path&rdquo;, we will find that it equals &ldquo;/init&rdquo;. So xv6 loads user program <code>/user/init.c</code>.</p>
+<p><code>init.c</code> mainly forks some child processes and exec <code>sh.c</code>, so xv6 starts the shell and the booting procedure is completed.</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/mit-operating-system/lectures/lec01/" rel="next">MIT-6.S081 Lecture 01: Introduction and Examples</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/mit-operating-system/lectures/lec04/" rel="prev">MIT-6.S081 Lecture 04: Page Tables</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="A Simple Concurrent Programming Language Basic Setup Thread Subsystem Storage Subsystem Linking the Two The Thread Subsystem Thread Local Steps Lifting to Concurrent Programs SC Storage subsystem Linking the Thread and Storage Subsystems x86&rsquo;s TSO Storage Subsystem: Linking The Thread and Storage Subsystem Exercise: PSO Storage System A Simple Concurrent Programming Language Basic domains:">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-concurrency/lectures/lec03/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-concurrency/lectures/lec03/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-concurrency/lectures/lec03/">
+  <meta property="og:title" content="Lecture 03: Operational Semantics for Concurrency | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="A Simple Concurrent Programming Language Basic Setup Thread Subsystem Storage Subsystem Linking the Two The Thread Subsystem Thread Local Steps Lifting to Concurrent Programs SC Storage subsystem Linking the Thread and Storage Subsystems x86&rsquo;s TSO Storage Subsystem: Linking The Thread and Storage Subsystem Exercise: PSO Storage System A Simple Concurrent Programming Language Basic domains:"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2022-09-20T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2022-09-20T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 03: Operational Semantics for Concurrency | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-concurrency/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-concurrency/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-concurrency/lectures/lec01/">Lecture 01</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-concurrency/lectures/lec02/">Lecture 02</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-concurrency/lectures/lec03/">Lecture 03</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-concurrency/lectures/lec04/">Lecture 04</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 03: Operational Semantics for Concurrency</h1>
+
+          <div class="article-style">
+            <ul>
+<li>
+<a href="#a-simple-concurrent-programming-language">A Simple Concurrent Programming Language</a></li>
+<li>
+<a href="#basic-setup">Basic Setup</a>
+<ul>
+<li>
+<a href="#thread-subsystem">Thread Subsystem</a></li>
+<li>
+<a href="#storage-subsystem">Storage Subsystem</a></li>
+<li>
+<a href="#linking-the-two">Linking the Two</a></li>
+</ul>
+</li>
+<li>
+<a href="#the-thread-subsystem">The Thread Subsystem</a>
+<ul>
+<li>
+<a href="#thread-local-steps">Thread Local Steps</a></li>
+<li>
+<a href="#lifting-to-concurrent-programs">Lifting to Concurrent Programs</a></li>
+</ul>
+</li>
+<li>
+<a href="#sc-storage-subsystem">SC Storage subsystem</a>
+<ul>
+<li>
+<a href="#linking-the-thread-and-storage-subsystems">Linking the Thread and Storage Subsystems</a></li>
+</ul>
+</li>
+<li>
+<a href="#x86s-tso-storage-subsystem">x86&rsquo;s TSO Storage Subsystem:</a>
+<ul>
+<li>
+<a href="#linking-the-thread-and-storage-subsystem">Linking The Thread and Storage Subsystem</a></li>
+</ul>
+</li>
+<li>
+<a href="#exercise-pso-storage-system">Exercise: PSO Storage System</a></li>
+</ul>
+<h2 id="a-simple-concurrent-programming-language">A Simple Concurrent Programming Language</h2>
+<p><strong>Basic domains:</strong></p>
+<ul>
+<li>Registers: $r\in \text{Reg}$.</li>
+<li>Memory locations: $x\in \text{Loc}$.</li>
+<li>Values (including 0): $v\in \text{Val}$.</li>
+<li>Thread identifiers: $i\in \text{Tid}=\{1,\cdots,N\}$.</li>
+</ul>
+<p><strong>Expressions and commands</strong> (here all commands are atomic):</p>
+<pre><code class="language-plaintext">e ::= r | v | e +(-*/) e | ...
+
+c ::= skip | if e then c else c | while e do c |
+      c ; c (sequential) | r := e | r := x (read) | x := e (write)
+      r := FAA(x, e) | r := CAS(x, e, e) | fence
+</code></pre>
+<ul>
+<li>
+<p>FAA means &ldquo;fetch-and-add&rdquo;, <code>r = FAA(x, e)</code> will do</p>
+<pre><code class="language-c++">r = x;
+x += e;
+</code></pre>
+<p>atomically.</p>
+</li>
+<li>
+<p>CAS means &ldquo;compare-and-set/swap&rdquo;, <code>r = CAS(x, er, ew)</code> will do</p>
+<pre><code class="language-c++">r = x;
+if (r == er) {
+    x = ew;
+    r = 1;
+}
+else
+    r = 0;
+</code></pre>
+<p>atomically.</p>
+</li>
+<li>
+<p><code>fence</code> only takes effect under WMM. It forces previous writes to be propagated into memory.</p>
+</li>
+</ul>
+<p><strong>Programs:</strong> $P:Tid\to Cmd$, written as $P=c_1||c_2||\cdots ||c_N$.</p>
+<h2 id="basic-setup">Basic Setup</h2>
+<p>Different memory models usually share the same thread behaviors while have different implementation on the read/write side. Therefore we decompose the system into thread subsystem and storage subsystem and set an &ldquo;virtual&rdquo; interface between them.</p>
+<h3 id="thread-subsystem">Thread Subsystem</h3>
+<ul>
+<li>thread local step: $(c,s)\overset{l}{\to}(c&rsquo;,s&rsquo;)$,</li>
+<li>Lift them to program steps: $(P,S)\overset{i,l}{\to}(P&rsquo;,S&rsquo;)$.</li>
+</ul>
+<h3 id="storage-subsystem">Storage Subsystem</h3>
+<ul>
+<li>
+<p>It&rsquo;s memory-model-dependent.</p>
+</li>
+<li>
+<p>Describe the effect of memory accesses and fences.</p>
+</li>
+<li>
+<p>$M\overset{i:l}{\to}M&rsquo;$.</p>
+</li>
+</ul>
+<h3 id="linking-the-two">Linking the Two</h3>
+<p>Either the thread or the storage subsystem make an internel step, i.e., $\epsilon$, or they make matching $i:l$ steps. The transformation is denoted as $P,S,M\Rightarrow P&rsquo;,S&rsquo;,M&rsquo;$.</p>
+<h2 id="the-thread-subsystem">The Thread Subsystem</h2>
+<h3 id="thread-local-steps">Thread Local Steps</h3>
+<p><strong>Store:</strong> $s:\text{Reg}\to \text{Val}$ (initially $s_0\triangleq \lambda r.0$).</p>
+<p><strong>State:</strong> $(c,s)\in \text{Command}\times \text{Store}$</p>
+<p><strong>Transitions:</strong></p>
+<p>$\mathbf{skip}$:
+$$
+\frac{}{\mathbf{skip};c,s\overset{\epsilon}{\to}c,s}
+$$</p>
+<p>Sequential:</p>
+<p>$$
+\frac{c_1,s\overset{l}{\to}c_1&rsquo;,s&rsquo;}{c_1;c_2,s\overset{l}{\to}c_1&rsquo;,c_2,s&rsquo;}
+$$</p>
+<p>Register operations:
+$$
+\frac{s&rsquo;=s[r\mapsto s(e)]}{\text{r:=e},s\overset{\epsilon}{\to}\mathbf{skip},s&rsquo;}
+$$
+Memory read:
+$$
+\frac{l=R(x, v)}{\text{r:=x},s\overset{l}{\to}\mathbf{skip},s[r\to v]}
+$$
+Here $l=R(x, v)$ means that we read from the memory and $M[x] = v$.</p>
+<p>Memory write:
+$$
+\frac{l=W(x, s(e))}{\text{x:=e,s}\overset{l}{\to}\mathbf{skip},s}
+$$
+$\mathbf{if}$-$\mathbf{then}$-$\mathbf{else}$ branch:
+$$
+\frac{s(e)\neq 0}{\mathbf{if}\space e\space \mathbf{then}\space c_1\space \mathbf{else}\space c_2,s\overset{\epsilon}{\to}c_1,s}
+$$</p>
+<p>$$
+\frac{s(e)= 0}{\mathbf{if}\space e\space \mathbf{then}\space c_1\space \mathbf{else}\space c_2,s\overset{\epsilon}{\to}c_2,s}
+$$</p>
+<p>$\mathbf{while}$ loop:
+$$
+\frac{}{\mathbf{while}\space e\space \mathbf{do}\space c,s\overset{\epsilon}{\to}\mathbf{if}\space e\space\mathbf{then}\space (c;\mathbf{while}\space e\space \mathbf{do}\space c)\space \mathbf{else}\space \mathbf{skip},s}
+$$
+Fetch-and-add:
+$$
+\frac{l=U(x, v, v + s(e))}{\text{r:=}\mathbf{FAA}(x,e),s\overset{l}{\to}\mathbf{skip},s[r\to v]}
+$$
+Here we define a new way to interact with memory: <code>U</code> (update).  <code>U(x, vr, vw)</code> means that we fetch $v_r$ from $M[x]$ and write $v_w$ to $M[x]$.</p>
+<p>Compare-and-swap:
+$$
+\frac{l=R(x, v)\quad v\neq s(e_r)}{\text{r:=}\mathbf{CAS}(x, e_r,e_w),s\overset{l}{\to}\mathbf{skip},s[r\to 0]}
+$$</p>
+<p>$$
+\frac{l=U(x, s(e_r), s(e_w))}{\text{r:=}\mathbf{CAS}(x, e_r,e_w),s\overset{l}{\to}\mathbf{skip},s[r\to 1]}
+$$</p>
+<p>It&rsquo;s worth noticing that when compare-and-swap fails, it acts as a normal read operation (&ldquo;R&rdquo; instead of &ldquo;U&rdquo;)</p>
+<p>Fence:
+$$
+\frac{}{\mathbf{fence},s\overset{F}{\to}\mathbf{skip},s}
+$$
+For WMM, when the memory receives &ldquo;F&rdquo;, it will do particular operations.</p>
+<h3 id="lifting-to-concurrent-programs">Lifting to Concurrent Programs</h3>
+<p><strong>State:</strong> $(P,S)\in\text{Program}\times (\text{Tid}\to \text{Store})$. (initially $(P,S_0)$, where $S_0\triangleq \lambda i.s_0$)</p>
+<p><strong>Transitions:</strong>
+$$
+\frac{P(i),S(i)\overset{l}{\to}c,s}{P,S\overset{i:l}{\mapsto}P[i\to c],S[i\mapsto s]}
+$$</p>
+<h2 id="sc-storage-subsystem">SC Storage subsystem</h2>
+<p><strong>Machine state:</strong> $M:\text{Loc}\to\text{Val}$ (initially $M_0\triangleq \lambda x.0$).</p>
+<p><strong>Transitions:</strong>
+$$
+\frac{l=W(x, v)}{M\overset{i:l}{\to}M[x\mapsto v]}
+$$</p>
+<p>$$
+\frac{l=R(x, v)\quad M[x]=v}{M\overset{i:l}{\to}M}
+$$</p>
+<p>$$
+\frac{l=U(x,v_r,v_w)\quad M[x]=v_r}{M\overset{i:l}{\to}M[x\mapsto v_w]}
+$$</p>
+<p>$$
+\frac{l=F}{M\overset{i:l}{\to}M}
+$$</p>
+<p>(<code>fence</code> doesn&rsquo;t take effect in SC memory model.)</p>
+<h3 id="linking-the-thread-and-storage-subsystems">Linking the Thread and Storage Subsystems</h3>
+<p>Silent:
+$$
+\frac{P,S\overset{i:\epsilon}{\to}P&rsquo;, S&rsquo;}{P,S,M\Rightarrow P&rsquo;,S&rsquo;,M}
+$$
+Non-silent:
+$$
+\frac{P,S\overset{i:l}{\to}P&rsquo;,S&rsquo;\quad M\overset{i:l}{\to}M&rsquo;}{P,S,M\Rightarrow P&rsquo;,S&rsquo;,M&rsquo;}
+$$
+An outcome $O:\text{Tid}\to\text{Store}$ is allowed for a program $P$ under SC if there exists $M$ such that
+$$
+P,S_0,M_0\Rightarrow^* \mathbf{skip}||&hellip;||\mathbf{skip},O,M.
+$$</p>
+<h2 id="x86s-tso-storage-subsystem">x86&rsquo;s TSO Storage Subsystem:</h2>
+<p><strong>Machine states:</strong></p>
+<ul>
+<li>A memory $M:\text{Loc}\to\text{Val}$</li>
+<li>A function $B:\text{Tid}\to (\text{Loc},\text{Val})^*$ assigning a <strong>store buffer</strong> to every thread. Here a pair $(x, v)$ stands for a write. The most recent write appears at the left most position of the write sequence.</li>
+</ul>
+<p>(Initially, $M_0\triangleq \lambda x.0$,$B_0=\lambda i.\epsilon$).</p>
+<p><strong>Transitions:</strong></p>
+<p>Write (only to the thread-local buffer):
+$$
+\frac{l=W(x, v)}{M,B\overset{i:l}{\to}M,B[i\mapsto (x,v)\cdot B(i)]}
+$$
+Propagate (flush the least recent operation in the buffer to the memory):
+$$
+\frac{B(i)=b\cdot (x,v)}{M,B\overset{i:\epsilon}{\to}M[x\mapsto v],B[i\mapsto b]}
+$$
+Read
+$$
+\frac{l=R(x,v)\quad B(i)=(x_n,v_n)\cdot\ldots\cdot(x_1,v_1)\quad M[x_1\mapsto v_1]\cdots[x_n\mapsto v_n] (x)=v}{M,B\overset{i:l}{\to}M,B}
+$$
+Notice that during a read, the buffer won&rsquo;t be flushed into the memory.</p>
+<p>RMW (read-modify-write):
+$$
+\frac{l=U(x,v_r,v_w)\quad B(i)=\epsilon \quad M(x)=v_r}{M,B\overset{i:l}{\to}M[x\mapsto v_w],B}
+$$
+The condition $B(i)=\epsilon$ indicates that RMW will automatically synchronize the state. Notice that in $\mathbf{CAS}$, if the comparison failed, $\mathbf{CAS}$ would act as a normal &ldquo;read&rdquo; operation and in TSO no synchronization would be conducted.</p>
+<p>Fence:
+$$
+\frac{l=F\quad B(i)=\epsilon}{M,B\overset{i:l}{\to}M,B}
+$$
+Fence is used as forced synchronization.</p>
+<h3 id="linking-the-thread-and-storage-subsystem">Linking The Thread and Storage Subsystem</h3>
+<p>Silent thread:
+$$
+\frac{P,S\overset{i:\epsilon}{\to}P&rsquo;,S&rsquo;}{P,S,M,B\Rightarrow P,S&rsquo;,M,B}
+$$
+Silent storage:
+$$
+\frac{M,B\overset{i:\epsilon}{\to}M&rsquo;,B&rsquo;}{P,S,M,B\Rightarrow P,S,M&rsquo;,B&rsquo;}
+$$
+Non silent:
+$$
+\frac{P,S\overset{i:l}{\to}P&rsquo;,S&rsquo;\qquad M,B\overset{i:l}{\to}M&rsquo;,B&rsquo;}{P,S,M,B\Rightarrow P&rsquo;,S&rsquo;,M&rsquo;,B&rsquo;}
+$$
+The definition of allowed outcome is similar to that of SC.</p>
+<h2 id="exercise-pso-storage-system">Exercise: PSO Storage System</h2>
+<p><em>Partial Store Ordering (PSO)</em> is a WMM similar to TSO, but it does not guarantee that stores to different locations propagate to the main memory in the order they were issued. In particular, it allows the following weak behavior:</p>
+<pre><code class="language-c++">Initially, x = y = 0;
+x = 1;  ||  a = y; // 1
+y = 1;  ||  b = x; // 0;
+</code></pre>
+<p>(1) Operational semantics for PSO:</p>
+<p>We only need to redefine the propagate rule in TSO:
+$$
+\frac{B(i)=b&rsquo;\cdot(x,v)\cdot b\qquad b=(x_t,v_t)\cdot\ldots\cdot(x_1,v_1),\forall 1\leq i\leq t,x_i\neq x}{M,B\overset{i:\epsilon}{\to}M[x\mapsto v],B[i\mapsto b&rsquo;\cdot b]}
+$$
+(2) store-store fence:</p>
+<p>In the thread subsystem:
+$$
+\frac{}{\mathbf{ssfence};c,s\overset{SSF}{\to}\mathbf{skip};c,s}
+$$
+In the storage subsystem:</p>
+<p>SSF rule: add a special mark into the buffer array:
+$$
+\frac{}{M,B\overset{SSF}{\to}M,B[i\mapsto F\cdot B(i)]}
+$$
+Propagation rule needn&rsquo;t be changed because our conditions implicitly require that there&rsquo;s no store-store fence before the target operation. But we need an additional rule to move away &ldquo;F&rdquo; marks:
+$$
+\frac{B(i)=b\cdot F}{M,B\overset{i:\epsilon}{\to}M&rsquo;,B[i\mapsto b]}
+$$
+(3) Show that programs containing store-store fences between every two writes have the same outcomes under TSO and PSO:</p>
+<p>TSO and PSO differ only in their propagation rules. If there is a store-store fence between every two writes, it&rsquo;s easy to prove that at any point, the buffer of arbitrary thread should be in the form of $(x_n,v_n)\cdot F\cdot \ldots \cdot F\cdot (x_2,v_2)\cdot F\cdot (x_1,v_1)$. Therefore at any point the propagation rule in PSO can only choose the least recent operation in the buffer to propagate, which makes it completely the same as TSO&rsquo;s propagation rule.</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-concurrency/lectures/lec04/" rel="next">Lecture 04: Declarative Semantics for Concurrency</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-concurrency/lectures/lec02/" rel="prev">Lecture 02: Happens-before Memory Model</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Sep 20, 2022</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

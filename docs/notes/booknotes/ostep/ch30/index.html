@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：
+volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return NULL; } int main () { pthread_t c; Pthread_create(&amp;c, NULL, child, NULL); while (done == 0) ; do_something_else(); return 0; } 但这样做主线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch30/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch30/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch30/">
+  <meta property="og:title" content="Chapter 30: Condition Variables | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：
+volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return NULL; } int main () { pthread_t c; Pthread_create(&amp;c, NULL, child, NULL); while (done == 0) ; do_something_else(); return 0; } 但这样做主线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Chapter 30: Condition Variables | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/ch02/">Chapters</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch02/">Chapter 02</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch04/">Chapter 04</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch05/">Chapter 05</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch13/">Chapter 13</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch14/">Chapter 14</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch17/">Chapter 17</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch26/">Chapter 26</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch27/">Chapter 27</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch29/">Chapter 29</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/booknotes/ostep/ch30/">Chapter 30</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch31/">Chapter 31</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch36/">Chapter 36</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch38/">Chapter 38</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch40/">Chapter 40</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/hw26/">Homework</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/booknotes/ostep/hw26/">Homework 26</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/hw27/">Homework 27</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Chapter 30: Condition Variables</h1>
+
+          <div class="article-style">
+            <p>很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：<!-- more --></p>
+<pre><code class="language-c">volatile int done = 0;
+
+void *child(void *arg) {
+    do_something();
+    done = 1;
+    return NULL;
+}
+
+int main () {
+    pthread_t c;
+    Pthread_create(&amp;c, NULL, child, NULL);
+    while (done == 0)
+        ;
+    do_something_else();
+    return 0;
+}
+</code></pre>
+<p>但这样做主线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。</p>
+<h2 id="301-definition-and-routines">30.1 Definition and Routines</h2>
+<p>为了让一个线程等待一个条件成立，我们通常使用条件变量 (condition variable)。条件变量可以理解为一个显式的队列，线程可以将自己加入到这个队列中挂起，当其他线程的操作使得条件变化时，它会唤醒这个“队列”中的线程。我们提供两个 API：<code>wait()</code> 可以让线程将自己加入到队列中等待；<code>signal()</code> 可以让别的线程改变了条件状态时向队列中的线程“发送信号”。</p>
+<p>POSIX 提供的条件变量 API 为</p>
+<pre><code class="language-c">int pthread_cond_wait(pthread_cont_t *c, pthread_mutex_t *m);
+int pthread_cond_signal(pthread_cond_t *c);
+</code></pre>
+<p>注意到 wait() 的参数中除了条件变量 c 还有一个自旋锁 m。wait() 的语义要求调用时线程必须拥有自旋锁 m，wait() 会负责释放这个自旋锁并使当前线程进入睡眠状态 (这两步是原子的)；当 signal() 使当前线程被唤醒后，wait() 会负责让线程重新获得自旋锁 m，然后返回。</p>
+<p>
+<a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2030%20-%20threads_cv/join.c" target="_blank" rel="noopener">join.c</a> 提供了一个主线程等待子线程结束的正确实现。事实上这个过程是很容易实现错的，比如如下一些写法：</p>
+<pre><code class="language-c">void thr_exit() {
+    Pthread_mutex_lock(&amp;m);
+    Pthread_cond_signal(&amp;c);
+    Pthread_mutex_unlock(&amp;m);
+}
+void thr_join() {
+    Pthread_mutex_lock(&amp;m);
+    Pthread_cond_wait(&amp;c, &amp;m);
+    Pthread_mutex_unlock(&amp;m);
+}
+</code></pre>
+<p>这个写法只有在 thr_join() 在 thr_exit() 之前执行的情况下才是正确的。如果颠倒了顺序，thr_join() 将永远不会被唤醒 (
+<a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2030%20-%20threads_cv/join_no_state_var.c" target="_blank" rel="noopener">join_no_state_var.c</a> 中，主线程里使用了 sleep() 以精确复现这一情形)。因此我们可以看到，使用条件变量时理应有一个条件状态的判断。</p>
+<pre><code class="language-c">void thr_exit() {
+    done = 1;
+    Pthread_cond_signal(&amp;c);
+}
+void thr_join() {
+    while (done == 0)
+        Pthread_cond_wait(&amp;c);
+}
+</code></pre>
+<p>这个写法没有用锁保护状态变量 done 的读写，缺失了原子性。这里的原子性缺失指的是：虽然在 while 判断时 <code>done == 0</code>，但在 wait() 时 done 可能已经不等于 0 了。考虑这样一种执行流：thr_join() 做完 while 判断进入循环，还没来得及 wait() 时，执行流被打断，thr_exit() 执行并 signal()，但此时队列中并没有线程。接着 thr_join() 继续执行陷入睡眠，那么它将永远不会被唤醒 (
+<a href="https://github.com/Kristoff-starling/OSTEP/blob/master/bookcode/Chapter%2030%20-%20threads_cv/join_no_lock.c" target="_blank" rel="noopener">join_no_lock()</a> 中在主线程使用了比子线程时间更长的 sleep() 以精确复现这一情况)。</p>
+<blockquote>
+<p><strong>Tip: Always Hold The Lock While Signaling</strong></p>
+<p>POSIX 的 wait() 函数的语义已经要求了我们在调用 wait() 时必须要拥有自旋锁；虽然少数情况下我们可以无锁地调用 signal()，但为了安全和简单，我们应当在 signal() 时也用自旋锁保护。</p>
+</blockquote>
+<h2 id="302-the-producerconsumer-bounded-buffer-problem">30.2 The Producer/Consumer (Bounded Buffer) Problem</h2>
+<p>生产者-消费者问题在系统中很常见，比如下面的例子：</p>
+<pre><code class="language-bash">grep foo file.txt | wc -l
+</code></pre>
+<p>grep 找到的内容通过管道传送给 wc 统计个数。管道在内核中就是一个缓冲区，因此这里 grep 是一个生产者，wc 是一个消费者，wc 不能在 buffer 为空的时候从管道里读东西，grep 也不能在缓冲区满了的时候再往里填。</p>
+<h3 id="a-broken-solution">A Broken Solution</h3>
+<p>一个比较自然但却错误的实现如下所示：</p>
+<pre><code class="language-c">void *producer(void *arg) {
+    for (int i = 0; i &lt; LOOP; i++) {
+        lock(&amp;lk);
+        if (count == 1) wait(&amp;cond, &amp;lk);
+        put(i); // count becomes 1
+        signal(&amp;cond);
+        unlock(&amp;lk);
+    }
+}
+void *consumer(void *arg) {
+    while (1) {
+        lock(&amp;lk);
+        if (count == 0) wait(&amp;cond, &amp;lk);
+        int rt = get(); // count becomes 0
+        signal(&amp;cond);
+        unlock(&amp;lk);
+        printf(&quot;%d\n&quot;, rt);
+    }
+}
+</code></pre>
+<p>如果只有一个生产者线程和一个消费者线程，这个实现是正确的。但如果有多个，比如一个生产者和两个消费者，就会有并发 bug。考虑如下执行过程：</p>
+<ul>
+<li>$T_{c_1}$ 运行，发现 <code>count == 0</code>，挂起；</li>
+<li>$T_p$ 运行，往 buffer 里放了一个数，然后通过 signal() 唤醒 $T_{c_1}$。</li>
+<li>$T_{c_1}$ 刚被唤醒，还没来得及获得自旋锁返回的时候，$T_{c_2}$ 运行，从 buffer 里取走了这个数打印；</li>
+<li>这时返回到 $T_{c_1}$，获得自旋锁返回后，由于之前的判断是 if 语句，它无法发现 count 此时又变成 0 了，于时再次从 buffer 中取数，触发 assertion fail。</li>
+</ul>
+<p>并发 bug 产生的原因是：从消费者线程被唤醒到消费者线程真正获得自旋锁开始工作这段时间内，buffer 的状态改变了。<strong>signal() 的语义只是通知一个正在等待的线程：世界的状态改变了，但它不保证世界的状态被改变成了调用 signal() 之前那一瞬的状态。</strong> 这种 signal() 的语义被称为 <strong>Mesa semantics</strong>。与之相对的是 <strong>Hoare Semantics</strong>，它保证调用 signal() 之后一个线程被唤醒并立即被执行 (原子性)。但后者难实现的多，现在绝大部分系统的 signal() 使用的都是 Mesa semantics。</p>
+<h3 id="better-but-still-broken-while-not-if">Better, But Still Broken: While, Not If</h3>
+<p>Mesa semantics 是比较容易克服的：我们只要将上面程序中对状态变量做判断的 if 换成 while 即可。这样即使被唤醒后状态又被改变，线程获得自旋锁后会再次检查状态，发现不对后可以再次进入睡眠。</p>
+<blockquote>
+<p><strong>Always use while loops when working with condition variables!</strong></p>
+</blockquote>
+<p>但即使将 if 改成 while，我们的程序仍然有并发 bug。考虑如下执行过程：</p>
+<ul>
+<li>$T_{c_1}$ 运行，发现 <code>count == 0</code>，挂起；</li>
+<li>$T_{c_2}$ 运行，发现 <code>count == 0</code>，挂起；</li>
+<li>$T_p$ 运行，往 buffer 里添加了一个数字，然后通过 signal() 唤醒了 $T_{c_1}$。唤醒后 $T_{c_1}$ 并未立刻执行，而是 $T_p$ 继续运行，第二次循环时 $T_p$ 发现 <code>count == 1</code>，挂起；</li>
+<li>$T_{c_1}$ 运行，从 buffer 里读取了一个数字 (count 变为 0) 然后通过 signal() 唤醒一个线程。注意此时睡眠在条件变量上的线程有 $T_p$ 和 $T_{c_2}$ 两个。$T_{c_1}$ 选择唤醒 $T_{c_2}$。</li>
+<li>$T_{c_1}$ 和 $T_{c_2}$ 都发现没有数据可读，挂起。</li>
+</ul>
+<p>到这里，三个线程全部陷入睡眠，程序停滞。从这个例子中我们可以看出：消费者线程消费完后应该唤醒生产者线程；生产者线程生产完后应该唤醒消费者线程，我们应该有两个条件变量。</p>
+<h3 id="the-correct-producerconsumer-solution">The Correct Producer/Consumer Solution</h3>
+<p>pc.c 提供了一个完整、正确的生产者-消费者实现，其中的要点如下：</p>
+<ul>
+<li>使用两个条件变量，保证消费者只能唤醒生产者，生产者只能唤醒消费者。</li>
+<li>判断状态变量使用 while 语句。</li>
+<li>使用一个循环数组作为 buffer，count 的上限不再是 1 而是一个指定的 max，这使得 buffer 有了一定的容量。</li>
+<li>这是一个单生产者-多消费者的程序，生产者最后为每个消费者准备了一个 -1，以保证消费者线程能够全部退出。</li>
+</ul>
+<blockquote>
+<p><strong>Tip: Use While (Not If) for Conditions</strong></p>
+<p>使用 while 总是对的，在少数场合下使用 if 也可以达到目的，但为了安全性最好通通使用 while。</p>
+<p>我们推荐使用 while 而不是 if 的另一个原因是：一些实现的有问题的 signal() 可能会唤醒不止一个等待的线程。这种情况下，while 仍然能帮我们保证正确。</p>
+</blockquote>
+<h2 id="303-covering-conditions">30.3 Covering Conditions</h2>
+<p>假设我们希望用条件变量实现一个内存分配器，alloc() 时如果剩余内存不足则挂起，一段伪代码如下：</p>
+<pre><code class="language-c">int bytesLeft = MAX_HEAP_SIZE;
+void *allocate(int size) {
+    lock(&amp;lk);
+    while (bytesLeft &lt; size)
+        wait(&amp;cond, &amp;lk);
+    void *ptr = GetMemoryFromHeap(size);
+    bytesLeft -= size;
+    unlock(&amp;lk);
+    return ptr;
+}
+void free(void *ptr, int size) {
+    lock(&amp;lk);
+    bytesLeft += size;
+    FreeMemoryToHeap(ptr, size);
+    signal(&amp;cond);
+    unlock(&amp;lk);
+}
+</code></pre>
+<p>假设我们有一个 <code>alloc(100)</code> 和 <code>alloc(10)</code> 处于睡眠状态，现在来了一个 <code>free(50)</code>，问题出现了：如果我们随意挑一个线程唤醒，假如挑了 <code>alloc(100)</code> 的那个，分配还是会失败，且我们错过了让 <code>alloc(10)</code> 成功的机会。一种解决方案是：用一个 broadcast() 函数替代 signal() 函数，它可以唤醒睡眠在条件变量上的所有线程。这种方式被称为 covering conditions。</p>
+<p>broadcast() 相较于 signal() 的坏处在于：并不是所有的线程都能在被唤醒后运行下去，比如现在 buffer 里只有一个字符，而 broadcast() 唤醒了 100 个消费者，那么只有一个消费者能得到字符。运行不下去的字符会释放锁并再次进入睡眠，这种无谓打搅了睡眠线程的方式对性能影响很大。</p>
+<p>正因如此，虽然我们在之前的生产者-消费者问题中可以使用一个条件变量+broadcast 的方式解决问题，但那时我们显然有很简单的 2-条件变量解决方案，所以不考虑这种效率较低的方式。不过在内存分配的场景中，broadcast() 几乎是唯一的选择。</p>
+<h2 id="304-summary">30.4 Summary</h2>
+<p>略。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/booknotes/ostep/ch29/" rel="next">Chapter 29: Lock-based Concurrent Data Structures</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/booknotes/ostep/ch31/" rel="prev">Chapter 31: Semaphores</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="实验进度 我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。
+必答题 程序是个状态机 点击 这里跳转到解答。
+RTFSC 点击 这里跳转到解答。
+程序如何运行 点击 这里跳转到解答。
+编译与链接 在nemu/src/engine/interpreter/rtl-basic.h中, 你会看到由static inline开头定义的各种RTL指令函数. 选择其中一个函数, 分别尝试去掉static, 去掉inline或去掉两者, 然后重新进行编译, 你可能会看到发生错误. 请分别解释为什么这些错误会发生/不发生? 你有办法证明你的想法吗?
+如果去掉 inline，编译时会报错：xxx defined but not used。这是因为 rtl.h 文件 include 了 rtl-basic.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-ics/pa/pa2/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-ics/pa/pa2/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-ics/pa/pa2/">
+  <meta property="og:title" content="PA2 - 简单复杂的机器: 冯诺依曼计算机系统 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="实验进度 我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。
+必答题 程序是个状态机 点击 这里跳转到解答。
+RTFSC 点击 这里跳转到解答。
+程序如何运行 点击 这里跳转到解答。
+编译与链接 在nemu/src/engine/interpreter/rtl-basic.h中, 你会看到由static inline开头定义的各种RTL指令函数. 选择其中一个函数, 分别尝试去掉static, 去掉inline或去掉两者, 然后重新进行编译, 你可能会看到发生错误. 请分别解释为什么这些错误会发生/不发生? 你有办法证明你的想法吗?
+如果去掉 inline，编译时会报错：xxx defined but not used。这是因为 rtl.h 文件 include 了 rtl-basic."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>PA2 - 简单复杂的机器: 冯诺依曼计算机系统 | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-ics/pa/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-ics/pa/pa0/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-ics/pa/pa0/">PA0</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-ics/pa/pa1/">PA1</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-ics/pa/pa2/">PA2</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-ics/pa/pa3/">PA3</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-ics/pa/pa4/">PA4</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>PA2 - 简单复杂的机器: 冯诺依曼计算机系统</h1>
+
+          <div class="article-style">
+            <h2 id="实验进度">实验进度</h2>
+<p>我完成了所有的必答题，并针对选做题和思考题给出了自己的想法。</p>
+<h2 id="必答题">必答题</h2>
+<h3 id="程序是个状态机">程序是个状态机</h3>
+<p>点击
+<a href="#answer1">这里</a>跳转到解答。</p>
+<h3 id="rtfsc">RTFSC</h3>
+<p>点击
+<a href="#answer2">这里</a>跳转到解答。</p>
+<h3 id="程序如何运行">程序如何运行</h3>
+<p>点击
+<a href="#answer3">这里</a>跳转到解答。</p>
+<h3 id="编译与链接">编译与链接</h3>
+<blockquote>
+<p>在<code>nemu/src/engine/interpreter/rtl-basic.h</code>中, 你会看到由<code>static inline</code>开头定义的各种RTL指令函数. 选择其中一个函数, 分别尝试去掉<code>static</code>, 去掉<code>inline</code>或去掉两者, 然后重新进行编译, 你可能会看到发生错误. 请分别解释为什么这些错误会发生/不发生? 你有办法证明你的想法吗?</p>
+</blockquote>
+<p>如果去掉 inline，编译时会报错：<code>xxx defined but not used</code>。这是因为 <code>rtl.h</code> 文件 include 了 <code>rtl-basic.h</code> ，但并没有使用这个函数，因此触发了 <code>-Werror</code> 编译选项。</p>
+<p>如果去掉 static，编译时不会报错。这是因为这里的函数被定义成了内联函数，函数内容被直接塞进了调用者的函数体中。如果我们用 <code>objdump -d</code> 命令去检查编译得到的汇编程序，我们会发现 <code>rtl_xx</code> 等一系列函数是不在其中的。</p>
+<p>如果同时去掉 static 和 inline，编译时会报错：<code>multiple definition of xxx</code>。此时再查看汇编程序可以发现 <code>rtl_xx</code> 在其中。因为 <code>rtl_xx</code> 同时出现在了 <code>cpu-exec.o</code> <code>hostcall.o</code> 和 <code>decode.o</code> 中，所以链接时会出错。这里一个值得关注的细节是：我们编写的函数 <code>exec_addi</code> 调用了 <code>rtl_addi</code> ，但在汇编代码中并没有这一条调用。可以看到 <code>rtl_addi</code> 的内容被直接贴进了 <code>exec_addi</code> 的函数体中。这应该是编译器针对 addi 这种极其简短的函数调用做出的一种优化。</p>
+<h3 id="编译与链接2">编译与链接2</h3>
+<blockquote>
+<ol>
+<li>在<code>nemu/include/common.h</code>中添加一行<code>volatile static int dummy;</code> 然后重新编译NEMU. 请问重新编译后的NEMU含有多少个<code>dummy</code>变量的实体? 你是如何得到这个结果的?</li>
+<li>添加上题中的代码后, 再在<code>nemu/include/debug.h</code>中添加一行<code>volatile static int dummy;</code> 然后重新编译NEMU. 请问此时的NEMU含有多少个<code>dummy</code>变量的实体? 与上题中<code>dummy</code>变量实体数目进行比较, 并解释本题的结果.</li>
+<li>修改添加的代码, 为两处<code>dummy</code>变量进行初始化:<code>volatile static int dummy = 0;</code> 然后重新编译NEMU. 你发现了什么问题? 为什么之前没有出现这样的问题? (回答完本题后可以删除添加的代码.)</li>
+</ol>
+</blockquote>
+<ol>
+<li>
+<p>笔者起初的做法是在 Makefile 中加入一些功能，使得在 make 可以将预编译的 <code>*.i</code> 文件同时输出到 <code>/build</code> 中，然后在 <code>/build</code> 中使用 <code>grep &quot;volatile static int dummy&quot; -r | wc -l</code> 命令统计个数，得到的答案是 33 个。</p>
+<p>但这个做法其实有一些问题，因为高级程序中定义的“变量”并不一定是实体，比如连续定义两个相同名字的未初始化全局变量，在符号表中只会出现一个。因此正确的方法应该是查看符号表。使用命令 <code>readelf --symbols $NEMU_HOME/build/riscv32-nemu-interpreter | grep &quot;dummy&quot; | wc -l</code> 命令，得到的结果是 33 个。</p>
+</li>
+<li>
+<p>此时 nemu 中仍然含有 33 个 dummy 变量的实体。这是因为 <code>common.h</code> 中 include 了 <code>dubug.h</code> ，且这是唯一一个 include <code>debug.h</code> 的地方，未初始化的相同名字的全局变量在符号表中只有一个实体。</p>
+</li>
+<li>
+<p>对变量进行初始化之后再编译，会报错：<code>redefinition of dummy</code>。这是因为赋了初值的全局变量会被认为是一个强符号。C 语言中不允许有两个相同的强符号被定义。而没有赋初值的变量是弱符号，语法上是可以重复定义的。</p>
+</li>
+</ol>
+<h3 id="了解-makefile">了解 Makefile</h3>
+<blockquote>
+<p>请描述你在<code>am-kernels/kernels/hello/</code>目录下敲入<code>make ARCH=$ISA-nemu</code> 后, <code>make</code>程序如何组织.c和.h文件, 最终生成可执行文件<code>am-kernels/kernels/hello/build/hello-$ISA-nemu.elf</code>. (这个问题包括两个方面:<code>Makefile</code>的工作方式和编译链接的过程.) 关于<code>Makefile</code>工作方式的提示:</p>
+<ul>
+<li><code>Makefile</code>中使用了变量, 包含文件等特性</li>
+<li><code>Makefile</code>运用并重写了一些implicit rules</li>
+<li>在<code>man make</code>中搜索<code>-n</code>选项, 也许会对你有帮助</li>
+<li>RTFM</li>
+</ul>
+</blockquote>
+<p>hello 中的 Makefile 内容比较简单：将 NAME 和 SRC 设置好，然后将 AM 中的 Makefile 全部贴进来。（虽然 AM 的 Makefile 相当复杂）</p>
+<p>事实上 SRC 有非常多：AM 中几乎每个文件夹下都有 Makefile，把这个文件夹下的 .c 文件搜刮进 SRC 中。</p>
+<p>按照正序，Makfile 大概做了如下一些大的事情：</p>
+<ul>
+<li>
+<p>在 <code>Makefile</code> 中有</p>
+<pre><code class="language-makefile">$(DST_DIR)/%.o: %.c
+	@mkdir -p $(dir $@) &amp;&amp; echo + CC $&lt;
+	@$(CC) -std=gnu11 $(CFLAGS) -c -o $@ $(realpath $&lt;)
+</code></pre>
+<p>它会中所有的.c文件编译成.o文件放进目录DST_DIR中。这里DST_DIR是 AM 下的 build 目录。</p>
+</li>
+<li>
+<p>在 <code>Makefile</code> 中有</p>
+<pre><code class="language-makefile">$(LIBS): %:
+	@$(MAKE) -s -C $(AM_HOME)/$* archive
+</code></pre>
+<p>它会把我们自己写的库函数（如 klib）打包成 archive。</p>
+</li>
+<li>
+<p>在 <code>Makefile</code> 中有</p>
+<pre><code class="language-makefile">$(IMAGE).elf: $(OBJS) am $(LIBS)
+	@echo + LD &quot;-&gt;&quot; $(IMAGE_REL).elf
+	@$(LD) $(LDFLAGS) -o $(IMAGE).elf --start-group $(LINKAGE) --end-group
+</code></pre>
+<p>它会将所有的 .o 文件全部链接起来生成一个 .elf 文件。这里的 <code>$(OBJS)</code> 的生成方法不难：将 SRC 中所有的 .c 换成了 .o，加上相对应的路径前缀即可。</p>
+</li>
+<li>
+<p>在 <code>nemu.mk</code> 中有</p>
+<pre><code class="language-makefile">image: $(IMAGE).elf
+	@$(OBJDUMP) -d $(IMAGE).elf &gt; $(IMAGE).txt
+	@echo + OBJCOPY &quot;-&gt;&quot; $(IMAGE_REL).bin
+	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
+</code></pre>
+<p>它使用 <code>OBJCOPY</code> 命令将 .elf 文件中的一些节做了修改，然后粘贴进了 .bin 文件中。</p>
+</li>
+<li>
+<p>在 <code>nemu.mk</code> 中有</p>
+<pre><code class="language-makefile">run: image
+	$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) run ARGS=&quot;$(NEMUFLAGS)&quot; IMG=$(IMAGE).bin
+</code></pre>
+<p>它相当于在 <code>$NEMU_HOME</code> 目录下使用了命令 <code>make ISA=riscv32 run ARGS=... IMG=...</code>，这样就实现了将镜像加载到 nemu 上运行。</p>
+</li>
+</ul>
+<hr>
+<p>以下是我的自由报告内容，我在做实验的过程中详细记录了自己遇到的所有问题和查阅的所有资料。这些笔记按照章节排列，每章通常有两个部分：</p>
+<ul>
+<li>思考题：包含笔者针对思考题查阅的资料和我尝试给出的答案。</li>
+<li>补充：这里的内容是没有在讲义中提及的问题，以及讲义中建议自学的东西。</li>
+</ul>
+<h2 id="不停计算的机器">不停计算的机器</h2>
+<h3 id="必答题-1">必答题</h3>
+<h4 id="理解yemu如何执行程序-a-idanswer1a">理解YEMU如何执行程序 <a id=answer1></a></h4>
+<blockquote>
+<p>YEMU可以看成是一个简化版的NEMU, 它们的原理是相通的, 因此你需要理解YEMU是如何执行程序的. 具体地, 你需要</p>
+<ul>
+<li>画出在YEMU上执行的加法程序的状态机</li>
+<li>通过RTFSC理解YEMU如何执行一条指令</li>
+</ul>
+<p>思考一下, 以上两者有什么联系?</p>
+</blockquote>
+<p>我们定义一个状态为 (PC, R[0], R[1], M[7], halt)，则状态机为：</p>
+<pre><code>(0, x, x, 0, 0) -&gt; (0, 33, x, 0, 0) -&gt; (1, 33, x, 0, 0) -&gt; (1, 33, 33, 0, 0) -&gt; (2, 33, 33, 0, 0) -&gt; (2, 16, 33, 0, 0) -&gt; (3, 16, 33, 0, 0) -&gt; (3, 49, 33, 0, 0) -&gt; (4, 49, 33, 0, 0) -&gt; (4, 49, 33, 49, 0) -&gt; (5, 49, 33, 49, 0) -&gt; (5, 49, 33, 49, 1)
+</code></pre>
+<p>YEMU 执行指令的流程为：</p>
+<ul>
+<li>取指：将 $M[pc]$ 处的内容拿出来</li>
+<li>译码：根据指令的各个字段判断指令到底想让计算机做什么</li>
+<li>执行：位于 switch 代码段中，YEMU 支持的指令非常简单，只有寄存器赋值，加法，load/store 四种。</li>
+<li>更新 PC</li>
+</ul>
+<p>两者的联系在于：程序的两个状态之间的变化和指令的功能是一一对应的。</p>
+<h2 id="rtfsc2">RTFSC(2)</h2>
+<h3 id="必答题-2">必答题</h3>
+<h4 id="rtfsc-理解指令执行的过程a-idanswer2a">RTFSC 理解指令执行的过程<a id=answer2></a></h4>
+<blockquote>
+<p>这一小节的细节非常多, 你可能需要多次阅读讲义和代码才能理解每一处细节. 根据往届学长学姐的反馈, 一种有效的理解方法是通过做笔记的方式来整理这些细节. 事实上, 配合GDB食用效果更佳.</p>
+<p>为了避免你长时间对代码的理解没有任何进展, 我们就增加一道必答题吧:</p>
+<blockquote>
+<p>请整理一条指令在NEMU中的执行过程.</p>
+</blockquote>
+<p>除了<code>nemu/src/device</code>和<code>nemu/src/isa/$ISA/system</code>之外, NEMU的其它代码你都已经有能力理解了. 因此不要觉得讲义中没有提到的文件就不需要看, 尝试尽可能地理解每一处细节吧! 在你遇到bug的时候, 这些细节就会成为帮助你调试的线索.</p>
+</blockquote>
+<p><code>fetch_decode_exec_updatepc()</code> 函数分成三个部分：<code>fetch_decode()</code> 负责取指译码，<code>s-&gt;EHelper(s)</code> 利用函数指针调用了译码后指令应该执行的函数。<code>cpu-&gt;pc=s-&gt;dnpc</code> 将 pc 指向下一条指令。</p>
+<h5 id="取指">取指</h5>
+<p><code>fetch_decode()</code> 调用了 <code>isa_fetch_decode()</code>。<code>isa_fetch_decode</code> 会调用 <code>instr_fetch()</code> 把指令从内存中取出来。<code>instr_fetch(*pc, len)</code> 的更深内容和物理内存读写有关，此处不深究。特别的一点是它取出指令后会根据 len 更新 pc 的值（指向下一条指令）。</p>
+<h5 id="译码">译码</h5>
+<p><code>isa_fetch_decode()</code> 将 <code>instr_fetch()</code> 的返回结果存储到 <code>s-&gt;instr.val</code> 中。<code>s</code> 是一个 <code>Decode</code> 结构体类型，其中的 <code>instr</code> 是 <code>ISADecodeInfo</code> 类型。</p>
+<blockquote>
+<p>这里有一个有趣的代码细节是 nemu 为了抽象化不同 ISA 的差异，在顶层的代码中使用的是相同的类型名称，这些名称在底层才会分出区别，例如 <code>ISADecodeInfo</code> 类型的定义是</p>
+<pre><code class="language-c">typedef concat(__GUEST_ISA__, _ISADecodeInfo) ISADecodeInfo;
+</code></pre>
+<p><code>concat</code> 函数的功能是将两个字符串拼接起来，从而实现了根据选择的 ISA 的不同定义不同的 <code>ISADecodeInfo</code>，将 ISA 的差异对上层抽象了。</p>
+</blockquote>
+<p>在本实验中 <code>instr</code> 自然是 <code>riscv32_ISADecodeInfo</code> 类型。该类型的定义可以在 <code>isa-def.h</code> 中查到，这是一个 union，给 <code>instr.val</code> 赋值之后，我们可以通过调用 union 中的各个变量来轻松获得指令的各个部分。</p>
+<p>nemu 调用了 <code>table_main</code> 函数来进行指令类型的确认，所有的 table 函数可以被看做一个巨大的 switch-case。这里面有两种类型的宏：</p>
+<pre><code class="language-c">def_INSTR_IDTAB(&quot;??????? ????? ????? ??? ????? xxxxx xx&quot;, I/U/S/J/B/R     , xxx);
+def_INSTR_TAB(&quot;??????? ????? ????? ??? ????? xxxxx xx&quot;, xxx)
+</code></pre>
+<p>第一种和第二种的区别在于第一种还会按照传送的指令类型对指令的寄存器和立即数进行解析。这种宏会返回一个执行函数的编号。类型确认的过程无非是一些位运算，这里主要再看寄存器和立即数的解析：</p>
+<p>为了进一步实现指令译码和操作数译码的解耦，nemu 还定义了译码操作数辅助函数，专门用于对立即数或寄存器进行译码。s 中有三个 Operand 类型的变量。Operand 类型的变量中有一个 union，分别是指向寄存器的指针，带符号立即数和无符号立即数，代表了寄存器类型/有符号立即数/无符号立即数。针对立即数的译码操作数辅助函数很简单，只要将值赋给 imm 即可。针对寄存器的则略微复杂一些：为了实现 riscv 中零号寄存器永远为0、不可写的特性，译码操作数辅助函数会对操作的读/写，和目标进行判断，以确保不会修改零号寄存器的内容 (is_write 参数只在寄存器中才会有作用）。</p>
+<p>所有的译码辅助函数都是可以通过调用译码操作数辅助函数来高效完成。这部分和手册可以形成高度的对应。</p>
+<h5 id="执行">执行</h5>
+<p>在 cpu-exec 中执行的代码很简单：就是调用 s 中存好的执行函数。形如 <code>exec_xxx</code> 的执行函数都是通过更加基本的 rtl 指令来实现功能。rtl 指令大多是调用了基于 c 语言的表达式运算来实现功能，少数的跳转指令稍微复杂一些。</p>
+<h5 id="更新-pc">更新 pc</h5>
+<p>将 <code>s-&gt;dnpc</code> 赋给 <code>s</code>，这里要注意 <code>dnpc</code> 和 <code>snpc</code> 的区别：<code>snpc</code> 仅仅指内存中该条指令的下一条指令（pc+4）位置，而 <code>dnpc</code> 保存了下一条真正要执行的指令的位置。在一些跳转指令中 <code>snpc</code> 和 <code>dnpc</code> 不一定相同。</p>
+<h3 id="思考题">思考题</h3>
+<h4 id="立即数背后的故事">立即数背后的故事</h4>
+<blockquote>
+<p>框架代码通过<code>instr_fetch()</code>函数进行取指, 别看这里就这么一行代码, 其实背后隐藏着针对字节序的慎重考虑. 大部分同学的主机都是x86小端机, 当你使用高级语言或者汇编语言写了一个32位常数<code>0x1234</code>的时候, 在生成的二进制代码中, 这个常数对应的字节序列如下(假设这个常数在内存中的起始地址是x):</p>
+<pre><code>x   x+1  x+2  x+3
++----+----+----+----+
+| 34 | 12 | 00 | 00 |
++----+----+----+----+
+</code></pre>
+<p>而大多数PC机都是小端架构(我们相信没有同学会使用IBM大型机来做PA), 当NEMU运行的时候,</p>
+<pre><code class="language-c">imm = instr_fetch(pc, 4);
+</code></pre>
+<p>这行代码会将<code>34 12 00 00</code>这个字节序列原封不动地从内存读入<code>imm</code>变量中, 主机的CPU会按照小端方式来解释这一字节序列, 于是会得到<code>0x1234</code>, 符合我们的预期结果.</p>
+<p>Motorola 68k系列的处理器都是大端架构的. 现在问题来了, 考虑以下两种情况:</p>
+<ul>
+<li>假设我们需要将NEMU运行在Motorola 68k的机器上(把NEMU的源代码编译成Motorola 68k的机器码)</li>
+<li>假设我们需要把Motorola 68k作为一个新的ISA加入到NEMU中</li>
+</ul>
+<p>在这两种情况下, 你需要注意些什么问题? 为什么会产生这些问题? 怎么解决它们?</p>
+<p>事实上不仅仅是立即数的访问, 长度大于1字节的内存访问都需要考虑类似的问题. 我们在这里把问题统一抛出来, 以后就不再单独讨论了.</p>
+</blockquote>
+<p>如果我们要将 NEMU 运行在 Motorola 68k 机器上，那么我们访问内存的指令就不能像现在这样将连续4个字节直接读入变量，因为 Motorola 68k 会按照大端方式来读取这4个字节。我们需要自己手写一个循环来按照小端方式处理数据。</p>
+<p>如果我们要在 NEMU 中加入 Motorola 68k 的 ISA，那么相似地，我们不能将连续4个字节直接读入变量，而是要手写一个循环按照大端方式处理数据。</p>
+<h4 id="立即数背后的故事2">立即数背后的故事(2)</h4>
+<blockquote>
+<p>mips32和riscv32的指令长度只有32位, 因此它们不能像x86那样, 把C代码中的32位常数直接编码到一条指令中. 思考一下, mips32和riscv32应该如何解决这个问题?</p>
+</blockquote>
+<p>可以设置两种加载立即数的指令：一种向高位加载，一种向低位加载。riscv32 中的 lui 指令可以实现向高位加载立即数的功能。mips指令集由于没有接触过，暂时留坑。</p>
+<h4 id="为什么不需要-rtl_muls_lo">为什么不需要 <code>rtl_muls_lo</code></h4>
+<blockquote>
+<p>我们没有定义用于获取有符号数乘法结果低32位的RTL基本指令<code>rtl_muls_lo</code>, 你知道为什么吗?</p>
+</blockquote>
+<p><code>rtl_muls_lo</code> 所需实现的功能与 <code>rtl_mulu_lo</code> 完全相同，本着不要让多个函数做同一件事情的原则，我们不需要 <code>rtl_muls_lo</code>。但有符号和无符号在高位的表现是不同的，因此两种 hi 我们都需要。</p>
+<h4 id="rtl寄存器中值的生存期">RTL寄存器中值的生存期</h4>
+<blockquote>
+<p>在程序设计课上, 我们知道C语言中不同的变量有不同的生存期: 有的变量的值会一直持续到程序结束, 但有的变量却很快消亡. 在上述定义的RTL寄存器中, 其实也有不同的生存期. 尝试根据生存期给RTL寄存器分类.</p>
+<p>尽管目前这个分类结果并没有什么用处, 但其实将来在PA5中设计RTL优化方案的时候, 生存期的性质会给我们提供很大的优化机会.</p>
+</blockquote>
+<p>留坑，二周目再做。</p>
+<h4 id="为什么执行了未实现指令会出现上述报错信息">为什么执行了未实现指令会出现上述报错信息</h4>
+<blockquote>
+<p>RTFSC, 理解执行未实现指令的时候, NEMU具体会怎么做.</p>
+</blockquote>
+<p>在执行了未实现的指令时，译码的过程中无法匹配到任何一种 pattern，最终会返回一个 <code>EXEC_ID_inv</code> 宏，即不合法指令对应的执行函数的编号。这里的宏利用元编程和 enum 的方法写出了一种鲁棒性很强的代码，即使不断添加新指令也可以使得 <code>EXEC_ID_inv</code> 代表的编号是正确的。</p>
+<p>拿到 <code>EXEC_ID_inv</code> 后，执行函数赋为 <code>g[idx]</code>。在执行 <code>g[idx]</code> 时，执行的是 <code>exec_inv</code>，<code>exec_inv()</code> 函数调用了 <code>rtl_hostcall</code> 函数，并传入了 <code>HOSTCALL_INV</code> 参数（与正常退出的 <code>HOSTCALL_EXIT</code> 区分）。<code>rtl_hostcall</code> 函数接收到 <code>HOSTCALL_INV</code> 参数时，便会打印上述的报错信息。</p>
+<h2 id="程序运行时环境与am">程序，运行时环境与AM</h2>
+<h3 id="思考题-1">思考题</h3>
+<h4 id="这又能怎么样呢">这又能怎么样呢</h4>
+<blockquote>
+<p>思考一下, 这样的抽象还会带来哪些好处呢? 你很快就会体会到这些好处了.</p>
+</blockquote>
+<p>这样的抽象有利于代码的移植：你甚至可以把别人的上层代码拿来直接用，即使你们使用不同的语言做了 nemu，只要 API 接口统一，上层的操作系统和用户程序就可以调用 API 直接运行。</p>
+<h4 id="二周目为什么要有am">[二周目]为什么要有AM？</h4>
+<blockquote>
+<p>操作系统也有自己的运行时环境. AM和操作系统提供的运行时环境有什么不同呢? 为什么会有这些不同?</p>
+</blockquote>
+<p>留坑。笔者暂时认为 AM 中的运行时环境更多是对硬件功能的直接抽象：比如可以访问外设，可以读写内存等。而操作系统中的运行时环境抽象层次更高，比如系统调用等等，是对 AM 运行时环境的进一步封装。之所以不同是因为他们所处的抽象层不同，服务的对象也不同。操作系统向应用程序暴露 API，自然不需要让应用程序知道硬件细节。AM 的运行时环境可以让操作系统更好地利用已有的硬件功能，可以做到架构和OS的解耦。</p>
+<h4 id="mips32的分支延迟槽">mips32的分支延迟槽</h4>
+<blockquote>
+<p>为了提升处理器的性能, mips使用了一种叫分支延迟槽的技术. 采用这种技术之后, 程序的执行顺序会发生一些改变: 我们把紧跟在跳转指令(包括有条件和无条件)之后的静态指令称为延迟槽, 那么程序在执行完跳转指令后, 会先执行延迟槽中的指令, 再执行位于跳转目标的指令. 例如</p>
+<pre><code>100: beq 200
+101: add
+102: xor
+...
+200: sub
+201: j   102
+202: slt
+</code></pre>
+<p>若<code>beq</code>指令的执行结果为跳转, 则相应的动态指令流为<code>100 -&gt; 101 -&gt; 200</code>; 若<code>beq</code>指令的执行结果为不跳转, 则相应的动态指令流为<code>100 -&gt; 101 -&gt; 102</code>; 而对于<code>j</code>指令, 相应的动态指令流为<code>201 -&gt; 202 -&gt; 102</code>.</p>
+<p>你一定会对这种反直觉的技术如何提升处理器性能而感到疑惑. 不过这需要你先了解一些微结构的知识, 例如处理器流水线, 但这已经超出了ICS的课程范围了, 所以我们也不详细解释了, 感兴趣的话可以STFW.</p>
+<p>但我们可以知道, 延迟槽技术需要软硬件协同才能正确工作: mips手册中描述了这一约定, 处理器设计者按照这一约定设计处理器, 而编译器开发者则会让编译器负责在延迟槽中放置一条有意义的指令, 使得无论是否跳转, 按照这一约定的执行顺序都能得到正确的执行结果.</p>
+<p>如果你是编译器开发者, 你将会如何寻找合适的指令放到延迟槽中呢?</p>
+</blockquote>
+<p>流水线CPU中如果分支预测失败，常见的做法是对各个流水段进行冲刷，然后将应该跳转到的PC送入流水线继续执行。flush 是一个代价很大的操作，会使流水线浪费很多个时钟周期，因此我们有两个方向可以努力：一个是尽可能减少 flush 的次数，也就是提高分支预测的成功率（动态分支预测 etc.），另一个是使流水线中执行的指令即使在分支预测错误的时候也可以保留，这就是mips中的延迟槽。</p>
+<p>至于分支延迟槽中应该放什么指令，最简单的自然是插入nop指令。这样正确性无疑可以得到保证，但性能不高：不论分支预测是否成功，执行这条nop指令都相当于没做事情，可以理解为流水线被阻塞了。</p>
+<p>以下是笔者的一些猜想：如果跳转和不跳转的接下来的几条指令中有完全相同的指令，自然可以将这条指令放到延迟槽中。这样不论走了哪个分支这条指令的执行都是有用的。当然，能否调整指令的顺序取决于指令之间的依赖关系。不过完全相同的指令很难找，我们可以利用寄存器的重命名技术，现将某条指令的结果放到一个备用的内存空间中，如果将来走这条分支，就将对应的寄存器名映射到这个地址上。</p>
+<h4 id="指令名对照">指令名对照</h4>
+<blockquote>
+<p>AT&amp;T格式反汇编结果中的少量指令, 与手册中列出的指令名称不符, 如x86的<code>cltd</code>, mips32和riscv32则有不少伪指令(pseudo instruction). 除了STFW之外, 你有办法在手册中找到对应的指令吗? 如果有的话, 为什么这个办法是有效的呢?</p>
+</blockquote>
+<p>笔者使用的一个方法是：直接将这条伪指令对应的机器代码二进制串放进手册里搜索。因为伪指令实际上也是通过普通指令完成功能的，所以可以搜索到对应的普通指令，从而确定伪指令的行为。</p>
+<h4 id="stdarg是如何实现的">stdarg是如何实现的?</h4>
+<blockquote>
+<p><code>stdarg.h</code>中包含一些获取函数调用参数的宏, 它们可以看做是调用约定中关于参数传递方式的抽象. 不同ISA的ABI规范会定义不同的函数参数传递方式, 如果让你来实现这些宏, 你会如何实现?</p>
+</blockquote>
+<p>笔者并没有去看 <code>stdarg.h</code> 的源码，但笔者用过宏 <code>__VA_ARGS__</code>，认为它背后的实现方式应该是一个链表，链表中的每个元素包含了参数的名称和参数指向的地址。</p>
+<h3 id="补充">补充</h3>
+<h4 id="关于-riscv-的-jalr-指令">关于 riscv 的 jalr 指令</h4>
+<p>笔者在实现 jalr 指令的时候犯了一些错误，这个错误直到 PA3 才暴露出来，在此特地记录。jalr 指令的行为在手册中的定义如下：</p>
+<pre><code class="language-c">t=pc+4; pc=(x[rs1]+sext(offset))&amp;~1; x[rd]=t
+</code></pre>
+<p>笔者起初认为这样的写法非常麻烦：为什么不把 pc+4 的值直接赋给 x[rd] ，而要搞出这么一个中间变量 t 呢？事实上这是因为指令中 rs1 和 rd 可能是一样的，如果在第一条指令就直接修改了 x[rd]，就可能也修改了 x[rs1]，从而第二条指令的结果就不对了。因此中间变量 t 的设置绝非是画蛇添足。</p>
+<p>ISA 的手册经过了很多人的打磨，是非常简练的。每一条看似无用的语句一定都是充分考虑到了一些特殊情况无法删除才呈现在手册中的。因此最简单的保证正确的实现方法就是：<strong>手册说什么你就写什么</strong>。</p>
+<h2 id="基础设施2">基础设施(2)</h2>
+<h3 id="思考题-2">思考题</h3>
+<h4 id="消失的符号">消失的符号</h4>
+<blockquote>
+<p>我们在<code>am-kernels/tests/cpu-tests/tests/add.c</code>中定义了宏<code>NR_DATA</code>, 同时也在<code>add()</code>函数中定义了局部变量<code>c</code>和形参<code>a</code>, <code>b</code>, 但你会发现在符号表中找不到和它们对应的表项, 为什么会这样? 思考一下, 什么才算是一个符号(symbol)?</p>
+</blockquote>
+<p>宏只是做了简单的字符串替换，在预处理阶段就会处理掉，显然不会进入符号表。局部变量和形式参数都是在栈上定义的，所以不在符号表中。只有全局变量、函数、静态全局变量、只读字符串等才会出现在符号表中。</p>
+<h4 id="寻找hello-world">寻找&quot;Hello World!&quot;</h4>
+<blockquote>
+<p>在Linux下编写一个Hello World程序, 编译后通过上述方法找到ELF文件的字符串表, 你发现&quot;Hello World!&ldquo;字符串在字符串表中的什么位置? 为什么会这样?</p>
+</blockquote>
+<p>笔者先用命令 <code>hd a.out</code> 查看二进制文件并找到了 &ldquo;Hello, World\n&rdquo; 字符串在文件中的偏移量，然后用 <code>readelf -a a.out</code> 命令查看了所有节，发现该字符串在只读数据节中。之所以在只读代码节中是因为这个字符串是理论上不应该被修改的。</p>
+<h4 id="不匹配的函数调用和返回">不匹配的函数调用和返回</h4>
+<blockquote>
+<p>如果你仔细观察上文<code>recursion</code>的示例输出, 你会发现一些有趣的现象. 具体地, 注释(1)处的<code>ret</code>的函数是和对应的<code>call</code>匹配的, 也就是说, <code>call</code>调用了<code>f2</code>, 而与之对应的<code>ret</code>也是从<code>f2</code>返回; 但注释(2)所指示的一组<code>call</code>和<code>ret</code>的情况却有所不同, <code>call</code>调用了<code>f1</code>, 但却从<code>f0</code>返回; 注释(3)所指示的一组<code>call</code>和<code>ret</code>也出现了类似的现象, <code>call</code>调用了<code>f1</code>, 但却从<code>f3</code>返回.</p>
+<p>尝试结合反汇编结果, 分析为什么会出现这一现象.</p>
+</blockquote>
+<p>这是一个非常有意思的问题，我们以注释(2)处的代码为例分析这一情况：</p>
+<p>注释(2)处显示，函数 <code>f2</code> 中调用了 <code>f1</code> ，但没有从 <code>f1</code> 返回而是从 <code>f0</code> 返回的。使用 nemu 追踪 CPU 是如何从 <code>f1</code> 悄悄跳到 <code>f0</code> 的，发现了 <code>f1</code> 结尾处的如下汇编代码：</p>
+<pre><code class="language-assembly">80000090:	00158593          	addi	a1,a1,1
+80000094:	fff50513          	addi	a0,a0,-1
+80000098:	00078067          	jr	a5
+8000009c:	00100513          	li	a0,1
+800000a0:	00008067          	ret
+</code></pre>
+<p><code>f1</code> 的 C 语言原文如下：</p>
+<pre><code class="language-c">int f1(int n, int l) {
+  if (l &gt; lvl) lvl = l;
+  rec ++;
+  return n &lt;= 0 ? 1 : func[0](n - 1, l + 1);
+};
+</code></pre>
+<p>正是位于地址 0x80000098 处的指令 <code>jr a5</code> 从 <code>f1</code> 跳转到了 <code>f0</code>，也就是说其实我们的 ftrace 追踪漏了一次调用。这一跳转指令之所以会在追踪中被遗漏是因为它不符合标准的跳转指令的形式：标准的跳转指令一般都是 <code>jal</code> 或 <code>jalr</code> 指令，且存储 snpc 的寄存器按照 calling convention 应为 <code>ra</code>，以方便 return 回来以后从跳转指令的下一条开始继续执行。这里使用 <code>jr a5</code> 直接跳转，会导致从 <code>f0</code> 返回后其实没有回到 <code>f1</code>。</p>
+<p>这里之所以出现这样的情况是因为编译器对<strong>尾调用</strong>进行了优化。因为 <code>f1</code> 调用 <code>f0</code> 在 <code>f1</code> 的函数末尾，所以执行完  <code>f0</code> 返回之后 <code>f1</code> 会立即拿着 <code>f0</code> 的返回值再返回给 <code>f2</code>，所以不妨让 <code>f0</code> 直接返回 <code>f2</code>。这个优化在尾递归中会格外有用，不仅省去了一些指令，还可以重复利用栈帧，使得层数很深的尾递归也不会爆栈。</p>
+<h4 id="冗余的符号表">冗余的符号表</h4>
+<blockquote>
+<p>在Linux下编写一个Hello World程序, 然后使用<code>strip</code>命令丢弃可执行文件中的符号表:</p>
+<pre><code class="language-bash">gcc -o hello hello.c
+strip -s hello
+</code></pre>
+<p>用<code>readelf</code>查看hello的信息, 你会发现符号表被丢弃了, 此时的hello程序能成功运行吗?</p>
+<p>目标文件中也有符号表, 我们同样可以丢弃它:</p>
+<pre><code class="language-bash">gcc -c hello.c
+strip -s hello.o
+</code></pre>
+<p>用<code>readelf</code>查看hello.o的信息, 你会发现符号表被丢弃了. 尝试对hello.o进行链接:</p>
+<pre><code class="language-bash">gcc -o hello hello.o
+</code></pre>
+<p>你发现了什么问题? 尝试对比上述两种情况, 并分析其中的原因.</p>
+</blockquote>
+<p>第一种情况丢弃了符号表之后仍然可以正常运行，第二种情况丢弃了符号表后会报错：</p>
+<pre><code class="language-bash">/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/10/../../../x86_64-linux-gnu/Scrt1.o: in function `_start':
+(.text+0x24): undefined reference to `main'
+</code></pre>
+<p>因为符号表被删除了，无法找到 main 函数的位置，所以链接失败。符号表的作用就是在链接的时候告诉外部模块本模块的各个函数、变量的地址，在已经生成好的可执行文件中，所有重定位已经完成，自然不再需要符号表；但如果在可重定位文件中删去了符号表，链接则会出问题。</p>
+<h4 id="如何生成-native-的可执行文件">如何生成 native 的可执行文件</h4>
+<blockquote>
+<p>阅读相关Makefile, 尝试理解<code>abstract-machine</code>是如何生成<code>native</code>的可执行文件的.</p>
+</blockquote>
+<p>Makefile 中有一个变量 <code>CROSS_COMPILE</code>，在 native 下运行的时候这个变量没有赋值，所以 Makefile 不会使用交叉编译工具编译代码，而是用 native 的 gcc 和 binutils。</p>
+<h4 id="奇怪的错误码">奇怪的错误码</h4>
+<blockquote>
+<p>为什么错误码是<code>1</code>呢? 你知道<code>make</code>程序是如何得到这个错误码的吗?</p>
+</blockquote>
+<p>如果 main 函数正常退出，返回值会是0，否则返回值是1。<code>make</code> 程序捕捉 main 函数的返回值，并据此判断是否发生了错误，并将错误码呈现出来。</p>
+<h4 id="这是如何实现的">这是如何实现的？</h4>
+<blockquote>
+<p>为什么定义宏<code>__NATIVE_USE_KLIB__</code>之后就可以把<code>native</code>上的这些库函数链接到klib? 这具体是如何发生的? 尝试根据你在课堂上学习的链接相关的知识解释这一现象.</p>
+</blockquote>
+<p>klib 中编写的所有库函数都被条件编译 ifdef 框了起来，参与编译的条件为 <code>!defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB))</code>。如果 <code>NATIVE_USE_KLIB</code> 被注释了的话，在 native 下运行就不会有手写的库函数，native 会使用 glibc 的库函数。如果 <code>NATIVE_USE_KLIB</code> 没有被注释，在 native 下运行有手写的库函数，当手写函数与 glibc 库函数名称冲突时，优先链接用户手写的函数，这样就达到了使用 klib 的效果。</p>
+<h4 id="匪夷所思的qemu行为有点难度">匪夷所思的QEMU行为(有点难度)</h4>
+<blockquote>
+<p>在一些旧版的mips32-QEMU中, 仅在上述指令的PC值后12位为<code>0xffc</code>时, 才会进行指令打包. 这个打包条件看上去非常奇怪, 你知道可能的原因是什么吗?</p>
+</blockquote>
+<p>笔者没有使用 QEMU 进行 difftest，也不了解 mips 指令集，故留坑。</p>
+<h4 id="捕捉死循环有点难度">捕捉死循环(有点难度)</h4>
+<blockquote>
+<p>NEMU除了作为模拟器之外, 还具有简单的调试功能, 可以设置断点, 查看程序状态. 如果让你为NEMU添加如下功能</p>
+<blockquote>
+<p>当用户程序陷入死循环时, 让用户程序暂停下来, 并输出相应的提示信息</p>
+</blockquote>
+<p>你觉得应该如何实现? 如果你感到疑惑, 在互联网上搜索相关信息.</p>
+</blockquote>
+<p>从理论上证明某个程序会死循环是不可能的，因为这涉及到图灵停机问题：比如我写一个 check 哥德巴赫猜想的程序，如果我能判断它是否会死循环，我就证明了哥德巴赫猜想。</p>
+<p>笔者结合了网上的资料并自己思考了之后认为可以有如下的一些捕捉方法：</p>
+<ul>
+<li>在一个进程运行的同时用另一个进程来监视它的行为，如果该进程耗时过长就将其 kill。</li>
+<li>死循环主要来自 do-while 和 for 循环。虽然无限递归从理论上也会死循环，但硬件的限制会使其通过爆栈的方式停下来。因此可以在编译是找到所有的 do-while 和 for 循环，向其中加入计数器，在循环执行次数超过了一个阈值后强行退出。</li>
+</ul>
+<h3 id="补充-1">补充</h3>
+<h4 id="关于-difftest">关于 Difftest</h4>
+<p>笔者刚开始无法通过 spike 的 difftest，查看寄存器状态发现 <code>t0</code> 寄存器的值不正确。产生这个问题的原因是笔者在实现 jal/jalr 指令时使用了 <code>t0</code> 寄存器保存中间结果——这一行为虽然符合讲义中的调用约定，但由于 spike 没有相同的行为，所以报错了。事实上我们写的 nemu 并不是真正的“硬件”：我们根本不需要真的用寄存器来保存中间结果——我们有 C 语言，定义一个变量保存就可以了！框架代码中给的 <code>rtl_j</code> 函数似乎也使用了类似的手法（笔者没有调用框架代码给的 <code>rtl_j</code> 来实现跳转指令）</p>
+<h2 id="输入输出">输入输出</h2>
+<h3 id="必答题-3">必答题</h3>
+<h4 id="游戏是如何运行的a-idanswer3a">游戏是如何运行的<a id=answer3></a></h4>
+<blockquote>
+<p>请你以打字小游戏为例, 结合&quot;程序在计算机上运行&quot;的两个视角, 来剖析打字小游戏究竟是如何在计算机上运行的. 具体地, 当你按下一个字母并命中的时候, 整个计算机系统(NEMU, ISA, AM, 运行时环境, 程序) 是如何协同工作, 从而让打字小游戏实现出&quot;命中&quot;的游戏效果?</p>
+</blockquote>
+<p>在主循环之间，打字小游戏做了一些绘制屏幕方面的准备工作。这些工作在 <code>vedio_init</code> 中，具体为</p>
+<ul>
+<li>读取窗口的宽和高。程序读取窗口大小通过读取 AM 提供的 <code>AM_GPU_CONFIG</code> 抽象寄存器实现。<code>AM_GPU_CONFIG</code> 抽象寄存器则通过访问 nemu 提供的 I/O 端口来获得这些参数。</li>
+<li>将整个画布涂成紫色的。程序向画布输出颜色通过向 AM 提供的 <code>AM_GPU_FBDRAW</code> 抽象寄存器写入内容来实现。抽象寄存器会接收到开始绘制的位置的坐标，绘制内容数量，绘制的内容的 buffer，和一个是否立即同步的布尔变量。抽象寄存器的行为很简单，就是将对应的数据写到 nemu 的 I/O 端口中。nemu 的硬件会每隔一段时间检查是否有同步信号，如果有就将缓冲区的内容输出到屏幕上。</li>
+<li>对各种字母的颜色做好设定。</li>
+</ul>
+<p>打字小游戏的主循环是一个 <code>while(1) {}</code> ，在循环中会做这样一些事情：</p>
+<ul>
+<li>
+<p><code>game_logic_update</code>：每次循环中都会根据和上次更新的时间差进行若干次游戏逻辑更新。这里程序调用时间函数会使用 AM 提供的抽象寄存器 <code>AM_TIMER_UPTIME</code> 来读取游戏已经开始的时间。AM中读取这个抽象寄存器的逻辑是访问 nemu 的时钟 I/O 端口。</p>
+<p>游戏逻辑更新中会定期生成一个新的字母，并且将每个字母根据其信息更新位置。关于字母，每个字母有如下一些参数：</p>
+<ul>
+<li><code>ch</code>：表示这个字母是啥，可以取 <code>A-Z</code>。</li>
+<li><code>(x,y)</code>：表示字母当前的位置。<code>x</code> 值是生成字母的时候随机的，<code>y</code> 值则会根据当前的时间不断更新。</li>
+<li><code>v</code>：表示字母单位时间移动的速度。正常情况下速度是正数，字母会往下落。当字母被击中的时候速度会变成负数，从而实现字母向上升的效果。如果速度为0，表示当前字母 miss 了。</li>
+<li><code>t</code>：这是一个计时器，用于当一个字母 miss 的时候，延迟 FPS 的时间后才会消失。</li>
+</ul>
+</li>
+<li>
+<p>键盘读取：除非读取到 <code>AM_KEY_NONE</code> 表示当前没有按键，否则程序会一直在键盘读取的 while 循环中。这里程序收集键盘按键会使用 AM 提供的抽象寄存器 <code>AM_INPUT_KEYBRD</code>。<code>AM_INPUT_KEYBRD</code> 会访问 nemu 的键盘 I/O 端口，并根据得到的数据生成 keydown 和 keycode 两个参数。</p>
+<p>键盘读取分为以下两种情况：</p>
+<ul>
+<li>按下了 escape 键：调用 <code>halt(0)</code>，退出。</li>
+<li>按下了是字母的键：调用 <code>check_hit</code> 函数检查是否确实击中了字母。<code>check_hit</code> 的行为比较简单：如果没有匹配到任何一个字母则更新 wrong，否则会将击中的字母的速度改成一个负值，从而一面实现字母被击中的标记，一面实现字母向上升的效果。</li>
+</ul>
+</li>
+<li>
+<p><code>render</code> ：这个函数负责更新屏幕。该函数会将字母原本所处位置的屏幕内容抹去（变成紫色），然后根据字母新的位置以及字母当前的状态（下落白色，miss红色，击中绿色）选择相应的 texture 作为 buffer 输出到对应位置。</p>
+</li>
+</ul>
+<h3 id="思考题-3">思考题</h3>
+<h4 id="理解-volatile-关键字">理解 volatile 关键字</h4>
+<blockquote>
+<p>也许你从来都没听说过C语言中有<code>volatile</code>这个关键字, 但它从C语言诞生开始就一直存在. <code>volatile</code>关键字的作用十分特别, 它的作用是避免编译器对相应代码进行优化. 你应该动手体会一下<code>volatile</code>的作用, 在GNU/Linux下编写以下代码:</p>
+<pre><code class="language-c">void fun() {
+  extern unsigned char _end;  // _end是什么?
+  volatile unsigned char *p = &amp;_end;
+  *p = 0;
+  while(*p != 0xff);
+  *p = 0x33;
+  *p = 0x34;
+  *p = 0x86;
+}
+</code></pre>
+<p>然后使用<code>-O2</code>编译代码. 尝试去掉代码中的<code>volatile</code>关键字, 重新使用<code>-O2</code>编译, 并对比去掉<code>volatile</code>前后反汇编结果的不同.</p>
+<p>你或许会感到疑惑, 代码优化不是一件好事情吗? 为什么会有<code>volatile</code>这种奇葩的存在? 思考一下, 如果代码中<code>p</code>指向的地址最终被映射到一个设备寄存器, 去掉<code>volatile</code>可能会带来什么问题?</p>
+</blockquote>
+<p><code>_end</code> 是一个变量，它的地址指向了数据段的第一个未使用的位置。</p>
+<p>在有 <code>volatile</code> 关键字的情况下，反汇编结果为：</p>
+<pre><code class="language-assembly">0000000000000000 &lt;fun&gt;:
+   0:	f3 0f 1e fa          	endbr64 
+   4:	c6 05 00 00 00 00 00 	movb   $0x0,0x0(%rip)        # b &lt;fun+0xb&gt;
+   b:	48 8d 15 00 00 00 00 	lea    0x0(%rip),%rdx        # 12 &lt;fun+0x12&gt;
+  12:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+  18:	0f b6 02             	movzbl (%rdx),%eax
+  1b:	3c ff                	cmp    $0xff,%al
+  1d:	75 f9                	jne    18 &lt;fun+0x18&gt;
+  1f:	c6 05 00 00 00 00 33 	movb   $0x33,0x0(%rip)        # 26 &lt;fun+0x26&gt;
+  26:	c6 05 00 00 00 00 34 	movb   $0x34,0x0(%rip)        # 2d &lt;fun+0x2d&gt;
+  2d:	c6 05 00 00 00 00 86 	movb   $0x86,0x0(%rip)        # 34 &lt;fun+0x34&gt;
+  34:	c3                   	ret
+</code></pre>
+<p>可以看到这段指令和 C 语言程序的功能基本是一一对应的。</p>
+<p>在没有 <code>volatile</code> 关键字的情况下，反汇编结果为：</p>
+<pre><code class="language-assembly">0000000000000000 &lt;fun&gt;:
+   0:	f3 0f 1e fa          	endbr64 
+   4:	c6 05 00 00 00 00 00 	movb   $0x0,0x0(%rip)        # b &lt;fun+0xb&gt;
+   b:	eb fe                	jmp    b &lt;fun+0xb&gt;
+</code></pre>
+<p>指令发生了很大的变化。编译器发现 <code>*p=0</code> 之后进入了一个只有 <code>*p=0xff</code> 才会退出的循环，这期间没有任何对 p 的更改，所以认为这是一个死循环，直接将其缩减为了 <code>jmp b</code> ，并且砍掉了后面的所有内容。</p>
+<p>如果 p 指向的地址被映射到了一个设备寄存器，那么原本这个程序的功能可能是正确的：当检测到设备寄存器的值变为 0xff 后，依次向设备寄存器写入 0x33, 0x34 和 0x86。但编译优化之后，这个程序就完全变成了一个死循环。因此我们并不是什么时候都希望激进的编译优化：编译器有可能考虑不到外设的参与等情况。</p>
+<h4 id="如何检测多个键同时被按下">如何检测多个键同时被按下?</h4>
+<blockquote>
+<p>在游戏中, 很多时候需要判断玩家是否同时按下了多个键, 例如RPG游戏中的八方向行走, 格斗游戏中的组合招式等等. 根据键盘码的特性, 你知道这些功能是如何实现的吗?</p>
+</blockquote>
+<p>键盘码是一个8位二进制数，如果我们用32位整数来传递键盘码，就可以同时传递4个，可以用于检测多个键同时按下。</p>
+<h4 id="神奇的调色板">神奇的调色板</h4>
+<blockquote>
+<p>现代的显示器一般都支持24位的颜色(R, G, B各占8个bit, 共有<code>2^8*2^8*2^8</code>约1600万种颜色), 为了让屏幕显示不同的颜色成为可能, 在8位颜色深度时会使用调色板的概念. 调色板是一个颜色信息的数组, 每一个元素占4个字节, 分别代表R(red), G(green), B(blue), A(alpha)的值. 引入了调色板的概念之后, 一个像素存储的就不再是颜色的信息, 而是一个调色板的索引: 具体来说, 要得到一个像素的颜色信息, 就要把它的值当作下标, 在调色板这个数组中做下标运算, 取出相应的颜色信息. 因此, 只要使用不同的调色板, 就可以在不同的时刻使用不同的256种颜色了.</p>
+<p>在一些90年代的游戏中(比如仙剑奇侠传), 很多渐出渐入效果都是通过调色板实现的, 聪明的你知道其中的玄机吗?</p>
+</blockquote>
+<p>在保持颜色索引不变的情况下，只要平滑地切换调色板就可以实现渐变。如果准备多套调色板，事实上我们可以使用远不止256种颜色。</p>
+<h4 id="litenes-如何工作">LiteNES 如何工作？</h4>
+<blockquote>
+<p>另一个值得RTFSC的项目是LiteNES, 除了内置rom之外, 代码总数大约1500行. 关键是这个小巧玲珑的项目里面已经包含了一个完整的计算机系统: CPU, 内存, MMIO, 以及手柄(psg), 卡带(mmc)和图形处理器(ppu)这三个外设. 除了ppu的内部实现细节之外, 其余的部分你都已经有能力去理解了.</p>
+<p>有趣的是, LiteNES可以看成是NEMU和AM程序的融合. 尝试阅读LiteNES的代码, 理解LiteNES作为一个完整的计算机系统, 上述部件如何交互, 以及LiteNES作为一个AM程序, 如何通过AM提供的API来实现游戏效果. 我们提供
+<a href="https://wiki.nesdev.com/w/index.php/CPU" target="_blank" rel="noopener">6502处理器(NES的CPU)</a>以及
+<a href="https://wiki.nesdev.com/w/index.php/PPU" target="_blank" rel="noopener">NES PPU(图形处理器)</a>的资料供大家参考.</p>
+</blockquote>
+<p>留坑。</p>
+<h3 id="补充-2">补充</h3>
+<h4 id="关于串口背后的原理">关于串口背后的原理</h4>
+<blockquote>
+<p><code>putch</code> 仅仅执行了 <code>outb(SERIAL_PORT,ch)</code>，而 <code>outb(SERIAL_PORT,ch)</code> 仅仅将 *SERIAL_PORT 的值赋成了 ch，为什么就能同时通过标准错误流把信息输出在屏幕上呢？</p>
+</blockquote>
+<p>我们需要深入到汇编层面理解这段代码，<code>putch</code> 编译成汇编代码后仅有三句话：</p>
+<pre><code class="language-assembly">lui a5, 0xa0000
+sb a0, 1016(a5)
+ret
+</code></pre>
+<p>第一句话装载立即数，结合第二句的 1016(a5) 定位到 SERIAL_PORT 指向的地址，第二句话就是真正的写入函数。虽然看上去仅仅是 store，但向 I/O 设备的 store 行为是更丰富的，在 nemu 中它会走过这样的流程：</p>
+<ul>
+<li>取指译码之后获取所有的信息，并分配好一个存储相关的执行函数。</li>
+<li>运行执行函数，store 的执行函数会调用 <code>paddr_write</code>。</li>
+<li><code>paddr_write</code> 分析了一下要写入的地址，发现并不在内存中，而是在 I/O 区域，于是调用了 <code>mmio_write</code>。</li>
+<li><code>mmio_write</code> 分析了一下要写入的地址，发现是串口的地址，于是调用了 <code>map_write</code> ，并把串口的 IOMap 传了过去。</li>
+<li><code>map_write</code> 做了一些正确性检查之后，先调用了 <code>host_write</code> ，将 ch 这个数据写到了 SERIAL_PORT 地址，然后调用了串口的回调函数。</li>
+<li>串口的回调函数是 <code>serial_io_handler</code> ，串口的回调函数默认是输出，否则会报错，在 <code>is_write==true</code> 的情况下回调函数会调用 <code>serial_putc</code>。</li>
+<li><code>serial_putc</code> 使用了 glibc 中的 <code>putc(ch,stderr)</code> 将字符输出到了标准错误流。</li>
+</ul>
+<p>因此事实上虽然从高级语言层面 <code>putch</code> 中只有一个存储指令，但在汇编层面它既完成了存储又完成了输出。符合串口的 feature。</p>
+<h5 id="疑问">疑问</h5>
+<p>如果 nemu 所有向屏幕输出的函数最终都是通过 putch 来实现，那么按理来说只需要申请一个字节大小的串口空间就可以了，为什么要 8 个字节呢？</p>
+<h4 id="关于时钟硬件接口">关于时钟硬件接口</h4>
+<p>框架代码中有一个小细节：只有在读取时钟的高32位的时候才会触发 nemu 重新读取当前时间。这意味着如果需要读取时间，一定要先读取高32位再读取低32位，顺序反过来就会出错。这样有一个好处：因为两次读取总是有时间差的，所以这样可以保证高32位和低32位来自同一个时刻。</p>
+<h4 id="声卡">声卡</h4>
+<p>笔者完成了声卡的选做题。声卡的 I/O 相较于其他的会复杂一些，因为 nemu 的硬件部分的代码也需要自己实现。nemu 不是真正的“硬件”，要实现音频的输出还是得靠库函数。这里笔者根据讲义使用了 SDL 库。</p>
+<p>我们需要在 AM 中实现以下函数：</p>
+<ul>
+<li><code>__am_audio_config</code>：读取声卡的状态，包括是否存在声卡 (cfg-&gt;present)。</li>
+<li><code>__am_audio_ctrl</code>：告诉硬件一些基本的信息，如频率，频道，采样率等等。</li>
+<li><code>__am_audio_status</code>：读取缓冲区中还有的数据字节数。</li>
+<li><code>__am_audio_play</code>：向声卡的缓冲区写入数据。如果声卡的缓冲区不够，则应该轮询，直到缓冲区大小足够位置。</li>
+</ul>
+<p>我们需要在 nemu 中做这样一些事情：</p>
+<ul>
+<li>在 audio 的回调函数 <code>audio_io_handler</code> 中完成初始化，包括向 <code>SDL_AudioSpec</code> 类型的变量中填写频率、频道、采样率，注册一个回调函数 <code>audio_callback()</code>，以及调用 <code>SDL_InitSubSystem</code> 和 <code>SDL_OpenAudio</code>  函数等。</li>
+<li>完成 audio-sbuf 的回调函数 <code>audio_sbuf_handler</code> ，主要工作就是把 AM 送过来的数据放入缓冲队列。</li>
+<li>完成 <code>audio_callback()</code>，SDL 会不定时索要一定量的数据，从当前缓冲区的队列头部取数据给 SDL。如果当前所剩数据量不够，应该再补充一些 0，以防出现噪音。</li>
+</ul>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-ics/pa/pa1/" rel="next">PA1 - 开天辟地的篇章：最简单的计算机</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-ics/pa/pa3/" rel="prev">PA3 - 穿越时空的旅程: 批处理系统</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

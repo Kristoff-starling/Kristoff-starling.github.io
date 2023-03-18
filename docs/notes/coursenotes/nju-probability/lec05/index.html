@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Definitions $\fbox{Definition 5.1}$ 设 $X:\Omega \rightarrow \mathbb{R}$，且对于任意 $\mathbb{R}$ 中的 Borel 集 $B$，$\{e|X(e)\in B\}\in \mathscr{F}$，则称 $X$ 是 $(\Omega, \mathscr F, P)$ 上的随机变量。
+注：1. Borel 集是由所有的 $\{(a,b]|-\infty\leq a,b\leq &#43;\infty\}$ 经过可数次交或并得到的集合。
+​	2. 在大部分场合，只需关注 $X$ 是从 $\Omega$ 到 $\mathbb{R}$ 上的映射即可。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-probability/lec05/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-probability/lec05/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-probability/lec05/">
+  <meta property="og:title" content="Lecture 05: Random Variable and Distribution Function | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Definitions $\fbox{Definition 5.1}$ 设 $X:\Omega \rightarrow \mathbb{R}$，且对于任意 $\mathbb{R}$ 中的 Borel 集 $B$，$\{e|X(e)\in B\}\in \mathscr{F}$，则称 $X$ 是 $(\Omega, \mathscr F, P)$ 上的随机变量。
+注：1. Borel 集是由所有的 $\{(a,b]|-\infty\leq a,b\leq &#43;\infty\}$ 经过可数次交或并得到的集合。
+​	2. 在大部分场合，只需关注 $X$ 是从 $\Omega$ 到 $\mathbb{R}$ 上的映射即可。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 05: Random Variable and Distribution Function | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-probability/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-probability/hw1/">Homework</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/hw1/">Homework 1</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/hw2/">Homework 2</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-probability/lec01/">Lectures</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec01/">Lecture 01</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec02/">Lecture 02</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec03/">Lecture 03</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec04/">Lecture 04</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-probability/lec05/">Lecture 05</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec06/">Lecture 06</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec07/">Lecture 07</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec08/">Lecture 08</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec09/">Lecture 09</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec10/">Lecture 10</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec11/">Lecture 11</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec12/">Lecture 12</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec13/">Lecture 13</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec14/">Lecture 14</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec15/">Lecture 15</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec16/">Lecture 16</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec21/">Lecture 21</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/lec22/">Lecture 22</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-probability/mgf/">Materials</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-probability/mgf/">MGF</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 05: Random Variable and Distribution Function</h1>
+
+          <div class="article-style">
+            <h2 id="definitions">Definitions</h2>
+<p>$\fbox{Definition 5.1}$ 设 $X:\Omega \rightarrow \mathbb{R}$，且对于任意 $\mathbb{R}$ 中的 Borel 集 $B$，$\{e|X(e)\in B\}\in \mathscr{F}$，则称 $X$ 是 $(\Omega, \mathscr F, P)$ 上的随机变量。</p>
+<p>注：1. Borel 集是由所有的 $\{(a,b]|-\infty\leq a,b\leq +\infty\}$ 经过可数次交或并得到的集合。</p>
+<p>​		2. 在大部分场合，只需关注 $X$ 是从 $\Omega$ 到 $\mathbb{R}$ 上的映射即可。</p>
+<p>【例】示性随机变量 (indicator)，对于 $A\in \mathscr{F}$，定义 $X_A(e)=\begin{cases}1,e\in A\\0, e\notin A\end{cases}$。</p>
+<p>$\fbox{Definition 5.2}$ 设 $X$ 是随机变量，则称 $F_X(x)\triangleq P(X\leq x)$  为 $X$ 的分布函数。</p>
+<p>分布函数满足以下性质：</p>
+<ul>
+<li>
+<p>单调不降。</p>
+<blockquote>
+<p>对于 $x_1&lt;x_2$，$F(x_2)-F(x_1)=P(x_1&lt;x\leq x_2)\geq 0$。</p>
+</blockquote>
+</li>
+<li>
+<p>$\lim_{x\rightarrow +\infty}F(x)=1,\lim_{x\rightarrow -\infty}F(x)=0$。</p>
+<blockquote>
+<p>Lemma (单调收敛定理) 当被积函数单调递增时，积分和极限可以换序。</p>
+</blockquote>
+<blockquote>
+<p>${X\leq x}\overset{x\rightarrow +\infty}{\longrightarrow}\Omega$，$lim_{x\rightarrow \infty}P(X\leq x)\overset{lemma}{=}P(\lim_{x\rightarrow \infty}{X\leq x})=P(\Omega)=1$。</p>
+</blockquote>
+</li>
+<li>
+<p>$F$ 右连续且存在左极限 (càdlàg, RCLL)，i.e. $\lim_{x\rightarrow x_0^+}F(x)=F(x_0)$，$F(x_0-0)$ 存在。</p>
+<blockquote>
+<p>$F(x)-F(x_0)=P(X\leq x)-P(X\leq x_0)=P(x_0&lt;X\leq x)\overset{x\rightarrow x_0^+}{\longrightarrow}P(\emptyset)=0$。</p>
+<p>$x&lt;x_0$ 时，$F(x)\leq F(x_0)$ 且 $F(x)$ 单增，所以左极限存在。</p>
+</blockquote>
+</li>
+</ul>
+<p>注：左不一定连续的原因是：$F(x_0)-F(x)=P(x&lt;X\leq x_0)\overset{x\rightarrow x_0^-}{\longrightarrow}P(X=x_0)$ 不一定为 0。</p>
+<p>$\fbox{Theorem 5.3}$ 如果一个函数 $F$ 满足上述三条性质，那么它必然是某个随机变量 $X$ 的分布函数。</p>
+<h2 id="discrete-random-variable">Discrete Random Variable</h2>
+<p>$\fbox{Definition 5.4}$ 若随机变量 $X$ 的取值为有限多个或无限可数个，则 $X$ 为离散随机变量。设 $X$ 的取值为 $x_1,x_2,\cdots $，令 $P(x=x_k)=P_k$，称 ${P_k}$ 为 $X$ 的分布列/分布律。</p>
+<p>注：$F(x)=P(X\leq x)=P(\bigcup_{x_k\leq x}P_k)=\sum_{x_k\leq x}P_k$。</p>
+<h2 id="common-distributions">Common Distributions</h2>
+<p>【例】 (0-1分布) 设 $A\in \mathscr{F}$，$P(A)=p\in(0,1)$。令 $X_A$ 为 $A$ 的 indicator，则 $P(X_A=1)=P(A)=p,P(X_A=0)=1-p$。</p>
+<p>【例】 (二项分布) 设 $X$ 的分布律为 $p_k=P(X=k)=\binom{n}{k}p^k(1-p)^{n-k},p\in (0,1)$，$p_k$ 即为 $n$ 重 Bernoulli 试验成功 $k$ 次的概率，$X$ 服从二项分布，记为 $X\sim B(n,p)$。</p>
+<p>【例】 (泊松分布) 设 $X$ 的分布律为 $p_k=P(X=k)=\frac{\lambda^k}{k!}e^{-\lambda}$，则称 $X$ 服从泊松分布，记为 $X\sim P(\lambda)$。</p>
+<blockquote>
+<p>$$
+\sum_{k=0}^\infty \frac{\lambda^k}{k!}e^{-\lambda}=e^{-\lambda}\sum_{k=0}^\infty \frac{\lambda^k}{k!}\overset{Taylor\space Series}{=}e^{-\lambda}e^\lambda=1
+$$</p>
+</blockquote>
+<p>注：在 $\lambda=np_n$ 固定的情况下，当 $n$ 很大时，$p_n$ 则很小。那么在 $k&laquo;n$ 的情况下，二项分布可以近似为泊松分布。</p>
+<p>【例】 (几何分布) 独立重复试验，成功概率为 $p$，记第 $k$ 次试验首次成功的概率为 $p_k=P(X=k)=(1-p)^{k-1}p$，则 $X$ 服从几何分布，记为 $X\sim g(p)$。</p>
+<blockquote>
+<p>$$
+\sum_{k=1}^\infty (1-p)^{k-1}p=p\sum_{k=0}^\infty(1-p)^k=p\cdot\frac{1}{1-(1-p)}=p\cdot \frac{1}{p}=1
+$$</p>
+</blockquote>
+<p>几何分布没有记忆性。假设前 $t$ 次试验均失败，则再试 $s$ 次成功的概率 $P(X=t+s|X&gt;t)=P(X=s)$。或者：$P(X\geq t+s|x&gt;t)=\sum_{k=s}^\infty P(X=t+k|X&gt;t)=\sum_{k=s}^\infty P(X=k)=P(X\geq s)$。</p>
+<p>【例】 (巴斯卡分布) 独立重复试验，每次成功概率为 $p$，记做完第 $k$ 次试验后恰好取得了 $r$ 次成功 $(k\geq r)$ 的概率为 $p_k$，有
+$$
+p_k=P(X=k)=\binom{k-1}{r-1}p^r(1-p)^{k-r}
+$$
+我们称 $X$ 服从巴斯卡分布 ($r=1$ 时的巴斯卡分布就是几何分布)。</p>
+<blockquote>
+<p>$$
+\sum_{k=r}^\infty p_k=\sum_{k=r}^\infty \binom{k-1}{r-1}p^r(1-p)^{k-r}=p^r\sum_{k=r}^\infty \binom{k-1}{r-1}(1-p)^{k-r}
+$$</p>
+<p>令 $q=1-p$，只要证 $\sum_{k=r}^\infty \binom{k-1}{r-1}q^{k-r}=(1-q)^{-r}$。对 $f(x)=(1-x)^{-r}$ 泰勒展开，
+$$
+\begin{align}
+f(x)=(1-x)^{-r}&amp;=\sum_{k=0}^\infty \frac{f^{(k)}(0)}{k!}x^k\\
+&amp;=\sum_{k=0}^\infty\frac{1}{k!}(-1)^k(-r)(-r-1)\cdots (-r-k+1)x^k\\
+&amp;=\sum_{k=0}^\infty\frac{1}{k!}r(r+1)\cdots (r+k-1)x^k\\
+&amp;=\sum_{k=0}^\infty\frac{(r+k-1)!}{k!(r-1)!}x^k\\
+&amp;=\sum_{k=0}^\infty\binom{r+k-1}{k}x^k\\
+&amp;=\sum_{k=r}^\infty\binom{k-1}{r-1}x^{k-r}
+\end{align}
+$$</p>
+</blockquote>
+<p>【例】 (超几何分布) 对 $N$ 个产品无放回抽样 $n$ 次，其中有 $M$ 个次品，令抽到 $k$ 个次品的概率为 $p_k$，则
+$$
+p_k=P(X=k)=\frac{\binom{M}{k}\binom{N-M}{n-k}}{\binom{N}{n}}
+$$
+我们称 $X$ 服从超几何分布。</p>
+<blockquote>
+<p>$$
+\sum_{k=0}^\infty p_k=\frac{1}{\binom{N}{n}}\sum_{k=max(0,n-(N-M))}^{min(n,M)} \binom{M}{k}\binom{N-M}{n-k}
+$$</p>
+<p>右边的部分用“讲故事法”容易证明等于 $\binom{N}{n}$。如果需要比较数学的方法，可以从 $(1+x)^N$ 和 $(1+x)^M(1+x)^{N-M}$ 两个角度去考察 $x^n$ 前的系数。</p>
+</blockquote>
+<p>注：当 $N,N-M&raquo;n\geq k$ 时，超几何分布可以近似地当作二项分布计算：
+$$
+\begin{align}
+\frac{\binom{M}{k}\binom{N-M}{n-k}}{\binom{N}{n}}&amp;=\frac{n!}{k!(n-k)!}\frac{M(M-1)\cdots (M-k+1)}{N(N-1)\cdots (N-k+1)}\frac{(N-M)\cdots (N-M-(n-k)+1)}{(N-k)\cdots (N-k-(n-k)+1)}\\
+&amp;\approx \binom{n}{k}\left(\frac{M}{N}\right)^k\left(\frac{N-M}{N}\right)^{n-k}
+\end{align}
+$$</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-probability/lec04/" rel="next">Lecture 04: Independence and Bernoulli Experiments</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-probability/lec06/" rel="prev">Lecture 06: Continuous Random Variables</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

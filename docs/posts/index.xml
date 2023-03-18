@@ -5,12 +5,250 @@
     <link>https://kristoff-starling.github.io/posts/</link>
       <atom:link href="https://kristoff-starling.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <description>Posts</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 21 Oct 2022 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 18 Mar 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Posts</title>
       <link>https://kristoff-starling.github.io/posts/</link>
     </image>
+    
+    <item>
+      <title>Homogeneous Linear Recurrences: An Algorithmic Perspective</title>
+      <link>https://kristoff-starling.github.io/posts/recurrences/</link>
+      <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/posts/recurrences/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#getting-started-fibonacci&#34;&gt;Getting Started: Fibonacci&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#a-variation-of-fibonacci&#34;&gt;A Variation of Fibonacci&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#when-it-comes-to-higher-orders&#34;&gt;When It Comes to Higher Orders…&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#an-eigendecomposition-approach&#34;&gt;An “Eigendecomposition” Approach&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#fibonacci-review-i&#34;&gt;Fibonacci: Review I&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#cayley-hamilton-theorem&#34;&gt;Cayley-Hamilton Theorem&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#the-characteristic-polynomial-for-homogeneous-linear-recurrence-matrices&#34;&gt;The Characteristic Polynomial For Homogeneous Linear Recurrence Matrices&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#magical-decomposition&#34;&gt;Magical Decomposition&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#summary--complexity-analysis&#34;&gt;Summary &amp;amp; Complexity Analysis&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#a-generatingfunctionology-approach&#34;&gt;A “Generatingfunctionology” Approach&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;a href=&#34;#fibonacci-review-ii&#34;&gt;Fibonacci: Review II&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#generating-function-equation-for-general-linear-recurrences&#34;&gt;Generating Function Equation for General Linear Recurrences&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#an-even-odd-separation-idea&#34;&gt;An Even-Odd Separation Idea&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#summary--complexity-analysis-1&#34;&gt;Summary &amp;amp; Complexity Analysis&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#conclusion--misc&#34;&gt;Conclusion &amp;amp; Misc&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;#references&#34;&gt;References&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The post focuses on solving homogeneous linear recurrences quickly with the aid of computers. Specifically, we are interested in figuring out the $n$-th term of sequences with the following recurrence formula:&lt;/p&gt;
+&lt;p&gt;$$
+f_n=\sum_{k=1}^m c_kf_{n-k}
+$$&lt;/p&gt;
+&lt;p&gt;Since the answer may be too large, we usually focus on $f&amp;rsquo;_n=f_n\mod M$. We are more interested in cases where $M$ is suitable for FFT, such as $998,244,353$, because polynomial-related techniques can be leveraged to accelerate the computation. In the whole passage, we will use $f_n$ (instead of $f&amp;rsquo;_n$) to represent the answer under modulation for simplicity.&lt;/p&gt;
+&lt;h2 id=&#34;getting-started-fibonacci&#34;&gt;Getting Started: Fibonacci&lt;/h2&gt;
+&lt;p&gt;Let’s start with one of the simplest (and most famous) sequences: Fibonacci.&lt;/p&gt;
+&lt;p&gt;$$
+F_n=\begin{cases}0&amp;amp;, n=1\\1&amp;amp;, n=2\\F_{n-1}+F_{n-2}&amp;amp;, n\geq 2\end{cases}
+$$&lt;/p&gt;
+&lt;p&gt;Computing $F_n$ in $O(n)$ time complexity is trivial. But when $n$ is extremely large, say, $\geq 10^9$, it’s hard for general computers to get the answer within seconds. One of the most common approaches to solving such problems is using matrices.&lt;/p&gt;
+&lt;p&gt;Matrices are good at describing linear relationships, and the recurrence formula of Fibonacci happens to be linear. Therefore we can rewrite it in matrix language:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{pmatrix}0 &amp;amp; 1\\1 &amp;amp; 1\end{pmatrix}\begin{pmatrix}F_{n-1}\\F_n\end{pmatrix}=\begin{pmatrix}0\cdot F_{n-1}+1\cdot F_n\\1\cdot F_{n-1}+1\cdot F_n\end{pmatrix}=\begin{pmatrix}F_n\\F_{n+1}\end{pmatrix}
+$$&lt;/p&gt;
+&lt;p&gt;$\begin{pmatrix}0 &amp;amp; 1\\1 &amp;amp; 1\end{pmatrix}$is a good matrix for “pushing” the computation of $F_n$ by 1. Although this seems trivial, when we repeatedly use the matrix to push forward our computation, things become interesting:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{pmatrix}F_n\\F_{n+1}\end{pmatrix}=\begin{pmatrix}0 &amp;amp; 1\\1 &amp;amp; 1\end{pmatrix}\cdots\left(\begin{pmatrix}0 &amp;amp; 1\\1 &amp;amp; 1\end{pmatrix}\left(\begin{pmatrix}0 &amp;amp; 1\\1 &amp;amp; 1\end{pmatrix}\begin{pmatrix}F_0\\F_1\end{pmatrix}\right)\right)
+$$&lt;/p&gt;
+&lt;p&gt;Thanks to the associativity of matrix multiplication, we can neatly rewrite the expression as&lt;/p&gt;
+&lt;p&gt;$$
+\begin{pmatrix}F_n\\F_{n+1}\end{pmatrix}=\begin{pmatrix}0 &amp;amp; 1\\1 &amp;amp; 1\end{pmatrix}^n\begin{pmatrix}F_0\\F_1\end{pmatrix}
+$$&lt;/p&gt;
+&lt;p&gt;So far, we have not simplified the computation of $F_n$, and matrix multiplications even place more burden on the computer. However, we have powerful techniques to deal with exponents: repeated squaring, i.e., denote the transformation matrix as $M$, we first compute $M^2$, then compute $M^4$ by taking the square of $M^2$, and so on. In this way, we can compute $\begin{pmatrix}0 &amp;amp; 1\\1 &amp;amp; 1\end{pmatrix}^n$in $O(\log n)$ complexity, and finally by applying it to the initial vector $\begin{pmatrix}F_0\\F_1\end{pmatrix}$we’ll get $F_n$.&lt;/p&gt;
+&lt;p&gt;If you’re an experienced math learner, you must have known several ways to directly compute the general term formula of the Fibonacci sequence and may complain about this “stupid” matrix approach. However, the general term formula containing irrational coefficients is unfriendly for numerical computations. I’m not saying that those approaches are useless - instead, in the following sections we’ll come back to the basic Fibonacci example again and again and see how advanced math gives insights into efficient algorithm design.&lt;/p&gt;
+&lt;h3 id=&#34;a-variation-of-fibonacci&#34;&gt;A Variation of Fibonacci&lt;/h3&gt;
+&lt;p&gt;Before delving deeper into the problem, let&amp;rsquo;s consider a slightly varied version of the Fibonacci sequence:&lt;/p&gt;
+&lt;p&gt;$$
+F_n=\begin{cases}0&amp;amp;, n=1\\1&amp;amp;, n=2\\F_{n-1}+F_{n-2}+n&amp;amp;, n\geq 2\end{cases}
+$$&lt;/p&gt;
+&lt;p&gt;Rigorously, this is not a homogeneous linear recurrence, but we list it here because it’s a nice example of designing transformation matrices. The only difference is the additional $+n$ when $n\geq 2$, but it seems much more challenging because we cannot represent $n$ as the linear combination of $F_{n-1}$ and $F_{n-2}$.&lt;/p&gt;
+&lt;p&gt;A general insight is that we can include more terms in the “state vector” ( in the standard Fibonacci sequence it’s $\begin{pmatrix}F_{n} &amp;amp; F_{n+1}\end{pmatrix}$). Apart from necessary terms in the sequence, we can add “helper terms” to help us find the linear combinations of wanted expressions. Let’s try adding $n$ into the state vector:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{pmatrix}F_{n-2}\\F_{n-1}\\n\end{pmatrix}\overset{which\ matrix?}{\Longrightarrow}\begin{pmatrix}F_{n-1}\\F_{n}\\n+1\end{pmatrix}
+$$&lt;/p&gt;
+&lt;p&gt;Unfortunately, getting $n+1$ from $n$ is impossible because we have nobody to borrow the “1” from - but why don’t we add constant 1 into our state vector as well?&lt;/p&gt;
+&lt;p&gt;$$
+\begin{pmatrix}0 &amp;amp; 1 &amp;amp; 0 &amp;amp; 0\\1 &amp;amp; 1 &amp;amp; 1 &amp;amp; 0\\0 &amp;amp; 0 &amp;amp; 1 &amp;amp; 1\\0 &amp;amp; 0 &amp;amp; 0 &amp;amp; 1\end{pmatrix}\begin{pmatrix}F_{n-2}\\F_{n-1}\\n\\1\end{pmatrix}=\begin{pmatrix}F_{n-1}\\F_n\\n+1\\1\end{pmatrix}
+$$&lt;/p&gt;
+&lt;p&gt;Once we have the transformation matrix of a sequence, the rest is simple: do matrix multiplications by repeated squaring. To solve this Fibonacci variation, we need a matrix with rank 4, even if it&amp;rsquo;s a second-order recurrence. There&amp;rsquo;s no fixed procedure for devising such a matrix - in some subtle cases, a little human wisdom is necessary.&lt;/p&gt;
+&lt;h2 id=&#34;when-it-comes-to-higher-orders&#34;&gt;When It Comes to Higher Orders…&lt;/h2&gt;
+&lt;p&gt;The examples shown above are all constant-order recurrences. In the Fibonacci example, we claim that the time complexity is $O(\log n)$ because the influence from the rank is negligible. However, if we’re confronted with recurrences with higher orders, say $k$, the time complexity of the matrix approach should be $O(k^3\log n)$ (we don’t take into account algorithms like Strassen’s multiplication because they often come with huge constants), which is prohibitively high even if $k$ is only a few thousand.&lt;/p&gt;
+&lt;p&gt;The journey has just begun! The following sections introduce 2 directions for optimization: one is related to the characteristic polynomial of matrices, and the other leverages generating functions to tackle the issue.&lt;/p&gt;
+&lt;h2 id=&#34;an-eigendecomposition-approach&#34;&gt;An “Eigendecomposition” Approach&lt;/h2&gt;
+&lt;h3 id=&#34;fibonacci-review-i&#34;&gt;Fibonacci: Review I&lt;/h3&gt;
+&lt;p&gt;A common approach to optimizing matrix powering is eigendecomposition, i.e., for a matrix $M$ with rank $n$, if $M$ has $n$ independent eigenvectors, then $M$ is diagonalizable: $M=S\Lambda S^{-1}$, where $\Lambda$ is a diagonal matrix consisting of eigenvalues and $S$ is a matrix consisting of (column) eigenvectors. With this diagonalized form, powering becomes super easy: $M^n=(S\Lambda S^{-1})^n=S\Lambda^nS^{-1}$.&lt;/p&gt;
+&lt;p&gt;Come back to the Fibonacci example, the only thing left is to compute the eigenvalues of the transformation matrix. For $2\times 2$ matrices, solving the following quadratic characteristic equation is simple:&lt;/p&gt;
+&lt;p&gt;$$
+M=\begin{pmatrix}0&amp;amp;1\\1&amp;amp;1\end{pmatrix}\qquad\qquad
+\begin{align*}f(\lambda)&amp;amp;=\det(M-\lambda I)=0\\&amp;amp;\Longrightarrow\lambda_{1,2}=\frac{1\pm\sqrt 5}{2},\mathbf{x}=\begin{pmatrix} \lambda\\1\end{pmatrix}\end{align*}
+$$&lt;/p&gt;
+&lt;p&gt;Therefore,&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align*}\begin{pmatrix}F_n\\F_{n+1}\end{pmatrix}&amp;amp;=\begin{pmatrix}0&amp;amp;1\\1&amp;amp;1\end{pmatrix}^n\begin{pmatrix}F_0\\F_1\end{pmatrix}\\&amp;amp;=\left[\begin{pmatrix}\mathbf{x}_1&amp;amp;\mathbf{x}_2\end{pmatrix}\begin{pmatrix}\lambda_1 &amp;amp; \\&amp;amp;\lambda_2\end{pmatrix}\begin{pmatrix}\mathbf{x}_1&amp;amp;\mathbf{x}_2\end{pmatrix}^{-1}\right]^n\begin{pmatrix}F_0\\F_1\end{pmatrix}\\&amp;amp;=\begin{pmatrix}\mathbf{x}_1&amp;amp;\mathbf{x}_2\end{pmatrix}\begin{pmatrix}\lambda_1^n&amp;amp;\\&amp;amp;\lambda_2^n\end{pmatrix}\begin{pmatrix}\mathbf{x}_1&amp;amp;\mathbf{x}_2\end{pmatrix}^{-1}\begin{pmatrix}F_0\\F_1\end{pmatrix}\end{align*}
+$$&lt;/p&gt;
+&lt;h3 id=&#34;cayley-hamilton-theorem&#34;&gt;Cayley-Hamilton Theorem&lt;/h3&gt;
+&lt;p&gt;Unfortunately, when it comes to transformation matrices with arbitrary rank, it’s difficult to solve high-order characteristic equations and irrational eigenvalues are hard for numerical computations. However, the general idea still works: we should find nice properties related to characteristic polynomials and try to do decomposition.&lt;/p&gt;
+&lt;p&gt;We introduce the Cayley-Hamilton theorem, which describes an interesting property of square matrices.&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;$\fbox{Theorem}$ &lt;strong&gt;(Cayley-Hamilton)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In linear algebra, the Cayley-Hamilton theorem states that every square matrix over a commutative ring satisfies its own characteristic equation, i.e., denote $f(\lambda)=\det(\lambda I-A)$ as the characteristic polynomial of $A$, then $f(A)=O$.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;Beginners may regard this theorem as trivial by the observation that $\det(AI-A)=0$. However, this “bogus proof” is totally ungrounded because $f(A)$ is a matrix, not a scalar. Since it’s not a rigorous math post, we’ll not prove this theorem in a detailed manner from scratch. Instead, we give the following lemma without proof:&lt;/p&gt;
+&lt;p&gt;$\fbox{Lemma}$ Diagonalizable matrices are dense in the space of all matrices.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Proof of Cayley-Hamilton theorem&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;We start with diagonalizable matrices. For an arbitrary diagonalizable matrix $A$ with rank $n$, it has $n$ independent eigenvectors satisfying $A\mathbf{x_i}=\lambda_i\mathbf{x_i}$. Consider $f(A)\mathbf{x_i}$, suppose $f(\lambda)$ is a polynomial with coefficient $c_i$ for term $\lambda^i$, then&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align*}f(A)\mathbf{x_i}&amp;amp;=\left(\sum_{k=0}^nc_kA^k\right)\mathbf{x_i}=\sum_{k=0}^nc_k(A^k\mathbf{x_i})\\&amp;amp;=\sum_{k=0}^nc_k(\lambda_i^k\mathbf{x_i})\\&amp;amp;=\left(\sum_{k=0}^nc_k\lambda_i^k\right)\mathbf{x_i}\\&amp;amp;=f(\lambda_i)\mathbf{x_i}=\mathbf{0}\end{align*}
+$$&lt;/p&gt;
+&lt;p&gt;Therefore, for each eigenvector $\mathbf{x_i}$, $f(A)\mathbf{x_i}=\mathbf{0}$. By combining eigenvectors to a matrix $S=\begin{pmatrix}\mathbf{x_1}&amp;amp;\cdots&amp;amp;\mathbf{x_n}\end{pmatrix}$, we have $f(A)S=O$. Since $S$ is a full-rank matrix, the only possibility is that $f(A)=O$.&lt;/p&gt;
+&lt;p&gt;Now let’s move to non-diagonalizable matrices, denoted as $D$. According to the density of diagonalizable matrices in the whole matrix space, there exists a matrix $H$ such that a cluster of matrices $D_t=D+tH$, $t\in (-1, 0)\cup (0, 1)$, are diagonalizable. Since $D_t$ is continuous on $t$, $f_{D_t}(D_t)$ is also continuous on $t$, therefore&lt;/p&gt;
+&lt;p&gt;$$
+f(D)=\lim_{t\to 0}f_{D_t}(D_t)=O
+$$&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;the-characteristic-polynomial-for-homogeneous-linear-recurrence-matrices&#34;&gt;The Characteristic Polynomial For Homogeneous Linear Recurrence Matrices&lt;/h3&gt;
+&lt;p&gt;For homogeneous linear recurrence transformation matrices, characteristic polynomial $f$ is easy to compute: according to the recurrence formula, we have&lt;/p&gt;
+&lt;p&gt;$$
+A=\begin{pmatrix}0&amp;amp; 1\\&amp;amp; &amp;amp; 1\\&amp;amp; &amp;amp; &amp;amp; \ddots\\&amp;amp; &amp;amp; &amp;amp; &amp;amp; 1\\c_1 &amp;amp; c_2 &amp;amp; c_3 &amp;amp;  \cdots &amp;amp; c_k\end{pmatrix}
+$$&lt;/p&gt;
+&lt;p&gt;Then&lt;/p&gt;
+&lt;p&gt;$$
+f(\lambda)=\det(\lambda I-A)=\begin{vmatrix}\lambda &amp;amp; -1\\&amp;amp; \lambda &amp;amp; -1\\&amp;amp; &amp;amp; \ddots&amp;amp; \ddots\\&amp;amp; &amp;amp; &amp;amp; \lambda &amp;amp; -1\\-c_1 &amp;amp; -c_2 &amp;amp; -c_3&amp;amp;\cdots&amp;amp;\lambda-c_k\end{vmatrix}
+$$&lt;/p&gt;
+&lt;p&gt;Expanding the determinant by the last row, we’ll observe that every minor is easy to compute: $A_{k,i}=(-1)^{k-i}\lambda^{i-1}$. Therefore&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align*}f(\lambda)&amp;amp;=(-1)^{2k}(\lambda-c_k)\lambda^{k-1}+\sum_{i=1}^{k-1}(-1)^{k+i}\cdot ((-1)^{k-i}\lambda^{i-1})\cdot (-c_i)\\&amp;amp;=\lambda^k-\sum_{i=1}^kc_i\lambda^{i-1}\end{align*}
+$$&lt;/p&gt;
+&lt;h3 id=&#34;magical-decomposition&#34;&gt;Magical Decomposition&lt;/h3&gt;
+&lt;p&gt;It’s still unclear how Cayley-Hamilton theorem can help in optimization. The following approach was proposed by Fiduccia in 1985 [2]. For an arbitrary transformation matrix $A$ with rank $k$, consider the following decomposition:&lt;/p&gt;
+&lt;p&gt;$$
+x^n=f(x)g(x)+r(x)
+$$&lt;/p&gt;
+&lt;p&gt;where $f$ is the characteristic polynomial of $A$ and  $g(x)/r(x)$ can be computed through polynomial division/modulation. In fact, we are more interested in $r(x)$ because when we let $x=A$:&lt;/p&gt;
+&lt;p&gt;$$
+A^n=f(A)g(A)+r(A)\overset{\text{Cayley-Hamilton}}{=}r(A)
+$$&lt;/p&gt;
+&lt;p&gt;It seems that we haven’t made solid progress because $r$ is a $k$-order polynomial and computing $r(A)$ by brute force requires $O(k^4)$ effort. However, suppose $\displaystyle r(x)=\sum_{i=0}^{k-1}c_ix^i$, actually we’re able to compute $F_n$ in $O(k)$ thanks to the following deduction:&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align*}\begin{pmatrix}F_n\\F_{n+1}\\\vdots\\F_{n+k-1}\end{pmatrix}&amp;amp;=A^n\begin{pmatrix}F_0\\F_1\\\vdots\\F_{k-1}\end{pmatrix}=R(A)\begin{pmatrix}F_0\\F_1\\\vdots\\F_{k-1}\end{pmatrix}\\&amp;amp;=\left(\sum_{i=0}^{k-1}c_iA^i\right)\begin{pmatrix}F_0\\F_1\\\vdots\\F_{k-1}\end{pmatrix}\\&amp;amp;=\sum_{i=0}^{k-1}c_i\left(A^i\begin{pmatrix}F_0\\F_1\\\vdots\\F_{k-1}\end{pmatrix}\right)\\&amp;amp;=\sum_{i=0}^{k-1}c_i\begin{pmatrix}F_i\\F_{i+1}\\\vdots\\F_{i+k-1}\end{pmatrix}\end{align*}
+$$&lt;/p&gt;
+&lt;p&gt;Therefore&lt;/p&gt;
+&lt;p&gt;$$
+F_n=\sum_{i=0}^{k-1}c_iF_i
+$$&lt;/p&gt;
+&lt;h3 id=&#34;summary--complexity-analysis&#34;&gt;Summary &amp;amp; Complexity Analysis&lt;/h3&gt;
+&lt;p&gt;Let’s have a quick summary of the whole procedure and analyze the complexity:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Construct a transformation matrix $A$ according to the recurrence formula.&lt;/li&gt;
+&lt;li&gt;Compute the characteristic polynomial $f_A$.&lt;/li&gt;
+&lt;li&gt;Compute $r_A(x)=x^n\text{ mod }f_A$.&lt;/li&gt;
+&lt;li&gt;Compute $F_n$ according to the coefficients in $r_A$.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The main complexity lies in the third step. Since $n$ is extremely large, it’s impossible to directly do polynomial modulation. Instead, we can leverage repeated squaring:&lt;/p&gt;
+&lt;p&gt;$$
+x\Rightarrow [x^2]=(x)^2 \text{ mod }f_A\Rightarrow [x^4]=[x^2]^2\text{ mod }f_A\Rightarrow \cdots \Rightarrow x^n\text{ mod }f_A
+$$&lt;/p&gt;
+&lt;p&gt;In this way, we need to conduct $O(\log n)$ times polynomial multiplication and modulation, which gives a $O(k^2\log n)$ complexity. If the problem is considered in a ring that supports Fast Fourier Transformation (typically an NTT ring), we can further optimize it to $O(k\log k\log n)$.&lt;/p&gt;
+&lt;h2 id=&#34;a-generatingfunctionology-approach&#34;&gt;A “Generatingfunctionology” Approach&lt;/h2&gt;
+&lt;h3 id=&#34;fibonacci-review-ii&#34;&gt;Fibonacci: Review II&lt;/h3&gt;
+&lt;p&gt;Generating function is always a powerful weapon for tackling sequence problems. Consider&lt;/p&gt;
+&lt;p&gt;$$
+G(x)=\sum_{n=0}^\infty F_nx^n
+$$&lt;/p&gt;
+&lt;p&gt;Since $F_n=F_{n-1}+F_{n-2}$ when $n\geq 2$, we can get&lt;/p&gt;
+&lt;p&gt;$$
+G(x)=F_0+F_1x+xG(x)+x^2G(x)=x+(x+x^2)G(x)
+$$&lt;/p&gt;
+&lt;p&gt;Therefore $\displaystyle G(x)=\frac{x}{1-x-x^2}=\frac{1}{\sqrt 5}\left(\frac{1}{1-\phi x}-\frac{1}{1-\hat\phi x}\right)$, where $\phi=\displaystyle \frac{1+\sqrt 5}{2}$ and $\displaystyle \hat\phi=\frac{1-\sqrt 5}{2}$. Expand it to Taylor series, we have&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align*}G(x)&amp;amp;=\frac{1}{\sqrt 5}\left(\sum_{n\geq 0}(\phi x)^n-\sum_{n\geq 0}(\hat\phi x)^n\right)\\&amp;amp;=\sum_{n\geq 0}\left(\frac{1}{\sqrt 5}(\phi^n-\hat\phi^n)\right)x^n\end{align*}
+$$&lt;/p&gt;
+&lt;p&gt;Thus $\displaystyle F_n=\frac{1}{\sqrt 5}(\phi^n-\hat\phi^n)$.&lt;/p&gt;
+&lt;h3 id=&#34;generating-function-equation-for-general-linear-recurrences&#34;&gt;Generating Function Equation for General Linear Recurrences&lt;/h3&gt;
+&lt;p&gt;However, when it comes to recurrences with arbitrary order, techniques like Taylor expansion will lose its power for computers. Anyway, let’s figure out the equation first. Put the coefficients of linear recurrence into a generation function, denoted as $G(x)$, i.e.,&lt;/p&gt;
+&lt;p&gt;$$
+G(x)=\sum_{i=1}^kc_ix^i
+$$&lt;/p&gt;
+&lt;p&gt;we have&lt;/p&gt;
+&lt;p&gt;$$
+F(x)=F(x)G(x)+R(x)
+$$&lt;/p&gt;
+&lt;p&gt;Where $R(x)$ is a polynomial for correcting the first few terms in the sequence and can be obtained by computing $F&amp;rsquo;(x)-F&amp;rsquo;(x)G(x)$, where $F&amp;rsquo;(x)$ is the first $k$ terms of $F(x)$.&lt;/p&gt;
+&lt;p&gt;Therefore&lt;/p&gt;
+&lt;p&gt;$$
+F(x)=\frac{R(x)}{1-G(x)}
+$$&lt;/p&gt;
+&lt;h3 id=&#34;an-even-odd-separation-idea&#34;&gt;An Even-Odd Separation Idea&lt;/h3&gt;
+&lt;p&gt;Since $n$ is extremely huge, computing the polynomial inverse of $1-G(x)$ and then computing  $[x^n]F(x)$ through polynomial multiplication is unreasonable. We need a quick way to compute&lt;/p&gt;
+&lt;p&gt;$$
+[x^n]F(x)=[x^n]\frac{P(x)}{Q(x)}
+$$&lt;/p&gt;
+&lt;p&gt;where $P(x)$ and $Q(x)$ stands for $R(x)$ and $1-G(x)$ in this case.&lt;/p&gt;
+&lt;p&gt;Consider the following transformation:&lt;/p&gt;
+&lt;p&gt;$$
+F(x)=\frac{P(x)}{Q(x)}=\frac{P(x)Q(-x)}{Q(x)Q(-x)}
+$$&lt;/p&gt;
+&lt;p&gt;$Q(x)Q(-x)$ is an even function. Let $U(x^2)=Q(x)Q(-x)$, and divide $P(x)Q(-x)$ into two parts according to the parity of $x^k$, we have&lt;/p&gt;
+&lt;p&gt;$$
+F(x)=\frac{xOdd(x^2)}{U(x^2)}+\frac{Even(x^2)}{U(x^2)}
+$$&lt;/p&gt;
+&lt;p&gt;Thanks to the fact that $U(x^2)$ only contains even powers, $F(x)$ is successfully separated as an odd part and an even part, and we can choose the part containing $x^n$ (according to the parity of $n$) to continue our computation.&lt;/p&gt;
+&lt;h3 id=&#34;summary--complexity-analysis-1&#34;&gt;Summary &amp;amp; Complexity Analysis&lt;/h3&gt;
+&lt;p&gt;Let’s have a quick summary of the whole procedure and analyze the complexity:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Compute $R(x)$ and $G(x)$.&lt;/li&gt;
+&lt;li&gt;Compute $P(x)Q(-x)$ and $Q(x)Q(-x)$ respectively. Choose the part with the same parity as $n$.&lt;/li&gt;
+&lt;li&gt;Repeatedly conduct step 2 until the polynomial becomes a constant one.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Step 2 contains polynomial multiplications, which requires $O(k^2)$/$O(k\log k)$ depending on whether FFT is supported. Every time we conduct step 2, the formal variable of the generating functions grow from $x$ to $x^2$. Therefore the power grows exponentially and we can terminate within $O(\log n)$ iterations. So the overall complexity is $O(k^2\log n)$/$O(k\log k\log n)$.&lt;/p&gt;
+&lt;p&gt;It’s worth noting that although the “generatingfunctionology” approach has the same time complexity as the previous one, it requires simpler polynomial techniques (only multiplication). The paper [3] argues that this approach improves the result of Fiduccia on constant factors.&lt;/p&gt;
+&lt;h2 id=&#34;conclusion--misc&#34;&gt;Conclusion &amp;amp; Misc&lt;/h2&gt;
+&lt;p&gt;The post introduces several kinds of techniques for tackling homogeneous linear recurrence problems. Matrix multiplication with repeated squaring optimizes the complexity from the most trivial $O(kn)$ to $O(k^3\log n)$, and the following 2 approaches leverage linear algebra/generating function to further improve it to $O(k^2\log n)$/$O(k\log k\log n)$. Readers can refer to the papers for deeper understanding.&lt;/p&gt;
+&lt;p&gt;I learned most of the techniques mentioned above when I was taking part in competitive programming contests during high school. There was no detailed tutorial on the Internet at that time and the knowledge are spread through word of mouth. I would be most happy if the post can bring the wisdom of TCS researchers to more people in the world.&lt;/p&gt;
+&lt;h2 id=&#34;references&#34;&gt;References&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;[1]  
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Cayley%E2%80%93Hamilton_theorem&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Cayley-Hamilton Theorem&lt;/a&gt;. &lt;em&gt;Wikipedia&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;[2] C. M. Fiduccia. 
+&lt;a href=&#34;https://doi.org/10.1137/0214007&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;An efficient formula for linear recurrences&lt;/a&gt;. &lt;em&gt;SIAM Journal on Computing&lt;/em&gt;,
+14(1):106–112, 1985.&lt;/li&gt;
+&lt;li&gt;[3] Bostan, A., &amp;amp; Mori, R. (2020). 
+&lt;a href=&#34;https://arxiv.org/abs/2008.08822&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;A Simple and Fast Algorithm for Computing the N-th Term of a Linearly Recurrent Sequence&lt;/a&gt;. &lt;em&gt;ArXiv.&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
   </channel>
 </rss>

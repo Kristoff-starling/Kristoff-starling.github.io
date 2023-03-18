@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Digital Logic 数字电路：
+状态：寄存器中保存的值； 初始状态：RESET； 迁移：组合逻辑电路下计算寄存器下一个周期的值。 Example: Seven-seg // logisim.c #include &lt;stdio.h&gt; #include &lt;unistd.h&gt; #define REGS_FOREACH(_) _(X) _(Y) #define OUTS_FOREACH(_) _(A) _(B) _(C) _(D) _(E) _(F) _(G) #define RUN_LOGIC X1 = !">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec02/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec02/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec02/">
+  <meta property="og:title" content="Lecture 02: Programs on Operating Systems | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Digital Logic 数字电路：
+状态：寄存器中保存的值； 初始状态：RESET； 迁移：组合逻辑电路下计算寄存器下一个周期的值。 Example: Seven-seg // logisim.c #include &lt;stdio.h&gt; #include &lt;unistd.h&gt; #define REGS_FOREACH(_) _(X) _(Y) #define OUTS_FOREACH(_) _(A) _(B) _(C) _(D) _(E) _(F) _(G) #define RUN_LOGIC X1 = !"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Lecture 02: Programs on Operating Systems | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-operating-system/lectures/lec01/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec01/">01: Introduction</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec02/">02: OS上的程序</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec03/">03: 并发编程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec04/">04: 理解并发</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec05/">05: 并发-互斥</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec06/">06: 并发-同步</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec07/">07: 并发-应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec08/">08: 并发bug</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec09/">09: OS的状态机</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec10/">10: 状态机应用</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec11/">11: OS的进程</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec12/">12: 地址空间</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec13/">13: 系统调用和 Shell</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec14/">14: LibC</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec15/">15: fork()</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec16/">16: 可执行文件</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec17/">17: 链接和加载</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec18/">18: xv6 概览</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec19/">19: 上下文切换</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec20/">20: 处理器调度</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec21/">21: OS设计</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec22/">22: OSLab速通</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec23/">23: 1Bit的存储</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec24/">24: I/O设备</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec25/">25: 设备驱动</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec26/">26: FS API</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec27/">27: FAT和UNIX文件系统</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec28/">28: 存储可靠性</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec29/">29: Xv6 FS</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-operating-system/lectures/lec30/">30: 现代存储</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Lecture 02: Programs on Operating Systems</h1>
+
+          <div class="article-style">
+            <h2 id="digital-logic">Digital Logic</h2>
+<p>数字电路：</p>
+<ul>
+<li>状态：寄存器中保存的值；</li>
+<li>初始状态：RESET；</li>
+<li>迁移：组合逻辑电路下计算寄存器下一个周期的值。</li>
+</ul>
+<h3 id="example-seven-seg">Example: Seven-seg</h3>
+<pre><code class="language-c">// logisim.c
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+#define REGS_FOREACH(_)  _(X) _(Y)
+#define OUTS_FOREACH(_)  _(A) _(B) _(C) _(D) _(E) _(F) _(G)
+#define RUN_LOGIC        X1 = !X &amp;&amp; Y; \
+                         Y1 = !X &amp;&amp; !Y; \
+                         A  = (!X &amp;&amp; !Y) || (X &amp;&amp; !Y); \
+                         B  = 1; \
+                         C  = (!X &amp;&amp; !Y) || (!X &amp;&amp; Y); \
+                         D  = (!X &amp;&amp; !Y) || (X &amp;&amp; !Y); \
+                         E  = (!X &amp;&amp; !Y) || (X &amp;&amp; !Y); \
+                         F  = (!X &amp;&amp; !Y); \
+                         G  = (X &amp;&amp; !Y); 
+
+#define DEFINE(X)   static int X, X##1;
+#define UPDATE(X)   X = X##1;
+#define PRINT(X)    printf(#X &quot; = %d; &quot;, X);
+
+int main() {
+  REGS_FOREACH(DEFINE);
+  OUTS_FOREACH(DEFINE);
+  while (1) { // clock
+    RUN_LOGIC;
+    OUTS_FOREACH(PRINT);
+    REGS_FOREACH(UPDATE);
+    putchar('\n');
+    fflush(stdout);
+    sleep(1);
+  }
+}
+</code></pre>
+<p>数字电路永远是根据当前状态机的状态确定次态，循环往复。上述程序用两个寄存器 X,Y 实现了七段数码管 0 $\rightarrow$ 1 $\rightarrow$ 2 循环更新的功能 (注：这段代码使用了一些 X-macros 技巧，使得我们无需对每个寄存器写相同的代码，值得学习。)</p>
+<p>搭配上一个简单的 python 程序，我们便可以在终端中打印这个七段数码管：</p>
+<pre><code class="language-python"># seven-seg.py
+import fileinput
+ 
+TEMPLATE = '''
+\033[2J\033[1;1f
+     AAAAAAAAA
+    FF       BB
+    FF       BB
+    FF       BB
+    FF       BB
+     GGGGGGGGG
+    EE       CC
+    EE       CC
+    EE       CC
+    EE       CC
+     DDDDDDDDD
+''' 
+BLOCK = {
+    0: '\033[37m░\033[0m', # STFW: ANSI Escape Code
+    1: '\033[31m█\033[0m',
+}
+VARS = 'ABCDEFG'
+
+for v in VARS:
+    globals()[v] = 0
+stdin = fileinput.input()
+
+while True:
+    exec(stdin.readline())
+    pic = TEMPLATE
+    for v in VARS:
+        pic = pic.replace(v, BLOCK[globals()[v]]) # 'A' -&gt; BLOCK[A], ...
+    print(pic)
+</code></pre>
+<blockquote>
+<p>关于该 python 程序的一些注解：</p>
+<ul>
+<li><code>exec(stdin.readline())</code> 用于将读入的内容直接当作 python 语句执行。由于之前的 C 程序在一行中用 <code>;</code> 将多个变量赋值分开，符合 python 语法，因此可以直接作为 python 程序中的变量赋值语句。</li>
+<li>BLOCK[] 数组中存储了两种颜色：37 号是白色，31 号是红色。这里使用了 ANSI Escape Code，具体格式可以参考
+<a href="https://kristoff-starling.github.io/2022/02/18/ANSI%20Escape%20Code%20-%20Quick%20Manual/" target="_blank" rel="noopener">这篇文章</a>。</li>
+</ul>
+</blockquote>
+<h2 id="programs-code-perspective">Programs: Code Perspective</h2>
+<p>C 程序也是状态机：</p>
+<ul>
+<li>状态：堆+栈；</li>
+<li>初始状态：main() 的第一条语句；</li>
+<li>迁移：执行一条简单语句。</li>
+</ul>
+<p>从更 low-level 的角度而言，C 程序的状态机描述如下：</p>
+<ul>
+<li>
+<p>状态：全局变量+栈帧的列表 (每个栈帧里有一个 PC 表示当前执行到哪里)；</p>
+</li>
+<li>
+<p>初始状态：<code>main(argc, argv)</code>；</p>
+</li>
+<li>
+<p>迁移：执行 top stack frame 中 PC 处的语句，PC++。</p>
+<p>函数的调用本质上就是新建一个栈帧放在栈帧列表的顶部，然后跳转到该栈帧中的第一条指令；函数的返回本质上就是将顶部的栈帧 pop 掉。</p>
+</li>
+</ul>
+<h3 id="example-hanoi-nr">Example: Hanoi-nr</h3>
+<pre><code class="language-c">// hanoi-nr.c
+typedef struct {
+  int pc, n;
+  char from, to, via;
+} Frame;
+
+#define call(...) ({ *(++top) = (Frame) { .pc = 0, __VA_ARGS__ }; })
+#define ret()     ({ top--; })
+#define goto(loc) ({ f-&gt;pc = (loc) - 1; })
+
+void hanoi(int n, char from, char to, char via) {
+  Frame stk[64], *top = stk - 1;
+  call(n, from, to, via);
+  for (Frame *f; (f = top) &gt;= stk; f-&gt;pc++) {
+    switch (f-&gt;pc) {
+      case 0: if (f-&gt;n == 1) { printf(&quot;%c -&gt; %c\n&quot;, f-&gt;from, f-&gt;to); goto(4); } break;
+      case 1: call(f-&gt;n - 1, f-&gt;from, f-&gt;via, f-&gt;to);   break;
+      case 2: call(       1, f-&gt;from, f-&gt;to,  f-&gt;via);  break;
+      case 3: call(f-&gt;n - 1, f-&gt;via,  f-&gt;to,  f-&gt;from); break;
+      case 4: ret();                                    break;
+      default: assert(0);
+    }
+  }
+}
+</code></pre>
+<p>switch-case 结构相当于给递归代码编上了“行号”。每个栈帧中的 PC 表示当前层函数执行到了第几行。</p>
+<h2 id="programs-binary-perspective">Programs: Binary Perspective</h2>
+<p>从二进制的角度，程序仍然是状态机。</p>
+<ul>
+<li>状态：寄存器，内存……</li>
+<li>迁移：执行一条指令</li>
+</ul>
+<p>如果整个程序的行为是确定的，状态机应该长成一条直线：$(M_0,R_0)\rightarrow (M_1,R_1)\rightarrow\cdots$ 。如果引入了一些 non-deterministic 的元素，比如 <code>rdrand</code> 指令 (读取一个硬件随机数到寄存器中)，那么状态机会有分叉。但无论如何，这是一个有限状态机 (内存、寄存器数量是有限的)，如果只有计算指令，有限步之后我们必然会回到一个经历过的状态。我们无法实现输入输出，甚至是停止程序。</p>
+<p>因此，程序中有一条特殊的指令：<code>syscall</code>。程序将自己的状态机 $(M,R)$ 交给操作系统，任其修改，最终操作系统返回一个状态机 $(M&rsquo;,R&rsquo;)$，程序继续执行。因此程序=计算+syscall+计算+syscall+……</p>
+<h3 id="example-a-smallest-hello-world">Example: A smallest &ldquo;Hello, world&rdquo;</h3>
+<p>我们想象中的最小函数：</p>
+<pre><code class="language-c">void _start() {
+}
+</code></pre>
+<p>直接运行会得到 SIGSEGV。使用 GDB 对汇编代码进行调试：</p>
+<pre><code class="language-c">0x401000 &lt;_start&gt;       endbr64                                            
+0x401004 &lt;_start+4&gt;     push   %rbp                                        
+0x401005 &lt;_start+5&gt;     mov    %rsp,%rbp                                   
+0x401008 &lt;_start+8&gt;     nop                                                
+0x401009 &lt;_start+9&gt;     pop    %rbp                                        
+0x40100a &lt;_start+10&gt;    ret  
+</code></pre>
+<p>执行 <code>ret</code> 指令时发生错误，因此 <code>ret</code> 的本质是将 %rax 的值赋给 PC，而此时 %rax 的值是一个非法的地址。</p>
+<hr>
+<p>用户程序只能解决“计算”的问题，因此我们甚至无法结束程序。我们必须借助系统调用才能使程序正常运行起来。</p>
+<pre><code class="language-assembly"># minimal.S
+#include &lt;sys/syscall.h&gt;
+
+.globl _start
+_start:
+  movq $SYS_write, %rax   # write(
+  movq $1,         %rdi   #   fd=1,
+  movq $st,        %rsi   #   buf=st,
+  movq $(ed - st), %rdx   #   count=ed-st
+  syscall                 # );
+
+  movq $SYS_exit,  %rax   # exit(
+  movq $1,         %rdi   #   status=1
+  syscall                 # );
+
+st:
+  .ascii &quot;\033[01;31mHello, OS World\033[0m\n&quot;
+ed:
+</code></pre>
+<p>前半段程序负责打印：将系统调用号 SYS_write 和输出对象，输出内容等参数放到 x86-64 制定的寄存器中，然后使用 syscall 指令；后半段负责退出。</p>
+<p>使用 <code>gcc -c minimal.S &amp;&amp; ld minimal.S &amp;&amp; ./a.out</code> 命令，可以得到红色加粗的 &ldquo;Hello, OS World&rdquo;。</p>
+<h2 id="switching-between-perspectives">Switching between Perspectives</h2>
+<p>记源代码为 $S$，汇编代码为 $S$，则编译器就是一个函数：$S=compile(S)$。</p>
+<p>从状态机的视角来看，编译 (优化) 的正确性 (soundness) 的含义是：两个状态机的可观测行为完全一致。因此在保证整体语义不变的前提下，编译器可以自由地调整语句顺序，合并语句，删除无用语句等。</p>
+<h3 id="example-compile-optimization">Example: Compile Optimization</h3>
+<pre><code class="language-c">void foo(int g)
+{
+    g++;
+    g++;
+}
+</code></pre>
+<p>开启 <code>-O1</code> 优化后，得到的汇编代码为</p>
+<pre><code class="language-assembly">0000000000000000 &lt;foo&gt;:
+   0:	f3 0f 1e fa          	endbr64 
+   4:	c3                   	ret
+</code></pre>
+<p>编译器直接将 <code>g++</code> 删除了，因为没有返回，这两句话没有作用。</p>
+<hr>
+<pre><code class="language-c">extern int g;
+void foo(int x)
+{
+    g++;
+  	g++;
+}
+</code></pre>
+<p>汇编代码为</p>
+<pre><code class="language-assembly">0000000000000000 &lt;foo&gt;:
+   0:	f3 0f 1e fa          	endbr64 
+   4:	83 05 00 00 00 00 02 	addl   $0x2,0x0(%rip)        # b &lt;foo+0xb&gt;
+   b:	c3                   	ret 
+</code></pre>
+<p>因为 g 是外部变量，所以这里对 g 的操作是有意义的，但连续的两次 +1 可以用一次 +2 来代替。</p>
+<hr>
+<pre><code class="language-c">extern int g;
+void foo(int x)
+{
+    g++;
+	asm volatile(&quot;nop&quot; : : &quot;r&quot;(x));
+  	g++;
+}
+</code></pre>
+<p>汇编代码为</p>
+<pre><code class="language-assembly">0000000000000000 &lt;foo&gt;:
+   0:	f3 0f 1e fa          	endbr64 
+   4:	90                   	nop
+   5:	83 05 00 00 00 00 02 	addl   $0x2,0x0(%rip)        # c &lt;foo+0xc&gt;
+   c:	c3                   	ret
+</code></pre>
+<p>这说明编译器可以调整语句的顺序，然后将两个 +1 合并成一个 +2。</p>
+<p>但我们有手段可以让编译器无法进行这个合并：</p>
+<pre><code class="language-c">extern int g;
+void foo(int x)
+{
+    g++;
+	asm volatile (&quot;nop&quot; : : &quot;r&quot;(x) : &quot;memory&quot;);
+    g++;
+}
+</code></pre>
+<p>汇编代码为</p>
+<pre><code class="language-assembly">0000000000000000 &lt;foo&gt;:
+   0:	f3 0f 1e fa          	endbr64 
+   4:	83 05 00 00 00 00 01 	addl   $0x1,0x0(%rip)        # b &lt;foo+0xb&gt;
+   b:	90                   	nop
+   c:	83 05 00 00 00 00 01 	addl   $0x1,0x0(%rip)        # 13 &lt;foo+0x13&gt;
+  13:	c3                   	ret 
+</code></pre>
+<p>中间插入的内联汇编语句使用了 memory clobber，其意思是告诉编译器这些内联汇编代码可能会任意读取、修改内存内容，因此编译器在调整语句顺序时，不能超过这个 asm block。这句话就像一堵墙一样挡在中间，使得两处 +1 无法被合并。</p>
+<p>该手法在操作系统的锁机制中有重要的应用 (避免编译器将 critical section 中的语句优化到外面，导致 race condition)。</p>
+<h2 id="programs-os-perspective">Programs: OS Perspective</h2>
+<p>操作系统眼中的程序：程序=计算+syscall+计算+syscall+…… 程序只能通过操作系统允许的方式来访问操作系统掌控的资源，从而操作系统掌握了计算机的“霸权”。</p>
+<h3 id="example-entering-a-program">Example: Entering a Program</h3>
+<blockquote>
+<p>一个 C 程序执行的第一条指令在哪里？</p>
+</blockquote>
+<p>最合理的方法：用 gdb 打开可执行文件，然后用 <code>starti</code> 指令定位到第一条汇编指令，发现在 <code>/lib64/ld-linux-x86-64.so.2</code> 中。这是一个加载器，加载器负责跳转到 <code>__start()</code> 执行。</p>
+<blockquote>
+<p><strong>凭什么不能是 rtfm.so?</strong></p>
+<p>使用 readelf 工具，可以看到在可执行文件中说明了</p>
+<pre><code>[Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
+</code></pre>
+<p>如果我们直接对 a.out 进行修改，将 ld-linux-x86-64.so.2 字段改为 rtfm.so，再创建一个从 rtfm.so 到 ld-linux-x86-64.so.2 的链接，我们就真的可以实现用我们制定的 rtfm.so 来加载程序。</p>
+<p><u>计算机系统不存在玄学，一切都建立在确定的机制上。</u></p>
+</blockquote>
+<p>在执行 main() 函数之前，程序经历了很多的过程，使用了很多的系统调用，用 strace 工具可以查看这些系统调用(注：strace 会输出到标准错误，重定向时要注意)。 C 语言还支持在进入 main() 函数之前和之后做事情：</p>
+<pre><code class="language-c">// hello-goodbye.c
+#include &lt;stdio.h&gt;
+
+__attribute__((constructor)) void hello() {
+  printf(&quot;Hello, World\n&quot;);
+}
+
+// See also: atexit(3)
+__attribute__((destructor)) void goodbye() {
+  printf(&quot;Goodbye, Cruel OS World!\n&quot;);
+}
+
+int main() {
+}
+</code></pre>
+<blockquote>
+<p><strong>Tip: 利用 Vim 来整理不易阅读的输入内容</strong></p>
+<p>strace 输出的内容杂乱难读，利用 vim 对其进行整理可以帮助我们阅读。常用的整理命令可以有：</p>
+<ul>
+<li><code>:%! grep [-v] word</code> 筛选出包含 word 的行 (-v 参数可以反向筛选)。</li>
+<li><code>:%s/, \r /g</code> 将所有的 <code>,</code> 替换为换行符。人类倾向于阅读行数多但每行都很短的内容。</li>
+<li>……</li>
+</ul>
+</blockquote>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec01/" rel="next">Lecture 01: Introduction</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-operating-system/lectures/lec03/" rel="prev">Lecture 03: Multiprocessor Programming</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

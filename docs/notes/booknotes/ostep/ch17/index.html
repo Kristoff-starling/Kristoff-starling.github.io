@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="动态大小的内存分配是比较困难的：随着反复的分配和释放，空闲内存会被切分成很多碎片，此时即使空闲空间的总量大于某个分配需求，分配也可能因为剩余空间过于碎片化而失败。因此，我们在管理空闲空间时要兼顾效率、空闲空间连续性、内存消耗等多方面因素。
+17.1 Assumptions 这里我们假设内存申请和释放的接口和 C 库中的 malloc()/free() 相同：
+void *malloc(size_t size); void free(void *ptr); 注意：释放空间时，调用者只传入起始地址，不传入空间的 size，因此我们在分配时就要想办法记录每块分配出去的空间的大小。
+分配空间的过程中严禁出现 double-alloc 的情况。
+17.2 Low-level Mechanisms Splitting and Coalescing 我们用一个链表维护所有的空闲内存区间，链表的每个节点代表一段连续的空闲内存，有起始地址，块大小等字段。当我们要分配一段内存出去，且分配大小小于当前链表节点大小时，我们可以将链表节点的前半部分切出去给调用者，后半部分保留在链表中。这就是 splitting。
+当 free() 将一段内存空间释放时，如果我们不加任何操作地将其放到链表头，时间久了就会出现完整的空闲内存被我们人为地切成了若干个首尾相接的段的情况。一个好的维护方法是：链表中的所有节点按照顺序排列，每当新插入节点时，将其与前后相邻的节点比较，如果地址连在了一起就合并节点。这就是 coalescing。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch17/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch17/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch17/">
+  <meta property="og:title" content="Chapter 17: Free Space Management | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="动态大小的内存分配是比较困难的：随着反复的分配和释放，空闲内存会被切分成很多碎片，此时即使空闲空间的总量大于某个分配需求，分配也可能因为剩余空间过于碎片化而失败。因此，我们在管理空闲空间时要兼顾效率、空闲空间连续性、内存消耗等多方面因素。
+17.1 Assumptions 这里我们假设内存申请和释放的接口和 C 库中的 malloc()/free() 相同：
+void *malloc(size_t size); void free(void *ptr); 注意：释放空间时，调用者只传入起始地址，不传入空间的 size，因此我们在分配时就要想办法记录每块分配出去的空间的大小。
+分配空间的过程中严禁出现 double-alloc 的情况。
+17.2 Low-level Mechanisms Splitting and Coalescing 我们用一个链表维护所有的空闲内存区间，链表的每个节点代表一段连续的空闲内存，有起始地址，块大小等字段。当我们要分配一段内存出去，且分配大小小于当前链表节点大小时，我们可以将链表节点的前半部分切出去给调用者，后半部分保留在链表中。这就是 splitting。
+当 free() 将一段内存空间释放时，如果我们不加任何操作地将其放到链表头，时间久了就会出现完整的空闲内存被我们人为地切成了若干个首尾相接的段的情况。一个好的维护方法是：链表中的所有节点按照顺序排列，每当新插入节点时，将其与前后相邻的节点比较，如果地址连在了一起就合并节点。这就是 coalescing。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2020-12-13T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2020-12-13T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Chapter 17: Free Space Management | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/ch02/">Chapters</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch02/">Chapter 02</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch04/">Chapter 04</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch05/">Chapter 05</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch13/">Chapter 13</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch14/">Chapter 14</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/booknotes/ostep/ch17/">Chapter 17</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch26/">Chapter 26</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch27/">Chapter 27</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch29/">Chapter 29</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch30/">Chapter 30</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch31/">Chapter 31</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch36/">Chapter 36</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch38/">Chapter 38</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/ch40/">Chapter 40</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/booknotes/ostep/hw26/">Homework</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/booknotes/ostep/hw26/">Homework 26</a>
+      </li>
+      
+      <li >
+        <a href="/notes/booknotes/ostep/hw27/">Homework 27</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Chapter 17: Free Space Management</h1>
+
+          <div class="article-style">
+            <p>动态大小的内存分配是比较困难的：随着反复的分配和释放，空闲内存会被切分成很多碎片，此时即使空闲空间的总量大于某个分配需求，分配也可能因为剩余空间过于碎片化而失败。因此，我们在管理空闲空间时要兼顾效率、空闲空间连续性、内存消耗等多方面因素。<!-- more --></p>
+<h2 id="171-assumptions">17.1 Assumptions</h2>
+<p>这里我们假设内存申请和释放的接口和 C 库中的 malloc()/free() 相同：</p>
+<pre><code class="language-c">void *malloc(size_t size);
+void free(void *ptr);
+</code></pre>
+<p>注意：释放空间时，调用者只传入起始地址，不传入空间的 size，因此我们在分配时就要想办法记录每块分配出去的空间的大小。</p>
+<p>分配空间的过程中严禁出现 double-alloc 的情况。</p>
+<h2 id="172-low-level-mechanisms">17.2 Low-level Mechanisms</h2>
+<h3 id="splitting-and-coalescing">Splitting and Coalescing</h3>
+<p>我们用一个链表维护所有的空闲内存区间，链表的每个节点代表一段连续的空闲内存，有起始地址，块大小等字段。当我们要分配一段内存出去，且分配大小小于当前链表节点大小时，我们可以将链表节点的前半部分切出去给调用者，后半部分保留在链表中。这就是 splitting。</p>
+<p>当 free() 将一段内存空间释放时，如果我们不加任何操作地将其放到链表头，时间久了就会出现完整的空闲内存被我们人为地切成了若干个首尾相接的段的情况。一个好的维护方法是：链表中的所有节点按照顺序排列，每当新插入节点时，将其与前后相邻的节点比较，如果地址连在了一起就合并节点。这就是 coalescing。</p>
+<h3 id="tracking-the-size-of-allocated-regions">Tracking The Size Of Allocated Regions</h3>
+<p>free() 函数传入的只有待释放内存空间的起始地址，我们必须在分配的时候想办法记录分配出去的空间大小。一种方法是在分配区域首地址的前面记录一个 header：</p>
+<pre><code class="language-c">typedef struct __header_t {
+    int size;
+    int magic;
+}header_t;
+</code></pre>
+<p>当 <code>free(void *ptr)</code> 来到时，我们首先在 ptr 前方的 header 处检查魔数是否正确以判定这是否是一个合法的可释放地址。如果魔数检查通过，我们便可以取出 size。注意最后加入空闲空间链表的总大小应为 <code>size + sizeof(header_t)</code>。</p>
+<h3 id="embedding-a-free-list">Embedding A Free List</h3>
+<p>我们需要空间来保存链表，但我们作为 memory allocator 本身，当然不能调用 malloc() 去申请内存。我们应当将链表节点直接保存在空闲的内存空间里。</p>
+<p>当一个 alloc() 需求来临时，选择一个合法的节点 split 出需要的空间。当一个 free() 来临时，将新的空闲空间节点加入链表，并在可以时与相邻节点合并。</p>
+<h3 id="growing-the-heap">Growing The Heap</h3>
+<p>当扫描完整个空闲空间链表但仍然无法分配出所需大小的空间时，返回 NULL 表示无法分配是完全合情合理的。对于应用层的 memory allocator 来说，如果内存耗尽，它会用系统调用 (如 sbrk()) 向操作系统申请更多的内存并将其加入到空闲空间链表中。</p>
+<h2 id="173-basic-strategies">17.3 Basic Strategies</h2>
+<p>由于申请内存和释放内存的行为是完全由上层程序决定的，所以任何策略都会在针对性的 input 下把内存搞得很破碎。我们无法给出完美的解决方案，但至少可以提出一些比较有可能较优的解决方案。</p>
+<h3 id="best-fit-smallest-fit">Best Fit (Smallest Fit)</h3>
+<p>Best fit 策略是：alloc() 需求来临时，根据大小从链表中找出可以满足要求且大小最小的链表节点 split 出一块。该策略可以比较好地减少破碎的内存块，但每次 alloc() 都完整地遍历链表代价太大。</p>
+<h3 id="worst-fit">Worst Fit</h3>
+<p>Worst Fit 每次挑最大的内存块切割，这样可以避免出现很多破碎的小内存块，但它也要遍历整个链表，而且实际情况下效果不好。</p>
+<h3 id="first-fit">First Fit</h3>
+<p>First Fit 总是寻找第一个足够切割的内存块 alloc()，这样不需要遍历整个链表。但做久了以后链表的头部会充斥比较多的内存碎片。</p>
+<h3 id="next-fit">Next Fit</h3>
+<p>Next Fit 的做法是保存上一次分配的位置，下一次要分配时从上一次的位置开始 First Fit。实践中这种方法的表现和 First Fit 差不多。</p>
+<h2 id="174-other-approaches">17.4 Other Approaches</h2>
+<h3 id="segregated-list">Segregated List</h3>
+<p>slab 的基本思路时：对于一些比较常见的分配大小 (比如 4B, 2B, page size) 等，可以准备一个链表专门存储这种大小的块块，这样分配的时候直接从链表中取一个节点即可，不需要之前所说的繁琐的切分、合并等步骤。slab 有点像全局 memory manager 的一个 cache，如果某个时刻 slab 里的节点用完了，它会从全局的大链表中再批发一些节点。</p>
+<h3 id="buddy-allocation">Buddy Allocation</h3>
+<p>Buddy Allocation 比较像“线段树”：它把一个长度为 $2^N$ 的区间分成左右各 $2^{N-1}$ 的，每个节点再一分为二，依次类推。这样我们不需要仔细地维护拆分、合并相关的问题。Buddy Allocation 的弱点在于：为了对齐我们只能分配 2 的幂次大小的块，会造成一些 internal fragmentation。</p>
+<h2 id="175-summary">17.5 Summary</h2>
+<p>略。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/booknotes/ostep/ch14/" rel="next">Chapter 14: Interlude: Memory API</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/booknotes/ostep/ch26/" rel="prev">Chapter 26: Concurrency: An Introduction</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Dec 13, 2020</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

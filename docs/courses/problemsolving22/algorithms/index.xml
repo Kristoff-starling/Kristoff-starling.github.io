@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>算法 | Yuyao Wang&#39;s Homepage</title>
+    <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/</link>
+      <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/index.xml" rel="self" type="application/rss+xml" />
+    <description>算法</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 18 Mar 2023 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>算法</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/</link>
+    </image>
+    
+    <item>
+      <title>快速幂</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/repeatedsquare/</link>
+      <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/repeatedsquare/</guid>
+      <description>&lt;p&gt;给定 $a,n$，考虑如何计算 $a^n$ 。如果使用如下循环计算结果&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int res = 1;
+for (int i = 1; i &amp;lt;= n; i++)
+    res = res * a;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;时间复杂度为 $O(n)$，当 $n$ 很大时效率太低。快速幂是用于计算该类问题的常见算法，其本质思想是递归/倍增:&lt;/p&gt;
+&lt;p&gt;$$
+a^n=\begin{cases}1&amp;amp;,n=0\\(a^{n/2})^2&amp;amp;,n是偶数, n\geq 1\\(a^{\lfloor n/2\rfloor})^2\cdot a&amp;amp;,n是奇数, n\geq 1\end{cases}
+$$&lt;/p&gt;
+&lt;p&gt;因此我们可以通过不断折半幂次的方式来求解 $a^n$。写出该算法的复杂度递归表达式：&lt;/p&gt;
+&lt;p&gt;$$
+T(n)=T(n/2)+O(1)
+$$&lt;/p&gt;
+&lt;p&gt;容易得出 $T(n)=O(\log n)$。&lt;/p&gt;
+&lt;p&gt;直接根据递归式，我们容易写出如下递归代码:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int quick_pow(int a, int n)
+{
+    if (n == 0) return 1;
+    res = quick_pow(a, n / 2);
+    if (n % 2 == 0)
+        return res * res;
+    else
+        return res * res * a;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但我们通常使用一种更加优美的写法来使用循环替代递归：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int quick_pow(int a, int n)
+{
+    int res = 1;
+    while (n)
+    {
+        if (n &amp;amp; 1) res = res * a;
+        a = a * a; n &amp;gt;&amp;gt;= 1;
+    }
+    return res;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;该实现的核心思想是利用 $n$ 的二进制表示中 1 的位置来判断 $a^n$ 是由哪些 $a^{2^k}$ 组合而成的。即如果 $n$ 的二进制表示中在 $k_1,k_2,\cdots, k_m$ 这些位置上是 1，那么&lt;/p&gt;
+&lt;p&gt;$$
+a^n=a^{\sum_{i=1}^m2^{k_i}}=\prod_{i=1}^ma^{2^{k_i}}
+$$&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>矩阵快速幂</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/matmul/</link>
+      <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/matmul/</guid>
+      <description>&lt;p&gt;关于基础理论，参见
+&lt;a href=&#34;https://kristoff-starling.github.io/posts/recurrences/&#34;&gt;这篇博文&lt;/a&gt;。如果你之前从未了解过线性递推相关的知识/目前以完成OJ为主要目标，只需看懂该文章的 Getting Started 章节。本文主要对矩阵乘法和矩阵快速幂的实现给出一点建议。&lt;/p&gt;
+&lt;p&gt;按照线性代数中的矩阵乘法规则，常见的矩阵乘法写法如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 1; i &amp;lt;= n; i++)
+    for (int j = 1; j &amp;lt;= n; j++)
+        for (int k = 1; k &amp;lt;= n; k++)
+            c[i][j] += a[i][k] * b[k][j]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是我们强烈建议你调整循环的顺序，按照如下方式书写矩阵乘法：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 1; i &amp;lt;= n; i++)
+    for (int k = 1; k &amp;lt;= n; k++)
+        for (int j = 1; j &amp;lt;= n; j++)
+            c[i][j] += a[i][k] * b[k][j]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;虽然这样有点“反直觉”，但在稍大规模的数据下运行时，你会发现这种写法的效率比前者高很多。理解效率提高的原因需要对计算机体系结构和 C/C++ 语言中数组在内存中的存储有一定的了解，这里不作赘述。你可以暂且将其背下来 😂&lt;/p&gt;
+&lt;p&gt;为了更优雅地实现矩阵快速幂，我们强烈建议你学习 C++ Class 相关的内容并了解操作符重载。这样你可以自己定义矩阵类并为矩阵类书写乘法规则，从而直接复用“快速幂”一讲中的代码计算矩阵快速幂。下面给出一个参考实现：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;class Matrix
+{
+    int b[10][10];
+    Matrix () { memset(b, 0, sizeof(b)); }
+    void init_I() { for (int i = 1; i &amp;lt;= n; i++) b[i][i] = 1; }
+    Matrix operator * (Matrix other)
+    {
+        Matrix res;
+        for (int i = 1; i &amp;lt;= n; i++)
+            for (int k = 1; k &amp;lt;= n; k++)
+                for (int j = 1; j &amp;lt;= n; j++)
+                    res.b[i][j] += b[i][k] * other.b[k][j];
+        return res;
+    }
+};
+
+Matrix quick_pow(Matrix x, int y)
+{
+    T res; res.init_I();
+    while (y)
+    {
+        if (y &amp;amp; 1) res = res * x;
+        x = x * x; y &amp;gt;&amp;gt;= 1;
+    }
+    return res;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

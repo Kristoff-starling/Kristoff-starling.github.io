@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="A. Acesrc&rsquo;s Bizarre Adventure 题面描述 给定 $n$ 个红色的点和 $n$ 个蓝色的点，每个点有坐标 $(x,y)$。如果一个蓝色的点满足两个坐标都是某个红色点坐标的两倍以上，则该蓝点和红点可以配对。问最多能配成多少对。 $n\leq 100$。 题解 在可以配对的蓝点和红点之间连边，该问题即转化为二分图最大匹配。可以利用匈牙利算法求解，也可以建立超级源点、超级汇点后求最大流。
+B. Acesrc Doesn&rsquo;t Want To Bite The Dust 题面描述 有 $n$ 个二次函数，第 $i$ 个形如 $f_i(x)=a_ix^2&#43;b_ix&#43;c_i$，要求 $x_i\in [L_i,R_i]$。有 $m$ 个额外的限制，每个限制是一个三元组 $(u,v,d)$，表示要求 $x_u\leq x_v&#43;d$。求在满足所有限制的情况下，$\sum_{i=1}^nf_i(x_i)$ 的最大值。 $n\leq 50,m\leq 100,-100\leq L_i,R_i\leq 100$。 题解 原型是洛谷3227切糕，比较难想的最小割建模。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-04/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-04/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-04/">
+  <meta property="og:title" content="问题求解 III - 04 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="A. Acesrc&rsquo;s Bizarre Adventure 题面描述 给定 $n$ 个红色的点和 $n$ 个蓝色的点，每个点有坐标 $(x,y)$。如果一个蓝色的点满足两个坐标都是某个红色点坐标的两倍以上，则该蓝点和红点可以配对。问最多能配成多少对。 $n\leq 100$。 题解 在可以配对的蓝点和红点之间连边，该问题即转化为二分图最大匹配。可以利用匈牙利算法求解，也可以建立超级源点、超级汇点后求最大流。
+B. Acesrc Doesn&rsquo;t Want To Bite The Dust 题面描述 有 $n$ 个二次函数，第 $i$ 个形如 $f_i(x)=a_ix^2&#43;b_ix&#43;c_i$，要求 $x_i\in [L_i,R_i]$。有 $m$ 个额外的限制，每个限制是一个三元组 $(u,v,d)$，表示要求 $x_u\leq x_v&#43;d$。求在满足所有限制的情况下，$\sum_{i=1}^nf_i(x_i)$ 的最大值。 $n\leq 50,m\leq 100,-100\leq L_i,R_i\leq 100$。 题解 原型是洛谷3227切糕，比较难想的最小割建模。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>问题求解 III - 04 题解 | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/files/yuyao_CV.pdf"><span>CV</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-problem-solving/oj-solutions/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/notes/coursenotes/nju-problem-solving/oj-solutions/ii-final/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/ii-final/">II-Final Sol</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iii-01/">III-01 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iii-02/">III-02 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iii-03/">III-03 Sol</a>
+      </li>
+      
+      <li class="active">
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iii-04/">III-04 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iii-05/">III-05 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iii-06/">III-06 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iii-07/">III-07 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iii-10/">III-10 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iv-02/">IV-02 Sol</a>
+      </li>
+      
+      <li >
+        <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iv-03/">IV-03 Sol</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>问题求解 III - 04 题解</h1>
+
+          <div class="article-style">
+            <h2 id="a-acesrcs-bizarre-adventure">A. Acesrc&rsquo;s Bizarre Adventure</h2>
+<h3 id="题面描述">题面描述</h3>
+<ul>
+<li>给定 $n$ 个红色的点和 $n$ 个蓝色的点，每个点有坐标 $(x,y)$。如果一个蓝色的点满足两个坐标都是某个红色点坐标的两倍以上，则该蓝点和红点可以配对。问最多能配成多少对。</li>
+<li>$n\leq 100$。</li>
+</ul>
+<!-- more -->
+<h3 id="题解">题解</h3>
+<p>在可以配对的蓝点和红点之间连边，该问题即转化为二分图最大匹配。可以利用匈牙利算法求解，也可以建立超级源点、超级汇点后求最大流。</p>
+<h2 id="b-acesrc-doesnt-want-to-bite-the-dust">B. Acesrc Doesn&rsquo;t Want To Bite The Dust</h2>
+<h3 id="题面描述-1">题面描述</h3>
+<ul>
+<li>有 $n$ 个二次函数，第 $i$ 个形如 $f_i(x)=a_ix^2+b_ix+c_i$，要求 $x_i\in [L_i,R_i]$。有 $m$ 个额外的限制，每个限制是一个三元组 $(u,v,d)$，表示要求 $x_u\leq x_v+d$。求在满足所有限制的情况下，$\sum_{i=1}^nf_i(x_i)$ 的最大值。</li>
+<li>$n\leq 50,m\leq 100,-100\leq L_i,R_i\leq 100$。</li>
+</ul>
+<h3 id="题解-1">题解</h3>
+<p>原型是洛谷3227切糕，比较难想的最小割建模。</p>
+<p>如果没有额外限制，那么一个最小割模型是显然的：对于每个函数，建一条有 $R-L+1$ 条边的链。每条边的容量是二次函数自变量在该处取值时的函数值。将 $n$ 条链的首尾分别与超级源点，超级汇点连接即可。</p>
+<p>现在考虑如何满足额外限制。<strong>最小割建模模拟限制的核心思想在于使网络在约束不满足时有无法割去的 $s-t$ 通路。</strong> 对于一个 $x_u\leq x_v+d$，当 $x_v=x$ 时，我们在 $v$ 的函数上割去的是对应 $x$ 的边，那么 $x+1$ 即以上的边都属于 $T$ 集合。如果此时 $x_u\geq x+d+1$，那么边 $x+d+1$ 左边的节点一定在 $S$ 集合中。因此，我们只要对于每个 $x$，从 $u$ 函数的 $x+d+1$ 边左端点向 $v$ 函数的 $x+1$ 边左端点连容量为 $\infty$ 的边即可。</p>
+<p>还有一个微小的问题是这样求出的是目标函数的最小值，而我们要求的是最大值。我们可以设定一个很大的阈值 $M$，然后令 $f&rsquo;(x)=M-f(x)$，这样最小化 $\sum_{i=1}^nf&rsquo;(x_i)$ 就是最大化 $\sum_{i=1}^nf(x_i)$。</p>
+<h2 id="c-最小化">C. 最小化</h2>
+<h3 id="题面描述-2">题面描述</h3>
+<ul>
+<li>有 $n$ 个变量，每个取值可以是 $-w$ 或 $w$。有 $q$ 个限制和一些目标函数，求目标函数最小值。</li>
+<li>$n\leq 1000，q\leq 3000$。</li>
+</ul>
+<h3 id="题解-2">题解</h3>
+<p><strong>每个变量只有两种取值，这种给一些变量进行二分类的需求是最小割模型的典型特征。</strong></p>
+<p>我们建立超级源点、超级汇点，并给每个变量建一个点。在最终完成最小割的残余网络中，如果一个点连向 $s$ 表示它最终的取值是 $-w$，连向 $t$ 表示它最终的取值是 $w$。考虑如何建边以满足约束。</p>
+<ul>
+<li>每个节点向 $s$ 连容量为 $w$ 的边，表示割去这条边意味着该点去了 $T$，会付出 $w$ 的代价。类似地，每个节点向 $t$ 连容量为 $-w$ 的边。</li>
+<li>对于限制 $w_x\leq w_y$，建立从 $y$ 到 $x$ ，容量为 $\infty$ 的边。这样如果 $y\in S,x\in T$，将会存在无法割去的 $s-t$ 通路。</li>
+<li>对于限制 $w_x=w_y$ ，分别建立从 $x$ 到 $y$ 和从 $y$ 到 $x$，容量为 $\infty$ 的边。一旦这两个点分属于不同的集合，将会存在无法割去的 $s-t$ 通路。</li>
+<li>对于限制 $w_x&lt;w_y$，相当于规定了 $w_x=-w,w_y=w$，我们在第一步的约束中修改 $(s,x)$ 和 $(y,t)$ 的容量为 $\infty$ 即可。</li>
+<li>对于代价函数中的 $c|w_x-w_y|$ 部分，当 $w_x\neq w_y$ 时会产生 $2cw$ 的代价，否则没有代价。因此分别建立从 $x$ 到 $y$ 和从 $y$ 到 $x$，容量为 $2cw$ 的边。一旦这两个点分属于不同的集合，就必须割掉这条边付出相应的代价。</li>
+<li>对于代价函数中的 $c(w_x-w_y)$ 部分，可以拆括号将系数分到每个变量自己头上。我们再次修改第一步中的权值，提前计算好每个变量在目标函数中被累加的次数，边权乘上该系数即可。</li>
+</ul>
+<p>该网络已经可以模拟原题，但还有一个问题在于该网络中存在负权，不方便使用最大流算法求解。<strong>解决负权的常用手法是先预计算一个小的代价，如果最终选择了大的再补差价</strong>。以第一种建边为例，我们先预先在答案中加上 $-w\cdot n$，表示先认为每个变量的取值都是 $-w$，这样建边时如果它确实是 $-w$，则代价为0，如果是 $w$ 则代价为 $2w$，从而转为非负权。其他部分的处理手法类似。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iii-03/" rel="next">问题求解 III - 03 题解</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/notes/coursenotes/nju-problem-solving/oj-solutions/iii-05/" rel="prev">问题求解 III - 05 题解</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
+    
+  </p>
+</footer>
+
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+    
+    
+    
+    
+    
+    <script>
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.f8eb5cb10262ef4a670903a5cb3e03ae.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
