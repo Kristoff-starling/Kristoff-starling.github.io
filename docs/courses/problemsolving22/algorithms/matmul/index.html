@@ -30,6 +30,8 @@
     
   
   <meta name="description" content="关于基础理论，参见 这篇博文。如果你之前从未了解过线性递推相关的知识/目前以完成OJ为主要目标，只需看懂该文章的 Getting Started 章节。本文主要对矩阵乘法和矩阵快速幂的实现给出一点建议。
+Don&rsquo;t Panic!
+只有 Problem Solving 目录下的内容才是大家需要且应当掌握的内容。这篇博文的大部分内容与问题求解课程并不相关，且我不认为掌握这些数学强相关的知识对计算机思维有太多提升。因此如果你不愿意读 Getting Started 之后的内容/读不懂后面的内容，这非常正常也无关紧要！
 按照线性代数中的矩阵乘法规则，常见的矩阵乘法写法如下：
 for (int i = 1; i &lt;= n; i&#43;&#43;) for (int j = 1; j &lt;= n; j&#43;&#43;) for (int k = 1; k &lt;= n; k&#43;&#43;) c[i][j] &#43;= a[i][k] * b[k][j] 但是我们强烈建议你调整循环的顺序，按照如下方式书写矩阵乘法：">
 
@@ -238,6 +240,8 @@ for (int i = 1; i &lt;= n; i&#43;&#43;) for (int j = 1; j &lt;= n; j&#43;&#43;) 
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/matmul/">
   <meta property="og:title" content="矩阵快速幂 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="关于基础理论，参见 这篇博文。如果你之前从未了解过线性递推相关的知识/目前以完成OJ为主要目标，只需看懂该文章的 Getting Started 章节。本文主要对矩阵乘法和矩阵快速幂的实现给出一点建议。
+Don&rsquo;t Panic!
+只有 Problem Solving 目录下的内容才是大家需要且应当掌握的内容。这篇博文的大部分内容与问题求解课程并不相关，且我不认为掌握这些数学强相关的知识对计算机思维有太多提升。因此如果你不愿意读 Getting Started 之后的内容/读不懂后面的内容，这非常正常也无关紧要！
 按照线性代数中的矩阵乘法规则，常见的矩阵乘法写法如下：
 for (int i = 1; i &lt;= n; i&#43;&#43;) for (int j = 1; j &lt;= n; j&#43;&#43;) for (int k = 1; k &lt;= n; k&#43;&#43;) c[i][j] &#43;= a[i][k] * b[k][j] 但是我们强烈建议你调整循环的顺序，按照如下方式书写矩阵乘法："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
@@ -514,6 +518,12 @@ for (int i = 1; i &lt;= n; i&#43;&#43;) for (int j = 1; j &lt;= n; j&#43;&#43;) 
           <div class="article-style">
             <p>关于基础理论，参见
 <a href="/posts/recurrences/">这篇博文</a>。如果你之前从未了解过线性递推相关的知识/目前以完成OJ为主要目标，只需看懂该文章的 Getting Started 章节。本文主要对矩阵乘法和矩阵快速幂的实现给出一点建议。</p>
+<div class="alert alert-warning">
+  <div>
+    <p><strong>Don&rsquo;t Panic!</strong></p>
+<p>只有 <code>Problem Solving</code> 目录下的内容才是大家需要且应当掌握的内容。这篇博文的大部分内容与问题求解课程并不相关，且我不认为掌握这些数学强相关的知识对计算机思维有太多提升。因此如果你不愿意读 Getting Started 之后的内容/读不懂后面的内容，这非常正常也无关紧要！</p>
+  </div>
+</div>
 <p>按照线性代数中的矩阵乘法规则，常见的矩阵乘法写法如下：</p>
 <pre><code class="language-c++">for (int i = 1; i &lt;= n; i++)
     for (int j = 1; j &lt;= n; j++)
