@@ -29,10 +29,11 @@
   
     
   
-  <meta name="description" content="Course material including OJ solutions and getting-started docs. *@NJU*">
+  <meta name="description" content="按照线性代数中的矩阵乘法规则，常见的矩阵乘法写法如下：
+for (int i = 1; i &lt;= n; i&#43;&#43;) for (int j = 1; j &lt;= n; j&#43;&#43;) for (int k = 1; k &lt;= n; k&#43;&#43;) c[i][j] &#43;= a[i][k] * b[k][j] 但是我们强烈建议你调整循环的顺序，按照如下方式书写矩阵乘法：">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/coding/matmul/">
 
   
 
@@ -44,6 +45,9 @@
   
 
   
+  
+  
+  <script src="/js/mathjax-config.js"></script>
   
 
   
@@ -175,9 +179,9 @@
 
       
       
-        
-      
 
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
       
     
       
@@ -211,14 +215,12 @@
 
 
   
-  <link rel="alternate" href="/courses/problemsolving22/index.xml" type="application/rss+xml" title="Yuyao Wang&#39;s Homepage">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/coding/matmul/">
 
   
   
@@ -232,29 +234,35 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/">
-  <meta property="og:title" content="Problem Solving | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Course material including OJ solutions and getting-started docs. *@NJU*"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/coding/matmul/">
+  <meta property="og:title" content="矩阵快速幂 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="按照线性代数中的矩阵乘法规则，常见的矩阵乘法写法如下：
+for (int i = 1; i &lt;= n; i&#43;&#43;) for (int j = 1; j &lt;= n; j&#43;&#43;) for (int k = 1; k &lt;= n; k&#43;&#43;) c[i][j] &#43;= a[i][k] * b[k][j] 但是我们强烈建议你调整循环的顺序，按照如下方式书写矩阵乘法："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
-    <meta property="og:updated_time" content="2023-03-22T00:00:00&#43;00:00">
+    
+      <meta property="article:published_time" content="2023-03-22T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-03-22T00:00:00&#43;00:00">
   
 
   
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>Problem Solving | Yuyao Wang&#39;s Homepage</title>
+
+
+  <title>矩阵快速幂 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -432,533 +440,176 @@
 
   
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-  
-  
-    
-  
-<div class="universal-wrapper pt-3">
-  <h1>Problem Solving</h1>
-
-  
-
-  
-</div>
-
-
-
-<div class="universal-wrapper">
-
-  
-
-  
-  
-    
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
       
 
 
 
 
 
-
-
-
-
-  
-
-
-<div class="card-simple">
-
   
     
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Mar 22, 2023
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/coding/">Coding</a>
-  </h3>
-
-  
-
-  
-
-</div>
-
-    
-  
-    
-      
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Mar 18, 2023
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/algorithms/">算法</a>
-  </h3>
-
-  
-
   
 
-</div>
 
-    
-  
-    
-      
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Mar 5, 2023
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/solutions/">OJ习题讲解</a>
-  </h3>
-
-  
-
-  
-
-</div>
-
-    
-  
-    
-      
-
-
-
-
-
-
-
-
-
-  
 
 
-<div class="card-simple">
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
 
   
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Nov 1, 2022
-  </span>
-  
-
-  
-
-  
-
-  
-  
+  <input name="q" type="search" class="form-control" placeholder="Search..." autocomplete="off">
   
+</form>
 
+<nav class="collapse docs-links" id="docs-nav">
   
-  
-
-</div>
 
   
-
   
   
   
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving22/coding/">Overview</a>
 
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/c&#43;&#43;0/">C/C&#43;&#43;基础入门</a>
-  </h3>
-
-  
-  <div class="article-style">
-    <p>该文章主要介绍 C/C++ 最基础的语法知识以及最基本的程序架构。本文力求让编程小白也能读懂并上手，因此会略去一些较为复杂的背景知识和细节。</p>
   </div>
   
-
-  
-
-</div>
-
-    
-  
-    
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving22/coding/matmul/">Contents</a>
+    <ul class="nav docs-sidenav">
       
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="card-simple">
-
-  
+      <li class="active">
+        <a href="/courses/problemsolving22/coding/matmul/">矩阵快速幂</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/coding/modulation/">优雅地取模</a>
+      </li>
+      
+    </ul>
     
 
-
-<div class="article-metadata">
-
-  
-  
-  
-  
-  <div>
-    
-
-  
-  <span><a href="/authors/xingyu-du/">Xingyu Du</a></span>
   </div>
   
   
+</nav>
 
-  
-  <span class="article-date">
+    </div>
+
     
-    
-      
-    
-    Nov 1, 2022
-  </span>
-  
 
-  
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
 
-  
+      <article class="article">
 
-  
-  
-  
+        <div class="docs-article-container">
+          <h1>矩阵快速幂</h1>
 
-  
-  
+          <div class="article-style">
+            <p>按照线性代数中的矩阵乘法规则，常见的矩阵乘法写法如下：</p>
+<pre><code class="language-c++">for (int i = 1; i &lt;= n; i++)
+    for (int j = 1; j &lt;= n; j++)
+        for (int k = 1; k &lt;= n; k++)
+            c[i][j] += a[i][k] * b[k][j]
+</code></pre>
+<p>但是我们强烈建议你调整循环的顺序，按照如下方式书写矩阵乘法：</p>
+<pre><code class="language-c++">for (int i = 1; i &lt;= n; i++)
+    for (int k = 1; k &lt;= n; k++)
+        for (int j = 1; j &lt;= n; j++)
+            c[i][j] += a[i][k] * b[k][j]
+</code></pre>
+<p>虽然这样有点“反直觉”，但在稍大规模的数据下运行时，你会发现这种写法的效率比前者高很多。理解效率提高的原因需要对计算机体系结构和 C/C++ 语言中数组在内存中的存储有一定的了解，这里不作赘述。你可以暂且将其背下来 😂</p>
+<p>为了更优雅地实现矩阵快速幂，我们还强烈建议你学习 C++ Class 相关的内容并了解操作符重载。这样你可以自己定义矩阵类并为矩阵类书写乘法规则，从而直接复用“快速幂”一讲中的代码计算矩阵快速幂。下面给出一个参考实现：</p>
+<pre><code class="language-c++">class Matrix
+{
+    int b[10][10];
+    Matrix () { memset(b, 0, sizeof(b)); }
+    void init_I() { for (int i = 1; i &lt;= n; i++) b[i][i] = 1; }
+    Matrix operator * (Matrix other)
+    {
+        Matrix res;
+        for (int i = 1; i &lt;= n; i++)
+            for (int k = 1; k &lt;= n; k++)
+                for (int j = 1; j &lt;= n; j++)
+                    res.b[i][j] += b[i][k] * other.b[k][j];
+        return res;
+    }
+};
 
-</div>
+Matrix quick_pow(Matrix x, int y)
+{
+    T res; res.init_I();
+    while (y)
+    {
+        if (y &amp; 1) res = res * x;
+        x = x * x; y &gt;&gt;= 1;
+    }
+    return res;
+}
+</code></pre>
 
-  
+          </div>
 
-  
-  
-  
+          
 
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/dfa/">有限状态机简介</a>
-  </h3>
 
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
   
-  <div class="article-style">
-    <p>鸣谢dxy助教的贡献！</p>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving22/coding/modulation/" rel="next">优雅地取模</a>
   </div>
   
-
   
-
 </div>
 
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Mar 22, 2023</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+      <footer class="site-footer">
+  
+
+  <p class="powered-by">
     
-  
+
+    <span id="busuanzi_container_site_pv">
+        Total Visit: <span id="busuanzi_value_site_pv"></span>
+    </span>
+
     
-      
+  </p>
+</footer>
 
 
-
-
-
-
-
-
-
-  
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Oct 31, 2022
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/python-intro/">Python 快速入门教程</a>
-  </h3>
-
-  
-  <div class="article-style">
-    <p>一份简短的 Python 教程，帮助你快速掌握 Python 中最基础的语法(正在更新中）</p>
+    </main>
   </div>
-  
-
-  
-
 </div>
 
-    
-  
-    
-      
-
-
-
-
-
-
-
-
-
-  
-
-
-<div class="card-simple">
-
-  
-    
-
-
-<div class="article-metadata">
-
-  
-  
-
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Jan 1, 0001
-  </span>
-  
-
-  
-
-  
-
-  
-  
-  
-
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/cser0/">一个CSer应当掌握的基础技能合集</a>
-  </h3>
-
-  
-  <div class="article-style">
-    <p>no summary</p>
-  </div>
-  
-
-  
-
-</div>
-
-    
-  
-
-  
-
-
-</div>
 
       
 
@@ -1017,6 +668,11 @@
 
     
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
 
     
     
@@ -1069,31 +725,6 @@
 
 
   
-  
-  <div class="container">
-    <footer class="site-footer">
-  
-
-  <p class="powered-by">
-    
-
-    <span id="busuanzi_container_site_pv">
-        Total Visit: <span id="busuanzi_value_site_pv"></span>
-    </span>
-
-    
-    <span class="float-right" aria-hidden="true">
-      <a href="#" class="back-to-top">
-        <span class="button_icon">
-          <i class="fas fa-chevron-up fa-2x"></i>
-        </span>
-      </a>
-    </span>
-    
-  </p>
-</footer>
-
-  </div>
   
 
   

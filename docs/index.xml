@@ -35,6 +35,102 @@
     </item>
     
     <item>
+      <title>优雅地取模</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/modulation/</link>
+      <pubDate>Wed, 22 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/modulation/</guid>
+      <description>&lt;p&gt;不少同学被OJ的取模问题折磨得心力憔悴——不论多么仔细地检查每一处四则运算，总会有一处漏网之鱼让程序输出错误的结果。这里我们展示一种比较优雅的代码书写方式：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;const int MOD = 998244353;
+
+int add(int x, int y) { x += y; if (x &amp;gt;= MOD) x -= MOD; return x;}
+int sub(int x, int y) { x -= y; if (x &amp;lt; 0) x += MOD; return x; }
+int mul(int x, int y) { return 1ll * x * y % MOD; }
+void Add(int &amp;amp;x, int y) { x = add(x, y); }
+void Sub(int &amp;amp;x, int y) { x = sub(x, y); }
+void Mul(int &amp;amp;x, int y) { x = mul(x, y); }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里我们定义了 &lt;code&gt;MOD&lt;/code&gt; 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;c = sub(a, b);  // instead of c = (a - b) % MOD;
+Add(c, d);      // instead of c += d %= MOD;
+Mul(a_very_very_long_variable_name, c); 
+  // instead of a_very_very_long_variable_name = 1ll * a_very_very_long_variable_name * c % MOD;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用统一的取模函数和 &lt;code&gt;MOD&lt;/code&gt; 变量有包括但不限于以下好处：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Correctness: 你只需要仔细地书写这几个取模函数，后面的程序中你只要保证不出现 &lt;code&gt;+&lt;/code&gt; &lt;code&gt;-&lt;/code&gt; &lt;code&gt;*&lt;/code&gt;，就不会发生“漏了取模”的悲剧。&lt;/li&gt;
+&lt;li&gt;Simplicity: 在上述的的第三个例子中可以看出使用取模函数可以避免重复书写长变量名，使代码更加简洁。&lt;/li&gt;
+&lt;li&gt;Robustness: 假设某一天我们通知需要将模数紧急换成 &lt;code&gt;1000000007&lt;/code&gt;，相比较将程序中散落在各处的 &lt;code&gt;998244353&lt;/code&gt; 修改掉，如果你定义了 &lt;code&gt;MOD&lt;/code&gt; 变量，你只需要修改一处。&lt;/li&gt;
+&lt;li&gt;Performance: 你也许注意到了我们在加法和减法中使用了 “if 判断 + 加减”的方式代替了取模，你可以证明只要传入的参数在 &lt;code&gt;[0, MOD)&lt;/code&gt; 范围内，该写法的正确性的可以保证的。在计算机底层实现中，进行一次取模操作的代价显著高于简单判断和加减，这样的写法有助于提升效率 (有时候这种提升是惊人的！)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;为什么突然使用了四个英文单词？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;因为我非常不喜欢“鲁棒性”这个翻译，它作为 robustness 的音译没有体现语义信息 😠&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我们承认取模这件事情在工程开发中可能并不常见，但这样的程序设计却体现了软件工程的通用思想：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;将需要频繁使用的常量定义成宏&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;将容易出错的功能单独封装成函数，之后调用接口解决问题&lt;/strong&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;程序设计优化是一件&lt;b&gt;“绝知此事要躬行”&lt;/b&gt;的事情。阅读一遍这篇文章大抵不会对你的思想产生重大的影响：你也许会认为这些是多此一举，或者你对自己写代码时的仔细程度非常自信。你只有经历了现实的捶打，经历了熬夜通宵的折磨，才会深刻地意识到人类永远无法克服基因决定的共同弱点，才会理解这些文字背后是前人的智慧和血的教训。&lt;/p&gt;
+&lt;p&gt;笔者在高中时曾参加一项极其重要的编程比赛。他针对一道难题推导出了一个极其复杂的数学公式并编码实现了它，但在比赛结束前的 5 分钟他发现自己的程序处处漏了取模——他永远不会忘记在手指被汗水浸湿以至于键盘打滑的情况下狂按 ctrl+F, ctrl+C, ctrl+V 是怎样的紧张和绝望，也不会忘记最终也没有把取模问题解决完，因为这样一个小细节与自己想要的结果失之交臂的痛苦。从那之后，他再也没有犯过低级的漏取模错误。&lt;/p&gt;
+&lt;p&gt;我不期望你看完这段话就真的能听进去 (因为这也是人类刻在基因里的弱点之一)，但我衷心希望你为之付出的代价能比我小一些。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>矩阵快速幂</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/matmul/</link>
+      <pubDate>Wed, 22 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/matmul/</guid>
+      <description>&lt;p&gt;按照线性代数中的矩阵乘法规则，常见的矩阵乘法写法如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 1; i &amp;lt;= n; i++)
+    for (int j = 1; j &amp;lt;= n; j++)
+        for (int k = 1; k &amp;lt;= n; k++)
+            c[i][j] += a[i][k] * b[k][j]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是我们强烈建议你调整循环的顺序，按照如下方式书写矩阵乘法：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 1; i &amp;lt;= n; i++)
+    for (int k = 1; k &amp;lt;= n; k++)
+        for (int j = 1; j &amp;lt;= n; j++)
+            c[i][j] += a[i][k] * b[k][j]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;虽然这样有点“反直觉”，但在稍大规模的数据下运行时，你会发现这种写法的效率比前者高很多。理解效率提高的原因需要对计算机体系结构和 C/C++ 语言中数组在内存中的存储有一定的了解，这里不作赘述。你可以暂且将其背下来 😂&lt;/p&gt;
+&lt;p&gt;为了更优雅地实现矩阵快速幂，我们还强烈建议你学习 C++ Class 相关的内容并了解操作符重载。这样你可以自己定义矩阵类并为矩阵类书写乘法规则，从而直接复用“快速幂”一讲中的代码计算矩阵快速幂。下面给出一个参考实现：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;class Matrix
+{
+    int b[10][10];
+    Matrix () { memset(b, 0, sizeof(b)); }
+    void init_I() { for (int i = 1; i &amp;lt;= n; i++) b[i][i] = 1; }
+    Matrix operator * (Matrix other)
+    {
+        Matrix res;
+        for (int i = 1; i &amp;lt;= n; i++)
+            for (int k = 1; k &amp;lt;= n; k++)
+                for (int j = 1; j &amp;lt;= n; j++)
+                    res.b[i][j] += b[i][k] * other.b[k][j];
+        return res;
+    }
+};
+
+Matrix quick_pow(Matrix x, int y)
+{
+    T res; res.init_I();
+    while (y)
+    {
+        if (y &amp;amp; 1) res = res * x;
+        x = x * x; y &amp;gt;&amp;gt;= 1;
+    }
+    return res;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Homogeneous Linear Recurrences: An Algorithmic Perspective</title>
       <link>https://kristoff-starling.github.io/posts/recurrences/</link>
       <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
@@ -331,50 +427,11 @@ $$&lt;/p&gt;
 &lt;div class=&#34;alert alert-warning&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Don&amp;rsquo;t Panic!&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;只有 &lt;code&gt;Problem Solving&lt;/code&gt; 目录下的内容才是大家需要且应当掌握的内容。这篇博文的大部分内容与问题求解课程并不相关，且我不认为掌握这些数学强相关的知识对计算机思维有太多提升。因此如果你不愿意读 Getting Started 之后的内容/读不懂后面的内容，这非常正常也无关紧要！&lt;/p&gt;
+&lt;p&gt;只有 &lt;code&gt;Problem Solving&lt;/code&gt; 目录下的内容才是大家需要且应当掌握的内容。链接中博文的大部分内容与问题求解课程并不相关，且我不认为掌握这些数学强相关的知识对计算机思维有太多提升。因此如果你不愿意读 Getting Started 之后的内容/读不懂后面的内容，这非常正常也无关紧要！&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;按照线性代数中的矩阵乘法规则，常见的矩阵乘法写法如下：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 1; i &amp;lt;= n; i++)
-    for (int j = 1; j &amp;lt;= n; j++)
-        for (int k = 1; k &amp;lt;= n; k++)
-            c[i][j] += a[i][k] * b[k][j]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;但是我们强烈建议你调整循环的顺序，按照如下方式书写矩阵乘法：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 1; i &amp;lt;= n; i++)
-    for (int k = 1; k &amp;lt;= n; k++)
-        for (int j = 1; j &amp;lt;= n; j++)
-            c[i][j] += a[i][k] * b[k][j]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;虽然这样有点“反直觉”，但在稍大规模的数据下运行时，你会发现这种写法的效率比前者高很多。理解效率提高的原因需要对计算机体系结构和 C/C++ 语言中数组在内存中的存储有一定的了解，这里不作赘述。你可以暂且将其背下来 😂&lt;/p&gt;
-&lt;p&gt;为了更优雅地实现矩阵快速幂，我们强烈建议你学习 C++ Class 相关的内容并了解操作符重载。这样你可以自己定义矩阵类并为矩阵类书写乘法规则，从而直接复用“快速幂”一讲中的代码计算矩阵快速幂。下面给出一个参考实现：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;class Matrix
-{
-    int b[10][10];
-    Matrix () { memset(b, 0, sizeof(b)); }
-    void init_I() { for (int i = 1; i &amp;lt;= n; i++) b[i][i] = 1; }
-    Matrix operator * (Matrix other)
-    {
-        Matrix res;
-        for (int i = 1; i &amp;lt;= n; i++)
-            for (int k = 1; k &amp;lt;= n; k++)
-                for (int j = 1; j &amp;lt;= n; j++)
-                    res.b[i][j] += b[i][k] * other.b[k][j];
-        return res;
-    }
-};
-
-Matrix quick_pow(Matrix x, int y)
-{
-    T res; res.init_I();
-    while (y)
-    {
-        if (y &amp;amp; 1) res = res * x;
-        x = x * x; y &amp;gt;&amp;gt;= 1;
-    }
-    return res;
-}
-&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你可以参考
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving22/coding/matmul&#34;&gt;这篇博文&lt;/a&gt; 来学习矩阵快速幂实现的代码细节。&lt;/p&gt;
 </description>
     </item>
     
