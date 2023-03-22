@@ -70,7 +70,7 @@ int main()
 &lt;p&gt;取指：这是最简单的一步，对应到 C++ 代码大概就是 &lt;code&gt;char instruction = program[pc]&lt;/code&gt;。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;译码&amp;amp;执行：这两步在 BF 种可以放在一起做 (因为 BF 的所有指令都没有“操作数”)，你大抵会用一个 if/switch 语句来判断 instruction 是 8 个符号中的哪一种并执行相应的操作。前 6 种指令的操作都非常简单，这里不再赘述。&lt;code&gt;[&lt;/code&gt; 和 &lt;code&gt;]&lt;/code&gt; 本质上是分支控制指令，所以在“执行”这个步骤中它们什么也不用做。&lt;/p&gt;
+&lt;p&gt;译码&amp;amp;执行：这两步在 BF 中可以放在一起做 (因为 BF 的所有指令都没有“操作数”)，你大抵会用一个 if/switch 语句来判断 instruction 是 8 个符号中的哪一种并执行相应的操作。前 6 种指令的操作都非常简单，这里不再赘述。&lt;code&gt;[&lt;/code&gt; 和 &lt;code&gt;]&lt;/code&gt; 本质上是分支控制指令，所以在“执行”这个步骤中它们什么也不用做。&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;跳转：前 6 种指令的跳转都非常简单：做完了就做紧接着的下一条指令，即 &lt;code&gt;pc++&lt;/code&gt;。我们着重讲解 &lt;code&gt;[&lt;/code&gt; 和 &lt;code&gt;]&lt;/code&gt; 的跳转如何处理：&lt;/p&gt;
