@@ -29,10 +29,14 @@
   
     
   
-  <meta name="description" content=" ">
+  <meta name="description" content="题意概述
+给定一个 $n\times m$ 的棋盘和象棋棋子马的初始位置，问经过 $k$ 步到达棋盘上任意点的方案数。
+$n,m\leq 15, k\leq 10^5$。
+邻接矩阵是描述图的一种常见方法：$\text{ga}(i,j)=1$ 当且仅当图中点 $i,j$ 之间有边。它之所以被称为“矩阵”，是因为矩阵的乘法恰好可以用于描述图上的游走。
+令 $A_k$ 为一个 $n$ 阶矩阵，其中 $A_k(i,j)$ 表示从点 $i$ 走 $k$ 步到点 $j$ 的方案数，那么我们可以发现 $A_0=I,A_1=\text{ga}$。更一般地，我们可以发现">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/">
 
   
 
@@ -214,14 +218,12 @@
 
 
   
-  <link rel="alternate" href="/courses/problemsolving22/solutions/index.xml" type="application/rss+xml" title="Yuyao Wang&#39;s Homepage">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/">
 
   
   
@@ -235,29 +237,38 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/">
-  <meta property="og:title" content="OJ习题讲解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content=" "><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/">
+  <meta property="og:title" content="【问题求解II-HW1.C】新马走日 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="题意概述
+给定一个 $n\times m$ 的棋盘和象棋棋子马的初始位置，问经过 $k$ 步到达棋盘上任意点的方案数。
+$n,m\leq 15, k\leq 10^5$。
+邻接矩阵是描述图的一种常见方法：$\text{ga}(i,j)=1$ 当且仅当图中点 $i,j$ 之间有边。它之所以被称为“矩阵”，是因为矩阵的乘法恰好可以用于描述图上的游走。
+令 $A_k$ 为一个 $n$ 阶矩阵，其中 $A_k(i,j)$ 表示从点 $i$ 走 $k$ 步到点 $j$ 的方案数，那么我们可以发现 $A_0=I,A_1=\text{ga}$。更一般地，我们可以发现"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
-    <meta property="og:updated_time" content="2023-03-30T00:00:00&#43;00:00">
+    
+      <meta property="article:published_time" content="2023-03-30T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-03-30T00:00:00&#43;00:00">
   
 
   
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>OJ习题讲解 | Yuyao Wang&#39;s Homepage</title>
+
+
+  <title>【问题求解II-HW1.C】新马走日 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -468,7 +479,7 @@
   
   
   
-  <div class="docs-toc-item active">
+  <div class="docs-toc-item">
     <a class="docs-toc-link" href="/courses/problemsolving22/solutions/">Overview</a>
 
   </div>
@@ -489,7 +500,7 @@
         <a href="/courses/problemsolving22/solutions/1-final/">I-Final</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/solutions/2-1-c/">II-HW01-C</a>
       </li>
       
@@ -510,15 +521,34 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>OJ习题讲解</h1>
+          <h1>【问题求解II-HW1.C】新马走日</h1>
 
           <div class="article-style">
-            <p>该系列文章针对 OJ 中较难的习题给出提示和解法。</p>
-<div class="alert alert-warning">
+            <div class="alert alert-note">
   <div>
-    阅读题解前请确保你已经独立思考过这些题目！
+    <p><strong>题意概述</strong></p>
+<p>给定一个 $n\times m$ 的棋盘和象棋棋子马的初始位置，问经过 $k$ 步到达棋盘上任意点的方案数。</p>
+<p>$n,m\leq 15, k\leq 10^5$。</p>
   </div>
 </div>
+<p>邻接矩阵是描述图的一种常见方法：$\text{ga}(i,j)=1$ 当且仅当图中点 $i,j$ 之间有边。它之所以被称为“矩阵”，是因为矩阵的乘法恰好可以用于描述图上的游走。</p>
+<p>令 $A_k$ 为一个 $n$ 阶矩阵，其中 $A_k(i,j)$ 表示从点 $i$ 走 $k$ 步到点 $j$ 的方案数，那么我们可以发现 $A_0=I,A_1=\text{ga}$。更一般地，我们可以发现</p>
+<p>$$
+\forall p, q. A_{p+q}=A_p\cdot A_q
+$$</p>
+<blockquote>
+<p>Proof: 考虑任意点对 $i,j$，从 $i$ 走 $p+q$ 步到 $j$ 可以被分解成两个阶段：</p>
+<ul>
+<li>从 $i$ 走 $p$ 步到某一个节点 $k$。</li>
+<li>从 $k$ 走 $q$ 步到 $j$。</li>
+</ul>
+<p>因此我们可以枚举这个中间节点 $k$，再根据加法/乘法原理有如下递推式：
+$$
+A_{p+q}(i,j)=\sum_{k=1}^n A_p(i,k)\cdot A_q(k,j)
+$$</p>
+<p>容易发现这恰好是矩阵乘法的计算公式，从而原命题得证。$\square$</p>
+</blockquote>
+<p>因此，$A_k=\text{ga}^k$。至于如何将原问题转化为一个图上的游走问题，想必你能够自己解决。</p>
 
           </div>
 
@@ -531,6 +561,12 @@
             
 <div class="post-nav">
   
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving22/solutions/1-final/" rel="prev">问题求解 I-Final 题解</a>
+  </div>
   
 </div>
 
@@ -582,8 +618,6 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 
-      
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
       
 
       

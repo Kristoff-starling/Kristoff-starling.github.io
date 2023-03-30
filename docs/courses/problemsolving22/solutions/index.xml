@@ -5,12 +5,45 @@
     <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
       <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/index.xml" rel="self" type="application/rss+xml" />
     <description>OJ习题讲解</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 05 Mar 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 30 Mar 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>OJ习题讲解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
     </image>
+    
+    <item>
+      <title>【问题求解II-HW1.C】新马走日</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/</link>
+      <pubDate>Thu, 30 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;给定一个 $n\times m$ 的棋盘和象棋棋子马的初始位置，问经过 $k$ 步到达棋盘上任意点的方案数。&lt;/p&gt;
+&lt;p&gt;$n,m\leq 15, k\leq 10^5$。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;邻接矩阵是描述图的一种常见方法：$\text{ga}(i,j)=1$ 当且仅当图中点 $i,j$ 之间有边。它之所以被称为“矩阵”，是因为矩阵的乘法恰好可以用于描述图上的游走。&lt;/p&gt;
+&lt;p&gt;令 $A_k$ 为一个 $n$ 阶矩阵，其中 $A_k(i,j)$ 表示从点 $i$ 走 $k$ 步到点 $j$ 的方案数，那么我们可以发现 $A_0=I,A_1=\text{ga}$。更一般地，我们可以发现&lt;/p&gt;
+&lt;p&gt;$$
+\forall p, q. A_{p+q}=A_p\cdot A_q
+$$&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Proof: 考虑任意点对 $i,j$，从 $i$ 走 $p+q$ 步到 $j$ 可以被分解成两个阶段：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;从 $i$ 走 $p$ 步到某一个节点 $k$。&lt;/li&gt;
+&lt;li&gt;从 $k$ 走 $q$ 步到 $j$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因此我们可以枚举这个中间节点 $k$，再根据加法/乘法原理有如下递推式：
+$$
+A_{p+q}(i,j)=\sum_{k=1}^n A_p(i,k)\cdot A_q(k,j)
+$$&lt;/p&gt;
+&lt;p&gt;容易发现这恰好是矩阵乘法的计算公式，从而原命题得证。$\square$&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;因此，$A_k=\text{ga}^k$。至于如何将原问题转化为一个图上的游走问题，想必你能够自己解决。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>问题求解 I-Final 题解</title>
