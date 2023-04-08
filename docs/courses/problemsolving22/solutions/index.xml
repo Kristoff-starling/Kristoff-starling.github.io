@@ -5,12 +5,57 @@
     <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
       <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/index.xml" rel="self" type="application/rss+xml" />
     <description>OJ习题讲解</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 30 Mar 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 07 Apr 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>OJ习题讲解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
     </image>
+    
+    <item>
+      <title>【问题求解II-HW2.A】取数游戏</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-2-a/</link>
+      <pubDate>Fri, 07 Apr 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-2-a/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;给定一个长度为 $2n$ 的数列，保证所有数的和是奇数。两个人轮流取数，每次只能取数列的第一个或最后一个数。问双方都采取最优策略的情况下谁能获得胜利。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;为了说明这道题目的合理性，我们介绍策梅洛定理 (以下是摘自 Wikipedia 的解释)：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In game theory, Zermelo&amp;rsquo;s theorem is a theorem about finite two-person games of perfect information in which the players move alternately and in which chance does not affect the decision making process. It says that if the game cannot end in a draw, then one of the two players must have a winning strategy (i.e. can force a win).&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;简单来说，一个双方轮流行动的游戏如果满足&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在有限步内结束。&lt;/li&gt;
+&lt;li&gt;场上所有信息对双方公开。&lt;/li&gt;
+&lt;li&gt;没有随机因素。&lt;/li&gt;
+&lt;li&gt;没有平局。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;那么必然存在先手必胜策略或后手必胜策略。常见的棋类竞技运动如象棋、围棋都是有必胜策略的 (只不过搜索空间太大人们找不到)；当然飞行棋没有必胜策略，因为扔骰子这件事情带来了随机因素。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;回到这道题，如果撇除那条充满诱导性的提示，大家很可能想到的是使用如下的一个递推过程计算谁必胜：令 $s(l, r)$ 表示用区间 $[l, r)$ 中的数玩这个游戏，先手拿到的数的和最多可以比后手多多少。那么有&lt;/p&gt;
+&lt;p&gt;$$
+s(l, r)=\begin{cases}
+0, &amp;amp;l=r\\
+\max(\\
+\qquad s(l+2, r) + a_l - a_{l+1},\\
+\qquad s(l+1, r-1) + a_l - a_{r-1},\\
+\qquad s(l+1, r-1) + a_{r-1} - a_l,\\
+\qquad s(l, r-2) + a_{r-1} - a_{r-2}\\
+), &amp;amp;l &amp;lt; r
+\end{cases}
+$$&lt;/p&gt;
+&lt;p&gt;这个公式看上去复杂，但其实只是枚举了两个人从数列里各取一个数的四种情况： (头,头)，(头,尾)，(尾,头)，(尾,尾)。如果我们认为区间的长度代表这个问题的规模的话，那么我们的递推公式就成功将大规模的问题转化为了小规模的同质问题。如果按照区间长度从小到大的顺序递推，你可以在 $O(n^2)$ 的时间复杂度内计算出 $s(1,2n+1)$，并根据 $s(1,2n+1)$ 的正负性判断谁必胜。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;上面的过程本质上是一个&lt;strong&gt;动态规划 (dynamic programming)&lt;/strong&gt;，如果你没有完全看懂也不要紧 (毕竟还没学)。我们出这道题的根本目的是为了展示一个更妙的想法：&lt;/p&gt;
+&lt;p&gt;称 kk 取一个数，ff 再取一个数的两次操作为一轮。考虑每个数在原数列中的下标的奇偶性，我们容易发现：因为任意时刻剩余的数列一定是原数列的一个连续的子区间，所以每一轮开始时，剩余的数列在原数列中的位置一定是 “奇偶奇偶……” 或者 “偶奇偶奇……”。此时 kk 有着挑选奇偶的权利：如果 kk 拿走奇数位置的数，那么 ff 只能从两个偶数位置的数里选一个，反之亦然。&lt;/p&gt;
+&lt;p&gt;因为每一轮 kk 都有挑选奇偶的权利，所以 kk 有能力拿走原数列中所有奇数位置的数，或者原数列中所有偶数位置的数。而“所有奇数位置的数的和”与“所有偶数位置的数的和”必定有一个更大，所以 kk 一定能把大的那组拿走，把小的留给 ff。所以这个游戏 kk 必胜。&lt;/p&gt;
+&lt;p&gt;这道题旨在展示：通过充分动脑筋，一个看似复杂的问题可以解得非常简单。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>【问题求解II-HW1.C】新马走日</title>

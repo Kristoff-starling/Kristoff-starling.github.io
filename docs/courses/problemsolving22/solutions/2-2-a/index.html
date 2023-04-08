@@ -30,13 +30,12 @@
     
   
   <meta name="description" content="题意概述
-给定一个 $n\times m$ 的棋盘和象棋棋子马的初始位置，问经过 $k$ 步到达棋盘上任意点的方案数。
-$n,m\leq 15, k\leq 10^5$。
-邻接矩阵是描述图的一种常见方法：$\text{ga}(i,j)=1$ 当且仅当图中点 $i,j$ 之间有边。它之所以被称为“矩阵”，是因为矩阵的乘法恰好可以用于描述图上的游走。
-令 $A_k$ 为一个 $n$ 阶矩阵，其中 $A_k(i,j)$ 表示从点 $i$ 走 $k$ 步到点 $j$ 的方案数，那么我们可以发现 $A_0=I,A_1=\text{ga}$。更一般地，我们可以发现">
+给定一个长度为 $2n$ 的数列，保证所有数的和是奇数。两个人轮流取数，每次只能取数列的第一个或最后一个数。问双方都采取最优策略的情况下谁能获得胜利。
+为了说明这道题目的合理性，我们介绍策梅洛定理 (以下是摘自 Wikipedia 的解释)：
+In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person games of perfect information in which the players move alternately and in which chance does not affect the decision making process.">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-2-a/">
 
   
 
@@ -223,7 +222,7 @@ $n,m\leq 15, k\leq 10^5$。
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-2-a/">
 
   
   
@@ -237,19 +236,18 @@ $n,m\leq 15, k\leq 10^5$。
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/">
-  <meta property="og:title" content="【问题求解II-HW1.C】新马走日 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-2-a/">
+  <meta property="og:title" content="【问题求解II-HW2.A】取数游戏 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="题意概述
-给定一个 $n\times m$ 的棋盘和象棋棋子马的初始位置，问经过 $k$ 步到达棋盘上任意点的方案数。
-$n,m\leq 15, k\leq 10^5$。
-邻接矩阵是描述图的一种常见方法：$\text{ga}(i,j)=1$ 当且仅当图中点 $i,j$ 之间有边。它之所以被称为“矩阵”，是因为矩阵的乘法恰好可以用于描述图上的游走。
-令 $A_k$ 为一个 $n$ 阶矩阵，其中 $A_k(i,j)$ 表示从点 $i$ 走 $k$ 步到点 $j$ 的方案数，那么我们可以发现 $A_0=I,A_1=\text{ga}$。更一般地，我们可以发现"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+给定一个长度为 $2n$ 的数列，保证所有数的和是奇数。两个人轮流取数，每次只能取数列的第一个或最后一个数。问双方都采取最优策略的情况下谁能获得胜利。
+为了说明这道题目的合理性，我们介绍策梅洛定理 (以下是摘自 Wikipedia 的解释)：
+In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person games of perfect information in which the players move alternately and in which chance does not affect the decision making process."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-03-30T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-04-07T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-03-30T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-04-07T00:00:00&#43;00:00">
   
 
   
@@ -268,7 +266,7 @@ $n,m\leq 15, k\leq 10^5$。
 
 
 
-  <title>【问题求解II-HW1.C】新马走日 | Yuyao Wang&#39;s Homepage</title>
+  <title>【问题求解II-HW2.A】取数游戏 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -500,11 +498,11 @@ $n,m\leq 15, k\leq 10^5$。
         <a href="/courses/problemsolving22/solutions/1-final/">I-Final</a>
       </li>
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/solutions/2-1-c/">II-HW01-C</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/solutions/2-2-a/">II-HW02-A</a>
       </li>
       
@@ -525,34 +523,46 @@ $n,m\leq 15, k\leq 10^5$。
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>【问题求解II-HW1.C】新马走日</h1>
+          <h1>【问题求解II-HW2.A】取数游戏</h1>
 
           <div class="article-style">
             <div class="alert alert-note">
   <div>
     <p><strong>题意概述</strong></p>
-<p>给定一个 $n\times m$ 的棋盘和象棋棋子马的初始位置，问经过 $k$ 步到达棋盘上任意点的方案数。</p>
-<p>$n,m\leq 15, k\leq 10^5$。</p>
+<p>给定一个长度为 $2n$ 的数列，保证所有数的和是奇数。两个人轮流取数，每次只能取数列的第一个或最后一个数。问双方都采取最优策略的情况下谁能获得胜利。</p>
   </div>
 </div>
-<p>邻接矩阵是描述图的一种常见方法：$\text{ga}(i,j)=1$ 当且仅当图中点 $i,j$ 之间有边。它之所以被称为“矩阵”，是因为矩阵的乘法恰好可以用于描述图上的游走。</p>
-<p>令 $A_k$ 为一个 $n$ 阶矩阵，其中 $A_k(i,j)$ 表示从点 $i$ 走 $k$ 步到点 $j$ 的方案数，那么我们可以发现 $A_0=I,A_1=\text{ga}$。更一般地，我们可以发现</p>
-<p>$$
-\forall p, q. A_{p+q}=A_p\cdot A_q
-$$</p>
+<p>为了说明这道题目的合理性，我们介绍策梅洛定理 (以下是摘自 Wikipedia 的解释)：</p>
 <blockquote>
-<p>Proof: 考虑任意点对 $i,j$，从 $i$ 走 $p+q$ 步到 $j$ 可以被分解成两个阶段：</p>
-<ul>
-<li>从 $i$ 走 $p$ 步到某一个节点 $k$。</li>
-<li>从 $k$ 走 $q$ 步到 $j$。</li>
-</ul>
-<p>因此我们可以枚举这个中间节点 $k$，再根据加法/乘法原理有如下递推式：
-$$
-A_{p+q}(i,j)=\sum_{k=1}^n A_p(i,k)\cdot A_q(k,j)
-$$</p>
-<p>容易发现这恰好是矩阵乘法的计算公式，从而原命题得证。$\square$</p>
+<p>In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person games of perfect information in which the players move alternately and in which chance does not affect the decision making process. It says that if the game cannot end in a draw, then one of the two players must have a winning strategy (i.e. can force a win).</p>
 </blockquote>
-<p>因此，$A_k=\text{ga}^k$。至于如何将原问题转化为一个图上的游走问题，想必你能够自己解决。</p>
+<p>简单来说，一个双方轮流行动的游戏如果满足</p>
+<ul>
+<li>在有限步内结束。</li>
+<li>场上所有信息对双方公开。</li>
+<li>没有随机因素。</li>
+<li>没有平局。</li>
+</ul>
+<p>那么必然存在先手必胜策略或后手必胜策略。常见的棋类竞技运动如象棋、围棋都是有必胜策略的 (只不过搜索空间太大人们找不到)；当然飞行棋没有必胜策略，因为扔骰子这件事情带来了随机因素。</p>
+<hr>
+<p>回到这道题，如果撇除那条充满诱导性的提示，大家很可能想到的是使用如下的一个递推过程计算谁必胜：令 $s(l, r)$ 表示用区间 $[l, r)$ 中的数玩这个游戏，先手拿到的数的和最多可以比后手多多少。那么有</p>
+<p>$$
+s(l, r)=\begin{cases}
+0, &amp;l=r\\
+\max(\\
+\qquad s(l+2, r) + a_l - a_{l+1},\\
+\qquad s(l+1, r-1) + a_l - a_{r-1},\\
+\qquad s(l+1, r-1) + a_{r-1} - a_l,\\
+\qquad s(l, r-2) + a_{r-1} - a_{r-2}\\
+), &amp;l &lt; r
+\end{cases}
+$$</p>
+<p>这个公式看上去复杂，但其实只是枚举了两个人从数列里各取一个数的四种情况： (头,头)，(头,尾)，(尾,头)，(尾,尾)。如果我们认为区间的长度代表这个问题的规模的话，那么我们的递推公式就成功将大规模的问题转化为了小规模的同质问题。如果按照区间长度从小到大的顺序递推，你可以在 $O(n^2)$ 的时间复杂度内计算出 $s(1,2n+1)$，并根据 $s(1,2n+1)$ 的正负性判断谁必胜。</p>
+<hr>
+<p>上面的过程本质上是一个<strong>动态规划 (dynamic programming)</strong>，如果你没有完全看懂也不要紧 (毕竟还没学)。我们出这道题的根本目的是为了展示一个更妙的想法：</p>
+<p>称 kk 取一个数，ff 再取一个数的两次操作为一轮。考虑每个数在原数列中的下标的奇偶性，我们容易发现：因为任意时刻剩余的数列一定是原数列的一个连续的子区间，所以每一轮开始时，剩余的数列在原数列中的位置一定是 “奇偶奇偶……” 或者 “偶奇偶奇……”。此时 kk 有着挑选奇偶的权利：如果 kk 拿走奇数位置的数，那么 ff 只能从两个偶数位置的数里选一个，反之亦然。</p>
+<p>因为每一轮 kk 都有挑选奇偶的权利，所以 kk 有能力拿走原数列中所有奇数位置的数，或者原数列中所有偶数位置的数。而“所有奇数位置的数的和”与“所有偶数位置的数的和”必定有一个更大，所以 kk 一定能把大的那组拿走，把小的留给 ff。所以这个游戏 kk 必胜。</p>
+<p>这道题旨在展示：通过充分动脑筋，一个看似复杂的问题可以解得非常简单。</p>
 
           </div>
 
@@ -568,15 +578,8 @@ $$</p>
   
   
   <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/solutions/2-2-a/" rel="next">【问题求解II-HW2.A】取数游戏</a>
-  </div>
-  
-  
-  
-  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/solutions/1-final/" rel="prev">问题求解 I-Final 题解</a>
+    <a href="/courses/problemsolving22/solutions/2-1-c/" rel="prev">【问题求解II-HW1.C】新马走日</a>
   </div>
   
 </div>
@@ -586,7 +589,7 @@ $$</p>
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Mar 30, 2023</p>
+          <p>Last updated on Apr 7, 2023</p>
 
           
 
