@@ -1,7 +1,7 @@
 ---
-linktitle: "算法"
+linktitle: "算法&数据结构"
 
-title: "算法"
+title: "算法&数据结构"
 summary: " "
 type: docs
 math: true

@@ -29,11 +29,12 @@
   
     
   
-  <meta name="description" content="不少同学被OJ的取模问题折磨得心力憔悴——不论多么仔细地检查每一处四则运算，总会有一处漏网之鱼让程序输出错误的结果。这里我们展示一种比较优雅的代码书写方式：
-const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) x -= MOD; return x;} int sub(int x, int y) { x -= y; if (x &lt; 0) x &#43;= MOD; return x; } int mul(int x, int y) { return 1ll * x * y % MOD; } void Add(int &amp;x, int y) { x = add(x, y); } void Sub(int &amp;x, int y) { x = sub(x, y); } void Mul(int &amp;x, int y) { x = mul(x, y); } 这里我们定义了 MOD 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现：">
+  <meta name="description" content="大家比较熟悉的输入输出有两种：
+int x; scanf(&quot;%d&quot;, &amp;x); // C Style printf(&quot;%d\n&quot;, x); std::cin &gt;&gt; x; // C&#43;&#43; style std::cout &lt;&lt; x &lt;&lt; endl; 如果输入/输出量过大，以至于输入输出部分成为算法问题实现的效率瓶颈，那么采取合适的方法进行快速输入/输出就变得非常重要。本章节介绍若干种常见的输入输出优化。
+输入输出函数背后的实现非常复杂，其效率与缓冲区设计、操作系统、磁盘IO等多个环节息息相关。因此本章节会尽可能略去原理的讲解 (或者以补充链接的形式给出)。如果你无法理解这其中的奥妙，不用担心，先把写法学会，等你学过了计算机体系结构/计算机系统基础/操作系统后就会对它们有更深刻的认识。 关闭与 stdio 的同步 一种 主流的说法 是: cin 比 scanf 读入要慢。在选择接受这条“定理”之前，你应当自己做个实验来验证一下：">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/coding/modulation/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/coding/fastcin/">
 
   
 
@@ -220,7 +221,7 @@ const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) 
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/coding/modulation/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/coding/fastcin/">
 
   
   
@@ -234,16 +235,17 @@ const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) 
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/coding/modulation/">
-  <meta property="og:title" content="优雅地取模 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="不少同学被OJ的取模问题折磨得心力憔悴——不论多么仔细地检查每一处四则运算，总会有一处漏网之鱼让程序输出错误的结果。这里我们展示一种比较优雅的代码书写方式：
-const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) x -= MOD; return x;} int sub(int x, int y) { x -= y; if (x &lt; 0) x &#43;= MOD; return x; } int mul(int x, int y) { return 1ll * x * y % MOD; } void Add(int &amp;x, int y) { x = add(x, y); } void Sub(int &amp;x, int y) { x = sub(x, y); } void Mul(int &amp;x, int y) { x = mul(x, y); } 这里我们定义了 MOD 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/coding/fastcin/">
+  <meta property="og:title" content="快速输入输出 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="大家比较熟悉的输入输出有两种：
+int x; scanf(&quot;%d&quot;, &amp;x); // C Style printf(&quot;%d\n&quot;, x); std::cin &gt;&gt; x; // C&#43;&#43; style std::cout &lt;&lt; x &lt;&lt; endl; 如果输入/输出量过大，以至于输入输出部分成为算法问题实现的效率瓶颈，那么采取合适的方法进行快速输入/输出就变得非常重要。本章节介绍若干种常见的输入输出优化。
+输入输出函数背后的实现非常复杂，其效率与缓冲区设计、操作系统、磁盘IO等多个环节息息相关。因此本章节会尽可能略去原理的讲解 (或者以补充链接的形式给出)。如果你无法理解这其中的奥妙，不用担心，先把写法学会，等你学过了计算机体系结构/计算机系统基础/操作系统后就会对它们有更深刻的认识。 关闭与 stdio 的同步 一种 主流的说法 是: cin 比 scanf 读入要慢。在选择接受这条“定理”之前，你应当自己做个实验来验证一下："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-03-22T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-04-19T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-03-22T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-04-19T00:00:00&#43;00:00">
   
 
   
@@ -262,7 +264,7 @@ const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) 
 
 
 
-  <title>优雅地取模 | Yuyao Wang&#39;s Homepage</title>
+  <title>快速输入输出 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -486,7 +488,7 @@ const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) 
         <a href="/courses/problemsolving22/coding/matmul/">矩阵快速幂</a>
       </li>
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/coding/modulation/">优雅地取模</a>
       </li>
       
@@ -494,7 +496,7 @@ const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) 
         <a href="/courses/problemsolving22/coding/difftest/">DiffTest</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/coding/fastcin/">快速输入输出</a>
       </li>
       
@@ -515,44 +517,141 @@ const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) 
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>优雅地取模</h1>
+          <h1>快速输入输出</h1>
 
           <div class="article-style">
-            <p>不少同学被OJ的取模问题折磨得心力憔悴——不论多么仔细地检查每一处四则运算，总会有一处漏网之鱼让程序输出错误的结果。这里我们展示一种比较优雅的代码书写方式：</p>
-<pre><code class="language-c++">const int MOD = 998244353;
+            <p>大家比较熟悉的输入输出有两种：</p>
+<pre><code class="language-c++">int x;
 
-int add(int x, int y) { x += y; if (x &gt;= MOD) x -= MOD; return x;}
-int sub(int x, int y) { x -= y; if (x &lt; 0) x += MOD; return x; }
-int mul(int x, int y) { return 1ll * x * y % MOD; }
-void Add(int &amp;x, int y) { x = add(x, y); }
-void Sub(int &amp;x, int y) { x = sub(x, y); }
-void Mul(int &amp;x, int y) { x = mul(x, y); }
+scanf(&quot;%d&quot;, &amp;x);         // C Style
+printf(&quot;%d\n&quot;, x);
+
+std::cin &gt;&gt; x;           // C++ style
+std::cout &lt;&lt; x &lt;&lt; endl; 
 </code></pre>
-<p>这里我们定义了 <code>MOD</code> 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现：</p>
-<pre><code class="language-c++">c = sub(a, b);  // instead of c = (a - b) % MOD;
-Add(c, d);      // instead of c += d %= MOD;
-Mul(a_very_very_long_variable_name, c); 
-  // instead of a_very_very_long_variable_name = 1ll * a_very_very_long_variable_name * c % MOD;
-</code></pre>
-<p>使用统一的取模函数和 <code>MOD</code> 变量有包括但不限于以下好处：</p>
-<ul>
-<li>正确性: 你只需要仔细地书写这几个取模函数，后面的程序中你只要保证不出现 <code>+</code> <code>-</code> <code>*</code>，就不会发生“漏了取模”的悲剧。</li>
-<li>简洁性: 在上述的的第三个例子中可以看出使用取模函数可以避免重复书写长变量名，使代码更加简洁。</li>
-<li>可维护性: 假设某一天我们通知需要将模数紧急换成 <code>1000000007</code>，相比较将程序中散落在各处的 <code>998244353</code> 修改掉，如果你定义了 <code>MOD</code> 变量，你只需要修改一处。</li>
-<li>性能: 你也许注意到了我们在加法和减法中使用了 “if 判断 + 加减”的方式代替了取模，你可以证明只要传入的参数在 <code>[0, MOD)</code> 范围内，该写法的正确性的可以保证的。在计算机底层实现中，进行一次取模操作的代价显著高于简单判断和加减，这样的写法有助于提升效率 (有时候这种提升是惊人的！)。</li>
-</ul>
-<p>我们承认取模这件事情在工程开发中可能并不常见，但这样的程序设计却体现了软件工程的通用思想：</p>
-<ul>
-<li><strong>将需要频繁使用的常量定义成宏/constexpr</strong>。</li>
-<li><strong>将容易出错的功能单独封装成函数，之后调用接口解决问题</strong>。</li>
-</ul>
-<div class="alert alert-tip">
+<p>如果输入/输出量过大，以至于输入输出部分成为算法问题实现的效率瓶颈，那么采取合适的方法进行快速输入/输出就变得非常重要。本章节介绍若干种常见的输入输出优化。</p>
+<div class="alert alert-warning">
   <div>
-    <p>程序设计优化是一件<b>“绝知此事要躬行”</b>的事情。阅读一遍这篇文章大抵不会对你的思想产生重大的影响：你也许会认为这些是多此一举，或者你对自己写代码时的仔细程度非常自信。你只有经历了现实的捶打，经历了熬夜通宵的折磨，才会深刻地意识到人类永远无法克服基因决定的共同弱点，才会理解这些文字背后是前人的智慧和血的教训。</p>
-<p>笔者在高中时曾参加一项极其重要的编程比赛。他针对一道难题推导出了一个极其复杂的数学公式并编码实现了它，但在比赛结束前的 5 分钟他发现自己的程序处处漏了取模——他永远不会忘记在手指被汗水浸湿以至于键盘打滑的情况下狂按 ctrl+F, ctrl+C, ctrl+V 是怎样的紧张和绝望，也不会忘记最终也没有把取模问题解决完，因为这样一个小细节与自己想要的结果失之交臂的痛苦。从那之后，他再也没有犯过低级的漏取模错误。</p>
-<p>我不期望你看完这段话就真的能听进去 (因为这也是人类刻在基因里的弱点之一)，但我衷心希望你为之付出的代价能比我小一些。</p>
+    输入输出函数背后的实现非常复杂，其效率与缓冲区设计、操作系统、磁盘IO等多个环节息息相关。因此本章节会尽可能略去原理的讲解 (或者以补充链接的形式给出)。如果你无法理解这其中的奥妙，不用担心，先把写法学会，等你学过了计算机体系结构/计算机系统基础/操作系统后就会对它们有更深刻的认识。
   </div>
 </div>
+<h3 id="关闭与-stdio-的同步">关闭与 stdio 的同步</h3>
+<p>一种
+<a href="https://stackoverflow.com/questions/1042110/using-scanf-in-c-programs-is-faster-than-using-cin" target="_blank" rel="noopener">主流的说法</a> 是: <code>cin</code> 比 <code>scanf</code> 读入要慢。在选择接受这条“定理”之前，你应当自己做个实验来验证一下：</p>
+<pre><code class="language-c++">int N = 30000000;
+int a[N];
+int main ()
+{
+    for (int i = 0; i &lt; N; i++) cin &gt;&gt; a[i];
+    for (int i = 0; i &lt; N; i++) scanf(&quot;%d&quot;, a + i);
+}
+</code></pre>
+<p>将 $N$ 设置成一个很大的数，并用 <code>cin</code> 和 <code>scanf</code> 分别跑一遍测试时间。不出意外的话你会发现这条定理确有其正确之处。但事实上 <code>cin</code> 比 <code>scanf</code> 看上去慢的一个主要原因是：<code>cin</code> 花了很多代价进行缓冲区同步，从而让你可以在混用 <code>cin</code> 和 <code>scanf</code> 的情况保证程序的正确性。我们可以在 <code>main()</code> 函数开头显式地通过添加一句 <code>ios::sync_with_stdio(false);</code> 来关闭这种同步。关闭同步后，你可以再尝试一次上述的效率实验，你会发现 <code>cin</code> 和 <code>scanf</code> 其实没什么差别。</p>
+<p>需要注意的是：一旦手动关闭了同步，你就不能再混用两种风格的输入函数。你可以尝试运行下面的例子：</p>
+<pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main ()
+{
+	ios::sync_with_stdio(false);
+	int a, b, c;
+	cin &gt;&gt; a &gt;&gt; b;
+	scanf(&quot;%d&quot;, &amp;c);
+	cout &lt;&lt; a &lt;&lt; ' ' &lt;&lt; b &lt;&lt; ' ' &lt;&lt; c &lt;&lt; endl;
+	return 0;
+}
+</code></pre>
+<p>你会发现该程序会给你意想不到的结果。</p>
+<h3 id="使用-getchar-代替-scanf">使用 <code>getchar()</code> 代替 <code>scanf()</code></h3>
+<p>C库提供的 <code>scanf()</code> 函数功能丰富，例如可以用 <code>%d</code> <code>%s</code> <code>%p</code> <code>%x</code>，甚至正则表达式，去匹配各种类型的数据。但功能丰富的代价就是效率不够高。如果你确定当前场景下需要读入的一定是某种特定类型的数据 (例如整数)，那么可以考虑使用 <code>getchar()</code> (其功能为读入一个字符) 来手写一个读入函数，这通常能获得更好的效率。下面展示一个读入 int 类型整数的函数：</p>
+<pre><code class="language-c++">int getint()
+{
+    char ch; int res; bool f;
+    while (!isdigit(ch = getchar()) &amp;&amp; ch != '-');   // 过滤所有不是数字和&quot;-&quot;的字符
+    if (ch=='-')
+        f = false, res = 0;
+    else
+        f = true, res = ch - '0';                    // 判断正负性
+    while (isdigit(ch = getchar()))
+        res = res * 10 + ch - '0';                   // 读取数字并计算
+    return f ? res : -res;
+}
+</code></pre>
+<h3 id="使用-n-代替-endl">使用 <code>\n</code> 代替 <code>endl</code></h3>
+<p>有的时候，你会发现 <code>cout &lt;&lt; &quot;\n&quot;;</code> 比 <code>cout &lt;&lt; endl;</code> 要快。这是因为 <code>endl</code> 会强制冲刷缓冲区，在缓冲区没满的时候多次冲刷会让效率变低。(
+<a href="https://stackoverflow.com/questions/213907/stdendl-vs-n" target="_blank" rel="noopener">参考链接</a> )</p>
+<div class="alert alert-tip">
+  <div>
+    <p><strong>什么是缓冲区?</strong></p>
+<p>了解缓冲区设计的动机需要对计算机系统中的 memory hierarchy 有一定了解，这里尝试尽可能短和通俗地地解释清楚这个概念。</p>
+<p>假设你人在宿舍，要去图书馆借书。上午要去借A，下午要去借B，晚上去借C，于是你跑了三趟图书馆，这非常耗时。假设你是一个先知，上午就知道了自己要借 ABC 三本书，为了节省跑图书馆的时间，你在宿舍楼下放了一个书架，上午你一次性抱了三本书回来放在楼下的书架上，后面每次你需要书了就只需要下楼从书架上拿即可。还书也是相同的道理，你发现与其跑三趟，不如把要还的书先放在书架上，等手里所有的书都看完了再把书架上的书一起还到图书馆。</p>
+<p>这个例子里</p>
+<ul>
+<li>从图书馆借书/还书就是输入输出。相比较 <code>a[i]=b[j]</code> <code>a++</code> 这样的操作，执行一次输入输出是十分耗时的。</li>
+<li>书A/B/C是数据，或者说即将读入/准备输出的字符。</li>
+<li>书架是缓冲区。缓冲区就像一个大数组，暂存读入和输出数据。所谓的“冲刷缓冲区”就是将书架里的书全部还回图书馆/将缓冲区的数据真正输出。</li>
+</ul>
+<p>因此，使用 <code>endl</code> 就像每次往书架上放书时都强制把书架上所有的书放回图书馆，效率自然不高。</p>
+  </div>
+</div>
+<h3 id="使用-freadfwrite">使用 <code>fread()</code>/<code>fwrite()</code></h3>
+<p>一般只有在读入/输出量极大的时候我们才会考虑使用 <code>fread()</code>/<code>fwrite()</code> 完成输入输出。如果延用之前借书的例子，<code>fread()</code> 和 <code>fwrite()</code> 相当于手动开辟一个巨大的书架，这个书架比 <code>scanf()</code>/<code>cin</code> 的书架大的多，从而显著减少了“把书从图书馆搬到书架”的次数。</p>
+<p>这里提供一份使用 fread/fwrite 的代码供参考。</p>
+<details><summary><b>fastio class</b> <i>::click to expand</i></summary>
+<pre><code class="language-c++">struct fastio
+{
+    static const int S=1e7;
+    char rbuf[S+48],wbuf[S+48];int rpos,wpos,len;
+    fastio() {rpos=len=wpos=0;}
+    inline char Getchar()
+    {
+        if (rpos==len) rpos=0,len=fread(rbuf,1,S,stdin);
+        if (!len) return EOF;
+        return rbuf[rpos++];
+    }
+    template &lt;class T&gt; inline void Get(T &amp;x)
+    {
+        char ch;bool f;T res;
+        while (!isdigit(ch=Getchar()) &amp;&amp; ch!='-') {}
+        if (ch=='-') f=false,res=0; else f=true,res=ch-'0';
+        while (isdigit(ch=Getchar())) res=res*10+ch-'0';
+        x=(f?res:-res);
+    }
+    inline void getstring(char *s)
+    {
+        char ch;
+        while ((ch=Getchar())&lt;=32) {}
+        for (;ch&gt;32;ch=Getchar()) *s++=ch;
+        *s='\0';
+    }
+    inline void flush() {fwrite(wbuf,1,wpos,stdout);fflush(stdout);wpos=0;}
+    inline void Writechar(char ch)
+    {
+        if (wpos==S) flush();
+        wbuf[wpos++]=ch;
+    }
+    template &lt;class T&gt; inline void Print(T x,char ch)
+    {
+        char s[20];int pt=0;
+        if (x==0) s[++pt]='0';
+        else
+        {
+            if (x&lt;0) Writechar('-'),x=-x;
+            while (x) s[++pt]='0'+x%10,x/=10;
+        }
+        while (pt) Writechar(s[pt--]);
+        Writechar(ch);
+    }
+    inline void printstring(char *s)
+    {
+        int pt=1;
+        while (s[pt]!='\0') Writechar(s[pt++]);
+    }
+}io;
+</code></pre>
+</details>
+<br>
+<p>需要注意： 因为 <code>fread()</code> 和 <code>fwrite()</code> 开辟了大数组作为缓冲区一次性搬入很多数据，所以 <code>fread()</code>/<code>fwrite()</code> 不能和其他使用自带 buffer 的IO方法混用。换句话说，你只能从通过操作自定义的缓冲区的方式来输入输出。</p>
 
           </div>
 
@@ -568,15 +667,8 @@ Mul(a_very_very_long_variable_name, c);
   
   
   <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/coding/difftest/" rel="next">Differential Testing</a>
-  </div>
-  
-  
-  
-  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/coding/matmul/" rel="prev">矩阵快速幂</a>
+    <a href="/courses/problemsolving22/coding/difftest/" rel="prev">Differential Testing</a>
   </div>
   
 </div>
@@ -586,7 +678,7 @@ Mul(a_very_very_long_variable_name, c);
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Mar 22, 2023</p>
+          <p>Last updated on Apr 19, 2023</p>
 
           
 
