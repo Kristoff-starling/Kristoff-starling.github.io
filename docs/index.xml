@@ -35,10 +35,201 @@
     </item>
     
     <item>
+      <title>最近公共祖先-倍增</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/lca/</link>
+      <pubDate>Fri, 21 Apr 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/lca/</guid>
+      <description>&lt;p&gt;在计算机世界中，所有与2的次幂相关的事情总是充满魔力的——即便是很大的数，对2取对数后也会落入我们容易处理的范围。之前介绍过的快速幂算法其实就是倍增思想的一种运用。这里我们以计算树上最近公共祖先 (lowest common ancestor, LCA) 为例再次展示倍增思想的强大。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;树&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果你对“树”一无所知，你可以参考 
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Tree_%28data_structure%29&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;维基百科&lt;/a&gt; 中的解释。这里强调一些简明的入门概念。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。&lt;/li&gt;
+&lt;li&gt;如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。&lt;/li&gt;
+&lt;li&gt;在有根树中，每个节点“上面”相邻的只有一个节点，称为该节点的父亲。每个节点“下面”相邻的有一堆节点 (也可能没有)，称为该节点的孩子。一个节点A的父亲，父亲的父亲，…… 一直向上到根这条链上所有的节点都是A的祖先。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;对于树中的两个节点 $u, v$，$LCA(u, v)$ 指的是 $u$ 和 $v$ 的所有公共祖先中最深的那个 (也可以说是离 $u, v$ 最近的那个)。下面是一个例子:&lt;/p&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/LCA.png&#34; style=&#34;zoom: 30%;&#34; /&gt;
+&lt;p&gt;暴力地求解LCA不算困难，总体思想是：我们先让深度大的节点往上爬，爬到和另一个节点相同深度，然后让 $u$ 和 $v$ 一直向上爬，直到它们相遇。下面的代码非常易懂&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int LCA_bruteforce(int u, int v)
+{
+    if (depth[u] &amp;lt; depth[v]) swap(u, v);
+    while (depth[u] &amp;gt; depth[v])
+        u = father[u];
+    while (u != v)
+    {
+        u = father[u];
+        v = father[v];
+    }
+    return u;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;该算法的问题在于：如果树的深度很大 (例如达到了和 $n$ 同阶)，那么每次求解两个节点的 LCA 都需要 $O(n)$ 的时间。如果我们需要多次求解多个点对的 LCA (例如 $q$ 次)，就需要 $O(qn)$ 的时间。在 $q$ 较大的情况下这不可接受。&lt;/p&gt;
+&lt;p&gt;接下来我们向大家展示如何利用倍增思想优化 LCA 的求解：&lt;/p&gt;
+&lt;p&gt;令 $anc(u,i)$ 表示节点 $u$ 向上爬 $2^i$ 步之后到达的节点编号，如果 $depth(u)&amp;lt;2^i$ 则 $anc(u,i)=0$。我们发现 $anc(u,i)$ 是容易计算的：&lt;/p&gt;
+&lt;p&gt;$$
+anc(u, i)=
+\begin{cases}
+father(u)&amp;amp;, i=0\\
+anc(anc(u, i-1), i-1)&amp;amp;, i \geq 1
+\end{cases}
+$$&lt;/p&gt;
+&lt;p&gt;简单来说，向上爬 $2^n$ 步的结果等于先向上爬 $2^{n-1}$ 步，再向上爬 $2^{n-1}$ 步的结果。如果我们按照 $i$ 从小到大的顺序计算所有节点的 $anc(u,i)$，那么可以递推地完成计算过程。在实际实现时我们通常树搜索的过程中完成 anc 数组的计算，详见最后的参考代码。&lt;/p&gt;
+&lt;p&gt;有了 anc 数组后，“向上跳”的流程就可以被大幅加速。我们先假设 $u, v$ 深度相同，这时我们不需要每次向上爬一格，而可以用 anc “赌一把大的”：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 20; i &amp;gt;= 0; i--)
+    if (anc[u][i] != anc[v][i])
+    {
+        u = anc[u][i];
+        v = anc[v][i];
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里巧妙地利用了整数二进制拆分的唯一性：假设 $depth(u)-depth(LCA(u, v))=d$，且
+$$
+d-1 = 2^{a_1} + 2^{a_2} + \cdots + 2^{a_k}, a_1&amp;gt;a_2&amp;gt;\cdots&amp;gt;a_k
+$$
+那么上述循环正好会在 $i=a_1, a_2,\cdots, a_k$ 的地方“向上跳”。之所以是 $d-1$ 而不是 $d$ 是因为我们要求 &lt;code&gt;anc[u][i] != anc[v][i]&lt;/code&gt;，只有这样我们才能确保没有“跳过头”，因此上述循环结束后 $u, v$ 都会正好在 LCA 的下面 (孩子)。我们强烈建议你手画一个例子体会这个过程。&lt;/p&gt;
+&lt;p&gt;还剩下一个问题：如果 $u, v$ 深度不同该怎么办。和暴力做法的思路一样，我们可以让深度大的节点向上爬，爬到和另一个节点同深度。不过在 anc 数组的加持下，我们不再需要一个一个地爬了：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;// 假设 depth[u] &amp;gt;= depth[v]
+for (int i = 20; i &amp;gt;= 0; i--)
+    if (depth[anc[u][i]] &amp;gt;= depth[v])
+        u = anc[u][i];
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你仍然可以用整数拆分的方式证明：$u$ 只会在 $depth(u)-depth(v)$ 的二进制表示中为 1 的那些位置向上跳，且循环结束后 $u$ 会和 $v$ 同深度。&lt;/p&gt;
+&lt;p&gt;我们来分析这个倍增做法的复杂度：它尝试用 $2^k, 2^{k-1},\cdots, 2^1, 2^0$ 去覆盖 $u, v$ 到 LCA 的深度差距，因此只需要 $O(\log n)$ 的时间即可完成一次查询。虽然预处理 anc 表需要 $O(n\log n)$ 的时间，但在查询次数较多的情况下，$O(n\log n + q\log n)$ 就会比 $O(n + qn)$ 更有优势。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;通用思想&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;从更抽象的层面来说，倍增思想成功的关键很多时候是一种“单一的扩展可能”：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在快速幂的例子中，$*2$ 这件事非常固定，这使得 $2^n$ 可以通过重复 $*2$ 得到；&lt;/li&gt;
+&lt;li&gt;在 LCA 的例子中，每个节点的父亲只有一个，这使得往上 $n$ 层的祖先可以通过重复 &lt;code&gt;u=father[u]&lt;/code&gt; 得到；&lt;/li&gt;
+&lt;li&gt;……&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这段话看起来有点玄学，但如果你接触了更多可以通过倍增思想解决的问题结构，回过头看可能会对此有更深的理解。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;更快地求解LCA?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;虽然 $O(\log n)$ 的效率已经足够令人满意，但事实上在充分预处理的情况下，我们可以 $O(1)$ 地完成一对点的 LCA 查询。如果你对此感兴趣，可以尝试搜索 ST 表、dfs 序等关键词。我们会在合适的时机向大家展示这种技术。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;以下是一份参考代码：&lt;/p&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;LCA&lt;/b&gt;&lt;i&gt;::click to expand&lt;/i&gt;&lt;/summary&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;const int MAXN = 2e5 + 10;
+vector&amp;lt;int&amp;gt; v[MAXN];   // vector 存储了每个节点相邻点的编号
+int depth[MAXN];       // depth 存储了每个节点的深度
+int anc[MAXN][21];     // 2 ^ 21 &amp;gt; MAXN
+
+void dfs(int x, int fa)
+{
+    // 搜索到 x 时 x 的所有祖先都已经被访问过，anc 数组已被计算
+    // 因此现在就可以计算 x 的 anc 数组
+    anc[x][0] = fa;
+    for (int i = 1; i &amp;lt;= 20; i++)
+        anc[x][i] = anc[anc[x][i - 1]][i - 1];
+    // 搜索
+    for (int y : v[x])
+        if (y != fa)   // 相邻的节点不是父亲，那就是孩子，向下搜索
+        {
+            depth[y] = depth[x] + 1;
+            dfs(y, x); // y 是 x 的孩子，x 是 y 的父亲
+        }
+}
+
+int query_lca(int x, int y)
+{
+    if (depth[x] &amp;lt; depth[y]) swap(x, y);
+    for (int i = 20; i &amp;gt;= 0; i--)
+        if (depth[anc[x][i]] &amp;gt;= depth[y])
+            x = anc[x][i];
+    // 此时有 depth[x] = depth[y]
+    if (x == y) return x;
+    for (int i = 20; i &amp;gt;= 0; i--)
+        if (anc[x][i] != anc[y][i])
+        {
+            x = anc[x][i];
+            y = anc[y][i];
+        }
+    // 注意不等号条件，此时 x, y 一定都是 LCA 的孩子, LCA = anc[x][0] = anc[y][0]
+    return anc[x][0];
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/details&gt;</description>
+    </item>
+    
+    <item>
+      <title>ST表</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/st/</link>
+      <pubDate>Fri, 21 Apr 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/st/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;已知一个数列 $a_1, \cdots, a_n$。给定 $l, r$，问区间 $a_l, \cdots a_r$ 的某种值。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;ST表是一种处理上述格式的区间查询问题的利器。这类问题通常被称为 RMQ (range minimum query)，但实际上 ST 表可以应对的问题远不止最小值这一种。&lt;/p&gt;
+&lt;p&gt;大家已经或多或少地接触过一些区间查询问题，例如求区间的和。以 $+$, $xor$ (异或操作) 这类算符为代表的操作的特点在于可以简明地写出逆运算。例如&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a + x - x = a&lt;/li&gt;
+&lt;li&gt;a ^ x ^ x = a&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;满足这种特性的算符使用前缀技术可以高效地求解区间查询：
+$$
+\begin{align}
+&amp;amp;pre(n)\triangleq op_{k=1}^n a_k \\
+&amp;amp;op(l, r) = pre(r)\space op^{-1}\space pre(l-1)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;但有些算符，例如 $\max, \min, or$ (同或操作)，它们不存在简明的逆运算符，从而无法用前缀技术解决区间问题 (例如，知道 $\max_{i\in [1, r]}a_i$ 和 $\max_{i\in [1, l-1]}a_i$ 对求解 $[l, r]$ 内的最大值没什么帮助)。但这些算符又具有加法、异或所不具备的特性——重复操作不会对结果带来影响：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$\max(a, b) = \max(\max(\max(a, b), b), b)$&lt;/li&gt;
+&lt;li&gt;$a | b = a | b | b | b$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;ST表正适合用于解决这类算符的区间查询问题。ST表的本质是倍增思想 (由此可见倍增思想运用之广)。下面的讲解以最小值为例，但可以容易地扩展到其他算符上：&lt;/p&gt;
+&lt;p&gt;令 $ST(i, j)$ 表示区间 $[i, i + 2^j)$ 的最小值。容易发现对于一个数列来说，按照 $j$ 的顺序从小到大计算 ST 可以递推地高效求解：&lt;/p&gt;
+&lt;p&gt;$$
+ST(i, j)=
+\begin{cases}
+a_i&amp;amp;, j = 0\\
+\min(ST(i, j-1), ST(i + 2^{j-1}, j-1))&amp;amp;, j \geq 1
+\end{cases}
+$$&lt;/p&gt;
+&lt;p&gt;简单来说，长度为 $2^j$ 的区间的最小值可以用已经求好的两个长度为 $2^{j-1}$ 的区间的最小值求 $\min$ 得到。如果 $i + 2^{j-1}$ 超出了 $n$，那么可以不考虑后一半的贡献。&lt;/p&gt;
+&lt;p&gt;预处理好所有长度为2的次幂的区间的最小值，对于任意区间 $[l, r]$ 的最小值，我们可以用如下方式 $O(1)$ 地求解：令 $k$ 为最大的满足 $2^k\leq r-l+1$ 的整数，那么
+$$
+\min_{i=l}^r a_i = \min(ST(l, k), ST(r - 2^k + 1, k))
+$$
+它的思想是：$[l, l + 2^k)$ 和 $[r - 2^k + 1, r + 1)$ 这两个部分重叠的区间完整地覆盖了 $l[l, r]$，因此拿着它们的最小值求 min 即可得到全区间的最小值。在这里你可以看出 $\min$ 算符的“重复操作不影响结果”的特性对该做法的正确性保证至关重要。&lt;/p&gt;
+&lt;p&gt;最后一个简单的小问题是：如何求 $k$。从数学的角度，你可以使用数学库中的 $\log$ 函数，但更常见的做法是线性预处理所有可能长度对应的 $k$ 值：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;K[1] = 0;
+for (int i = 2; i &amp;lt;= n; i++) K[i] = K[i &amp;gt;&amp;gt; 1] + 1;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你可以用数学归纳法来证明该做法的正确性。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;总结：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ST 表可以在 $O(n\log n)$ 的预处理复杂度下，$O(1)$ 地求解任意区间的值。&lt;/li&gt;
+&lt;li&gt;算符需要保证具有“重复操作不影响结果”的特性。&lt;/li&gt;
+&lt;li&gt;ST 表无法处理带修改的情况。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;真的要具有“可重复贡献”性吗?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果你仔细学习了LCA章节的讲义，可能会想：如果把区间 $[l, r]$ 通过二进制拆分的方式拆成若干互不相交的，长度为2的次幂的区间的并，不就可以在 $O(\log n)$ 的时间内完成任意算符的区间查询了么？&lt;/p&gt;
+&lt;p&gt;非常好的想法！而且确实是正确的。只不过一般没有人会这么做——ST表不支持修改的特性是硬伤，它的“卖点”主要是 $O(1)$ 的效率。因此如果要花费 $O(\log n)$ 的代价才能完成区间求值，它的价值就十分有限了。我们会在合适的时机向大家展示支持修改的 $O(\log n)$ 地完成各种区间操作的技术。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>快速输入输出</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/fastcin/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/fastio/</link>
       <pubDate>Wed, 19 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/fastcin/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/fastio/</guid>
       <description>&lt;p&gt;大家比较熟悉的输入输出有两种：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int x;
 

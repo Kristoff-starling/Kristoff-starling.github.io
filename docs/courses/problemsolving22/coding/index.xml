@@ -14,9 +14,9 @@
     
     <item>
       <title>快速输入输出</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/fastcin/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/fastio/</link>
       <pubDate>Wed, 19 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/fastcin/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/fastio/</guid>
       <description>&lt;p&gt;大家比较熟悉的输入输出有两种：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int x;
 

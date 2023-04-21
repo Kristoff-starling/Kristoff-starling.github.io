@@ -29,12 +29,13 @@
   
     
   
-  <meta name="description" content="给定 $a,n$，考虑如何计算 $a^n$ 。如果使用如下循环计算结果
-int res = 1; for (int i = 1; i &lt;= n; i&#43;&#43;) res = res * a; 时间复杂度为 $O(n)$，当 $n$ 很大时效率太低。快速幂是用于计算该类问题的常见算法，其本质思想是递归/倍增:
-$$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloor n/2\rfloor})^2\cdot a&amp;,n是奇数, n\geq 1\end{cases} $$">
+  <meta name="description" content="已知一个数列 $a_1, \cdots, a_n$。给定 $l, r$，问区间 $a_l, \cdots a_r$ 的某种值。
+ST表是一种处理上述格式的区间查询问题的利器。这类问题通常被称为 RMQ (range minimum query)，但实际上 ST 表可以应对的问题远不止最小值这一种。
+大家已经或多或少地接触过一些区间查询问题，例如求区间的和。以 $&#43;$, $xor$ (异或操作) 这类算符为代表的操作的特点在于可以简明地写出逆运算。例如
+a &#43; x - x = a a ^ x ^ x = a 满足这种特性的算符使用前缀技术可以高效地求解区间查询： $$ \begin{align} &amp;pre(n)\triangleq op_{k=1}^n a_k \\ &amp;op(l, r) = pre(r)\space op^{-1}\space pre(l-1) \end{align} $$">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/repeatedsquare/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/st/">
 
   
 
@@ -221,7 +222,7 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/repeatedsquare/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/st/">
 
   
   
@@ -235,17 +236,18 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/repeatedsquare/">
-  <meta property="og:title" content="快速幂 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="给定 $a,n$，考虑如何计算 $a^n$ 。如果使用如下循环计算结果
-int res = 1; for (int i = 1; i &lt;= n; i&#43;&#43;) res = res * a; 时间复杂度为 $O(n)$，当 $n$ 很大时效率太低。快速幂是用于计算该类问题的常见算法，其本质思想是递归/倍增:
-$$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloor n/2\rfloor})^2\cdot a&amp;,n是奇数, n\geq 1\end{cases} $$"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/st/">
+  <meta property="og:title" content="ST表 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="已知一个数列 $a_1, \cdots, a_n$。给定 $l, r$，问区间 $a_l, \cdots a_r$ 的某种值。
+ST表是一种处理上述格式的区间查询问题的利器。这类问题通常被称为 RMQ (range minimum query)，但实际上 ST 表可以应对的问题远不止最小值这一种。
+大家已经或多或少地接触过一些区间查询问题，例如求区间的和。以 $&#43;$, $xor$ (异或操作) 这类算符为代表的操作的特点在于可以简明地写出逆运算。例如
+a &#43; x - x = a a ^ x ^ x = a 满足这种特性的算符使用前缀技术可以高效地求解区间查询： $$ \begin{align} &amp;pre(n)\triangleq op_{k=1}^n a_k \\ &amp;op(l, r) = pre(r)\space op^{-1}\space pre(l-1) \end{align} $$"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-03-18T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-04-21T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-03-18T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-04-21T00:00:00&#43;00:00">
   
 
   
@@ -264,7 +266,7 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
 
 
 
-  <title>快速幂 | Yuyao Wang&#39;s Homepage</title>
+  <title>ST表 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -484,7 +486,7 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
     <a class="docs-toc-link" href="/courses/problemsolving22/algorithms/repeatedsquare/">Contents</a>
     <ul class="nav docs-sidenav">
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/algorithms/repeatedsquare/">快速幂</a>
       </li>
       
@@ -500,7 +502,7 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
         <a href="/courses/problemsolving22/algorithms/lca/">LCA-倍增</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/algorithms/st/">ST表</a>
       </li>
       
@@ -521,50 +523,64 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>快速幂</h1>
+          <h1>ST表</h1>
 
           <div class="article-style">
-            <p>给定 $a,n$，考虑如何计算 $a^n$ 。如果使用如下循环计算结果</p>
-<pre><code class="language-c++">int res = 1;
-for (int i = 1; i &lt;= n; i++)
-    res = res * a;
-</code></pre>
-<p>时间复杂度为 $O(n)$，当 $n$ 很大时效率太低。快速幂是用于计算该类问题的常见算法，其本质思想是递归/倍增:</p>
-<p>$$
-a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloor n/2\rfloor})^2\cdot a&amp;,n是奇数, n\geq 1\end{cases}
+            <blockquote>
+<p>已知一个数列 $a_1, \cdots, a_n$。给定 $l, r$，问区间 $a_l, \cdots a_r$ 的某种值。</p>
+</blockquote>
+<p>ST表是一种处理上述格式的区间查询问题的利器。这类问题通常被称为 RMQ (range minimum query)，但实际上 ST 表可以应对的问题远不止最小值这一种。</p>
+<p>大家已经或多或少地接触过一些区间查询问题，例如求区间的和。以 $+$, $xor$ (异或操作) 这类算符为代表的操作的特点在于可以简明地写出逆运算。例如</p>
+<ul>
+<li>a + x - x = a</li>
+<li>a ^ x ^ x = a</li>
+</ul>
+<p>满足这种特性的算符使用前缀技术可以高效地求解区间查询：
+$$
+\begin{align}
+&amp;pre(n)\triangleq op_{k=1}^n a_k \\
+&amp;op(l, r) = pre(r)\space op^{-1}\space pre(l-1)
+\end{align}
 $$</p>
-<p>因此我们可以通过不断折半幂次的方式来求解 $a^n$。写出该算法的复杂度递归表达式：</p>
+<p>但有些算符，例如 $\max, \min, or$ (同或操作)，它们不存在简明的逆运算符，从而无法用前缀技术解决区间问题 (例如，知道 $\max_{i\in [1, r]}a_i$ 和 $\max_{i\in [1, l-1]}a_i$ 对求解 $[l, r]$ 内的最大值没什么帮助)。但这些算符又具有加法、异或所不具备的特性——重复操作不会对结果带来影响：</p>
+<ul>
+<li>$\max(a, b) = \max(\max(\max(a, b), b), b)$</li>
+<li>$a | b = a | b | b | b$</li>
+</ul>
+<p>ST表正适合用于解决这类算符的区间查询问题。ST表的本质是倍增思想 (由此可见倍增思想运用之广)。下面的讲解以最小值为例，但可以容易地扩展到其他算符上：</p>
+<p>令 $ST(i, j)$ 表示区间 $[i, i + 2^j)$ 的最小值。容易发现对于一个数列来说，按照 $j$ 的顺序从小到大计算 ST 可以递推地高效求解：</p>
 <p>$$
-T(n)=T(n/2)+O(1)
+ST(i, j)=
+\begin{cases}
+a_i&amp;, j = 0\\
+\min(ST(i, j-1), ST(i + 2^{j-1}, j-1))&amp;, j \geq 1
+\end{cases}
 $$</p>
-<p>容易得出 $T(n)=O(\log n)$。</p>
-<p>直接根据递归式，我们容易写出如下递归代码:</p>
-<pre><code class="language-c++">int quick_pow(int a, int n)
-{
-    if (n == 0) return 1;
-    res = quick_pow(a, n / 2);
-    if (n % 2 == 0)
-        return res * res;
-    else
-        return res * res * a;
-}
+<p>简单来说，长度为 $2^j$ 的区间的最小值可以用已经求好的两个长度为 $2^{j-1}$ 的区间的最小值求 $\min$ 得到。如果 $i + 2^{j-1}$ 超出了 $n$，那么可以不考虑后一半的贡献。</p>
+<p>预处理好所有长度为2的次幂的区间的最小值，对于任意区间 $[l, r]$ 的最小值，我们可以用如下方式 $O(1)$ 地求解：令 $k$ 为最大的满足 $2^k\leq r-l+1$ 的整数，那么
+$$
+\min_{i=l}^r a_i = \min(ST(l, k), ST(r - 2^k + 1, k))
+$$
+它的思想是：$[l, l + 2^k)$ 和 $[r - 2^k + 1, r + 1)$ 这两个部分重叠的区间完整地覆盖了 $l[l, r]$，因此拿着它们的最小值求 min 即可得到全区间的最小值。在这里你可以看出 $\min$ 算符的“重复操作不影响结果”的特性对该做法的正确性保证至关重要。</p>
+<p>最后一个简单的小问题是：如何求 $k$。从数学的角度，你可以使用数学库中的 $\log$ 函数，但更常见的做法是线性预处理所有可能长度对应的 $k$ 值：</p>
+<pre><code class="language-c++">K[1] = 0;
+for (int i = 2; i &lt;= n; i++) K[i] = K[i &gt;&gt; 1] + 1;
 </code></pre>
-<p>但我们通常使用一种更加优美的写法来使用循环替代递归：</p>
-<pre><code class="language-c++">int quick_pow(int a, int n)
-{
-    int res = 1;
-    while (n)
-    {
-        if (n &amp; 1) res = res * a;
-        a = a * a; n &gt;&gt;= 1;
-    }
-    return res;
-}
-</code></pre>
-<p>该实现的核心思想是利用 $n$ 的二进制表示中 1 的位置来判断 $a^n$ 是由哪些 $a^{2^k}$ 组合而成的。即如果 $n$ 的二进制表示中在 $k_1,k_2,\cdots, k_m$ 这些位置上是 1，那么</p>
-<p>$$
-a^n=a^{\sum_{i=1}^m2^{k_i}}=\prod_{i=1}^ma^{2^{k_i}}
-$$</p>
+<p>你可以用数学归纳法来证明该做法的正确性。</p>
+<hr>
+<p>总结：</p>
+<ul>
+<li>ST 表可以在 $O(n\log n)$ 的预处理复杂度下，$O(1)$ 地求解任意区间的值。</li>
+<li>算符需要保证具有“重复操作不影响结果”的特性。</li>
+<li>ST 表无法处理带修改的情况。</li>
+</ul>
+<div class="alert alert-tip">
+  <div>
+    <p><strong>真的要具有“可重复贡献”性吗?</strong></p>
+<p>如果你仔细学习了LCA章节的讲义，可能会想：如果把区间 $[l, r]$ 通过二进制拆分的方式拆成若干互不相交的，长度为2的次幂的区间的并，不就可以在 $O(\log n)$ 的时间内完成任意算符的区间查询了么？</p>
+<p>非常好的想法！而且确实是正确的。只不过一般没有人会这么做——ST表不支持修改的特性是硬伤，它的“卖点”主要是 $O(1)$ 的效率。因此如果要花费 $O(\log n)$ 的代价才能完成区间求值，它的价值就十分有限了。我们会在合适的时机向大家展示支持修改的 $O(\log n)$ 地完成各种区间操作的技术。</p>
+  </div>
+</div>
 
           </div>
 
@@ -581,14 +597,14 @@ $$</p>
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/algorithms/chunking/" rel="next">分块——优雅的暴力</a>
+    <a href="/courses/problemsolving22/algorithms/lca/" rel="next">最近公共祖先-倍增</a>
   </div>
   
   
   
   <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/algorithms/matmul/" rel="prev">矩阵快速幂</a>
+    <a href="/courses/problemsolving22/algorithms/chunking/" rel="prev">分块——优雅的暴力</a>
   </div>
   
 </div>
@@ -598,7 +614,7 @@ $$</p>
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Mar 18, 2023</p>
+          <p>Last updated on Apr 21, 2023</p>
 
           
 

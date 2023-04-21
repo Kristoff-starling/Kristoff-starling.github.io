@@ -29,12 +29,13 @@
   
     
   
-  <meta name="description" content="给定 $a,n$，考虑如何计算 $a^n$ 。如果使用如下循环计算结果
-int res = 1; for (int i = 1; i &lt;= n; i&#43;&#43;) res = res * a; 时间复杂度为 $O(n)$，当 $n$ 很大时效率太低。快速幂是用于计算该类问题的常见算法，其本质思想是递归/倍增:
-$$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloor n/2\rfloor})^2\cdot a&amp;,n是奇数, n\geq 1\end{cases} $$">
+  <meta name="description" content="在计算机世界中，所有与2的次幂相关的事情总是充满魔力的——即便是很大的数，对2取对数后也会落入我们容易处理的范围。之前介绍过的快速幂算法其实就是倍增思想的一种运用。这里我们以计算树上最近公共祖先 (lowest common ancestor, LCA) 为例再次展示倍增思想的强大。
+树
+如果你对“树”一无所知，你可以参考 维基百科 中的解释。这里强调一些简明的入门概念。
+树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。 如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。 在有根树中，每个节点“上面”相邻的只有一个节点，称为该节点的父亲。每个节点“下面”相邻的有一堆节点 (也可能没有)，称为该节点的孩子。一个节点A的父亲，父亲的父亲，…… 一直向上到根这条链上所有的节点都是A的祖先。 对于树中的两个节点 $u, v$，$LCA(u, v)$ 指的是 $u$ 和 $v$ 的所有公共祖先中最深的那个 (也可以说是离 $u, v$ 最近的那个)。下面是一个例子:">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/repeatedsquare/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/lca/">
 
   
 
@@ -221,7 +222,7 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/repeatedsquare/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/lca/">
 
   
   
@@ -235,17 +236,18 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/repeatedsquare/">
-  <meta property="og:title" content="快速幂 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="给定 $a,n$，考虑如何计算 $a^n$ 。如果使用如下循环计算结果
-int res = 1; for (int i = 1; i &lt;= n; i&#43;&#43;) res = res * a; 时间复杂度为 $O(n)$，当 $n$ 很大时效率太低。快速幂是用于计算该类问题的常见算法，其本质思想是递归/倍增:
-$$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloor n/2\rfloor})^2\cdot a&amp;,n是奇数, n\geq 1\end{cases} $$"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/lca/">
+  <meta property="og:title" content="最近公共祖先-倍增 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="在计算机世界中，所有与2的次幂相关的事情总是充满魔力的——即便是很大的数，对2取对数后也会落入我们容易处理的范围。之前介绍过的快速幂算法其实就是倍增思想的一种运用。这里我们以计算树上最近公共祖先 (lowest common ancestor, LCA) 为例再次展示倍增思想的强大。
+树
+如果你对“树”一无所知，你可以参考 维基百科 中的解释。这里强调一些简明的入门概念。
+树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。 如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。 在有根树中，每个节点“上面”相邻的只有一个节点，称为该节点的父亲。每个节点“下面”相邻的有一堆节点 (也可能没有)，称为该节点的孩子。一个节点A的父亲，父亲的父亲，…… 一直向上到根这条链上所有的节点都是A的祖先。 对于树中的两个节点 $u, v$，$LCA(u, v)$ 指的是 $u$ 和 $v$ 的所有公共祖先中最深的那个 (也可以说是离 $u, v$ 最近的那个)。下面是一个例子:"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-03-18T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-04-21T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-03-18T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-04-21T00:00:00&#43;00:00">
   
 
   
@@ -264,7 +266,7 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
 
 
 
-  <title>快速幂 | Yuyao Wang&#39;s Homepage</title>
+  <title>最近公共祖先-倍增 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -484,7 +486,7 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
     <a class="docs-toc-link" href="/courses/problemsolving22/algorithms/repeatedsquare/">Contents</a>
     <ul class="nav docs-sidenav">
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/algorithms/repeatedsquare/">快速幂</a>
       </li>
       
@@ -496,7 +498,7 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
         <a href="/courses/problemsolving22/algorithms/chunking/">分块</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/algorithms/lca/">LCA-倍增</a>
       </li>
       
@@ -521,51 +523,130 @@ $$ a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloo
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>快速幂</h1>
+          <h1>最近公共祖先-倍增</h1>
 
           <div class="article-style">
-            <p>给定 $a,n$，考虑如何计算 $a^n$ 。如果使用如下循环计算结果</p>
-<pre><code class="language-c++">int res = 1;
-for (int i = 1; i &lt;= n; i++)
-    res = res * a;
-</code></pre>
-<p>时间复杂度为 $O(n)$，当 $n$ 很大时效率太低。快速幂是用于计算该类问题的常见算法，其本质思想是递归/倍增:</p>
-<p>$$
-a^n=\begin{cases}1&amp;,n=0\\(a^{n/2})^2&amp;,n是偶数, n\geq 1\\(a^{\lfloor n/2\rfloor})^2\cdot a&amp;,n是奇数, n\geq 1\end{cases}
-$$</p>
-<p>因此我们可以通过不断折半幂次的方式来求解 $a^n$。写出该算法的复杂度递归表达式：</p>
-<p>$$
-T(n)=T(n/2)+O(1)
-$$</p>
-<p>容易得出 $T(n)=O(\log n)$。</p>
-<p>直接根据递归式，我们容易写出如下递归代码:</p>
-<pre><code class="language-c++">int quick_pow(int a, int n)
+            <p>在计算机世界中，所有与2的次幂相关的事情总是充满魔力的——即便是很大的数，对2取对数后也会落入我们容易处理的范围。之前介绍过的快速幂算法其实就是倍增思想的一种运用。这里我们以计算树上最近公共祖先 (lowest common ancestor, LCA) 为例再次展示倍增思想的强大。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>树</strong></p>
+<p>如果你对“树”一无所知，你可以参考 
+<a href="https://en.wikipedia.org/wiki/Tree_%28data_structure%29" target="_blank" rel="noopener">维基百科</a> 中的解释。这里强调一些简明的入门概念。</p>
+<ul>
+<li>树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。</li>
+<li>如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。</li>
+<li>在有根树中，每个节点“上面”相邻的只有一个节点，称为该节点的父亲。每个节点“下面”相邻的有一堆节点 (也可能没有)，称为该节点的孩子。一个节点A的父亲，父亲的父亲，…… 一直向上到根这条链上所有的节点都是A的祖先。</li>
+</ul>
+  </div>
+</div>
+<p>对于树中的两个节点 $u, v$，$LCA(u, v)$ 指的是 $u$ 和 $v$ 的所有公共祖先中最深的那个 (也可以说是离 $u, v$ 最近的那个)。下面是一个例子:</p>
+<img src="/img/LCA.png" style="zoom: 30%;" />
+<p>暴力地求解LCA不算困难，总体思想是：我们先让深度大的节点往上爬，爬到和另一个节点相同深度，然后让 $u$ 和 $v$ 一直向上爬，直到它们相遇。下面的代码非常易懂</p>
+<pre><code class="language-c++">int LCA_bruteforce(int u, int v)
 {
-    if (n == 0) return 1;
-    res = quick_pow(a, n / 2);
-    if (n % 2 == 0)
-        return res * res;
-    else
-        return res * res * a;
-}
-</code></pre>
-<p>但我们通常使用一种更加优美的写法来使用循环替代递归：</p>
-<pre><code class="language-c++">int quick_pow(int a, int n)
-{
-    int res = 1;
-    while (n)
+    if (depth[u] &lt; depth[v]) swap(u, v);
+    while (depth[u] &gt; depth[v])
+        u = father[u];
+    while (u != v)
     {
-        if (n &amp; 1) res = res * a;
-        a = a * a; n &gt;&gt;= 1;
+        u = father[u];
+        v = father[v];
     }
-    return res;
+    return u;
 }
 </code></pre>
-<p>该实现的核心思想是利用 $n$ 的二进制表示中 1 的位置来判断 $a^n$ 是由哪些 $a^{2^k}$ 组合而成的。即如果 $n$ 的二进制表示中在 $k_1,k_2,\cdots, k_m$ 这些位置上是 1，那么</p>
+<p>该算法的问题在于：如果树的深度很大 (例如达到了和 $n$ 同阶)，那么每次求解两个节点的 LCA 都需要 $O(n)$ 的时间。如果我们需要多次求解多个点对的 LCA (例如 $q$ 次)，就需要 $O(qn)$ 的时间。在 $q$ 较大的情况下这不可接受。</p>
+<p>接下来我们向大家展示如何利用倍增思想优化 LCA 的求解：</p>
+<p>令 $anc(u,i)$ 表示节点 $u$ 向上爬 $2^i$ 步之后到达的节点编号，如果 $depth(u)&lt;2^i$ 则 $anc(u,i)=0$。我们发现 $anc(u,i)$ 是容易计算的：</p>
 <p>$$
-a^n=a^{\sum_{i=1}^m2^{k_i}}=\prod_{i=1}^ma^{2^{k_i}}
+anc(u, i)=
+\begin{cases}
+father(u)&amp;, i=0\\
+anc(anc(u, i-1), i-1)&amp;, i \geq 1
+\end{cases}
 $$</p>
+<p>简单来说，向上爬 $2^n$ 步的结果等于先向上爬 $2^{n-1}$ 步，再向上爬 $2^{n-1}$ 步的结果。如果我们按照 $i$ 从小到大的顺序计算所有节点的 $anc(u,i)$，那么可以递推地完成计算过程。在实际实现时我们通常树搜索的过程中完成 anc 数组的计算，详见最后的参考代码。</p>
+<p>有了 anc 数组后，“向上跳”的流程就可以被大幅加速。我们先假设 $u, v$ 深度相同，这时我们不需要每次向上爬一格，而可以用 anc “赌一把大的”：</p>
+<pre><code class="language-c++">for (int i = 20; i &gt;= 0; i--)
+    if (anc[u][i] != anc[v][i])
+    {
+        u = anc[u][i];
+        v = anc[v][i];
+    }
+</code></pre>
+<p>这里巧妙地利用了整数二进制拆分的唯一性：假设 $depth(u)-depth(LCA(u, v))=d$，且
+$$
+d-1 = 2^{a_1} + 2^{a_2} + \cdots + 2^{a_k}, a_1&gt;a_2&gt;\cdots&gt;a_k
+$$
+那么上述循环正好会在 $i=a_1, a_2,\cdots, a_k$ 的地方“向上跳”。之所以是 $d-1$ 而不是 $d$ 是因为我们要求 <code>anc[u][i] != anc[v][i]</code>，只有这样我们才能确保没有“跳过头”，因此上述循环结束后 $u, v$ 都会正好在 LCA 的下面 (孩子)。我们强烈建议你手画一个例子体会这个过程。</p>
+<p>还剩下一个问题：如果 $u, v$ 深度不同该怎么办。和暴力做法的思路一样，我们可以让深度大的节点向上爬，爬到和另一个节点同深度。不过在 anc 数组的加持下，我们不再需要一个一个地爬了：</p>
+<pre><code class="language-c++">// 假设 depth[u] &gt;= depth[v]
+for (int i = 20; i &gt;= 0; i--)
+    if (depth[anc[u][i]] &gt;= depth[v])
+        u = anc[u][i];
+</code></pre>
+<p>你仍然可以用整数拆分的方式证明：$u$ 只会在 $depth(u)-depth(v)$ 的二进制表示中为 1 的那些位置向上跳，且循环结束后 $u$ 会和 $v$ 同深度。</p>
+<p>我们来分析这个倍增做法的复杂度：它尝试用 $2^k, 2^{k-1},\cdots, 2^1, 2^0$ 去覆盖 $u, v$ 到 LCA 的深度差距，因此只需要 $O(\log n)$ 的时间即可完成一次查询。虽然预处理 anc 表需要 $O(n\log n)$ 的时间，但在查询次数较多的情况下，$O(n\log n + q\log n)$ 就会比 $O(n + qn)$ 更有优势。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>通用思想</strong></p>
+<p>从更抽象的层面来说，倍增思想成功的关键很多时候是一种“单一的扩展可能”：</p>
+<ul>
+<li>在快速幂的例子中，$*2$ 这件事非常固定，这使得 $2^n$ 可以通过重复 $*2$ 得到；</li>
+<li>在 LCA 的例子中，每个节点的父亲只有一个，这使得往上 $n$ 层的祖先可以通过重复 <code>u=father[u]</code> 得到；</li>
+<li>……</li>
+</ul>
+<p>这段话看起来有点玄学，但如果你接触了更多可以通过倍增思想解决的问题结构，回过头看可能会对此有更深的理解。</p>
+  </div>
+</div>
+<div class="alert alert-tip">
+  <div>
+    <p><strong>更快地求解LCA?</strong></p>
+<p>虽然 $O(\log n)$ 的效率已经足够令人满意，但事实上在充分预处理的情况下，我们可以 $O(1)$ 地完成一对点的 LCA 查询。如果你对此感兴趣，可以尝试搜索 ST 表、dfs 序等关键词。我们会在合适的时机向大家展示这种技术。</p>
+  </div>
+</div>
+<p>以下是一份参考代码：</p>
+<details><summary><b>LCA</b><i>::click to expand</i></summary>
+<pre><code class="language-c++">const int MAXN = 2e5 + 10;
+vector&lt;int&gt; v[MAXN];   // vector 存储了每个节点相邻点的编号
+int depth[MAXN];       // depth 存储了每个节点的深度
+int anc[MAXN][21];     // 2 ^ 21 &gt; MAXN
 
+void dfs(int x, int fa)
+{
+    // 搜索到 x 时 x 的所有祖先都已经被访问过，anc 数组已被计算
+    // 因此现在就可以计算 x 的 anc 数组
+    anc[x][0] = fa;
+    for (int i = 1; i &lt;= 20; i++)
+        anc[x][i] = anc[anc[x][i - 1]][i - 1];
+    // 搜索
+    for (int y : v[x])
+        if (y != fa)   // 相邻的节点不是父亲，那就是孩子，向下搜索
+        {
+            depth[y] = depth[x] + 1;
+            dfs(y, x); // y 是 x 的孩子，x 是 y 的父亲
+        }
+}
+
+int query_lca(int x, int y)
+{
+    if (depth[x] &lt; depth[y]) swap(x, y);
+    for (int i = 20; i &gt;= 0; i--)
+        if (depth[anc[x][i]] &gt;= depth[y])
+            x = anc[x][i];
+    // 此时有 depth[x] = depth[y]
+    if (x == y) return x;
+    for (int i = 20; i &gt;= 0; i--)
+        if (anc[x][i] != anc[y][i])
+        {
+            x = anc[x][i];
+            y = anc[y][i];
+        }
+    // 注意不等号条件，此时 x, y 一定都是 LCA 的孩子, LCA = anc[x][0] = anc[y][0]
+    return anc[x][0];
+}
+</code></pre>
+</details>
           </div>
 
           
@@ -580,15 +661,8 @@ $$</p>
   
   
   <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/algorithms/chunking/" rel="next">分块——优雅的暴力</a>
-  </div>
-  
-  
-  
-  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/algorithms/matmul/" rel="prev">矩阵快速幂</a>
+    <a href="/courses/problemsolving22/algorithms/st/" rel="prev">ST表</a>
   </div>
   
 </div>
@@ -598,7 +672,7 @@ $$</p>
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Mar 18, 2023</p>
+          <p>Last updated on Apr 21, 2023</p>
 
           
 
@@ -641,6 +715,8 @@ $$</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
       
 
       
