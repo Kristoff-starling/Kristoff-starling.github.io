@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="大家比较熟悉的输入输出有两种：
-int x; scanf(&quot;%d&quot;, &amp;x); // C Style printf(&quot;%d\n&quot;, x); std::cin &gt;&gt; x; // C&#43;&#43; style std::cout &lt;&lt; x &lt;&lt; endl; 如果输入/输出量过大，以至于输入输出部分成为算法问题实现的效率瓶颈，那么采取合适的方法进行快速输入/输出就变得非常重要。本章节介绍若干种常见的输入输出优化。
+int x; scanf(&quot;%d&quot;, &amp;x); // C style printf(&quot;%d\n&quot;, x); std::cin &gt;&gt; x; // C&#43;&#43; style std::cout &lt;&lt; x &lt;&lt; endl; 如果输入/输出量过大，以至于输入输出部分成为算法问题实现的效率瓶颈，那么采取合适的方法进行快速输入/输出就变得非常重要。本章节介绍若干种常见的输入输出优化。
 输入输出函数背后的实现非常复杂，其效率与缓冲区设计、操作系统、磁盘IO等多个环节息息相关。因此本章节会尽可能略去原理的讲解 (或者以补充链接的形式给出)。如果你无法理解这其中的奥妙，不用担心，先把写法学会，等你学过了计算机体系结构/计算机系统基础/操作系统后就会对它们有更深刻的认识。 关闭与 stdio 的同步 一种 主流的说法 是: cin 比 scanf 读入要慢。在选择接受这条“定理”之前，你应当自己做个实验来验证一下：">
 
   
@@ -238,7 +238,7 @@ int x; scanf(&quot;%d&quot;, &amp;x); // C Style printf(&quot;%d\n&quot;, x); st
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/coding/fastio/">
   <meta property="og:title" content="快速输入输出 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="大家比较熟悉的输入输出有两种：
-int x; scanf(&quot;%d&quot;, &amp;x); // C Style printf(&quot;%d\n&quot;, x); std::cin &gt;&gt; x; // C&#43;&#43; style std::cout &lt;&lt; x &lt;&lt; endl; 如果输入/输出量过大，以至于输入输出部分成为算法问题实现的效率瓶颈，那么采取合适的方法进行快速输入/输出就变得非常重要。本章节介绍若干种常见的输入输出优化。
+int x; scanf(&quot;%d&quot;, &amp;x); // C style printf(&quot;%d\n&quot;, x); std::cin &gt;&gt; x; // C&#43;&#43; style std::cout &lt;&lt; x &lt;&lt; endl; 如果输入/输出量过大，以至于输入输出部分成为算法问题实现的效率瓶颈，那么采取合适的方法进行快速输入/输出就变得非常重要。本章节介绍若干种常见的输入输出优化。
 输入输出函数背后的实现非常复杂，其效率与缓冲区设计、操作系统、磁盘IO等多个环节息息相关。因此本章节会尽可能略去原理的讲解 (或者以补充链接的形式给出)。如果你无法理解这其中的奥妙，不用担心，先把写法学会，等你学过了计算机体系结构/计算机系统基础/操作系统后就会对它们有更深刻的认识。 关闭与 stdio 的同步 一种 主流的说法 是: cin 比 scanf 读入要慢。在选择接受这条“定理”之前，你应当自己做个实验来验证一下："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
@@ -523,7 +523,7 @@ int x; scanf(&quot;%d&quot;, &amp;x); // C Style printf(&quot;%d\n&quot;, x); st
             <p>大家比较熟悉的输入输出有两种：</p>
 <pre><code class="language-c++">int x;
 
-scanf(&quot;%d&quot;, &amp;x);         // C Style
+scanf(&quot;%d&quot;, &amp;x);         // C style
 printf(&quot;%d\n&quot;, x);
 
 std::cin &gt;&gt; x;           // C++ style
@@ -546,7 +546,7 @@ int main ()
     for (int i = 0; i &lt; N; i++) scanf(&quot;%d&quot;, a + i);
 }
 </code></pre>
-<p>将 $N$ 设置成一个很大的数，并用 <code>cin</code> 和 <code>scanf</code> 分别跑一遍测试时间。不出意外的话你会发现这条定理确有其正确之处。但事实上 <code>cin</code> 比 <code>scanf</code> 看上去慢的一个主要原因是：<code>cin</code> 花了很多代价进行缓冲区同步，从而让你可以在混用 <code>cin</code> 和 <code>scanf</code> 的情况保证程序的正确性。我们可以在 <code>main()</code> 函数开头显式地通过添加一句 <code>ios::sync_with_stdio(false);</code> 来关闭这种同步。关闭同步后，你可以再尝试一次上述的效率实验，你会发现 <code>cin</code> 和 <code>scanf</code> 其实没什么差别。</p>
+<p>将 $N$ 设置成一个很大的数，并用 <code>cin</code> 和 <code>scanf</code> 分别跑一遍测试时间。不出意外的话你会发现这条定理确有其正确之处。但事实上 <code>cin</code> 比 <code>scanf</code> 看上去慢的一个主要原因是：<code>cin</code> 花了很多代价进行缓冲区同步，从而让你可以在混用 <code>cin</code> 和 <code>scanf</code> 的情况保证程序的正确性。我们可以通过在 <code>main()</code> 函数开头显式地添加一句 <code>ios::sync_with_stdio(false);</code> 的方式来关闭这种同步。关闭同步后，你如果再尝试一次上述的效率实验，会发现 <code>cin</code> 和 <code>scanf</code> 其实没什么差别。</p>
 <p>需要注意的是：一旦手动关闭了同步，你就不能再混用两种风格的输入函数。你可以尝试运行下面的例子：</p>
 <pre><code class="language-c++">#include &lt;bits/stdc++.h&gt;
 using namespace std;
@@ -583,7 +583,7 @@ int main ()
 <div class="alert alert-tip">
   <div>
     <p><strong>什么是缓冲区?</strong></p>
-<p>了解缓冲区设计的动机需要对计算机系统中的 memory hierarchy 有一定了解，这里尝试尽可能短和通俗地地解释清楚这个概念。</p>
+<p>了解缓冲区设计的动机需要对计算机系统中的 memory hierarchy 有一定了解，这里尝试尽可能短和通俗地解释清楚这个概念。</p>
 <p>假设你人在宿舍，要去图书馆借书。上午要去借A，下午要去借B，晚上去借C，于是你跑了三趟图书馆，这非常耗时。假设你是一个先知，上午就知道了自己要借 ABC 三本书，为了节省跑图书馆的时间，你在宿舍楼下放了一个书架，上午你一次性抱了三本书回来放在楼下的书架上，后面每次你需要书了就只需要下楼从书架上拿即可。还书也是相同的道理，你发现与其跑三趟，不如把要还的书先放在书架上，等手里所有的书都看完了再把书架上的书一起还到图书馆。</p>
 <p>这个例子里</p>
 <ul>

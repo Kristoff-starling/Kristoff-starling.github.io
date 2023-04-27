@@ -233,7 +233,7 @@ for (int i = 2; i &amp;lt;= n; i++) K[i] = K[i &amp;gt;&amp;gt; 1] + 1;
       <description>&lt;p&gt;大家比较熟悉的输入输出有两种：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int x;
 
-scanf(&amp;quot;%d&amp;quot;, &amp;amp;x);         // C Style
+scanf(&amp;quot;%d&amp;quot;, &amp;amp;x);         // C style
 printf(&amp;quot;%d\n&amp;quot;, x);
 
 std::cin &amp;gt;&amp;gt; x;           // C++ style
@@ -256,7 +256,7 @@ int main ()
     for (int i = 0; i &amp;lt; N; i++) scanf(&amp;quot;%d&amp;quot;, a + i);
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;将 $N$ 设置成一个很大的数，并用 &lt;code&gt;cin&lt;/code&gt; 和 &lt;code&gt;scanf&lt;/code&gt; 分别跑一遍测试时间。不出意外的话你会发现这条定理确有其正确之处。但事实上 &lt;code&gt;cin&lt;/code&gt; 比 &lt;code&gt;scanf&lt;/code&gt; 看上去慢的一个主要原因是：&lt;code&gt;cin&lt;/code&gt; 花了很多代价进行缓冲区同步，从而让你可以在混用 &lt;code&gt;cin&lt;/code&gt; 和 &lt;code&gt;scanf&lt;/code&gt; 的情况保证程序的正确性。我们可以在 &lt;code&gt;main()&lt;/code&gt; 函数开头显式地通过添加一句 &lt;code&gt;ios::sync_with_stdio(false);&lt;/code&gt; 来关闭这种同步。关闭同步后，你可以再尝试一次上述的效率实验，你会发现 &lt;code&gt;cin&lt;/code&gt; 和 &lt;code&gt;scanf&lt;/code&gt; 其实没什么差别。&lt;/p&gt;
+&lt;p&gt;将 $N$ 设置成一个很大的数，并用 &lt;code&gt;cin&lt;/code&gt; 和 &lt;code&gt;scanf&lt;/code&gt; 分别跑一遍测试时间。不出意外的话你会发现这条定理确有其正确之处。但事实上 &lt;code&gt;cin&lt;/code&gt; 比 &lt;code&gt;scanf&lt;/code&gt; 看上去慢的一个主要原因是：&lt;code&gt;cin&lt;/code&gt; 花了很多代价进行缓冲区同步，从而让你可以在混用 &lt;code&gt;cin&lt;/code&gt; 和 &lt;code&gt;scanf&lt;/code&gt; 的情况保证程序的正确性。我们可以通过在 &lt;code&gt;main()&lt;/code&gt; 函数开头显式地添加一句 &lt;code&gt;ios::sync_with_stdio(false);&lt;/code&gt; 的方式来关闭这种同步。关闭同步后，你如果再尝试一次上述的效率实验，会发现 &lt;code&gt;cin&lt;/code&gt; 和 &lt;code&gt;scanf&lt;/code&gt; 其实没什么差别。&lt;/p&gt;
 &lt;p&gt;需要注意的是：一旦手动关闭了同步，你就不能再混用两种风格的输入函数。你可以尝试运行下面的例子：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
 using namespace std;
@@ -293,7 +293,7 @@ int main ()
 &lt;div class=&#34;alert alert-tip&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;什么是缓冲区?&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;了解缓冲区设计的动机需要对计算机系统中的 memory hierarchy 有一定了解，这里尝试尽可能短和通俗地地解释清楚这个概念。&lt;/p&gt;
+&lt;p&gt;了解缓冲区设计的动机需要对计算机系统中的 memory hierarchy 有一定了解，这里尝试尽可能短和通俗地解释清楚这个概念。&lt;/p&gt;
 &lt;p&gt;假设你人在宿舍，要去图书馆借书。上午要去借A，下午要去借B，晚上去借C，于是你跑了三趟图书馆，这非常耗时。假设你是一个先知，上午就知道了自己要借 ABC 三本书，为了节省跑图书馆的时间，你在宿舍楼下放了一个书架，上午你一次性抱了三本书回来放在楼下的书架上，后面每次你需要书了就只需要下楼从书架上拿即可。还书也是相同的道理，你发现与其跑三趟，不如把要还的书先放在书架上，等手里所有的书都看完了再把书架上的书一起还到图书馆。&lt;/p&gt;
 &lt;p&gt;这个例子里&lt;/p&gt;
 &lt;ul&gt;
