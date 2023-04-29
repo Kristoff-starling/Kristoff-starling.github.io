@@ -5,12 +5,198 @@
     <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
       <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/index.xml" rel="self" type="application/rss+xml" />
     <description>OJ习题讲解</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Fri, 07 Apr 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 29 Apr 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>OJ习题讲解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
     </image>
+    
+    <item>
+      <title>【问题求解II-HW3.A】签到题</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-a/</link>
+      <pubDate>Sat, 29 Apr 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-a/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;给定数列 $a_1, \cdots, a_n$，求区间 $(l, r)$，使得&lt;/p&gt;
+&lt;p&gt;$$
+\left(\min_{i=l}^r a_i\right)\cdot \left(\max_{i=l}^r a_i\right)\cdot \left(\text{OR}_{i=l}^r a_i\right) \cdot (r - l + 1)
+$$&lt;/p&gt;
+&lt;p&gt;最大。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$n\leq 10^6$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;遇到复杂的表达式不要慌，应当仔细观察它的性质。我们很容易发现该表达式的一个特点：除了 $\min$ 这个操作，其他的三项都是随着区间的扩大而增加的。换句话说，如果没有 $\min$ 这一项，这题的答案就是整个数列。&lt;/p&gt;
+&lt;p&gt;接下来我们考虑如何对付这个棘手的 $\min$。$\min$ 的一大特点在于它是有限的——任何一个区间的 $\min$ 一定是原数列中的一个数，因此所有可能的 $\min$ 最多只有 $n$ 种。如果我们把所有的区间按照 $\min$ 的位置归类，那么根据之前的结论，享有同一个 $\min$ 的区间集合中，只有最长的那个才可能是答案的候选区间。&lt;/p&gt;
+&lt;p&gt;到这里，我们的问题转化成了：枚举数列中的每个数 $a_i$ 作为最小值的情况，我们希望找到以此为最小值的最长区间，即从 $a_i$ 出发向左向右扩展，把所有 $\geq a_i$ 的数纳入到区间中，直到碰到边界/比 $a_i$ 小的数。但这件事仍然不容易，如果暴力地向左向右查看，复杂度仍然会达到 $O(n^2)$。&lt;/p&gt;
+&lt;p&gt;考虑这样一种精巧的做法：我们不按照下标的顺序依次枚举 $a_i$，而是按照 $a_i$ 值从小到大的顺序枚举 $a_i$。这样在枚举到任意 $a_i$ 的时刻整个数列的格局如下：&lt;/p&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/ps-sol-2031.png&#34; style=&#34;zoom: 50%;&#34; /&gt;
+&lt;p&gt;其中蓝色的格子代表已经被枚举过的数，红色的是当前枚举的数。我们发现所有蓝色的数一定比当前数小(小于等于)，所有白色的数一定比当前的数大。因此要寻找“最长区间”，我们只要在“蓝色数”的下标数列中寻找比当前下标小的最大数和比当前下标大的最小数即可。你可以借助 C++ STL 的 set 容器以及 &lt;code&gt;lower_bound&lt;/code&gt; 方法来轻松完成这件事，时间复杂度降低到 $O(n\log n)$。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;遇到大小相同的数怎么办？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;其实不用担心这个问题。你可以按照任意顺序处理大小相同的数，因为先处理的数对应的区间可以包括后处理的数，所以后处理的数被先处理的数“卡住”区间边界也无关紧要了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;或者你也可以采取类似分治的做法，每次找完当前区间的最小值后将区间拆分成左右两个区间分别处理 (因为后续的区间不应该跨越这个最小值)。至于如何寻找一个区间最小值的位置，你可以在维护 ST 表时同时维护最小值位置，具体细节留给大家自己思考。&lt;/p&gt;
+&lt;p&gt;剩下的最后一件事情是：对于每个最小值，我们找到了它对应的最长区间后，如何求该区间的最大值/同或和/长度。长度是容易的，剩下的两样恰好是 ST 表擅长的内容。你只需要预处理 ST 表即可 $O(1)$ 地查询。整个算法的时间复杂度为 $O(n\log n)$。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>【问题求解II-HW3.B】砍树</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-b/</link>
+      <pubDate>Sat, 29 Apr 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-b/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;题意描述&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一棵 $n$ 个节点的数和 $m$ 个点对，每个点对染不同的颜色。要求找出树中的一条边，使得砍掉这条边后得到的两棵树中没有颜色相同的节点 (即颜色相同的点对不能被划分到同一棵树中)。求满足条件的边的最大编号，若不存在输出 -1。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;树上任意两个点之间有且仅有一条简单路径。并且我们容易发现：如果要把两个点分到两棵树中，那么选择的这条边必须在连接这两个点的路径上。因此该问题被转化为了对树上的 $m$ 条路径求交。以下我们介绍三种做法供大家参考。&lt;/p&gt;
+&lt;h4 id=&#34;做法1-基于lca的路径标记&#34;&gt;&lt;strong&gt;做法1: 基于LCA的路径标记&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;对于树上的任意两个点 $u$, $v$，从 $u$ 到 $v$ 的路径总可以被拆分为 $u\to lca(u, v)$ 和 $lca(u,v)\to v$ 两条直上直下的链。我们希望可以快速给链上所有的边打一个 +1 标记，这样最后只需要找有 $m$ 个标记的边即可。&lt;/p&gt;
+&lt;p&gt;如果对每条路径上的所有边暴力打 +1 标记的话，总复杂度为 $O(\sum_{i=1}^m len(u_i\to v_i))$，最坏情况下可以达到 $O(mn)$，不可接受。&lt;/p&gt;
+&lt;p&gt;以 $o(t)$ 的代价给 $t$ 条边打上标记似乎是一件“违反物理”的事情。但我们向大家展示如下的技巧做到这一点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;我们不把操作作用在边上，而是作用在点上，每个点与连向它父亲的边对应 (根节点没有对应的边)。&lt;/li&gt;
+&lt;li&gt;对于路径 $(u, v)$：
+&lt;ul&gt;
+&lt;li&gt;$mark(u) + 1$。&lt;/li&gt;
+&lt;li&gt;$mark(v) + 1$。&lt;/li&gt;
+&lt;li&gt;$mark(lca(u, v)) - 2$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;每个点最终的标记 $Mark(u) = \sum_{v\in subtree(u)} mark(v)$ (即以 $u$ 为根的子树中所有节点的 mark 之和)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这个技巧有一个很炫酷的名字，叫“树上差分”。你可以对一条路径按照上述操作做一遍，然后验证一下处于各个位置的节点的 Mark，你会发现只有 $(u, v)$ 路径上的节点 (除了 LCA) Mark 为 1，其他的都是 0。这恰好符合我们在边上打标记的需求。此外，这个标记系统是可以累加的，即你不需要每次计算 Mark，而是可以把 $m$ 条边的 mark 做完之后再一起计算 Mark。这样我们在 $O(m+n)$ 的时间内完成了打标记的动作。加上预处理和计算 LCA 的复杂度，该算法的总时间复杂度为 $O((n+m)\log n)$。&lt;/p&gt;
+&lt;h4 id=&#34;做法2-将树上路径求交转化为一维的区间求交&#34;&gt;&lt;strong&gt;做法2: 将树上路径求交转化为一维的区间求交&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;把第一个点对所在的路径 $(u_1, v_1)$ 抓出来，考虑剩下的 $m-1$ 条路径在 $(u_1, v_1)$ 上的相交部分。想象一下容易发现，如果把树中的一条链 $(u_1, v_1)$ 提出来，“用手拎着两端提在空中”，那么整个树的格局会像一个晾衣绳，晾衣绳上的每个点挂了一个树，如下图所示。&lt;/p&gt;
+&lt;img src=&#34;https://kristoff-starling.github.io/img/ps-sol-2032-link.png&#34; style=&#34;zoom: 50%;&#34; /&gt;
+&lt;p&gt;给 $(u_1, v_1)$ 这条链上的点重新标号 $x_1, x_2,\cdots, x_t$。对于其他任意一个点对 $(u_i, v_i)$，如果 $u_i, v_i$ 在同一个 $x_p$ 的树下 (如图中红色所示)，那么 $(u_i, v_i)$ 这条路径将完全在 $x_p$ 的子树内部，从而和 $(u_1, v_1)$ 没有边的交集；如果 $u_i, v_i$ 在不同的子树 $x_p, x_q (p&amp;lt;q)$ 下 (如图中蓝色所示)，那么 $(u_1, v_1)$ 和 $(u_i, v_i)$ 这两条链将会有 $(x_p, x_q)$ 这一段是公共的。&lt;/p&gt;
+&lt;p&gt;对于 $(u_2, v_2), \cdots, (u_m, v_m)$ 中的每一对，我们都可以检查 $u_i, v_i$ 在哪棵子树中，从而算出它和 $(u_1, v_1)$ 的交集。这时问题已经被转化成了在一维序列 $x_1, \cdots, x_t$ 上的区间交集问题。剩下的一点点细节非常简单，留给大家思考。&lt;/p&gt;
+&lt;p&gt;这个做法颇有“大道至简”的意味——没有“倍增求LCA”“树上差分“这样炫酷的技术，就是平平无奇的几遍搜索，就给出了更优秀的时间复杂度 $O(n)$。在这里我们也想给大家传递一个价值观：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;高级算法和高级数据结构就像武林中的重武器，而你分析问题、转化问题的能力则像内功。内功和武器是相辅相成的，内功不足却想耍大刀，适得其反。比起盲目地学习很多炫酷的技术，我们更希望大家能充分锻炼自己的思维能力，这才是成为一个优秀的算法设计师的正道。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&#34;做法3-一个神奇的随机算法&#34;&gt;&lt;strong&gt;做法3: 一个神奇的随机算法&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;这个做法有些“过于”精巧，大家只需欣赏即可。&lt;/p&gt;
+&lt;p&gt;为每个数对 $(u_i, v_i)$ 随机一个数 $c_i$，并将 $c_i$ 打在 $u_i, v_i$ 两个节点上。对于每条边，砍掉它合法的充分必要条件是这条边下面的子树恰好包含 $c_1, c_2, \cdots, c_m$ 各一个。这件事并不容易检查，但我们直接&lt;strong&gt;对子树上的数值求异或和&lt;/strong&gt;，并通过&lt;strong&gt;检查子树异或和是否等于所有 $c_i$ 的异或和&lt;/strong&gt;的方式来“判定”子树是否满足要求。时间复杂度 $O(n)$。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;看上去有点雷人。下面尝试用不太严谨的方式论证该做法错误的概率极小：&lt;/p&gt;
+&lt;p&gt;异或的性质是：$x\otimes x = 0$ (其中 $\otimes$ 常用于表示异或算符)。因此如果一个子树同时包含了一对点 $(u_i, v_i)$ 中的两个或零个，那么它最终的异或和将缺少 $c_i$ 这一项。因此要使得上述随机算法错误，一定存在一个 $\{1, 2, \cdots,m\}$ 的子集 $\{k_1, k_2, \cdots k_t\}$ 满足 $\bigotimes_{i=1}^t c_{k_i} = 0$，且恰好存在一条边能把这个子集精准地“选出来”。&lt;/p&gt;
+&lt;p&gt;对于一个集合，若该集合中的数在 $[0, 2^k)$ 之间随机，那么不论这个集合中元素的个数有多少，该集合的异或和为 0 的概率都是 $\frac{1}{2^k}$ (考虑每个二进制位，有若干个要么是 0 要么是 1 的数，但不论有多少，其中有偶数个 1 的概率都是 $\frac{1}{2}$)。&lt;/p&gt;
+&lt;p&gt;我们可以不严谨地认为，树上的每条边相当于独立地在 $\{1, 2, \cdots, m\}$ 中选一次子集 (说它不严谨是因为 ①不同的边选出的集合之间存在互相包含关系，并不是独立的； ②该过程和 $2m$ 个数在树上的分布有关，并不是随机选取。但总体可以感受到在概率上两者是同阶的)。因此该算法正确的概率&lt;/p&gt;
+&lt;p&gt;$$
+P(correct)\sim \left(1-\frac{1}{2^k}\right)^{\min(2^m, n)}
+$$&lt;/p&gt;
+&lt;p&gt;本题中 $n\sim 10^5$。简单计算可知，当 $k=32$ 时正确率已经达到 $99.997\%$，当 $k=64$ 时该算法正确率将极其接近 $100\%$ (64位恰好是 long long 的范围，在 long long 范围内随机整数并不困难)。&lt;/p&gt;
+&lt;p&gt;虽然从理论计算科学的角度，有错误率的随机算法和确保正确的算法之间存在本质区别，但在实际中，如果算法错误的概率已经远小于硬件出错的概率，那么该算法的可用性便已经很高。对于这道题来说，我们确实容易设计出简单高效的线性算法，但事实上，绝大多数问题是难的 (关于难的定义，以及 P, NP, NP-hard 相关的概念大家会在第四学期学习)，对于难问题，很多时候我们只能从近似角度尝试解决。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>【问题求解II-HW3.C】单词接龙</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-c/</link>
+      <pubDate>Sat, 29 Apr 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-c/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个英文单词，两个单词可以接在一起当且仅当前一个单词的最后一个字母和后一个单词的第一个字母相同。问最少删除多少个单词可以让剩下的单词全部接龙。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;从本次作业开始我们会逐渐向大家介绍简单的动态规划 (dynamic programming) 设计。动态规划是一项“很难教”的技术，因为它没有什么特别的理论基础，好的状态设计和转移优化也没有固定的模式，需要大家多看、多想、多总结。我们通过“单词接龙”这道题来向大家展示好的状态设计是如何显著减少算法时间复杂度的。&lt;/p&gt;
+&lt;p&gt;首先，删除尽量少的单词等价于选择尽量多的可接龙单词，因此我们将问题转化为寻找原单词序列的最长可接龙子序列。我们首先考虑如下最容易想到的状态：令 $dp(i)$ 表示&lt;strong&gt;以第 $i$ 个单词结尾&lt;/strong&gt;的最长可接龙子序列的长度。为了计算这个状态，我们需要在 i-th 前找到另外一个单词，满足可以和 i-th 接上。因此转移方程可以写为
+$$
+dp(i) = 1 + \max_{k\in [1, i-1], word_k \to word_i} dp(k)
+$$
+其中 $word_i\to word_j$ 表示第 $i$ 个词的最后一个字母和第 $j$ 个词的第一个字母相同。式子最前方的 1 表示第 $i$ 个单词贡献的序列长度。计算完所有的 dp 值之后，$\max_{k=1}^n dp(k)$ 即为答案。&lt;/p&gt;
+&lt;p&gt;这自然是一个正确的算法，但计算 $dp(i)$ 时需要依次枚举前面的所有单词，从而时间复杂度达到了 $O(n^2)$，在本题的数据规模下不可接受。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;优化状态设计的动机是：我们最关心的其实是单词的开头/结尾字母，而小写字母一共只有 26 个。因此我们应该在这方面作文章，把每次遍历前面所有单词的过程节省掉。考虑如下状态：令 $dp(i, ch)$ 表示在前 $i$ 个单词中，以字符 $ch$ 结尾的最长可接龙子序列的长度 &lt;strong&gt;(注意！不再要求一定以 $word_i$ 结尾！)&lt;/strong&gt;。转移考虑对以下两种情况取 max：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;最长子序列不包括第 $i$ 个单词: $dp(i-1, ch)$。&lt;/li&gt;
+&lt;li&gt;最长子序列包括第 $i$ 个单词，且第 $i$ 个单词确实以 $ch$ 结尾: 设第 $i$ 个单词的开头字符为 $ch&amp;rsquo;$，则这种情况的最长序列长度为 $dp(i-1, ch&amp;rsquo;) + 1$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因此状态转移方程可以写为&lt;/p&gt;
+&lt;p&gt;$$
+dp(i, ch) = \begin{cases}
+\max\{dp(i-1, ch), dp(i-1, \text{start}(word_i)) + 1\} &amp;amp;, \text{end}(word_i) = ch\\
+dp(i-1, ch)&amp;amp;, \text{otherwise}
+\end{cases}
+$$&lt;/p&gt;
+&lt;p&gt;可以看到，虽然状态的数量上升到了 $O(n|\Sigma|)$，但转移的代价变成了 $O(1)$，所以总时间复杂度降低到了 $O(|\Sigma|n)$，其中 $\Sigma$ 为字符集，在本题中 $|\Sigma|=26$，可以通过。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;有没有什么小技巧可以略微优化一下复杂度？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;上述状态转移方程中，我们每次只会对一个 $ch$ 更新 dp，其余的都是照抄。而且 $dp(i, ch)$ 的计算只会用到 $dp(i-1, ch)$ 的结果，因此我们可以把状态的第一维省掉，把代码写成如下形式：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;dp = [0] * MAX_CHARACTER # 长度为 |Sigma| 的数组
+for i in range(1, n + 1):
+    # 此时的 dp[ch] 存储的是方程式中 dp(i-1, ch) 的值
+    startch, endch = strings[i].start, strings[i].end
+    dp[endch] = max(dp[endch], dp[startch] + 1)
+    # 根据转移方程，此时 dp[endch] 的值是 dp(i, ch) 的值
+    # 又因为其他的 dp[ch] 不需要改变，所以自动“升级”成了 dp(i, ch)
+    # 至此，dp[ch] 存储了方程式中 dp(i, ch) 的值
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到，省掉了第一维之后，动态规划的时间复杂度下降到了 $O(n)$，空间复杂度下降到了 $O(|\Sigma|)$ (不考虑存储字符串的额外代价)。如果字符集的大小达到了很大的级别 (比如 unicode 中的所有字符)，那么这一简单的优化可以节省大量的时间和存储。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;第一个 dp 思路真的是“死胡同”吗？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;再来重温一下状态转移方程&lt;/p&gt;
+&lt;p&gt;$$
+dp(i) = 1 + \max_{k\in [1, i), word_k \to word_i} dp(k)
+$$&lt;/p&gt;
+&lt;p&gt;在考虑 $dp(i)$ 的转移时，我们在意的是所有的那些结尾字母与 $word_i$ 开头字母相同的位置的 dp 的最大值。每次把 1 到 i-1 扫一遍效率太低，但注意我们在做到 $dp(i)$ 时，之前的所有 dp 值已经求好了，因此我们可以额外对每种结尾字母维护当前最大值，从而实现 $O(1)$ 转移。&lt;/p&gt;
+&lt;p&gt;形式化地，令
+$$
+maxdp(i, ch)\triangleq \max_{k\in [1, i],\text{end}(word_k)=ch} dp(k)
+$$
+则我们可以同时写出 dp 和 maxdp 的状态转移方程&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+dp(i) &amp;amp;= 1 + maxdp(i-1, \text{start}(word_i))\\
+maxdp(i, ch) &amp;amp;=
+\begin{cases}
+\max\{maxdp(i-1, ch), dp(i)\} &amp;amp;, \text{end}(word_i) = ch\\
+maxdp(i-1, ch) &amp;amp;, \text{otherwise}
+\end{cases}
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;两个转移都是 $O(1)$ 的，而且由于 $dp(i)$ 只用到 $maxdp(i-1, ch)$，所以我们可以用和类似的技巧将 maxdp 的第一维度省去，将代码写成类似下面的模样：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;for i in range(1, n + 1):
+    startch, endch = strings[i].start, strings[i].end
+    dp[i] = 1 + maxdp[startch]
+    maxdp[endch] = max(maxdp[endch], dp[i])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你又可以发现一件事情：$dp(i)$ 在当前循环算完立即使用，且后续再也不会使用，所以可以把 $dp(i)$ 省略：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;for i in range(1, n + 1):
+    startch, endch = strings[i].start, strings[i].end
+    maxdp[s.endch] = max(maxdp[endch], 1 + maxdp[startch])
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;和之前的代码对比一下，你会发现除了数组名字不一样，其他完全一样。我们用两条看上去不太相同的思考路径得到了相同的结果，但实际上它们的本质是一致的：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;动态规划状态设计就像给当前时刻做一张“快照”。你需要想清楚快照中保存怎样的性质可以完整地刻画当前的状态并为后续所用。在此基础上，记录的性质应当越少越好。&lt;/strong&gt; 在这个问题中，每个接龙字符串序列的最后一个字符是最本质地刻画特征的性质，而最后一个字符串的下标并不是 ($i+1$ 往后的状态并不关心 $[1,i]$ 中结尾为 $ch$ 的最长接龙字符串序列的最后一个字符串是 $[1, i]$ 中的哪一个)。这就是第一个 dp 方向错误的根本原因。&lt;/p&gt;
+&lt;p&gt;大家日后要做的，就是稳准狠地抓住一个状态最本质的性质。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>【问题求解II-HW2.A】取数游戏</title>

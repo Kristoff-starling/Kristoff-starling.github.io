@@ -30,13 +30,14 @@
     
   
   <meta name="description" content="题意概述
-给定一个 $n\times m$ 的棋盘和象棋棋子马的初始位置，问经过 $k$ 步到达棋盘上任意点的方案数。
-$n,m\leq 15, k\leq 10^5$。
-邻接矩阵是描述图的一种常见方法：$\text{ga}(i,j)=1$ 当且仅当图中点 $i,j$ 之间有边。它之所以被称为“矩阵”，是因为矩阵的乘法恰好可以用于描述图上的游走。
-令 $A_k$ 为一个 $n$ 阶矩阵，其中 $A_k(i,j)$ 表示从点 $i$ 走 $k$ 步到点 $j$ 的方案数，那么我们可以发现 $A_0=I,A_1=\text{ga}$。更一般地，我们可以发现">
+给定数列 $a_1, \cdots, a_n$，求区间 $(l, r)$，使得
+$$ \left(\min_{i=l}^r a_i\right)\cdot \left(\max_{i=l}^r a_i\right)\cdot \left(\text{OR}_{i=l}^r a_i\right) \cdot (r - l &#43; 1) $$
+最大。
+$n\leq 10^6$。
+遇到复杂的表达式不要慌，应当仔细观察它的性质。我们很容易发现该表达式的一个特点：除了 $\min$ 这个操作，其他的三项都是随着区间的扩大而增加的。换句话说，如果没有 $\min$ 这一项，这题的答案就是整个数列。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-a/">
 
   
 
@@ -223,7 +224,7 @@ $n,m\leq 15, k\leq 10^5$。
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-a/">
 
   
   
@@ -237,19 +238,20 @@ $n,m\leq 15, k\leq 10^5$。
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/">
-  <meta property="og:title" content="【问题求解II-HW1.C】新马走日 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-a/">
+  <meta property="og:title" content="【问题求解II-HW3.A】签到题 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="题意概述
-给定一个 $n\times m$ 的棋盘和象棋棋子马的初始位置，问经过 $k$ 步到达棋盘上任意点的方案数。
-$n,m\leq 15, k\leq 10^5$。
-邻接矩阵是描述图的一种常见方法：$\text{ga}(i,j)=1$ 当且仅当图中点 $i,j$ 之间有边。它之所以被称为“矩阵”，是因为矩阵的乘法恰好可以用于描述图上的游走。
-令 $A_k$ 为一个 $n$ 阶矩阵，其中 $A_k(i,j)$ 表示从点 $i$ 走 $k$ 步到点 $j$ 的方案数，那么我们可以发现 $A_0=I,A_1=\text{ga}$。更一般地，我们可以发现"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+给定数列 $a_1, \cdots, a_n$，求区间 $(l, r)$，使得
+$$ \left(\min_{i=l}^r a_i\right)\cdot \left(\max_{i=l}^r a_i\right)\cdot \left(\text{OR}_{i=l}^r a_i\right) \cdot (r - l &#43; 1) $$
+最大。
+$n\leq 10^6$。
+遇到复杂的表达式不要慌，应当仔细观察它的性质。我们很容易发现该表达式的一个特点：除了 $\min$ 这个操作，其他的三项都是随着区间的扩大而增加的。换句话说，如果没有 $\min$ 这一项，这题的答案就是整个数列。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-03-30T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-04-29T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-03-30T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-04-29T00:00:00&#43;00:00">
   
 
   
@@ -268,7 +270,7 @@ $n,m\leq 15, k\leq 10^5$。
 
 
 
-  <title>【问题求解II-HW1.C】新马走日 | Yuyao Wang&#39;s Homepage</title>
+  <title>【问题求解II-HW3.A】签到题 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -500,7 +502,7 @@ $n,m\leq 15, k\leq 10^5$。
         <a href="/courses/problemsolving22/solutions/1-final/">I-Final</a>
       </li>
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/solutions/2-1-c/">II-HW01-C</a>
       </li>
       
@@ -508,7 +510,7 @@ $n,m\leq 15, k\leq 10^5$。
         <a href="/courses/problemsolving22/solutions/2-2-a/">II-HW02-A</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/solutions/2-3-a/">II-HW03-A</a>
       </li>
       
@@ -537,34 +539,38 @@ $n,m\leq 15, k\leq 10^5$。
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>【问题求解II-HW1.C】新马走日</h1>
+          <h1>【问题求解II-HW3.A】签到题</h1>
 
           <div class="article-style">
             <div class="alert alert-note">
   <div>
     <p><strong>题意概述</strong></p>
-<p>给定一个 $n\times m$ 的棋盘和象棋棋子马的初始位置，问经过 $k$ 步到达棋盘上任意点的方案数。</p>
-<p>$n,m\leq 15, k\leq 10^5$。</p>
+<ul>
+<li>
+<p>给定数列 $a_1, \cdots, a_n$，求区间 $(l, r)$，使得</p>
+<p>$$
+\left(\min_{i=l}^r a_i\right)\cdot \left(\max_{i=l}^r a_i\right)\cdot \left(\text{OR}_{i=l}^r a_i\right) \cdot (r - l + 1)
+$$</p>
+<p>最大。</p>
+</li>
+<li>
+<p>$n\leq 10^6$。</p>
+</li>
+</ul>
   </div>
 </div>
-<p>邻接矩阵是描述图的一种常见方法：$\text{ga}(i,j)=1$ 当且仅当图中点 $i,j$ 之间有边。它之所以被称为“矩阵”，是因为矩阵的乘法恰好可以用于描述图上的游走。</p>
-<p>令 $A_k$ 为一个 $n$ 阶矩阵，其中 $A_k(i,j)$ 表示从点 $i$ 走 $k$ 步到点 $j$ 的方案数，那么我们可以发现 $A_0=I,A_1=\text{ga}$。更一般地，我们可以发现</p>
-<p>$$
-\forall p, q. A_{p+q}=A_p\cdot A_q
-$$</p>
+<p>遇到复杂的表达式不要慌，应当仔细观察它的性质。我们很容易发现该表达式的一个特点：除了 $\min$ 这个操作，其他的三项都是随着区间的扩大而增加的。换句话说，如果没有 $\min$ 这一项，这题的答案就是整个数列。</p>
+<p>接下来我们考虑如何对付这个棘手的 $\min$。$\min$ 的一大特点在于它是有限的——任何一个区间的 $\min$ 一定是原数列中的一个数，因此所有可能的 $\min$ 最多只有 $n$ 种。如果我们把所有的区间按照 $\min$ 的位置归类，那么根据之前的结论，享有同一个 $\min$ 的区间集合中，只有最长的那个才可能是答案的候选区间。</p>
+<p>到这里，我们的问题转化成了：枚举数列中的每个数 $a_i$ 作为最小值的情况，我们希望找到以此为最小值的最长区间，即从 $a_i$ 出发向左向右扩展，把所有 $\geq a_i$ 的数纳入到区间中，直到碰到边界/比 $a_i$ 小的数。但这件事仍然不容易，如果暴力地向左向右查看，复杂度仍然会达到 $O(n^2)$。</p>
+<p>考虑这样一种精巧的做法：我们不按照下标的顺序依次枚举 $a_i$，而是按照 $a_i$ 值从小到大的顺序枚举 $a_i$。这样在枚举到任意 $a_i$ 的时刻整个数列的格局如下：</p>
+<img src="/img/ps-sol-2031.png" style="zoom: 50%;" />
+<p>其中蓝色的格子代表已经被枚举过的数，红色的是当前枚举的数。我们发现所有蓝色的数一定比当前数小(小于等于)，所有白色的数一定比当前的数大。因此要寻找“最长区间”，我们只要在“蓝色数”的下标数列中寻找比当前下标小的最大数和比当前下标大的最小数即可。你可以借助 C++ STL 的 set 容器以及 <code>lower_bound</code> 方法来轻松完成这件事，时间复杂度降低到 $O(n\log n)$。</p>
 <blockquote>
-<p>Proof: 考虑任意点对 $i,j$，从 $i$ 走 $p+q$ 步到 $j$ 可以被分解成两个阶段：</p>
-<ul>
-<li>从 $i$ 走 $p$ 步到某一个节点 $k$。</li>
-<li>从 $k$ 走 $q$ 步到 $j$。</li>
-</ul>
-<p>因此我们可以枚举这个中间节点 $k$，再根据加法/乘法原理有如下递推式：
-$$
-A_{p+q}(i,j)=\sum_{k=1}^n A_p(i,k)\cdot A_q(k,j)
-$$</p>
-<p>容易发现这恰好是矩阵乘法的计算公式，从而原命题得证。$\square$</p>
+<p><strong>遇到大小相同的数怎么办？</strong></p>
+<p>其实不用担心这个问题。你可以按照任意顺序处理大小相同的数，因为先处理的数对应的区间可以包括后处理的数，所以后处理的数被先处理的数“卡住”区间边界也无关紧要了。</p>
 </blockquote>
-<p>因此，$A_k=\text{ga}^k$。至于如何将原问题转化为一个图上的游走问题，想必你能够自己解决。</p>
+<p>或者你也可以采取类似分治的做法，每次找完当前区间的最小值后将区间拆分成左右两个区间分别处理 (因为后续的区间不应该跨越这个最小值)。至于如何寻找一个区间最小值的位置，你可以在维护 ST 表时同时维护最小值位置，具体细节留给大家自己思考。</p>
+<p>剩下的最后一件事情是：对于每个最小值，我们找到了它对应的最长区间后，如何求该区间的最大值/同或和/长度。长度是容易的，剩下的两样恰好是 ST 表擅长的内容。你只需要预处理 ST 表即可 $O(1)$ 地查询。整个算法的时间复杂度为 $O(n\log n)$。</p>
 
           </div>
 
@@ -580,15 +586,8 @@ $$</p>
   
   
   <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/solutions/2-2-a/" rel="next">【问题求解II-HW2.A】取数游戏</a>
-  </div>
-  
-  
-  
-  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/solutions/1-final/" rel="prev">问题求解 I-Final 题解</a>
+    <a href="/courses/problemsolving22/solutions/2-3-b/" rel="prev">【问题求解II-HW3.B】砍树</a>
   </div>
   
 </div>
@@ -598,7 +597,7 @@ $$</p>
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Mar 30, 2023</p>
+          <p>Last updated on Apr 29, 2023</p>
 
           
 
