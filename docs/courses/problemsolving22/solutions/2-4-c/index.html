@@ -29,10 +29,12 @@
   
     
   
-  <meta name="description" content=" ">
+  <meta name="description" content="题面描述
+有 $n$ 个包，第 $i$ 个包里有 $A_i$ 个黑球和 $B_i$ 个白球。问有多少种方法选取两个包，再将包中的球排成一排。同色的球之间不可区分，选择不同的包被视为不同方案。 $n\leq 2\times 10^5, A_i, B_i\leq 2000$。 该题面描述与原题背景不太相同，但容易看出它们讨论的问题是一样的。本题解法比较精巧，供大家欣赏。
+如果我们枚举选择哪两个包，那么选取第 $i$ 个包和第 $j$ 个包的情况下，问题会被转化为将 $A_i&#43;A_j$ 个黑球和 $B_i&#43;B_j$ 个白球排成一排有多少种方案，这等价于在 $A_i&#43;A_j&#43;B_i&#43;B_j$ 个位置中选择 $A_i &#43; A_j$ 个位置放黑球。因此最终答案可以写为 $$ \sum_{i,j\in \{1,\cdots, n\}, i&lt;j} \binom{A_i&#43;A_j&#43;B_i&#43;B_j}{A_i&#43;A_j} $$ 即使我们可以通过预处理 $O(1)$ 地求解组合数，直接计算该表达式的时间复杂度也会达到 $O(n^2)$。本题 $n\leq 2\times 10^5$，无法通过。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-4-c/">
 
   
 
@@ -214,14 +216,12 @@
 
 
   
-  <link rel="alternate" href="/courses/problemsolving22/solutions/index.xml" type="application/rss+xml" title="Yuyao Wang&#39;s Homepage">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_32x32_fill_lanczos_center_3.png">
   <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu0b7a4cb9992c9ac0e91bd28ffd38dd00_9727_192x192_fill_lanczos_center_3.png">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-4-c/">
 
   
   
@@ -235,29 +235,36 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/">
-  <meta property="og:title" content="OJ习题讲解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content=" "><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-4-c/">
+  <meta property="og:title" content="【问题求解II-HW4.C】烧烤 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="题面描述
+有 $n$ 个包，第 $i$ 个包里有 $A_i$ 个黑球和 $B_i$ 个白球。问有多少种方法选取两个包，再将包中的球排成一排。同色的球之间不可区分，选择不同的包被视为不同方案。 $n\leq 2\times 10^5, A_i, B_i\leq 2000$。 该题面描述与原题背景不太相同，但容易看出它们讨论的问题是一样的。本题解法比较精巧，供大家欣赏。
+如果我们枚举选择哪两个包，那么选取第 $i$ 个包和第 $j$ 个包的情况下，问题会被转化为将 $A_i&#43;A_j$ 个黑球和 $B_i&#43;B_j$ 个白球排成一排有多少种方案，这等价于在 $A_i&#43;A_j&#43;B_i&#43;B_j$ 个位置中选择 $A_i &#43; A_j$ 个位置放黑球。因此最终答案可以写为 $$ \sum_{i,j\in \{1,\cdots, n\}, i&lt;j} \binom{A_i&#43;A_j&#43;B_i&#43;B_j}{A_i&#43;A_j} $$ 即使我们可以通过预处理 $O(1)$ 地求解组合数，直接计算该表达式的时间复杂度也会达到 $O(n^2)$。本题 $n\leq 2\times 10^5$，无法通过。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
-    <meta property="og:updated_time" content="2023-05-08T00:00:00&#43;00:00">
+    
+      <meta property="article:published_time" content="2023-05-08T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-05-08T00:00:00&#43;00:00">
   
 
   
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>OJ习题讲解 | Yuyao Wang&#39;s Homepage</title>
+
+
+  <title>【问题求解II-HW4.C】烧烤 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -468,7 +475,7 @@
   
   
   
-  <div class="docs-toc-item active">
+  <div class="docs-toc-item">
     <a class="docs-toc-link" href="/courses/problemsolving22/solutions/">Overview</a>
 
   </div>
@@ -509,7 +516,7 @@
         <a href="/courses/problemsolving22/solutions/2-3-c/">II-HW03-C</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/solutions/2-4-c/">II-HW04-C</a>
       </li>
       
@@ -530,15 +537,47 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>OJ习题讲解</h1>
+          <h1>【问题求解II-HW4.C】烧烤</h1>
 
           <div class="article-style">
-            <p>该系列文章针对 OJ 中较难的习题给出提示和解法。</p>
-<div class="alert alert-warning">
+            <div class="alert alert-note">
   <div>
-    阅读题解前请确保你已经独立思考过这些题目！
+    <p><strong>题面描述</strong></p>
+<ul>
+<li>有 $n$ 个包，第 $i$ 个包里有 $A_i$ 个黑球和 $B_i$ 个白球。问有多少种方法选取两个包，再将包中的球排成一排。同色的球之间不可区分，选择不同的包被视为不同方案。</li>
+<li>$n\leq 2\times 10^5, A_i, B_i\leq 2000$。</li>
+</ul>
   </div>
 </div>
+<p>该题面描述与原题背景不太相同，但容易看出它们讨论的问题是一样的。本题解法比较精巧，供大家欣赏。</p>
+<p>如果我们枚举选择哪两个包，那么选取第 $i$ 个包和第 $j$ 个包的情况下，问题会被转化为将 $A_i+A_j$ 个黑球和 $B_i+B_j$ 个白球排成一排有多少种方案，这等价于在 $A_i+A_j+B_i+B_j$ 个位置中选择 $A_i + A_j$ 个位置放黑球。因此最终答案可以写为
+$$
+\sum_{i,j\in \{1,\cdots, n\}, i&lt;j} \binom{A_i+A_j+B_i+B_j}{A_i+A_j}
+$$
+即使我们可以通过预处理 $O(1)$ 地求解组合数，直接计算该表达式的时间复杂度也会达到 $O(n^2)$。本题 $n\leq 2\times 10^5$，无法通过。</p>
+<p>本题的关键在于一步精妙的模型转化。通常我们认为能够写出 
+<a href="https://en.wikipedia.org/wiki/Closed-form_expression" target="_blank" rel="noopener">closed form</a> 的数学表达式是优美的，但这里我们反其道而行之，将上面表达式中的组合数转化为一个具体的动态规划问题。考虑如下问题：</p>
+<blockquote>
+<p>在一张 $n\times m$ 的方格纸上，从 $(0, 0)$ 走到 $(n, m)$ 有多少种方案？</p>
+</blockquote>
+<p>很容易看出该问题的答案是 $\binom{n+m}{n}$，即从 $(0, 0)$ 到 $(n, m)$ 一共要走 $n$ 条横向边和 $m$ 条竖向边，从 $n+m$ 步中选 $n$ 步走横的。不过我们还有一个“笨方法”：令 $dp(i, j)$ 表示从 $(0, 0)$ 走到 $(i, j)$ 的方案数，显然 $(i, j)$ 可以从 $(i-1, j)$ 或 $(i, j-1)$ 转移来，因此
+$$
+dp(i, j)=
+\begin{cases}
+1&amp;, (i, j) = (0, 0)\\
+dp(i-1, j) + dp(i, j-1)&amp;, otherwise
+\end{cases}
+$$
+注意上述状态转移方程没有考虑边界问题。
+回到原问题，对于 $\binom{A_i+A_j+B_i+B_j}{A_i+A_j}$，我们可以套用走方格纸问题，将其转化为从 $(-A_i, -B_i)$ 到 $(A_j, B_j)$ 的方案数，并通过动态规划递推解决。我们看似用一个 $O(|A_i|^2)$ 的算法替代了 $O(1)$ 的组合数求解，但<strong>动态规划的递推过程是可以叠加的</strong>。我们不需要单独对每组点对跑动态规划，我们可以给地图上所有的负坐标 $(-A_i, -B_i)$ 打上 1，然后从地图的左下角开始一遍推到右上角，然后在所有的正坐标位置收取答案。这样我们花一趟完成了 $n^2$ 次动态规划，时间复杂度降低到 $O(|A_i|^2)$。</p>
+<p>这个过程有一点抽象，如果你没有完全理解，可以简单构造一个 3 个点的样例手动模拟一下算法，看看一个负坐标上的标记是如何同时贡献到所有的正坐标上，以及不同的标记是如何叠加的。</p>
+<p>此外还有一些细节需要注意：</p>
+<ul>
+<li>C/C++ 中无法直接支持负数下标，你可以考虑给所有的坐标加上一个偏移量 offset 转化成正数。</li>
+<li>上述递推过程会出现 $(-A_i, B_i)$ 向 $(A_i, B_i)$ 贡献的情况，相当于选取了两个一样的包，需要 $O(n)$ 地单独计算并扣除。</li>
+<li>对于任意一对 $(i, j)$，上述递推过程会同时计算 “$(-A_i, -B_i)$ 向 $(A_j, B_j)$ 贡献” 和 “$(-A_j, B_J)$ 向 $(A_i, B_i)$ 贡献”，即重复计算了两次。因此扣除第二点中的数量后还需要除以 2。</li>
+<li>在模意义下如何除以 2 不是一个简单的问题，你可以上网搜索“逆元”或 &ldquo;modular multiplicative inverse&rdquo;。现阶段你不需要过深地理解背后的数论原理，因为后续的理论课程会涉及。</li>
+</ul>
 
           </div>
 
@@ -551,6 +590,12 @@
             
 <div class="post-nav">
   
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving22/solutions/2-3-a/" rel="prev">【问题求解II-HW3.A】签到题</a>
+  </div>
   
 </div>
 
@@ -602,8 +647,6 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 
-      
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
       
 
       

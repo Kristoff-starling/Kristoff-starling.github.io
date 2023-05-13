@@ -5,12 +5,50 @@
     <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/</link>
       <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/coding/index.xml" rel="self" type="application/rss+xml" />
     <description>Coding</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 19 Apr 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 13 May 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Coding</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/</link>
     </image>
+    
+    <item>
+      <title>逆元</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/mulinv/</link>
+      <pubDate>Sat, 13 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/mulinv/</guid>
+      <description>&lt;p&gt;对于整数 $a, b&amp;lt;p$，计算 $(a/b)\text{ mod }p$ 可以转化为计算 $a\cdot b^{-1}\text{ mod }p$，这里 $b^{-1}$ 称为 $b$ 在模 $p$ 下的&lt;strong&gt;逆元&lt;/strong&gt;，可以证明当 $p$ 为质数时，$b^{-1}$ 在 $[0, p)$ 范围内是唯一的。逆元的数学推导会在后续的理论课程中给出，这里不做赘述 (如果你不懂也暂时不必深究)。本文主要阐述人们通常是如何书写计算逆元的代码。&lt;/p&gt;
+&lt;p&gt;当 $p$ 为质数时，计算逆元最简单的方法之一是使用费尔马小定理。由于&lt;/p&gt;
+&lt;p&gt;$$a^{p-1}\equiv 1(\text{mod }p)$$&lt;/p&gt;
+&lt;p&gt;所以令 $a^{-1}=a^{p-2}\text{ mod }p$，则有 $a\cdot a^{-1}\equiv 1(\text{mod }p)$。这里的 $a^{-1}$ 即为 $a$ 在模 $p$ 意义下的逆元。你可以使用快速幂算法快速计算 $a^{p-2}$ 的值，时间复杂度为 $O(\log p)$。&lt;/p&gt;
+&lt;p&gt;另外一种常见的需求是计算 $[1, n]$ 中所有数的逆元。如果对每个数用费尔马小定理计算逆元，时间复杂度将达到 $O(n\log p)$，有时不可接受。前人发明过一些非常精巧的算法递推地 $O(n)$ 求出所有数的逆元，如果你感兴趣可以参考 
+&lt;a href=&#34;https://blog.csdn.net/bcr_233/article/details/87898670&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这篇博客&lt;/a&gt;。但我们更推荐你采用如下非常简洁的做法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;顺序递推求出 $1!, 2!, \cdots, n!$。&lt;/li&gt;
+&lt;li&gt;使用快速幂计算 $(n!)^{-1}$。&lt;/li&gt;
+&lt;li&gt;从后往前递推算出所有阶乘的逆元 (注：$(k!)^{-1}\cdot k=((k-1)!)^{-1}$)。&lt;/li&gt;
+&lt;li&gt;对于 $x$，$x^{-1}=(x-1)!\cdot (x!)^{-1}$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;该做法虽然看上去多了几遍递推，但时间复杂度仍为 $O(n)$，且通常拥有更加优秀的常数因子 (即在实际运行中效率可能反而比链接中的一遍递推要高，因为链接中的做法有大量的取模操作)。&lt;/p&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;Reference&lt;/b&gt; :: &lt;i&gt;click to expand&lt;/i&gt;&lt;/summary&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;const int MOD = 998244353;
+int fac[MAXN], ifac[MAXN], inv[MAXN];
+
+void init_inv()
+{
+    fac[0] = 1;
+    for (int i = 1; i &amp;lt;= n; i++)
+        fac[i] = 1ll * fac[i - 1] * i % MOD;
+    ifac[n] = quick_pow(fac[n], MOD - 2);
+    for (int i = n - 1; i &amp;gt;= 0; i--)
+    {
+        ifac[i] = 1ll * ifac[i + 1] * (i + 1) % MOD;
+        inv[i + 1] = 1ll * fac[i] * ifac[i + 1] % MOD;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/details&gt;</description>
+    </item>
     
     <item>
       <title>快速输入输出</title>

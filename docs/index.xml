@@ -35,6 +35,198 @@
     </item>
     
     <item>
+      <title>cdq分治</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/</link>
+      <pubDate>Sat, 13 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/</guid>
+      <description>&lt;p&gt;cdq分治是一种常用的分治思想，最早由 
+&lt;a href=&#34;https://www.cs.princeton.edu/~danqic/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;陈丹琦&lt;/a&gt; 整理和总结 (
+&lt;a href=&#34;https://www.cs.princeton.edu/~danqic/papers/divide-and-conquer.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;原文地址&lt;/a&gt;)。这种思想从 high-level 层面来说十分简单和抽象：当我们希望解决某个问题 &lt;code&gt;solve(l, r)&lt;/code&gt; 时，我们可以考虑如下的分治步骤：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;解决 &lt;code&gt;solve(l, mid)&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;考虑 &lt;code&gt;[l, mid]&lt;/code&gt; 对 &lt;code&gt;[mid+1, r]&lt;/code&gt; 的贡献。&lt;/li&gt;
+&lt;li&gt;解决 &lt;code&gt;solve(mid+1, r)&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。&lt;/p&gt;
+&lt;p&gt;二维偏序问题指对于一个二元组序列 $(a_1, b_1), (a_2, b_2),\cdots, (a_n, b_n)$，求满足 $a_i&amp;lt;a_j$ 且 $b_i&amp;lt;b_j$ 的数对 $(i, j)$ 的个数。显然我们如果将二元组按照 $a_i$ 从小到大排序，那么该问题就转化为了 $b_i$ 序列的逆序数问题。我们尝试套用cdq分治的“模板”来解决它。令 $solve(l, r)$ 表示区间 $[l, r]$ 内的逆序对个数，最终答案显然为 $solve(1, n)$。$solve(l, r)$ 分为三个步骤：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$solve(l, mid)$：递归解决.&lt;/li&gt;
+&lt;li&gt;计算下标在 $[l, mid]$ 中的数对 $[mid+1, r]$ 中的数的贡献。换言之，我们需要计算满足 $i\in [l, mid], j\in [mid+1, r]， b_i&amp;gt;b_j$ 的 $(i, j)$-pair 个数。&lt;/li&gt;
+&lt;li&gt;$solve(mid+1, r)$：递归解决。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;重点关注第二条。虽然看上去还是在数“逆序对”，但它比原问题简单了很多——因为 $[l, r]$ 的数被鲜明地分成了 $[l, mid]$ 和 $[mid+1, r]$ 两类。换言之，每个数 $b_i$ 可以被看作 $(0, b_i)$ 或者 $(1, b_i)$，取决于它在左半边还是右半边，我们只关心 0 的那一类 $b_i$ 比 1 的那一类 $b_i$ 大的数目。我们可以通过按照 $b_i$ 做一遍归并排序，然后统计每个 0 前面有多少个 1 的方法来解决。使用主定理分析容易得知该算法的时间复杂度为 $O(n\log n)$。&lt;/p&gt;
+&lt;p&gt;在进入三维偏序之前，我们先尝试总结 cdq 分治降低问题难度的本质：它通过分治递归处理子问题，然后在当前层面上只考虑左对右的贡献，从而将&lt;strong&gt;某一维度的排序问题转换成了 0/1 的二元问题&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;再来看三维偏序问题。三维偏序问题和二维偏序定义类似，只不过每个元素都换成了三元组 $(a_i, b_i, c_i)$。我们如法泡制，对第一维排序后套用 cdq 分治，相当于将所有的三元组转换成了 $(0/1, b_i, c_i)$。由于还剩下两维，直接下手有点困难 (除非你掌握了某些高级的数据结构)，但我们可以在 cdq 分治上再套一层 cdq 分治：具体来说，我们可以对 $b_i$ 这一维度做归并排序，然后对其 cdq 分治，这样在第三维上每个三元组实际上被转化成了 $(0/1, 0/1, c_i)$，我们只需要考虑所有形如 $(0, 0, c_1)$ 对 $(1, 1, c_2)$ 的贡献即可。总时间复杂度 $O(n\log^2n)$。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;致歉&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;本讲义写的相当糟糕——cdq分治难度较大，思想比较微妙，笔者功力有限，用语言难以描述清楚。我们提供两份额外的参考资料，一是 
+&lt;a href=&#34;https://oi-wiki.org/misc/cdq-divide/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;OIWiki&lt;/a&gt; 上对于 cdq 分治的讲解，二是一份 cdq 套 cdq 的三维偏序的参考实现，希望尽可能帮助感兴趣的同学理解。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;Code&lt;/b&gt; :: &lt;i&gt;Click to expand&lt;/i&gt;&lt;/summary&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;struct node
+{
+    int x,y,z;
+    int nx,ny,nz;
+    bool operator == (const node cp)
+    {
+        return (x==cp.x) &amp;amp;&amp;amp; (y==cp.y) &amp;amp;&amp;amp; (z==cp.z);
+    }
+}p[100048],a[100048],b[100048],c[100048];
+
+int n;
+int ans = 0;
+
+bool cmp(node x,node y)
+{
+    if (x.x!=y.x) return x.x&amp;lt;y.x;
+    if (x.y!=y.y) return x.y&amp;lt;y.y;
+    return x.z&amp;lt;y.z;
+}
+
+void cdq2(int left,int right)
+{
+    if (left==right) return;
+    int i,k1,k2,pt,mid=(left+right)&amp;gt;&amp;gt;1;
+    cdq2(left,mid);cdq2(mid+1,right);
+    int cnt=0;
+    for (k1=left,k2=mid+1,pt=left;pt&amp;lt;=right;pt++)
+    {
+        if (k2&amp;gt;right || (k1&amp;lt;=mid &amp;amp;&amp;amp; k2&amp;lt;=right &amp;amp;&amp;amp; b[k1].z&amp;lt;=b[k2].z))
+        {
+            if (!b[k1].nx) cnt++;
+            c[pt]=b[k1++];
+        }
+        else
+        {
+            if (b[k2].nx) ans += cnt;
+            c[pt]=b[k2++];
+        }
+    }
+    for (i=left;i&amp;lt;=right;i++) b[i] = c[i];
+}
+
+void cdq1(int left,int right)
+{
+    if (left==right) return;
+    int i,k1,k2,pt,mid=(left+right)&amp;gt;&amp;gt;1;
+    cdq1(left,mid); cdq1(mid+1,right);
+    for (k1=left,k2=mid+1,pt=left;pt&amp;lt;=right;pt++)
+    {
+        if (k2&amp;gt;right || (k1&amp;lt;=mid &amp;amp;&amp;amp; k2&amp;lt;=right &amp;amp;&amp;amp; a[k1].y&amp;lt;=a[k2].y))
+        {
+            b[pt]=a[k1++];
+            b[pt].nx=0;
+        }
+        else
+        {
+            b[pt]=a[k2++];
+            b[pt].nx=1;
+        }
+    }
+    for (i=left;i&amp;lt;=right;i++) a[i] = b[i];
+    cdq2(left,right);
+}
+
+int main ()
+{
+    int i;
+    n=getint();i=getint();
+    for (i=1;i&amp;lt;=n;i++) {p[i].x=getint();p[i].y=getint();p[i].z=getint();}
+    sort(p+1,p+n+1,cmp);
+    for (i=1;i&amp;lt;=n;i++) a[i] = p[i];
+    cdq1(1, n);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/details&gt;</description>
+    </item>
+    
+    <item>
+      <title>逆元</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/mulinv/</link>
+      <pubDate>Sat, 13 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/mulinv/</guid>
+      <description>&lt;p&gt;对于整数 $a, b&amp;lt;p$，计算 $(a/b)\text{ mod }p$ 可以转化为计算 $a\cdot b^{-1}\text{ mod }p$，这里 $b^{-1}$ 称为 $b$ 在模 $p$ 下的&lt;strong&gt;逆元&lt;/strong&gt;，可以证明当 $p$ 为质数时，$b^{-1}$ 在 $[0, p)$ 范围内是唯一的。逆元的数学推导会在后续的理论课程中给出，这里不做赘述 (如果你不懂也暂时不必深究)。本文主要阐述人们通常是如何书写计算逆元的代码。&lt;/p&gt;
+&lt;p&gt;当 $p$ 为质数时，计算逆元最简单的方法之一是使用费尔马小定理。由于&lt;/p&gt;
+&lt;p&gt;$$a^{p-1}\equiv 1(\text{mod }p)$$&lt;/p&gt;
+&lt;p&gt;所以令 $a^{-1}=a^{p-2}\text{ mod }p$，则有 $a\cdot a^{-1}\equiv 1(\text{mod }p)$。这里的 $a^{-1}$ 即为 $a$ 在模 $p$ 意义下的逆元。你可以使用快速幂算法快速计算 $a^{p-2}$ 的值，时间复杂度为 $O(\log p)$。&lt;/p&gt;
+&lt;p&gt;另外一种常见的需求是计算 $[1, n]$ 中所有数的逆元。如果对每个数用费尔马小定理计算逆元，时间复杂度将达到 $O(n\log p)$，有时不可接受。前人发明过一些非常精巧的算法递推地 $O(n)$ 求出所有数的逆元，如果你感兴趣可以参考 
+&lt;a href=&#34;https://blog.csdn.net/bcr_233/article/details/87898670&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这篇博客&lt;/a&gt;。但我们更推荐你采用如下非常简洁的做法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;顺序递推求出 $1!, 2!, \cdots, n!$。&lt;/li&gt;
+&lt;li&gt;使用快速幂计算 $(n!)^{-1}$。&lt;/li&gt;
+&lt;li&gt;从后往前递推算出所有阶乘的逆元 (注：$(k!)^{-1}\cdot k=((k-1)!)^{-1}$)。&lt;/li&gt;
+&lt;li&gt;对于 $x$，$x^{-1}=(x-1)!\cdot (x!)^{-1}$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;该做法虽然看上去多了几遍递推，但时间复杂度仍为 $O(n)$，且通常拥有更加优秀的常数因子 (即在实际运行中效率可能反而比链接中的一遍递推要高，因为链接中的做法有大量的取模操作)。&lt;/p&gt;
+&lt;details&gt;&lt;summary&gt;&lt;b&gt;Reference&lt;/b&gt; :: &lt;i&gt;click to expand&lt;/i&gt;&lt;/summary&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;const int MOD = 998244353;
+int fac[MAXN], ifac[MAXN], inv[MAXN];
+
+void init_inv()
+{
+    fac[0] = 1;
+    for (int i = 1; i &amp;lt;= n; i++)
+        fac[i] = 1ll * fac[i - 1] * i % MOD;
+    ifac[n] = quick_pow(fac[n], MOD - 2);
+    for (int i = n - 1; i &amp;gt;= 0; i--)
+    {
+        ifac[i] = 1ll * ifac[i + 1] * (i + 1) % MOD;
+        inv[i + 1] = 1ll * fac[i] * ifac[i + 1] % MOD;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/details&gt;</description>
+    </item>
+    
+    <item>
+      <title>【问题求解II-HW4.C】烧烤</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-4-c/</link>
+      <pubDate>Mon, 08 May 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-4-c/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;题面描述&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;有 $n$ 个包，第 $i$ 个包里有 $A_i$ 个黑球和 $B_i$ 个白球。问有多少种方法选取两个包，再将包中的球排成一排。同色的球之间不可区分，选择不同的包被视为不同方案。&lt;/li&gt;
+&lt;li&gt;$n\leq 2\times 10^5, A_i, B_i\leq 2000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;该题面描述与原题背景不太相同，但容易看出它们讨论的问题是一样的。本题解法比较精巧，供大家欣赏。&lt;/p&gt;
+&lt;p&gt;如果我们枚举选择哪两个包，那么选取第 $i$ 个包和第 $j$ 个包的情况下，问题会被转化为将 $A_i+A_j$ 个黑球和 $B_i+B_j$ 个白球排成一排有多少种方案，这等价于在 $A_i+A_j+B_i+B_j$ 个位置中选择 $A_i + A_j$ 个位置放黑球。因此最终答案可以写为
+$$
+\sum_{i,j\in \{1,\cdots, n\}, i&amp;lt;j} \binom{A_i+A_j+B_i+B_j}{A_i+A_j}
+$$
+即使我们可以通过预处理 $O(1)$ 地求解组合数，直接计算该表达式的时间复杂度也会达到 $O(n^2)$。本题 $n\leq 2\times 10^5$，无法通过。&lt;/p&gt;
+&lt;p&gt;本题的关键在于一步精妙的模型转化。通常我们认为能够写出 
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Closed-form_expression&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;closed form&lt;/a&gt; 的数学表达式是优美的，但这里我们反其道而行之，将上面表达式中的组合数转化为一个具体的动态规划问题。考虑如下问题：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;在一张 $n\times m$ 的方格纸上，从 $(0, 0)$ 走到 $(n, m)$ 有多少种方案？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;很容易看出该问题的答案是 $\binom{n+m}{n}$，即从 $(0, 0)$ 到 $(n, m)$ 一共要走 $n$ 条横向边和 $m$ 条竖向边，从 $n+m$ 步中选 $n$ 步走横的。不过我们还有一个“笨方法”：令 $dp(i, j)$ 表示从 $(0, 0)$ 走到 $(i, j)$ 的方案数，显然 $(i, j)$ 可以从 $(i-1, j)$ 或 $(i, j-1)$ 转移来，因此
+$$
+dp(i, j)=
+\begin{cases}
+1&amp;amp;, (i, j) = (0, 0)\\
+dp(i-1, j) + dp(i, j-1)&amp;amp;, otherwise
+\end{cases}
+$$
+注意上述状态转移方程没有考虑边界问题。
+回到原问题，对于 $\binom{A_i+A_j+B_i+B_j}{A_i+A_j}$，我们可以套用走方格纸问题，将其转化为从 $(-A_i, -B_i)$ 到 $(A_j, B_j)$ 的方案数，并通过动态规划递推解决。我们看似用一个 $O(|A_i|^2)$ 的算法替代了 $O(1)$ 的组合数求解，但&lt;strong&gt;动态规划的递推过程是可以叠加的&lt;/strong&gt;。我们不需要单独对每组点对跑动态规划，我们可以给地图上所有的负坐标 $(-A_i, -B_i)$ 打上 1，然后从地图的左下角开始一遍推到右上角，然后在所有的正坐标位置收取答案。这样我们花一趟完成了 $n^2$ 次动态规划，时间复杂度降低到 $O(|A_i|^2)$。&lt;/p&gt;
+&lt;p&gt;这个过程有一点抽象，如果你没有完全理解，可以简单构造一个 3 个点的样例手动模拟一下算法，看看一个负坐标上的标记是如何同时贡献到所有的正坐标上，以及不同的标记是如何叠加的。&lt;/p&gt;
+&lt;p&gt;此外还有一些细节需要注意：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;C/C++ 中无法直接支持负数下标，你可以考虑给所有的坐标加上一个偏移量 offset 转化成正数。&lt;/li&gt;
+&lt;li&gt;上述递推过程会出现 $(-A_i, B_i)$ 向 $(A_i, B_i)$ 贡献的情况，相当于选取了两个一样的包，需要 $O(n)$ 地单独计算并扣除。&lt;/li&gt;
+&lt;li&gt;对于任意一对 $(i, j)$，上述递推过程会同时计算 “$(-A_i, -B_i)$ 向 $(A_j, B_j)$ 贡献” 和 “$(-A_j, B_J)$ 向 $(A_i, B_i)$ 贡献”，即重复计算了两次。因此扣除第二点中的数量后还需要除以 2。&lt;/li&gt;
+&lt;li&gt;在模意义下如何除以 2 不是一个简单的问题，你可以上网搜索“逆元”或 &amp;ldquo;modular multiplicative inverse&amp;rdquo;。现阶段你不需要过深地理解背后的数论原理，因为后续的理论课程会涉及。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
       <title>【问题求解II-HW3.A】签到题</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-a/</link>
       <pubDate>Sat, 29 Apr 2023 00:00:00 +0000</pubDate>
