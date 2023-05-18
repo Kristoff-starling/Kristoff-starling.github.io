@@ -57,7 +57,8 @@
         {{ end }}
 
         <div class="grid-sizer col-lg-12 isotope-item pubtype-{{ $.Scratch.Get "pubtype" }} year-{{ .Date.Format "2006" }}">
-          {{ if eq $.Params.view 1 }}
+          {{ partial "li_pub" . }}
+          <!-- {{ if eq $.Params.view 1 }}
             {{ partial "li_list" . }}
           {{ else if eq $.Params.view 3 }}
             {{ partial "li_card" . }}
@@ -65,7 +66,7 @@
             {{ partial "li_citation" . }}
           {{ else }}
             {{ partial "li_compact" . }}
-          {{ end }}
+          {{ end }} -->
         </div>
 
         {{ end }}

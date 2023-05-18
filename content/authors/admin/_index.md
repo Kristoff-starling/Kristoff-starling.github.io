@@ -17,22 +17,23 @@ organizations:
 - name: Nanjing University
   url: ""
 
-# interests:
-# - Algorithms
-# - Software Engineering
+interests:
+- Computer Systems
+- Programming Languages
+- Algorithms
 
-# education:
-#   courses:
-#   - course: Undergraduate in Nanjing University
-#     institution: Nanjing University
-#     year: 2020
+education:
+  courses:
+  - course: B.S. in Computer Science
+    institution: Nanjing University
+    year: 2020~2024(expected)
 
-publications:
-  conf_papers:
-  - title: "NeuRI: Diversifying DNN Generation via Inductive Rule Inference"
-    authors: "Jiawei Liu, Jinjun Peng, <u>**Yuyao Wang**</u>, Lingming Zhang"
-    PDF: pub/NeuRI.pdf
-    arxiv: https://arxiv.org/abs/2302.02261
+# publications:
+#   conf_papers:
+#   - title: "NeuRI: Diversifying DNN Generation via Inductive Rule Inference"
+#     authors: "Jiawei Liu, Jinjun Peng, <u>**Yuyao Wang**</u>, Lingming Zhang"
+#     PDF: pub/NeuRI.pdf
+#     arxiv: https://arxiv.org/abs/2302.02261
 
 # Social/Academic Networking
 # For available icons, see: https://sourcethemes.com/academic/docs/page-builder/#icons
@@ -67,5 +68,3 @@ user_groups:
 I am Yuyao Wang (王宇峣), a junior in Computer Science (Elite Class) at [Nanjing University](https://www.nju.edu.cn/en). My research interest lies in topics related to the *correctness*, *programmability* and *performance* of computer systems. 
 
 I have been attached to programming and algorithm design since middle school and aspire to bring elegant solutions for tackling *real-world* problems.
-
----

@@ -7433,8 +7433,7 @@ a[data-fancybox] {
  *  Footer
  **************************************************/
 footer {
-  margin: 4rem 0 0;
-  padding: 2rem 0;
+  padding: 1rem 0;
   width: 100%; }
 
 footer p {
@@ -8647,11 +8646,11 @@ ul.ul-edu li .description p {
   margin: 0; }
 
 ul.ul-edu li .description p.course {
-  font-size: 0.9rem; }
+  font-size: 0.65rem;
+  color: rgba(0, 0, 0, 0.6); }
 
 ul.ul-edu li .description p.institution {
-  font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.6); }
+  font-size: 0.8rem; }
 
 ul.ul-publications li .description p {
   margin: 0; }

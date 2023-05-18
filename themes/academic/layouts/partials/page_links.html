@@ -11,7 +11,8 @@
     {{ $link = . | relURL }}
   {{ end }}
 <a class="btn btn-outline-primary my-1 mr-1{{ if $is_list }} btn-sm{{end}}" href="{{ $link }}" target="_blank" rel="noopener">
-  {{ i18n "btn_preprint" }}
+  <!-- {{ i18n "btn_preprint" }} -->
+  arXiv
 </a>
 {{ end }}
 {{ $pdf := "" }}
@@ -33,7 +34,8 @@
 {{ with $resource }}
 <button type="button" class="btn btn-outline-primary my-1 mr-1{{ if $is_list }} btn-sm{{end}} js-cite-modal"
         data-filename="{{ .RelPermalink }}">
-  {{ i18n "btn_cite" }}
+  <!-- {{ i18n "btn_cite" }} -->
+  Bib
 </button>
 {{ end }}
 {{ with $page.Params.url_code }}

@@ -14,9 +14,11 @@
 
   {{/* Docs and Updates layouts include the site footer in a different location. */}}
   {{ if not (in (slice "docs" "updates") .Type) }}
-  <div class="container">
-    {{ partial "site_footer" . }}
-  </div>
+    {{if .IsHome }}
+      <div class="container">
+        {{ partial "site_footer" . }}
+      </div>
+    {{ end }}
   {{ end }}
 
   {{ partial "citation" . }}

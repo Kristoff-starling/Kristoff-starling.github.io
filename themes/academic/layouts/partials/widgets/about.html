@@ -78,7 +78,7 @@
 
     <div class="row">
 
-      {{ with $person.publications }}
+      <!-- {{ with $person.publications }}
       <div class="col-md-12">
         <h1>{{ "Publications" | markdownify }}</h1>
         <ul class="ul-publications fa-ul">
@@ -102,7 +102,7 @@
         </ul>
       </div>
       {{ end }}
-
+ -->
       {{ with $person.interests }}
       <div class="col-md-5">
         <h3>{{ i18n "interests" | markdownify }}</h3>
@@ -122,8 +122,9 @@
           <li>
             <i class="fa-li fas fa-graduation-cap"></i>
             <div class="description">
-              <p class="course">{{ .course }}{{ with .year }}, {{ . }}{{ end }}</p>
               <p class="institution">{{ .institution }}</p>
+              <p class="course">{{ .course }}{{ with .year }}, {{ . }}{{ end }}</p>
+              <!-- <p class="institution">{{ .institution }}</p> -->
             </div>
           </li>
           {{ end }}

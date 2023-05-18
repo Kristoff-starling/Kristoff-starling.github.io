@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Jinjun Peng | Yuyao Wang&#39;s Homepage</title>
+    <link>https://kristoff-starling.github.io/authors/jinjun-peng/</link>
+      <atom:link href="https://kristoff-starling.github.io/authors/jinjun-peng/index.xml" rel="self" type="application/rss+xml" />
+    <description>Jinjun Peng</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 04 Feb 2023 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>Jinjun Peng</title>
+      <link>https://kristoff-starling.github.io/authors/jinjun-peng/</link>
+    </image>
+    
+    <item>
+      <title>NeuRI: Diversifying DNN Generation via Inductive Rule Synthesis</title>
+      <link>https://kristoff-starling.github.io/publication/neuri/</link>
+      <pubDate>Sat, 04 Feb 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/publication/neuri/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,126 @@
+{{ $item := . }}
+
+{{/* Dynamic view adjusts to content type. */}}
+{{ $icon_pack := "far" }}
+{{ $icon := "fa-file-alt" }}
+{{ $show_authors := false }}
+{{ $show_buttons := false }}
+{{ $link := $item.RelPermalink }}
+{{ $target := "" }}
+{{ if $item.Params.external_link }}
+  {{ $link = $item.Params.external_link }}
+  {{ $target = "target=\"_blank\" rel=\"noopener\"" }}
+{{ end }}
+{{ if eq $item.Type "post" }}
+  {{ $icon = "fa-newspaper" }}
+{{ else if eq $item.Type "talk" }}
+  {{ $icon = "fa-calendar-alt" }}
+{{ else if eq $item.Type "publication" }}
+  {{ $show_authors = true }}
+  {{ $show_buttons = true }}
+{{ else if eq $item.Type "project" }}
+  {{ $icon_pack = "fas" }}
+  {{ $icon = "fa-project-diagram" }}
+  {{ $show_authors = true }}
+  {{ $show_buttons = true }}
+{{ end }}
+
+<style>
+.badge-abbr {
+  background-color: #3f51b5;
+  padding: 4px 28px;
+  font-size: 0.8rem;
+  color: white;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 1px 1px 2px grey;
+}
+
+.badge-info {
+  background-color: #3f51b51a;
+  border-color: #3f51b5;
+  border-style: solid;
+  border-width: 1.5px;
+  padding: 4px 8px;
+  font-size: 0.55rem;
+  font-weight: bolder;
+  color: #3f51b5;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 0px 3px 5px lightgrey;
+}
+
+.pub-title {
+    font-weight: normal;
+    line-height: 1.5
+}
+
+.author-list {
+  overflow: hidden;
+  font-size: 17px;
+  letter-spacing: 0.03em;
+  color: rgba(0,0,0,0.54);
+}
+
+.pub-list {
+    margin-bottom: 20px;
+}
+
+.periodical {
+    font-size: 17px;
+    font-style: italic;
+    font-weight: lighter
+}
+
+</style>
+
+<div class="row pub-list">
+  <div class="col-3" align="center">
+    {{ if $item.Params.abbr }}
+    <div class="tight-box">
+      <span class="badge-abbr">{{ $item.Params.abbr }}</span>
+    </div>
+    {{ end }}
+    {{ if $item.Params.toapper }}
+    <div class="tight-box">
+    <span class="badge-info">To Appear</span>
+    </div>
+    {{ end }}
+  </div>
+  <div class="col-9">
+  <!-- <i class="{{$icon_pack}} {{$icon}} pub-icon" aria-hidden="true"></i> -->
+  <div class="pub-title">
+    {{ $item.Title }}
+  </div>
+
+  {{ if eq $item.Type "talk" }}
+  <div class="article-metadata">
+    <span>
+      {{ partial "functions/get_event_dates" $item }}
+    </span>
+    {{ with $item.Params.location }}
+    <span class="middot-divider"></span>
+    <span>{{ . }}</span>
+    {{ end }}
+  </div>
+  {{ end }}
+
+  {{ if and $show_authors $item.Params.authors }}
+  <div class="author-list">
+    {{ partial "page_metadata_authors" $item }}
+  </div>
+  {{ end }}
+
+  {{ if $item.Params.periodical }}
+    <div class="periodical">
+        {{ $item.Params.periodical }}
+    </div>
+  {{ end }}
+
+  {{ if $show_buttons }}
+  <div class="btn-links">
+    {{ partial "page_links" (dict "page" $item "is_list" 1) }}
+  </div>
+  {{ end }}
+  </div>
+</div>

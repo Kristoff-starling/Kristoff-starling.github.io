@@ -4,29 +4,30 @@
 #   The weight parameter defines the order that the links will appear in.
 
 [[main]]
+  name = "Publications"
+  url = "/publication"
+  weight = 10
+
+[[main]]
   name = "Posts"
   url = "/posts"
-  weight = 10
+  weight = 20
 
 [[main]]
   name = "Teaching"
   url = "/courses"
-  weight = 20
-
-[[main]]
-  name = "CV"
-  url = "files/yuyao_CV.pdf"
   weight = 30
+
+# [[main]]
+#   name = "CV"
+#   url = "files/yuyao_CV.pdf"
+#   weight = 40
 
 # [[main]]
 #   name = "Projects"
 #   url = "#projects"
 #   weight = 30
 # 
-# [[main]]
-#   name = "Publications"
-#   url = "#featured"
-#   weight = 40
 # 
 # [[main]]
 #   name = "Courses"

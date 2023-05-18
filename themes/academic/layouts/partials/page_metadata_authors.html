@@ -1,5 +1,12 @@
 {{/* Display author list. */}}
 
+{{ $websites := dict
+  "Jiawei Liu" "https://jiawei-site.github.io"
+  "Lingming Zhang" "https://lingming.cs.illinois.edu"
+  "Chunqiu Steven Xia" "https://steven.cs.illinois.edu/"
+  "Jinjun Peng" "https://co1lin.github.io"
+}}
+
 {{- $taxonomy := "authors" }}
 {{ with .Param $taxonomy }}
   {{ $link_authors := site.Params.link_authors | default true }}
@@ -8,11 +15,21 @@
     {{- $name := $profile_page.Params.name | default ($value|markdownify) -}}
     {{- if gt $index 0 }}, {{ end -}}
     <span>
-      {{- if and $profile_page $link_authors -}}
+      <!-- {{- if and $profile_page $link_authors -}}
         <a href="{{$profile_page.RelPermalink}}">{{$name}}</a>
       {{- else -}}
         {{$name}}
-      {{- end -}}
+      {{- end -}} -->
+      {{ if eq $name "Yuyao Wang" }}
+        <b><u>{{ $name }}</u></b>
+      {{ else }}
+        {{ $website := (index $websites (string $name)) | default "notexist" }}
+        {{ if eq $website "notexist" }}
+          {{ $name }}
+        {{ else }}
+          <a href={{ $website }} target="_blank">{{ $name }}</a> 
+        {{ end }}
+      {{ end }}
     </span>
   {{- end -}}
 {{- end -}}
