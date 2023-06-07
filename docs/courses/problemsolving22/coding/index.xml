@@ -5,12 +5,59 @@
     <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/</link>
       <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/coding/index.xml" rel="self" type="application/rss+xml" />
     <description>Coding</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 18 May 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 07 Jun 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>Coding</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/</link>
     </image>
+    
+    <item>
+      <title>并查集</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/dsu/</link>
+      <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/dsu/</guid>
+      <description>&lt;p&gt;《算法导论》中提到基于路径压缩和按秩合并的并查集更新和查询的均摊时间复杂度为 $O(\alpha(n))$，其中 $\alpha$ 为反阿克曼函数。实践中大家通常写只带有路径压缩的并查集，因为按秩合并写起来更加麻烦 (虽然只需要几行)。我们承认只带有路径压缩的并查集时间复杂度会退化为 $O(\log n)$&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;，但这样的数据不太容易构造，且 $\log n$ 其实也相当好了。然而，对于新手来说，路径压缩可能也相当难实现，因此本讲义向大家展示并查集的实现技巧。&lt;/p&gt;
+&lt;p&gt;并查集和树状数组是许多程序员心爱的数据结构，因为它们思维巧妙，功能强大，且优秀的实现极其简洁。这里我们给出一份完整的带有路径压缩和按秩合并的并查集模板：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;namespace DSU
+{
+    int pre[MAXN], rnk[MAXN];
+    void init()
+    {
+        for (int i = 1; i &amp;lt;= n; i++)
+            pre[i] = i, rnk[i] = 1;
+    }
+    int find_anc(int x)
+    {
+        if (pre[x] != x) pre[x] = find_anc(pre[x]);
+        return pre[x];
+    }
+    void merge(int x, int y)
+    {
+        x = find_anc(x); y = find_anc(y);
+        if (rnk[x] &amp;gt; rnk[y])
+            pre[y] = x;
+        else
+        {
+            if (rnk[x] == rnk[y]) rnk[y]++;
+            pre[x] = y;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你需要重点关注的是 &lt;code&gt;find_anc()&lt;/code&gt; 函数，它只用一行就在查询集合代表元的同时完成了路径压缩，本质上是在找到代表元之后将路径上所有的节点直接挂到根下。&lt;/p&gt;
+&lt;p&gt;如果你觉得麻烦，可以省略按秩合并的部分 (但要付出一点点复杂度的代价，通常可以接受)。还有一些程序员会选择用启发式合并代替按秩合并 (即维护每个集合的元素个数，每次将小的集合合并到大的集合当中)，可以证明路径压缩+启发式合并也可以做到 $O(\alpha(n))$&lt;sup id=&#34;fnref1:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+&lt;div class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn:1&#34;&gt;
+&lt;p&gt;如果你感兴趣，可以参考 
+&lt;a href=&#34;https://www.luogu.com.cn/blog/Atalod/shi-jian-fu-za-du-shi-neng-fen-xi-qian-tan&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这篇博文&lt;/a&gt; 详细了解。&amp;#160;&lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&amp;#160;&lt;a href=&#34;#fnref1:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>调试艺术</title>

@@ -29,12 +29,12 @@
   
     
   
-  <meta name="description" content="cdq分治是一种常用的分治思想，最早由 陈丹琦 整理和总结 ( 原文地址)。这种思想从 high-level 层面来说十分简单和抽象：当我们希望解决某个问题 solve(l, r) 时，我们可以考虑如下的分治步骤：
-解决 solve(l, mid)。 考虑 [l, mid] 对 [mid&#43;1, r] 的贡献。 解决 solve(mid&#43;1, r)。 第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。
-二维偏序问题指对于一个二元组序列 $(a_1, b_1), (a_2, b_2),\cdots, (a_n, b_n)$，求满足 $a_i&lt;a_j$ 且 $b_i&lt;b_j$ 的数对 $(i, j)$ 的个数。显然我们如果将二元组按照 $a_i$ 从小到大排序，那么该问题就转化为了 $b_i$ 序列的逆序数问题。我们尝试套用cdq分治的“模板”来解决它。令 $solve(l, r)$ 表示区间 $[l, r]$ 内的逆序对个数，最终答案显然为 $solve(1, n)$。$solve(l, r)$ 分为三个步骤：">
+  <meta name="description" content="《算法导论》中提到基于路径压缩和按秩合并的并查集更新和查询的均摊时间复杂度为 $O(\alpha(n))$，其中 $\alpha$ 为反阿克曼函数。实践中大家通常写只带有路径压缩的并查集，因为按秩合并写起来更加麻烦 (虽然只需要几行)。我们承认只带有路径压缩的并查集时间复杂度会退化为 $O(\log n)$1，但这样的数据不太容易构造，且 $\log n$ 其实也相当好了。然而，对于新手来说，路径压缩可能也相当难实现，因此本讲义向大家展示并查集的实现技巧。
+并查集和树状数组是许多程序员心爱的数据结构，因为它们思维巧妙，功能强大，且优秀的实现极其简洁。这里我们给出一份完整的带有路径压缩和按秩合并的并查集模板：
+namespace DSU { int pre[MAXN], rnk[MAXN]; void init() { for (int i = 1; i &lt;= n; i&#43;&#43;) pre[i] = i, rnk[i] = 1; } int find_anc(int x) { if (pre[x] !">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/coding/dsu/">
 
   
 
@@ -221,7 +221,7 @@
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/coding/dsu/">
 
   
   
@@ -235,17 +235,17 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/">
-  <meta property="og:title" content="cdq分治 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="cdq分治是一种常用的分治思想，最早由 陈丹琦 整理和总结 ( 原文地址)。这种思想从 high-level 层面来说十分简单和抽象：当我们希望解决某个问题 solve(l, r) 时，我们可以考虑如下的分治步骤：
-解决 solve(l, mid)。 考虑 [l, mid] 对 [mid&#43;1, r] 的贡献。 解决 solve(mid&#43;1, r)。 第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。
-二维偏序问题指对于一个二元组序列 $(a_1, b_1), (a_2, b_2),\cdots, (a_n, b_n)$，求满足 $a_i&lt;a_j$ 且 $b_i&lt;b_j$ 的数对 $(i, j)$ 的个数。显然我们如果将二元组按照 $a_i$ 从小到大排序，那么该问题就转化为了 $b_i$ 序列的逆序数问题。我们尝试套用cdq分治的“模板”来解决它。令 $solve(l, r)$ 表示区间 $[l, r]$ 内的逆序对个数，最终答案显然为 $solve(1, n)$。$solve(l, r)$ 分为三个步骤："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/coding/dsu/">
+  <meta property="og:title" content="并查集 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="《算法导论》中提到基于路径压缩和按秩合并的并查集更新和查询的均摊时间复杂度为 $O(\alpha(n))$，其中 $\alpha$ 为反阿克曼函数。实践中大家通常写只带有路径压缩的并查集，因为按秩合并写起来更加麻烦 (虽然只需要几行)。我们承认只带有路径压缩的并查集时间复杂度会退化为 $O(\log n)$1，但这样的数据不太容易构造，且 $\log n$ 其实也相当好了。然而，对于新手来说，路径压缩可能也相当难实现，因此本讲义向大家展示并查集的实现技巧。
+并查集和树状数组是许多程序员心爱的数据结构，因为它们思维巧妙，功能强大，且优秀的实现极其简洁。这里我们给出一份完整的带有路径压缩和按秩合并的并查集模板：
+namespace DSU { int pre[MAXN], rnk[MAXN]; void init() { for (int i = 1; i &lt;= n; i&#43;&#43;) pre[i] = i, rnk[i] = 1; } int find_anc(int x) { if (pre[x] !"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-05-13T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-06-07T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-05-13T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-06-07T00:00:00&#43;00:00">
   
 
   
@@ -264,7 +264,7 @@
 
 
 
-  <title>cdq分治 | Yuyao Wang&#39;s Homepage</title>
+  <title>并查集 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -469,40 +469,44 @@
   
   
   <div class="docs-toc-item">
-    <a class="docs-toc-link" href="/courses/problemsolving22/algorithms/">Overview</a>
+    <a class="docs-toc-link" href="/courses/problemsolving22/coding/">Overview</a>
 
   </div>
   
   <div class="docs-toc-item">
-    <a class="docs-toc-link" href="/courses/problemsolving22/algorithms/repeatedsquare/">Contents</a>
+    <a class="docs-toc-link" href="/courses/problemsolving22/coding/matmul/">Contents</a>
     <ul class="nav docs-sidenav">
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/repeatedsquare/">快速幂</a>
+        <a href="/courses/problemsolving22/coding/matmul/">矩阵快速幂</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/matmul/">矩阵快速幂</a>
+        <a href="/courses/problemsolving22/coding/modulation/">优雅地取模</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/chunking/">分块</a>
+        <a href="/courses/problemsolving22/coding/difftest/">DiffTest</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/lca/">LCA-倍增</a>
+        <a href="/courses/problemsolving22/coding/fastio/">快速输入输出</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/st/">ST表</a>
+        <a href="/courses/problemsolving22/coding/mulinv/">逆元</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/coding/profiling/">性能优化</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/coding/defense/">调试艺术</a>
       </li>
       
       <li class="active">
-        <a href="/courses/problemsolving22/algorithms/cdq/">cdq分治</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/algorithms/answer-binary-search/">二分答案</a>
+        <a href="/courses/problemsolving22/coding/dsu/">并查集</a>
       </li>
       
     </ul>
@@ -522,110 +526,49 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>cdq分治</h1>
+          <h1>并查集</h1>
 
           <div class="article-style">
-            <p>cdq分治是一种常用的分治思想，最早由 
-<a href="https://www.cs.princeton.edu/~danqic/" target="_blank" rel="noopener">陈丹琦</a> 整理和总结 (
-<a href="https://www.cs.princeton.edu/~danqic/papers/divide-and-conquer.pdf" target="_blank" rel="noopener">原文地址</a>)。这种思想从 high-level 层面来说十分简单和抽象：当我们希望解决某个问题 <code>solve(l, r)</code> 时，我们可以考虑如下的分治步骤：</p>
-<ul>
-<li>解决 <code>solve(l, mid)</code>。</li>
-<li>考虑 <code>[l, mid]</code> 对 <code>[mid+1, r]</code> 的贡献。</li>
-<li>解决 <code>solve(mid+1, r)</code>。</li>
-</ul>
-<p>第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。</p>
-<p>二维偏序问题指对于一个二元组序列 $(a_1, b_1), (a_2, b_2),\cdots, (a_n, b_n)$，求满足 $a_i&lt;a_j$ 且 $b_i&lt;b_j$ 的数对 $(i, j)$ 的个数。显然我们如果将二元组按照 $a_i$ 从小到大排序，那么该问题就转化为了 $b_i$ 序列的逆序数问题。我们尝试套用cdq分治的“模板”来解决它。令 $solve(l, r)$ 表示区间 $[l, r]$ 内的逆序对个数，最终答案显然为 $solve(1, n)$。$solve(l, r)$ 分为三个步骤：</p>
-<ul>
-<li>$solve(l, mid)$：递归解决.</li>
-<li>计算下标在 $[l, mid]$ 中的数对 $[mid+1, r]$ 中的数的贡献。换言之，我们需要计算满足 $i\in [l, mid], j\in [mid+1, r]， b_i&gt;b_j$ 的 $(i, j)$-pair 个数。</li>
-<li>$solve(mid+1, r)$：递归解决。</li>
-</ul>
-<p>重点关注第二条。虽然看上去还是在数“逆序对”，但它比原问题简单了很多——因为 $[l, r]$ 的数被鲜明地分成了 $[l, mid]$ 和 $[mid+1, r]$ 两类。换言之，每个数 $b_i$ 可以被看作 $(0, b_i)$ 或者 $(1, b_i)$，取决于它在左半边还是右半边，我们只关心 0 的那一类 $b_i$ 比 1 的那一类 $b_i$ 大的数目。我们可以通过按照 $b_i$ 做一遍归并排序，然后统计每个 0 前面有多少个 1 的方法来解决。使用主定理分析容易得知该算法的时间复杂度为 $O(n\log n)$。</p>
-<p>在进入三维偏序之前，我们先尝试总结 cdq 分治降低问题难度的本质：它通过分治递归处理子问题，然后在当前层面上只考虑左对右的贡献，从而将<strong>某一维度的排序问题转换成了 0/1 的二元问题</strong>。</p>
-<p>再来看三维偏序问题。三维偏序问题和二维偏序定义类似，只不过每个元素都换成了三元组 $(a_i, b_i, c_i)$。我们如法泡制，对第一维排序后套用 cdq 分治，相当于将所有的三元组转换成了 $(0/1, b_i, c_i)$。由于还剩下两维，直接下手有点困难 (除非你掌握了某些高级的数据结构)，但我们可以在 cdq 分治上再套一层 cdq 分治：具体来说，我们可以对 $b_i$ 这一维度做归并排序，然后对其 cdq 分治，这样在第三维上每个三元组实际上被转化成了 $(0/1, 0/1, c_i)$，我们只需要考虑所有形如 $(0, 0, c_1)$ 对 $(1, 1, c_2)$ 的贡献即可。总时间复杂度 $O(n\log^2n)$。</p>
-<div class="alert alert-note">
-  <div>
-    <p><strong>致歉</strong></p>
-<p>本讲义写的相当糟糕——cdq分治难度较大，思想比较微妙，笔者功力有限，用语言难以描述清楚。我们提供两份额外的参考资料，一是 
-<a href="https://oi-wiki.org/misc/cdq-divide/" target="_blank" rel="noopener">OIWiki</a> 上对于 cdq 分治的讲解，二是一份 cdq 套 cdq 的三维偏序的参考实现，希望尽可能帮助感兴趣的同学理解。</p>
-  </div>
-</div>
-<details><summary><b>Code</b> :: <i>Click to expand</i></summary>
-<pre><code class="language-c++">struct node
+            <p>《算法导论》中提到基于路径压缩和按秩合并的并查集更新和查询的均摊时间复杂度为 $O(\alpha(n))$，其中 $\alpha$ 为反阿克曼函数。实践中大家通常写只带有路径压缩的并查集，因为按秩合并写起来更加麻烦 (虽然只需要几行)。我们承认只带有路径压缩的并查集时间复杂度会退化为 $O(\log n)$<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>，但这样的数据不太容易构造，且 $\log n$ 其实也相当好了。然而，对于新手来说，路径压缩可能也相当难实现，因此本讲义向大家展示并查集的实现技巧。</p>
+<p>并查集和树状数组是许多程序员心爱的数据结构，因为它们思维巧妙，功能强大，且优秀的实现极其简洁。这里我们给出一份完整的带有路径压缩和按秩合并的并查集模板：</p>
+<pre><code class="language-c++">namespace DSU
 {
-    int x,y,z;
-    int nx,ny,nz;
-    bool operator == (const node cp)
+    int pre[MAXN], rnk[MAXN];
+    void init()
     {
-        return (x==cp.x) &amp;&amp; (y==cp.y) &amp;&amp; (z==cp.z);
+        for (int i = 1; i &lt;= n; i++)
+            pre[i] = i, rnk[i] = 1;
     }
-}p[100048],a[100048],b[100048],c[100048];
-
-int n;
-int ans = 0;
-
-bool cmp(node x,node y)
-{
-    if (x.x!=y.x) return x.x&lt;y.x;
-    if (x.y!=y.y) return x.y&lt;y.y;
-    return x.z&lt;y.z;
-}
-
-void cdq2(int left,int right)
-{
-    if (left==right) return;
-    int i,k1,k2,pt,mid=(left+right)&gt;&gt;1;
-    cdq2(left,mid);cdq2(mid+1,right);
-    int cnt=0;
-    for (k1=left,k2=mid+1,pt=left;pt&lt;=right;pt++)
+    int find_anc(int x)
     {
-        if (k2&gt;right || (k1&lt;=mid &amp;&amp; k2&lt;=right &amp;&amp; b[k1].z&lt;=b[k2].z))
-        {
-            if (!b[k1].nx) cnt++;
-            c[pt]=b[k1++];
-        }
+        if (pre[x] != x) pre[x] = find_anc(pre[x]);
+        return pre[x];
+    }
+    void merge(int x, int y)
+    {
+        x = find_anc(x); y = find_anc(y);
+        if (rnk[x] &gt; rnk[y])
+            pre[y] = x;
         else
         {
-            if (b[k2].nx) ans += cnt;
-            c[pt]=b[k2++];
+            if (rnk[x] == rnk[y]) rnk[y]++;
+            pre[x] = y;
         }
     }
-    for (i=left;i&lt;=right;i++) b[i] = c[i];
-}
-
-void cdq1(int left,int right)
-{
-    if (left==right) return;
-    int i,k1,k2,pt,mid=(left+right)&gt;&gt;1;
-    cdq1(left,mid); cdq1(mid+1,right);
-    for (k1=left,k2=mid+1,pt=left;pt&lt;=right;pt++)
-    {
-        if (k2&gt;right || (k1&lt;=mid &amp;&amp; k2&lt;=right &amp;&amp; a[k1].y&lt;=a[k2].y))
-        {
-            b[pt]=a[k1++];
-            b[pt].nx=0;
-        }
-        else
-        {
-            b[pt]=a[k2++];
-            b[pt].nx=1;
-        }
-    }
-    for (i=left;i&lt;=right;i++) a[i] = b[i];
-    cdq2(left,right);
-}
-
-int main ()
-{
-    int i;
-    n=getint();i=getint();
-    for (i=1;i&lt;=n;i++) {p[i].x=getint();p[i].y=getint();p[i].z=getint();}
-    sort(p+1,p+n+1,cmp);
-    for (i=1;i&lt;=n;i++) a[i] = p[i];
-    cdq1(1, n);
 }
 </code></pre>
-</details>
+<p>你需要重点关注的是 <code>find_anc()</code> 函数，它只用一行就在查询集合代表元的同时完成了路径压缩，本质上是在找到代表元之后将路径上所有的节点直接挂到根下。</p>
+<p>如果你觉得麻烦，可以省略按秩合并的部分 (但要付出一点点复杂度的代价，通常可以接受)。还有一些程序员会选择用启发式合并代替按秩合并 (即维护每个集合的元素个数，每次将小的集合合并到大的集合当中)，可以证明路径压缩+启发式合并也可以做到 $O(\alpha(n))$<sup id="fnref1:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。</p>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>如果你感兴趣，可以参考 
+<a href="https://www.luogu.com.cn/blog/Atalod/shi-jian-fu-za-du-shi-neng-fen-xi-qian-tan" target="_blank" rel="noopener">这篇博文</a> 详细了解。&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</div>
+
           </div>
 
           
@@ -640,15 +583,8 @@ int main ()
   
   
   <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/algorithms/answer-binary-search/" rel="next">二分答案</a>
-  </div>
-  
-  
-  
-  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/algorithms/lca/" rel="prev">最近公共祖先-倍增</a>
+    <a href="/courses/problemsolving22/coding/defense/" rel="prev">调试艺术</a>
   </div>
   
 </div>
@@ -658,7 +594,7 @@ int main ()
         </div>
 
         <div class="body-footer">
-          <p>Last updated on May 13, 2023</p>
+          <p>Last updated on Jun 7, 2023</p>
 
           
 

@@ -29,12 +29,12 @@
   
     
   
-  <meta name="description" content="cdq分治是一种常用的分治思想，最早由 陈丹琦 整理和总结 ( 原文地址)。这种思想从 high-level 层面来说十分简单和抽象：当我们希望解决某个问题 solve(l, r) 时，我们可以考虑如下的分治步骤：
-解决 solve(l, mid)。 考虑 [l, mid] 对 [mid&#43;1, r] 的贡献。 解决 solve(mid&#43;1, r)。 第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。
-二维偏序问题指对于一个二元组序列 $(a_1, b_1), (a_2, b_2),\cdots, (a_n, b_n)$，求满足 $a_i&lt;a_j$ 且 $b_i&lt;b_j$ 的数对 $(i, j)$ 的个数。显然我们如果将二元组按照 $a_i$ 从小到大排序，那么该问题就转化为了 $b_i$ 序列的逆序数问题。我们尝试套用cdq分治的“模板”来解决它。令 $solve(l, r)$ 表示区间 $[l, r]$ 内的逆序对个数，最终答案显然为 $solve(1, n)$。$solve(l, r)$ 分为三个步骤：">
+  <meta name="description" content="题意概述
+有两块 Cache 和 $n$ 个程序，每个程序有一个类别 (共有 $k$ 种类别)，在同一块 Cache 上连续执行相同种类的程序第二次只需 $hot_i$ 的时间，否则需要 $cold_i$ 的时间。问串行执行所有程序所需的最小时间。 $n, k\leq 5000$。 本题摘自 Codeforces 1799D1。你可以点击网站右侧的 Tutorial 查看官方题解 (官方题解从最朴素的时间复杂度为 $O(nk^2)$ 的动态规划讲起，逐步优化，清晰易懂，非常建议同学们仔细阅读)。这里我们给出一个另外的解法，比官方解法更加简洁高效。
+我们首先可以发现一个贪心性质。对于某一个类型为 $t$ 的程序来说，如果它只需要花 $hot_t$ 的时间执行，那么情况一定是：在这个程序之前最近的一个类型为 $t$ 的程序在某块 Cache 上 (不妨记为 Cache 0) 执行之后，它们中间的程序都在 Cache 1 上执行，然后当前程序在 Cache 0 上执行。为什么当前程序不可能“继承&quot;更早的 $t$ 类型程序使用的 Cache 呢？假设这种情况发生了，如下图：">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-6-b/">
 
   
 
@@ -221,7 +221,7 @@
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-6-b/">
 
   
   
@@ -235,17 +235,17 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/">
-  <meta property="og:title" content="cdq分治 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="cdq分治是一种常用的分治思想，最早由 陈丹琦 整理和总结 ( 原文地址)。这种思想从 high-level 层面来说十分简单和抽象：当我们希望解决某个问题 solve(l, r) 时，我们可以考虑如下的分治步骤：
-解决 solve(l, mid)。 考虑 [l, mid] 对 [mid&#43;1, r] 的贡献。 解决 solve(mid&#43;1, r)。 第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。
-二维偏序问题指对于一个二元组序列 $(a_1, b_1), (a_2, b_2),\cdots, (a_n, b_n)$，求满足 $a_i&lt;a_j$ 且 $b_i&lt;b_j$ 的数对 $(i, j)$ 的个数。显然我们如果将二元组按照 $a_i$ 从小到大排序，那么该问题就转化为了 $b_i$ 序列的逆序数问题。我们尝试套用cdq分治的“模板”来解决它。令 $solve(l, r)$ 表示区间 $[l, r]$ 内的逆序对个数，最终答案显然为 $solve(1, n)$。$solve(l, r)$ 分为三个步骤："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-6-b/">
+  <meta property="og:title" content="【问题求解II-HW6.B】Cache调度 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="题意概述
+有两块 Cache 和 $n$ 个程序，每个程序有一个类别 (共有 $k$ 种类别)，在同一块 Cache 上连续执行相同种类的程序第二次只需 $hot_i$ 的时间，否则需要 $cold_i$ 的时间。问串行执行所有程序所需的最小时间。 $n, k\leq 5000$。 本题摘自 Codeforces 1799D1。你可以点击网站右侧的 Tutorial 查看官方题解 (官方题解从最朴素的时间复杂度为 $O(nk^2)$ 的动态规划讲起，逐步优化，清晰易懂，非常建议同学们仔细阅读)。这里我们给出一个另外的解法，比官方解法更加简洁高效。
+我们首先可以发现一个贪心性质。对于某一个类型为 $t$ 的程序来说，如果它只需要花 $hot_t$ 的时间执行，那么情况一定是：在这个程序之前最近的一个类型为 $t$ 的程序在某块 Cache 上 (不妨记为 Cache 0) 执行之后，它们中间的程序都在 Cache 1 上执行，然后当前程序在 Cache 0 上执行。为什么当前程序不可能“继承&quot;更早的 $t$ 类型程序使用的 Cache 呢？假设这种情况发生了，如下图："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-05-13T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-06-06T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-05-13T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-06-06T00:00:00&#43;00:00">
   
 
   
@@ -264,7 +264,7 @@
 
 
 
-  <title>cdq分治 | Yuyao Wang&#39;s Homepage</title>
+  <title>【问题求解II-HW6.B】Cache调度 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -469,40 +469,68 @@
   
   
   <div class="docs-toc-item">
-    <a class="docs-toc-link" href="/courses/problemsolving22/algorithms/">Overview</a>
+    <a class="docs-toc-link" href="/courses/problemsolving22/solutions/">Overview</a>
 
   </div>
   
   <div class="docs-toc-item">
-    <a class="docs-toc-link" href="/courses/problemsolving22/algorithms/repeatedsquare/">Contents</a>
+    <a class="docs-toc-link" href="/courses/problemsolving22/solutions/1-4-c/">Contents</a>
     <ul class="nav docs-sidenav">
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/repeatedsquare/">快速幂</a>
+        <a href="/courses/problemsolving22/solutions/1-4-c/">I-HW04-C</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/matmul/">矩阵快速幂</a>
+        <a href="/courses/problemsolving22/solutions/1-6-c/">I-HW06-C</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/chunking/">分块</a>
+        <a href="/courses/problemsolving22/solutions/1-final/">I-Final</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/lca/">LCA-倍增</a>
+        <a href="/courses/problemsolving22/solutions/2-1-c/">II-HW01-C</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/st/">ST表</a>
+        <a href="/courses/problemsolving22/solutions/2-2-a/">II-HW02-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-3-a/">II-HW03-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-3-b/">II-HW03-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-3-c/">II-HW03-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-4-c/">II-HW04-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-5-a/">II-HW05-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-5-b/">II-HW05-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-5-c/">II-HW05-C</a>
       </li>
       
       <li class="active">
-        <a href="/courses/problemsolving22/algorithms/cdq/">cdq分治</a>
+        <a href="/courses/problemsolving22/solutions/2-6-b/">II-HW06-B</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/algorithms/answer-binary-search/">二分答案</a>
+        <a href="/courses/problemsolving22/solutions/2-6-c/">II-HW06-C</a>
       </li>
       
     </ul>
@@ -522,110 +550,55 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>cdq分治</h1>
+          <h1>【问题求解II-HW6.B】Cache调度</h1>
 
           <div class="article-style">
-            <p>cdq分治是一种常用的分治思想，最早由 
-<a href="https://www.cs.princeton.edu/~danqic/" target="_blank" rel="noopener">陈丹琦</a> 整理和总结 (
-<a href="https://www.cs.princeton.edu/~danqic/papers/divide-and-conquer.pdf" target="_blank" rel="noopener">原文地址</a>)。这种思想从 high-level 层面来说十分简单和抽象：当我们希望解决某个问题 <code>solve(l, r)</code> 时，我们可以考虑如下的分治步骤：</p>
-<ul>
-<li>解决 <code>solve(l, mid)</code>。</li>
-<li>考虑 <code>[l, mid]</code> 对 <code>[mid+1, r]</code> 的贡献。</li>
-<li>解决 <code>solve(mid+1, r)</code>。</li>
-</ul>
-<p>第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。</p>
-<p>二维偏序问题指对于一个二元组序列 $(a_1, b_1), (a_2, b_2),\cdots, (a_n, b_n)$，求满足 $a_i&lt;a_j$ 且 $b_i&lt;b_j$ 的数对 $(i, j)$ 的个数。显然我们如果将二元组按照 $a_i$ 从小到大排序，那么该问题就转化为了 $b_i$ 序列的逆序数问题。我们尝试套用cdq分治的“模板”来解决它。令 $solve(l, r)$ 表示区间 $[l, r]$ 内的逆序对个数，最终答案显然为 $solve(1, n)$。$solve(l, r)$ 分为三个步骤：</p>
-<ul>
-<li>$solve(l, mid)$：递归解决.</li>
-<li>计算下标在 $[l, mid]$ 中的数对 $[mid+1, r]$ 中的数的贡献。换言之，我们需要计算满足 $i\in [l, mid], j\in [mid+1, r]， b_i&gt;b_j$ 的 $(i, j)$-pair 个数。</li>
-<li>$solve(mid+1, r)$：递归解决。</li>
-</ul>
-<p>重点关注第二条。虽然看上去还是在数“逆序对”，但它比原问题简单了很多——因为 $[l, r]$ 的数被鲜明地分成了 $[l, mid]$ 和 $[mid+1, r]$ 两类。换言之，每个数 $b_i$ 可以被看作 $(0, b_i)$ 或者 $(1, b_i)$，取决于它在左半边还是右半边，我们只关心 0 的那一类 $b_i$ 比 1 的那一类 $b_i$ 大的数目。我们可以通过按照 $b_i$ 做一遍归并排序，然后统计每个 0 前面有多少个 1 的方法来解决。使用主定理分析容易得知该算法的时间复杂度为 $O(n\log n)$。</p>
-<p>在进入三维偏序之前，我们先尝试总结 cdq 分治降低问题难度的本质：它通过分治递归处理子问题，然后在当前层面上只考虑左对右的贡献，从而将<strong>某一维度的排序问题转换成了 0/1 的二元问题</strong>。</p>
-<p>再来看三维偏序问题。三维偏序问题和二维偏序定义类似，只不过每个元素都换成了三元组 $(a_i, b_i, c_i)$。我们如法泡制，对第一维排序后套用 cdq 分治，相当于将所有的三元组转换成了 $(0/1, b_i, c_i)$。由于还剩下两维，直接下手有点困难 (除非你掌握了某些高级的数据结构)，但我们可以在 cdq 分治上再套一层 cdq 分治：具体来说，我们可以对 $b_i$ 这一维度做归并排序，然后对其 cdq 分治，这样在第三维上每个三元组实际上被转化成了 $(0/1, 0/1, c_i)$，我们只需要考虑所有形如 $(0, 0, c_1)$ 对 $(1, 1, c_2)$ 的贡献即可。总时间复杂度 $O(n\log^2n)$。</p>
-<div class="alert alert-note">
+            <div class="alert alert-note">
   <div>
-    <p><strong>致歉</strong></p>
-<p>本讲义写的相当糟糕——cdq分治难度较大，思想比较微妙，笔者功力有限，用语言难以描述清楚。我们提供两份额外的参考资料，一是 
-<a href="https://oi-wiki.org/misc/cdq-divide/" target="_blank" rel="noopener">OIWiki</a> 上对于 cdq 分治的讲解，二是一份 cdq 套 cdq 的三维偏序的参考实现，希望尽可能帮助感兴趣的同学理解。</p>
+    <p><strong>题意概述</strong></p>
+<ul>
+<li>有两块 Cache 和 $n$ 个程序，每个程序有一个类别 (共有 $k$ 种类别)，在同一块 Cache 上连续执行相同种类的程序第二次只需 $hot_i$ 的时间，否则需要 $cold_i$ 的时间。问串行执行所有程序所需的最小时间。</li>
+<li>$n, k\leq 5000$。</li>
+</ul>
   </div>
 </div>
-<details><summary><b>Code</b> :: <i>Click to expand</i></summary>
-<pre><code class="language-c++">struct node
-{
-    int x,y,z;
-    int nx,ny,nz;
-    bool operator == (const node cp)
-    {
-        return (x==cp.x) &amp;&amp; (y==cp.y) &amp;&amp; (z==cp.z);
-    }
-}p[100048],a[100048],b[100048],c[100048];
+<p>本题摘自 
+<a href="https://codeforces.com/problemset/problem/1799/D1" target="_blank" rel="noopener">Codeforces 1799D1</a>。你可以点击网站右侧的 Tutorial 查看官方题解 (官方题解从最朴素的时间复杂度为 $O(nk^2)$ 的动态规划讲起，逐步优化，清晰易懂，非常建议同学们仔细阅读)。这里我们给出一个另外的解法，比官方解法更加简洁高效。</p>
+<p>我们首先可以发现一个贪心性质。对于某一个类型为 $t$ 的程序来说，如果它只需要花 $hot_t$ 的时间执行，那么情况一定是：在这个程序之前<strong>最近</strong>的一个类型为 $t$ 的程序在某块 Cache 上 (不妨记为 Cache 0) 执行之后，它们中间的程序都在 Cache 1 上执行，然后当前程序在 Cache 0 上执行。为什么当前程序不可能“继承&quot;更早的 $t$ 类型程序使用的 Cache 呢？假设这种情况发生了，如下图：</p>
+<img src="/img/problemsolving/ps-sol-2062.png" style="zoom: 50%;" />
+<p>在这个例子中，当前的1类型程序“继承”了更早的同类型程序，它们中间还夹着一个1类型程序。那么我们没有道理不把中间的这个1类型程序拉到下面的 Cache 上执行——一方面，这个1类型程序的左右都不是1类型，将它挪下来甚至可能让上面这块 Cache 多命中一次 (虽然图示例子不符合这个情况，1 的左右程序类型不一样)，另一方面，把这个程序拉下来可以让它享受 $hot_1$ 的执行时间。因此这是一笔稳赚不赔的买卖。</p>
+<p>我们在这个性质的基础上进行动态规划。为了方便叙述，我们首先约定一些记号：</p>
+<ul>
+<li>令 $last_i$ 表示在第 $i$ 个程序之前最近的一个和 $i$ 同类型的程序的位置。该数组不难获取，具体细节留给大家思考。</li>
+<li>令 $sum_{l, r}$ 表示将 $[l+1, r]$ 这个区间里的程序按顺序在同一块 Cache 上执行所需的总时间，注意我们不计算第 $l$ 个程序的执行时间，将第 $l$ 个程序纳入讨论是为了确定第 $l+1$ 个程序能否享受到 Cache hit 的加速。该记号可以通过前缀和实现。</li>
+</ul>
+<p>令 $dp(i, 0/1)$ 表示当前看到第 $i$ 个程序，第 $i$ 个程序使用的 Cache 和第 $i-1$ 个程序一样 (用第二维的 1 表示)/不一样 (0) 的情况下，最小的执行时间。令第 $i$ 个程序的类型为 $t$，分以下两种情况讨论：</p>
+<ul>
+<li>第 $i$ 个程序没有享受到 Cache hit，花了 $cold_t$ 的时间执行：这种情况下我们完全不用在意前面是哪两个程序留在了 Cache 里，因为我们没打算 Cache hit。因此
+$$
+dp(i, 0) = dp(i, 1) = \min\{dp(i-1, 0), dp(i-1, 1)\} + cold_t
+$$</li>
+<li>第 $i$ 个程序享受到了 Cache hit，花了 $hot_t$ 的时间执行：根据我们之前发现的结论，它一定是继承了和它最近的相同类型程序的 Cache，然后中间的其他程序在另一块 Cache 上执行，这里又分两种情况：
+<ul>
+<li>
+<p>上一个同类型的程序是第 $i-1$ 个，则此时满足“和前一个程序使用了同一块 Cache”，因此更新 $dp(i, 1)$：
+$$
+dp(i, 1) = \min\{dp(i - 1, 0), dp(i - 1, 1)\} + hot_t
+$$</p>
+</li>
+<li>
+<p>上一个同类型的程序不是第 $i-1$ 个，则此时更新 $dp(i, 0)$:
+$$
+dp(i, 0) = dp(last_i + 1, 0) + sum_{last_i+1, i - 1} + hot_t
+$$</p>
+<p>注意一个细节：$dp(last_i+1, 0)$ 只能从 0 状态转移来，因为我们要强制 $[last_i + 1, i - 1]$ 的程序换到另一块 Cache 上。在这种情况中，你也可以体会到为什么状态设计中有这么一个看似奇怪的“和前一个程序是否使用同一块 Cache”。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>对上述所有情况取 min 即可。你可能会有疑问：第一种情况计算的是不是不太精细，随便放也是有可能命中的？但命中情形下的最优解一定会被第二类情况覆盖到，所以第一种计算的粗糙一些问题不大。第一种情况存在的意义是保证 Cache miss 下达到最小时间的情况被覆盖到 (有点玄妙，请仔细体会)。</p>
+<p>最终答案为 $\min\{dp(n, 0), dp(n, 1)\}$，时间复杂度和空间复杂度均为 $O(n+k)$。</p>
 
-int n;
-int ans = 0;
-
-bool cmp(node x,node y)
-{
-    if (x.x!=y.x) return x.x&lt;y.x;
-    if (x.y!=y.y) return x.y&lt;y.y;
-    return x.z&lt;y.z;
-}
-
-void cdq2(int left,int right)
-{
-    if (left==right) return;
-    int i,k1,k2,pt,mid=(left+right)&gt;&gt;1;
-    cdq2(left,mid);cdq2(mid+1,right);
-    int cnt=0;
-    for (k1=left,k2=mid+1,pt=left;pt&lt;=right;pt++)
-    {
-        if (k2&gt;right || (k1&lt;=mid &amp;&amp; k2&lt;=right &amp;&amp; b[k1].z&lt;=b[k2].z))
-        {
-            if (!b[k1].nx) cnt++;
-            c[pt]=b[k1++];
-        }
-        else
-        {
-            if (b[k2].nx) ans += cnt;
-            c[pt]=b[k2++];
-        }
-    }
-    for (i=left;i&lt;=right;i++) b[i] = c[i];
-}
-
-void cdq1(int left,int right)
-{
-    if (left==right) return;
-    int i,k1,k2,pt,mid=(left+right)&gt;&gt;1;
-    cdq1(left,mid); cdq1(mid+1,right);
-    for (k1=left,k2=mid+1,pt=left;pt&lt;=right;pt++)
-    {
-        if (k2&gt;right || (k1&lt;=mid &amp;&amp; k2&lt;=right &amp;&amp; a[k1].y&lt;=a[k2].y))
-        {
-            b[pt]=a[k1++];
-            b[pt].nx=0;
-        }
-        else
-        {
-            b[pt]=a[k2++];
-            b[pt].nx=1;
-        }
-    }
-    for (i=left;i&lt;=right;i++) a[i] = b[i];
-    cdq2(left,right);
-}
-
-int main ()
-{
-    int i;
-    n=getint();i=getint();
-    for (i=1;i&lt;=n;i++) {p[i].x=getint();p[i].y=getint();p[i].z=getint();}
-    sort(p+1,p+n+1,cmp);
-    for (i=1;i&lt;=n;i++) a[i] = p[i];
-    cdq1(1, n);
-}
-</code></pre>
-</details>
           </div>
 
           
@@ -641,14 +614,14 @@ int main ()
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/algorithms/answer-binary-search/" rel="next">二分答案</a>
+    <a href="/courses/problemsolving22/solutions/2-6-c/" rel="next">【问题求解II-HW6.C】关押罪犯</a>
   </div>
   
   
   
   <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/algorithms/lca/" rel="prev">最近公共祖先-倍增</a>
+    <a href="/courses/problemsolving22/solutions/2-5-a/" rel="prev">【问题求解II-HW5.A】高楼抛鸡蛋</a>
   </div>
   
 </div>
@@ -658,7 +631,7 @@ int main ()
         </div>
 
         <div class="body-footer">
-          <p>Last updated on May 13, 2023</p>
+          <p>Last updated on Jun 6, 2023</p>
 
           
 
