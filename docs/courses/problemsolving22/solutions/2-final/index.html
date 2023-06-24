@@ -29,10 +29,12 @@
   
     
   
-  <meta name="description" content="Undergraduate (Junior)">
+  <meta name="description" content="题意概述
+有一个 $n$ 个点 $m$ 条边的带权无向图。$q$ 次询问，第 $i$ 次询问从点 $x_i$ 出发，每步交替移动到最远邻居和最近邻居，共移动 $k_i$ 步，求移动总距离。
+对于 $40\%$ 的分数：$k\leq 100$。 对于另外 $40\%$ 的分数：$n\leq 100$。 对于 $100\%$ 的分数：$n, k, q\leq 10^5$。 $40\%$ 分数的解法">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final/">
 
   
 
@@ -44,6 +46,9 @@
   
 
   
+  
+  
+  <script src="/js/mathjax-config.js"></script>
   
 
   
@@ -175,9 +180,9 @@
 
       
       
-        
-      
 
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
       
     
       
@@ -211,14 +216,12 @@
 
 
   
-  <link rel="alternate" href="/courses/index.xml" type="application/rss+xml" title="Yuyao Wang&#39;s Homepage">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final/">
 
   
   
@@ -232,29 +235,36 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/">
-  <meta property="og:title" content="Courses | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Undergraduate (Junior)"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final/">
+  <meta property="og:title" content="【问题求解II-Final.C】实况足球 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="题意概述
+有一个 $n$ 个点 $m$ 条边的带权无向图。$q$ 次询问，第 $i$ 次询问从点 $x_i$ 出发，每步交替移动到最远邻居和最近邻居，共移动 $k_i$ 步，求移动总距离。
+对于 $40\%$ 的分数：$k\leq 100$。 对于另外 $40\%$ 的分数：$n\leq 100$。 对于 $100\%$ 的分数：$n, k, q\leq 10^5$。 $40\%$ 分数的解法"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
-    <meta property="og:updated_time" content="2023-06-24T00:00:00&#43;00:00">
+    
+      <meta property="article:published_time" content="2023-06-24T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-06-24T00:00:00&#43;00:00">
   
 
   
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>Courses | Yuyao Wang&#39;s Homepage</title>
+
+
+  <title>【问题求解II-Final.C】实况足球 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -427,115 +437,205 @@
 
   
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-  
-  
-    
-  
-<div class="universal-wrapper pt-3">
-  <h1>Courses</h1>
-
-  
-
-  
-</div>
-
-
-
-<div class="universal-wrapper">
-
-  
-
-  
-  
-    
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
       
 
 
 
 
 
-
-
-
-
-  
-
-
-<div class="card-simple">
-
   
     
-
-
-<div class="article-metadata">
-
-  
   
 
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Jun 24, 2023
-  </span>
-  
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
 
   
+</form>
 
+<nav class="collapse docs-links" id="docs-nav">
   
 
   
   
   
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving22/solutions/">Overview</a>
 
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/">Problem Solving</a>
-  </h3>
-
-  
-  <div class="article-style">
-    <p>Course material including OJ solutions and getting-started docs. <em>@NJU</em></p>
   </div>
   
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving22/solutions/1-4-c/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/1-4-c/">I-HW04-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/1-6-c/">I-HW06-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/1-final/">I-Final</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-1-c/">II-HW01-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-2-a/">II-HW02-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-3-a/">II-HW03-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-3-b/">II-HW03-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-3-c/">II-HW03-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-4-c/">II-HW04-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-5-a/">II-HW05-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-5-b/">II-HW05-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-5-c/">II-HW05-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-6-b/">II-HW06-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-6-c/">II-HW06-C</a>
+      </li>
+      
+      <li class="active">
+        <a href="/courses/problemsolving22/solutions/2-final/">II-Final-C</a>
+      </li>
+      
+    </ul>
+    
 
+  </div>
   
+  
+</nav>
 
-</div>
+    </div>
 
     
-  
 
-  
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
 
+      <article class="article">
 
+        <div class="docs-article-container">
+          <h1>【问题求解II-Final.C】实况足球</h1>
+
+          <div class="article-style">
+            <div class="alert alert-note">
+  <div>
+    <p><strong>题意概述</strong></p>
+<p>有一个 $n$ 个点 $m$ 条边的带权无向图。$q$ 次询问，第 $i$ 次询问从点 $x_i$ 出发，每步交替移动到最远邻居和最近邻居，共移动 $k_i$ 步，求移动总距离。</p>
+<ul>
+<li>对于 $40\%$ 的分数：$k\leq 100$。</li>
+<li>对于另外 $40\%$ 的分数：$n\leq 100$。</li>
+<li>对于 $100\%$ 的分数：$n, k, q\leq 10^5$。</li>
+</ul>
+  </div>
 </div>
+<p><strong>$40\%$ 分数的解法</strong></p>
+<p>由于 $k\leq 100$，所以我们可以模拟完整的移动流程，只需为图上的每个点预处理最远的邻居和最近的邻居，然后模拟即可。假设 $n, m, q$ 同阶 (后续的复杂度分析类似)，总时间复杂度 $O(nk)$。</p>
+<p><strong>$80\%$ 分数的解法</strong></p>
+<p>令 <code>(球员编号,0/1)</code> 这个状态表示当前球在谁的脚下且下一步是短传还是长传，以所有这样的状态为点建一个新图。如果编号为 $i$ 的球员在短传时目标球员是 $j$，则在 <code>(i, 0)</code> 和 <code>(j, 1)</code> 之间连一条有向边，长传的情况类似。容易发现这样一张图完整地刻画了传球的情况，且它只有 $2n$ 个点，每个点有且仅有一条出边。一个形如 $(x_i, k_i)$ 的询问只需要在这张新图上从点 <code>(xi, 1)</code> 出发连走 $k_i$ 步计算距离之和。</p>
+<p>额外 $40\%$ 的分数满足 $n\leq 100$，这意味着新图节点也很少。所以虽然 $k$ 可能很大，但根据鸽巢原理，走超过 $2n$ 步之后我们一定会进入一个之前走过的状态，也就是说我们会在一个环中兜圈，如下图所示 (虚线箭头代表省略了中间的部分节点)：</p>
+<pre><code class="language-mermaid">graph LR
+S1(1) --&gt; S2(2) -.-&gt; Si(i) --&gt; S4(i+1) -.-&gt; Sm(m) --&gt; Si
+</code></pre>
+<p>因此我们只要尝试性地走若干步识别出这个环，然后用数学方法计算出在这个环上绕多少圈，最后再手动模拟剩余的不足一圈的步数即可。时间复杂度为 $O(n^2)$。</p>
+<p><strong>$100\%$ 分数的解法</strong></p>
+<p>在“倍增”章节中我们曾说：倍增适用于“有固定的下一个状态”的场合，在树上求 LCA 时，这点体现为每个点有唯一的父亲。这里由于新图中每个点有且仅有一条出边，所以也适合用倍增处理移动问题。</p>
+<p>令 $to(i, j)$ 表示新图上从点 $i$ 出发，走 $2^j$ 步后到达的节点编号，$sum(i, j)$ 表示新图上从点 $i$ 出发，走 $2^j$ 步经过的路程之和，这两个都是可以高效计算的：</p>
+<p>$$
+to(i, j) = \begin{cases}
+next(i)&amp;, j = 0\\
+to(to(i, j-1), j-1)&amp;, j &gt; 0
+\end{cases}
+$$</p>
+<p>$$
+sum(i, j) = \begin{cases}
+w(i, next(i))&amp;, j = 0\\
+sum(i, j - 1) + sum(to(i, j-1), j-1)&amp;, j &gt; 0
+\end{cases}
+$$</p>
+<p>对于任意的 $k$，只要将其分解成若干个2的次幂相加的形式，然后累加对应的 sum 即可。时间复杂度为 $O(n\log k)$。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving22/solutions/2-6-c/" rel="prev">【问题求解II-HW6.C】关押罪犯</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jun 24, 2023</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+    </main>
+  </div>
+</div>
+
 
       
 
@@ -547,6 +647,8 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
       
 
       
@@ -577,6 +679,11 @@
     
 
     
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
     
 
     
@@ -612,12 +719,6 @@
 
 
   
-  
-    
-      <div class="container">
-        <br>
-      </div>
-    
   
 
   
