@@ -13,13 +13,18 @@
     </image>
     
     <item>
-      <title>【问题求解II-Final.C】实况足球</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final-c/</link>
+      <title>问题求解II-Final 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final/</link>
       <pubDate>Sat, 24 Jun 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final-c/</guid>
-      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final/</guid>
+      <description>&lt;div align=&#34;center&#34;&gt;
+&lt;p&gt;&lt;embed src=&#34;https://kristoff-starling.github.io/files/II-Final-AB.pdf&#34; width=&#34;820&#34; height=&#34;1000&#34; 
+type=&#34;application/pdf&#34;&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
-    &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;Problem C: 实况足球&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;有一个 $n$ 个点 $m$ 条边的带权无向图。$q$ 次询问，第 $i$ 次询问从点 $x_i$ 出发，每步交替移动到最远邻居和最近邻居，共移动 $k_i$ 步，求移动总距离。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;对于 $40\%$ 的分数：$k\leq 100$。&lt;/li&gt;
@@ -53,17 +58,10 @@ sum(i, j - 1) + sum(to(i, j-1), j-1)&amp;amp;, j &amp;gt; 0
 \end{cases}
 $$&lt;/p&gt;
 &lt;p&gt;对于任意的 $k$，只要将其分解成若干个2的次幂相加的形式，然后累加对应的 sum 即可。时间复杂度为 $O(n\log k)$。&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>【问题求解II-Final.D】排序代价</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final-d/</link>
-      <pubDate>Sat, 24 Jun 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final-d/</guid>
-      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+&lt;hr&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
-    &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;Problem D: 排序代价&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;对于一个数列 $s$，每次可以选定一个区间 $[l, r]$ 并花费 $r-l+1$ 的代价将区间中的数排序，将 $s$ 完全排序的最小代价记为 $cost(s)$。现给定数列 $S$，求
 $$
 \sum_{s是S的子串}cost(s)
