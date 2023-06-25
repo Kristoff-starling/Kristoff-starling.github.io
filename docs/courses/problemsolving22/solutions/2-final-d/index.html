@@ -29,12 +29,14 @@
   
     
   
-  <meta name="description" content="题意描述
-给定一棵 $n$ 个节点的数和 $m$ 个点对，每个点对染不同的颜色。要求找出树中的一条边，使得砍掉这条边后得到的两棵树中没有颜色相同的节点 (即颜色相同的点对不能被划分到同一棵树中)。求满足条件的边的最大编号，若不存在输出 -1。 $n\leq 10^5$。 树上任意两个点之间有且仅有一条简单路径。并且我们容易发现：如果要把两个点分到两棵树中，那么选择的这条边必须在连接这两个点的路径上。因此该问题被转化为了对树上的 $m$ 条路径求交。以下我们介绍三种做法供大家参考。
-做法1: 基于LCA的路径标记 对于树上的任意两个点 $u$, $v$，从 $u$ 到 $v$ 的路径总可以被拆分为 $u\to lca(u, v)$ 和 $lca(u,v)\to v$ 两条直上直下的链。我们希望可以快速给链上所有的边打一个 &#43;1 标记，这样最后只需要找有 $m$ 个标记的边即可。">
+  <meta name="description" content="题意概述
+对于一个数列 $s$，每次可以选定一个区间 $[l, r]$ 并花费 $r-l&#43;1$ 的代价将区间中的数排序，将 $s$ 完全排序的最小代价记为 $cost(s)$。现给定数列 $S$，求 $$ \sum_{s是S的子串}cost(s) $$
+首先可以发现一个性质：对于任何一个子串 $s$，最优的排序方案应该满足选择的区间两两不相交。这是因为如果两个区间相交，我们总可以将其换成这两个区间的并集，这个区间的代价比两个区间的代价和更小且效果与两个区间相同。又因为给 $[l, r]$ 排序的代价正好等于其长度 $r-l&#43;1$，所以在子串中，我们每能找到一个数不被覆盖，我们就能为最终的代价节省 $1$。
+综合以上分析，我们可以得出结论：要最小化子串的代价之和，我们只要对于每个元素 $s_i$，计算它在多少个子串的排序过程中可以不被区间覆盖，记为 $f(i)$，最后用所有子串的总长减去计数的结果即可。
+接下来我们考虑一个元素在区间排序的过程中不被覆盖的充分必要条件是什么。考场上有大量的同学询问 4 3 1 的排序代价为何是 3 而不是 2，这是因为虽然 3 在正确的位置，但 1 和 4 “站错边”了，想要将 1 和 4 排到正确的位置不可能通过选择不包括 3 的区间实现。结合这个样例，我们可以发现：数列 $s_1, \cdots, s_n$ 中 $s_k$ 可以在排序中不被覆盖的充要条件是 $$ \forall i\in [1, n], (i - k)(s_i - s_k) \geq 0 $$ 用人话来说，就是在 $s_k$ 左边的数都小于等于它，在 $s_k$ 右边的数都大于等于它。这样我们就可以对 $[1, k-1]$ 和 $[k&#43;1, n]$ 局部地排序。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-b/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final-d/">
 
   
 
@@ -221,7 +223,7 @@
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-b/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final-d/">
 
   
   
@@ -235,17 +237,19 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-b/">
-  <meta property="og:title" content="【问题求解II-HW3.B】砍树 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="题意描述
-给定一棵 $n$ 个节点的数和 $m$ 个点对，每个点对染不同的颜色。要求找出树中的一条边，使得砍掉这条边后得到的两棵树中没有颜色相同的节点 (即颜色相同的点对不能被划分到同一棵树中)。求满足条件的边的最大编号，若不存在输出 -1。 $n\leq 10^5$。 树上任意两个点之间有且仅有一条简单路径。并且我们容易发现：如果要把两个点分到两棵树中，那么选择的这条边必须在连接这两个点的路径上。因此该问题被转化为了对树上的 $m$ 条路径求交。以下我们介绍三种做法供大家参考。
-做法1: 基于LCA的路径标记 对于树上的任意两个点 $u$, $v$，从 $u$ 到 $v$ 的路径总可以被拆分为 $u\to lca(u, v)$ 和 $lca(u,v)\to v$ 两条直上直下的链。我们希望可以快速给链上所有的边打一个 &#43;1 标记，这样最后只需要找有 $m$ 个标记的边即可。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final-d/">
+  <meta property="og:title" content="【问题求解II-Final.D】排序代价 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="题意概述
+对于一个数列 $s$，每次可以选定一个区间 $[l, r]$ 并花费 $r-l&#43;1$ 的代价将区间中的数排序，将 $s$ 完全排序的最小代价记为 $cost(s)$。现给定数列 $S$，求 $$ \sum_{s是S的子串}cost(s) $$
+首先可以发现一个性质：对于任何一个子串 $s$，最优的排序方案应该满足选择的区间两两不相交。这是因为如果两个区间相交，我们总可以将其换成这两个区间的并集，这个区间的代价比两个区间的代价和更小且效果与两个区间相同。又因为给 $[l, r]$ 排序的代价正好等于其长度 $r-l&#43;1$，所以在子串中，我们每能找到一个数不被覆盖，我们就能为最终的代价节省 $1$。
+综合以上分析，我们可以得出结论：要最小化子串的代价之和，我们只要对于每个元素 $s_i$，计算它在多少个子串的排序过程中可以不被区间覆盖，记为 $f(i)$，最后用所有子串的总长减去计数的结果即可。
+接下来我们考虑一个元素在区间排序的过程中不被覆盖的充分必要条件是什么。考场上有大量的同学询问 4 3 1 的排序代价为何是 3 而不是 2，这是因为虽然 3 在正确的位置，但 1 和 4 “站错边”了，想要将 1 和 4 排到正确的位置不可能通过选择不包括 3 的区间实现。结合这个样例，我们可以发现：数列 $s_1, \cdots, s_n$ 中 $s_k$ 可以在排序中不被覆盖的充要条件是 $$ \forall i\in [1, n], (i - k)(s_i - s_k) \geq 0 $$ 用人话来说，就是在 $s_k$ 左边的数都小于等于它，在 $s_k$ 右边的数都大于等于它。这样我们就可以对 $[1, k-1]$ 和 $[k&#43;1, n]$ 局部地排序。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-04-29T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-06-24T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-04-29T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-06-24T00:00:00&#43;00:00">
   
 
   
@@ -264,7 +268,7 @@
 
 
 
-  <title>【问题求解II-HW3.B】砍树 | Yuyao Wang&#39;s Homepage</title>
+  <title>【问题求解II-Final.D】排序代价 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -501,7 +505,7 @@
         <a href="/courses/problemsolving22/solutions/2-3-a/">II-HW03-A</a>
       </li>
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/solutions/2-3-b/">II-HW03-B</a>
       </li>
       
@@ -537,7 +541,7 @@
         <a href="/courses/problemsolving22/solutions/2-final-c/">II-Final-C</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/solutions/2-final-d/">II-Final-D</a>
       </li>
       
@@ -558,57 +562,34 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>【问题求解II-HW3.B】砍树</h1>
+          <h1>【问题求解II-Final.D】排序代价</h1>
 
           <div class="article-style">
             <div class="alert alert-note">
   <div>
-    <p><strong>题意描述</strong></p>
-<ul>
-<li>给定一棵 $n$ 个节点的数和 $m$ 个点对，每个点对染不同的颜色。要求找出树中的一条边，使得砍掉这条边后得到的两棵树中没有颜色相同的节点 (即颜色相同的点对不能被划分到同一棵树中)。求满足条件的边的最大编号，若不存在输出 -1。</li>
-<li>$n\leq 10^5$。</li>
-</ul>
+    <p><strong>题意概述</strong></p>
+<p>对于一个数列 $s$，每次可以选定一个区间 $[l, r]$ 并花费 $r-l+1$ 的代价将区间中的数排序，将 $s$ 完全排序的最小代价记为 $cost(s)$。现给定数列 $S$，求
+$$
+\sum_{s是S的子串}cost(s)
+$$</p>
   </div>
 </div>
-<p>树上任意两个点之间有且仅有一条简单路径。并且我们容易发现：如果要把两个点分到两棵树中，那么选择的这条边必须在连接这两个点的路径上。因此该问题被转化为了对树上的 $m$ 条路径求交。以下我们介绍三种做法供大家参考。</p>
-<h4 id="做法1-基于lca的路径标记"><strong>做法1: 基于LCA的路径标记</strong></h4>
-<p>对于树上的任意两个点 $u$, $v$，从 $u$ 到 $v$ 的路径总可以被拆分为 $u\to lca(u, v)$ 和 $lca(u,v)\to v$ 两条直上直下的链。我们希望可以快速给链上所有的边打一个 +1 标记，这样最后只需要找有 $m$ 个标记的边即可。</p>
-<p>如果对每条路径上的所有边暴力打 +1 标记的话，总复杂度为 $O(\sum_{i=1}^m len(u_i\to v_i))$，最坏情况下可以达到 $O(mn)$，不可接受。</p>
-<p>以 $o(t)$ 的代价给 $t$ 条边打上标记似乎是一件“违反物理”的事情。但我们向大家展示如下的技巧做到这一点：</p>
-<ul>
-<li>我们不把操作作用在边上，而是作用在点上，每个点与连向它父亲的边对应 (根节点没有对应的边)。</li>
-<li>对于路径 $(u, v)$：
-<ul>
-<li>$mark(u) + 1$。</li>
-<li>$mark(v) + 1$。</li>
-<li>$mark(lca(u, v)) - 2$。</li>
-</ul>
-</li>
-<li>每个点最终的标记 $Mark(u) = \sum_{v\in subtree(u)} mark(v)$ (即以 $u$ 为根的子树中所有节点的 mark 之和)。</li>
-</ul>
-<p>这个技巧有一个很炫酷的名字，叫“树上差分”。你可以对一条路径按照上述操作做一遍，然后验证一下处于各个位置的节点的 Mark，你会发现只有 $(u, v)$ 路径上的节点 (除了 LCA) Mark 为 1，其他的都是 0。这恰好符合我们在边上打标记的需求。此外，这个标记系统是可以累加的，即你不需要每次计算 Mark，而是可以把 $m$ 条边的 mark 做完之后再一起计算 Mark。这样我们在 $O(m+n)$ 的时间内完成了打标记的动作。加上预处理和计算 LCA 的复杂度，该算法的总时间复杂度为 $O((n+m)\log n)$。</p>
-<h4 id="做法2-将树上路径求交转化为一维的区间求交"><strong>做法2: 将树上路径求交转化为一维的区间求交</strong></h4>
-<p>把第一个点对所在的路径 $(u_1, v_1)$ 抓出来，考虑剩下的 $m-1$ 条路径在 $(u_1, v_1)$ 上的相交部分。想象一下容易发现，如果把树中的一条链 $(u_1, v_1)$ 提出来，“用手拎着两端提在空中”，那么整个树的格局会像一个晾衣绳，晾衣绳上的每个点挂了一个树，如下图所示。</p>
-<img src="/img/ps-sol-2032-link.png" style="zoom: 50%;" />
-<p>给 $(u_1, v_1)$ 这条链上的点重新标号 $x_1, x_2,\cdots, x_t$。对于其他任意一个点对 $(u_i, v_i)$，如果 $u_i, v_i$ 在同一个 $x_p$ 的树下 (如图中红色所示)，那么 $(u_i, v_i)$ 这条路径将完全在 $x_p$ 的子树内部，从而和 $(u_1, v_1)$ 没有边的交集；如果 $u_i, v_i$ 在不同的子树 $x_p, x_q (p&lt;q)$ 下 (如图中蓝色所示)，那么 $(u_1, v_1)$ 和 $(u_i, v_i)$ 这两条链将会有 $(x_p, x_q)$ 这一段是公共的。</p>
-<p>对于 $(u_2, v_2), \cdots, (u_m, v_m)$ 中的每一对，我们都可以检查 $u_i, v_i$ 在哪棵子树中，从而算出它和 $(u_1, v_1)$ 的交集。这时问题已经被转化成了在一维序列 $x_1, \cdots, x_t$ 上的区间交集问题。剩下的一点点细节非常简单，留给大家思考。</p>
-<p>这个做法颇有“大道至简”的意味——没有“倍增求LCA”“树上差分“这样炫酷的技术，就是平平无奇的几遍搜索，就给出了更优秀的时间复杂度 $O(n)$。在这里我们也想给大家传递一个价值观：</p>
-<blockquote>
-<p>高级算法和高级数据结构就像武林中的重武器，而你分析问题、转化问题的能力则像内功。内功和武器是相辅相成的，内功不足却想耍大刀，适得其反。比起盲目地学习很多炫酷的技术，我们更希望大家能充分锻炼自己的思维能力，这才是成为一个优秀的算法设计师的正道。</p>
-</blockquote>
-<h4 id="做法3-一个神奇的随机算法"><strong>做法3: 一个神奇的随机算法</strong></h4>
-<p>这个做法有些“过于”精巧，大家只需欣赏即可。</p>
-<p>为每个数对 $(u_i, v_i)$ 随机一个数 $c_i$，并将 $c_i$ 打在 $u_i, v_i$ 两个节点上。对于每条边，砍掉它合法的充分必要条件是这条边下面的子树恰好包含 $c_1, c_2, \cdots, c_m$ 各一个。这件事并不容易检查，但我们直接<strong>对子树上的数值求异或和</strong>，并通过<strong>检查子树异或和是否等于所有 $c_i$ 的异或和</strong>的方式来“判定”子树是否满足要求。时间复杂度 $O(n)$。</p>
-<hr>
-<p>看上去有点雷人。下面尝试用不太严谨的方式论证该做法错误的概率极小：</p>
-<p>异或的性质是：$x\otimes x = 0$ (其中 $\otimes$ 常用于表示异或算符)。因此如果一个子树同时包含了一对点 $(u_i, v_i)$ 中的两个或零个，那么它最终的异或和将缺少 $c_i$ 这一项。因此要使得上述随机算法错误，一定存在一个 $\{1, 2, \cdots,m\}$ 的子集 $\{k_1, k_2, \cdots k_t\}$ 满足 $\bigotimes_{i=1}^t c_{k_i} = 0$，且恰好存在一条边能把这个子集精准地“选出来”。</p>
-<p>对于一个集合，若该集合中的数在 $[0, 2^k)$ 之间随机，那么不论这个集合中元素的个数有多少，该集合的异或和为 0 的概率都是 $\frac{1}{2^k}$ (考虑每个二进制位，有若干个要么是 0 要么是 1 的数，但不论有多少，其中有偶数个 1 的概率都是 $\frac{1}{2}$)。</p>
-<p>我们可以不严谨地认为，树上的每条边相当于独立地在 $\{1, 2, \cdots, m\}$ 中选一次子集 (说它不严谨是因为 ①不同的边选出的集合之间存在互相包含关系，并不是独立的； ②该过程和 $2m$ 个数在树上的分布有关，并不是随机选取。但总体可以感受到在概率上两者是同阶的)。因此该算法正确的概率</p>
-<p>$$
-P(correct)\sim \left(1-\frac{1}{2^k}\right)^{\min(2^m, n)}
-$$</p>
-<p>本题中 $n\sim 10^5$。简单计算可知，当 $k=32$ 时正确率已经达到 $99.997\%$，当 $k=64$ 时该算法正确率将极其接近 $100\%$ (64位恰好是 long long 的范围，在 long long 范围内随机整数并不困难)。</p>
-<p>虽然从理论计算科学的角度，有错误率的随机算法和确保正确的算法之间存在本质区别，但在实际中，如果算法错误的概率已经远小于硬件出错的概率，那么该算法的可用性便已经很高。对于这道题来说，我们确实容易设计出简单高效的线性算法，但事实上，绝大多数问题是难的 (关于难的定义，以及 P, NP, NP-hard 相关的概念大家会在第四学期学习)，对于难问题，很多时候我们只能从近似角度尝试解决。</p>
+<p>首先可以发现一个性质：对于任何一个子串 $s$，最优的排序方案应该满足选择的区间两两不相交。这是因为如果两个区间相交，我们总可以将其换成这两个区间的并集，这个区间的代价比两个区间的代价和更小且效果与两个区间相同。又因为给 $[l, r]$ 排序的代价正好等于其长度 $r-l+1$，所以在子串中，我们每能找到一个数不被覆盖，我们就能为最终的代价节省 $1$。</p>
+<p>综合以上分析，我们可以得出结论：要最小化子串的代价之和，我们只要<strong>对于每个元素 $s_i$，计算它在多少个子串的排序过程中可以不被区间覆盖，记为 $f(i)$</strong>，最后用所有子串的总长减去计数的结果即可。</p>
+<p>接下来我们考虑一个元素在区间排序的过程中不被覆盖的充分必要条件是什么。考场上有大量的同学询问 <code>4 3 1</code> 的排序代价为何是 3 而不是 2，这是因为虽然 3 在正确的位置，但 1 和 4 “站错边”了，想要将 1 和 4 排到正确的位置不可能通过选择不包括 3 的区间实现。结合这个样例，我们可以发现：数列 $s_1, \cdots, s_n$ 中 $s_k$ 可以在排序中不被覆盖的充要条件是
+$$
+\forall i\in [1, n], (i - k)(s_i - s_k) \geq 0
+$$
+用人话来说，就是在 $s_k$ 左边的数都小于等于它，在 $s_k$ 右边的数都大于等于它。这样我们就可以对 $[1, k-1]$ 和 $[k+1, n]$ 局部地排序。</p>
+<p>结合这个充要条件，我们可以得到计算 $f(i)$ 的方法：令 $l_i$ 为 $s_i$ 左侧第一个大于 $s_i$ 的数的位置 (若不存在这样的数则为 0)，$r_i$ 为 $s_i$ 右侧第一个小于 $s_i$ 的数的位置 (若不存在则为 $n+1$)，那么任意满足 $l_i&lt; l\leq i, i\leq r&lt; r_i$ 的区间 $[l, r]$ 都是可以使 $s_i$ 不被覆盖的区间，从而 $f(i)=(i - l_i)(r_i - i)$。</p>
+<p>最后的问题是如何计算 $l_i$ 和 $r_i$。以计算 $l_i$ 为例，计算的方法很多，一种可行的做法是将所有数按照从大到小的顺序加入 C++ set，每次使用 <code>lower_bound()</code> 方法寻找左侧最靠右的元素位置，类似于 II-HW-3A 的做法。该算法总复杂度为 $O(n\log n)$，虽然分析了很多，但实现起来其实非常简短。</p>
+<div class="alert alert-tip">
+  <div>
+    <p>本题其实相当有难度，这是因为人很难克服惯性思维：题目中要对各个子串的最小代价求和，所以我们很自然地想对每个子串单独求代价，最后相加。将视角转化为对每个元素计算可以不在多少个区间中被覆盖，打破了原题中对总代价的划分方式，这步转化需要相当的功力。</p>
+<p>这道题目的原型是 
+<a href="https://codeforces.com/contest/1827/problem/B1" target="_blank" rel="noopener">Codeforces-1827B</a>，区别在于原题中排序一个区间的代价不是 $r-l+1$，而是 $r-l$。这一点小小的差异对题目难度的影响其实是巨大的——因为排序一个区间的代价不等于区间的长度，所以“省下”一个元素不被覆盖的收益难以定义，从而原题更加复杂。感兴趣的同学可以去挑战一下。</p>
+  </div>
+</div>
 
           </div>
 
@@ -625,14 +606,14 @@ $$</p>
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/solutions/2-3-a/" rel="next">【问题求解II-HW3.A】签到题</a>
+    <a href="/courses/problemsolving22/solutions/2-final-c/" rel="next">【问题求解II-Final.C】实况足球</a>
   </div>
   
   
   
   <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/solutions/2-3-c/" rel="prev">【问题求解II-HW3.C】单词接龙</a>
+    <a href="/courses/problemsolving22/solutions/2-6-c/" rel="prev">【问题求解II-HW6.C】关押罪犯</a>
   </div>
   
 </div>
@@ -642,7 +623,7 @@ $$</p>
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Apr 29, 2023</p>
+          <p>Last updated on Jun 24, 2023</p>
 
           
 
@@ -670,6 +651,8 @@ $$</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
       
 
       
