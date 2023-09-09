@@ -29,10 +29,15 @@
   
     
   
-  <meta name="description" content="Undergraduate (Junior)">
+  <meta name="description" content="Problem A: 控制流图
+给定一段伪代码，求出其控制流图中每个节点的入度和出度。
+伪代码中我们只需关注 GOTO, IF-GOTO，和所有的 label 语句即可。对于 GOTO 和 IF-GOTO 语句，当前基本块会有一条连向 GOTO 目标的边；此外，除非当前基本块的最后一条语句是无条件跳转，每个基本块都会向它的下一个基本块连边。
+Problem B: 躺平
+在一群人中给定一些两两排名先后的比较关系，问能否求出全场 rank 1。
+将每个人抽象为图的一个顶点，A 的排名比 B 高则连一条从 A 到 B 的有向边。这样原问题转化为是否存在唯一的入度为 0 的节点，很容易判断。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-1/">
 
   
 
@@ -44,6 +49,9 @@
   
 
   
+  
+  
+  <script src="/js/mathjax-config.js"></script>
   
 
   
@@ -175,9 +183,9 @@
 
       
       
-        
-      
 
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
       
     
       
@@ -211,14 +219,12 @@
 
 
   
-  <link rel="alternate" href="/courses/index.xml" type="application/rss+xml" title="Yuyao Wang&#39;s Homepage">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-1/">
 
   
   
@@ -232,29 +238,39 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/">
-  <meta property="og:title" content="Courses | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Undergraduate (Junior)"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-1/">
+  <meta property="og:title" content="问题求解III-HW01 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Problem A: 控制流图
+给定一段伪代码，求出其控制流图中每个节点的入度和出度。
+伪代码中我们只需关注 GOTO, IF-GOTO，和所有的 label 语句即可。对于 GOTO 和 IF-GOTO 语句，当前基本块会有一条连向 GOTO 目标的边；此外，除非当前基本块的最后一条语句是无条件跳转，每个基本块都会向它的下一个基本块连边。
+Problem B: 躺平
+在一群人中给定一些两两排名先后的比较关系，问能否求出全场 rank 1。
+将每个人抽象为图的一个顶点，A 的排名比 B 高则连一条从 A 到 B 的有向边。这样原问题转化为是否存在唯一的入度为 0 的节点，很容易判断。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
-    <meta property="og:updated_time" content="2023-09-09T00:00:00&#43;00:00">
+    
+      <meta property="article:published_time" content="2023-09-09T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-09-09T00:00:00&#43;00:00">
   
 
   
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>Courses | Yuyao Wang&#39;s Homepage</title>
+
+
+  <title>问题求解III-HW01 题解 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -427,115 +443,187 @@
 
   
 
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-  
-  
-    
-  
-<div class="universal-wrapper pt-3">
-  <h1>Courses</h1>
-
-  
-
-  
-</div>
-
-
-
-<div class="universal-wrapper">
-
-  
-
-  
-  
-    
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
       
 
 
 
 
 
-
-
-
-
-  
-
-
-<div class="card-simple">
-
   
     
-
-
-<div class="article-metadata">
-
-  
   
 
-  
-  <span class="article-date">
-    
-    
-      
-    
-    Sep 9, 2023
-  </span>
-  
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
 
   
+</form>
 
+<nav class="collapse docs-links" id="docs-nav">
   
 
   
   
   
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving22/solutions/">Overview</a>
 
-  
-  
-
-</div>
-
-  
-
-  
-  
-  
-
-  <h3 class="article-title mb-1 mt-3">
-    <a href="/courses/problemsolving22/">Problem Solving</a>
-  </h3>
-
-  
-  <div class="article-style">
-    <p>Course material including OJ solutions and getting-started docs. <em>@NJU</em></p>
   </div>
   
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving22/solutions/1-4-c/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/1-4-c/">I-HW04-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/1-6-c/">I-HW06-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/1-final/">I-Final</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-1-c/">II-HW01-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-2-a/">II-HW02-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-3-a/">II-HW03-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-3-b/">II-HW03-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-3-c/">II-HW03-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-4-c/">II-HW04-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-5-a/">II-HW05-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-5-b/">II-HW05-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-5-c/">II-HW05-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-6-b/">II-HW06-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-6-c/">II-HW06-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving22/solutions/2-final/">II-Final</a>
+      </li>
+      
+      <li class="active">
+        <a href="/courses/problemsolving22/solutions/3-1/">III-HW01</a>
+      </li>
+      
+    </ul>
+    
 
+  </div>
   
+  
+</nav>
 
-</div>
+    </div>
 
     
-  
 
-  
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
 
+      <article class="article">
 
+        <div class="docs-article-container">
+          <h1>问题求解III-HW01 题解</h1>
+
+          <div class="article-style">
+            <div class="alert alert-note">
+  <div>
+    <p><strong>Problem A: 控制流图</strong></p>
+<p>给定一段伪代码，求出其控制流图中每个节点的入度和出度。</p>
+  </div>
 </div>
+<p>伪代码中我们只需关注 <code>GOTO</code>, <code>IF-GOTO</code>，和所有的 label 语句即可。对于 <code>GOTO</code> 和 <code>IF-GOTO</code> 语句，当前基本块会有一条连向 GOTO 目标的边；此外，除非当前基本块的最后一条语句是无条件跳转，每个基本块都会向它的下一个基本块连边。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>Problem B: 躺平</strong></p>
+<p>在一群人中给定一些两两排名先后的比较关系，问能否求出全场 rank 1。</p>
+  </div>
+</div>
+<p>将每个人抽象为图的一个顶点，A 的排名比 B 高则连一条从 A 到 B 的有向边。这样原问题转化为是否存在唯一的入度为 0 的节点，很容易判断。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving22/solutions/2-final/" rel="prev">问题求解II-Final 题解</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Sep 9, 2023</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+    </main>
+  </div>
+</div>
+
 
       
 
@@ -578,6 +666,11 @@
 
     
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
 
     
 
@@ -612,12 +705,6 @@
 
 
   
-  
-    
-      <div class="container">
-        <br>
-      </div>
-    
   
 
   
