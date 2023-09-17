@@ -5,12 +5,42 @@
     <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
       <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/index.xml" rel="self" type="application/rss+xml" />
     <description>OJ习题讲解</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 09 Sep 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 17 Sep 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>OJ习题讲解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
     </image>
+    
+    <item>
+      <title>问题求解III-HW02 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-2/</link>
+      <pubDate>Sun, 17 Sep 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-2/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 补图最短路&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;给定一张不带权无向图，求其补图中1号点到其他各个点的最短路。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。&lt;/p&gt;
+&lt;p&gt;事实上，本题存在 $O(n+m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。&lt;/li&gt;
+&lt;li&gt;每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&amp;rsquo;=S\cap Neighbor(v)$，则 $S-S&amp;rsquo;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&amp;rsquo;$。将 $v$ 标记为已访问。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 单词接龙&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;给定 $\text{beginWord}$, $\text{endWord}$ 和一个单词池，求从开始词到结束词最短的接龙序列，接龙序列中相邻的单词只能有一个字母不同。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;如果将每个单词看作图上的顶点，两个单词之间连边当且仅当他们相差一个字母，那么原问题就转化为了从开始词顶点到结束词顶点的最短路径问题，可以通过 BFS 解决。&lt;/p&gt;
+&lt;p&gt;最朴素的想法是枚举所有的单词对并判断是否可以连边。该做法的时间复杂度为 $O(n^2\cdot l)$，其中 $l$ 为单词的长度。&lt;del&gt;虽然有很多人这样水过了&lt;/del&gt;需要继续优化。&lt;/p&gt;
+&lt;p&gt;朴素做法过慢的一个原因是：有太多不可能连边的单词对被枚举了——一个单词不可能有这么多的“相邻”单词。事实上，一个单词的相邻单词数最多为 $|\Sigma|\cdot l$，其中 $\Sigma$ 为字符集。因此，我们可以将单词池中的单词加入哈希表，对每个单词枚举它所有可能的相邻单词 (枚举位置+替换字母) 并在哈希表中查询是否存在，如果存在则连边。这样算法复杂度降到 $O(n\cdot |\Sigma|\cdot l)$，可以通过。&lt;/p&gt;
+&lt;p&gt;本题的 $\Sigma$ 为小写字母集。如果 $\Sigma$ 很大上述做法仍然效率过低。事实上我们有更巧妙的建图方法：以单词 &lt;code&gt;cat&lt;/code&gt; 为例，我们建立虚拟节点 &lt;code&gt;*at&lt;/code&gt;, &lt;code&gt;c*t&lt;/code&gt; 和 &lt;code&gt;ca*&lt;/code&gt;，将 &lt;code&gt;cat&lt;/code&gt; 连向这三个虚拟节点。这里的 &lt;code&gt;*&lt;/code&gt; 可以理解为“百搭”。这样只有一个字母不一样的两个单词就可以通过共同的虚拟节点被连接起来。最后求出的最短距离只要除以2就是我们需要的答案。算法复杂度 $O(n\cdot l)$。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>问题求解III-HW01 题解</title>

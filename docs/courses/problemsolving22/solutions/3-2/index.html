@@ -29,13 +29,14 @@
   
     
   
-  <meta name="description" content="题意概述
-给定一个长度为 $2n$ 的数列，保证所有数的和是奇数。两个人轮流取数，每次只能取数列的第一个或最后一个数。问双方都采取最优策略的情况下谁能获得胜利。
-为了说明这道题目的合理性，我们介绍策梅洛定理 (以下是摘自 Wikipedia 的解释)：
-In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person games of perfect information in which the players move alternately and in which chance does not affect the decision making process.">
+  <meta name="description" content="Problem A: 补图最短路
+给定一张不带权无向图，求其补图中1号点到其他各个点的最短路。
+本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。
+事实上，本题存在 $O(n&#43;m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：
+维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。 每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&rsquo;=S\cap Neighbor(v)$，则 $S-S&rsquo;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&rsquo;$。将 $v$ 标记为已访问。 Problem B: 单词接龙">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-2-a/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-2/">
 
   
 
@@ -222,7 +223,7 @@ In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person gam
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-2-a/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-2/">
 
   
   
@@ -236,18 +237,19 @@ In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person gam
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-2-a/">
-  <meta property="og:title" content="【问题求解II-HW2.A】取数游戏 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="题意概述
-给定一个长度为 $2n$ 的数列，保证所有数的和是奇数。两个人轮流取数，每次只能取数列的第一个或最后一个数。问双方都采取最优策略的情况下谁能获得胜利。
-为了说明这道题目的合理性，我们介绍策梅洛定理 (以下是摘自 Wikipedia 的解释)：
-In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person games of perfect information in which the players move alternately and in which chance does not affect the decision making process."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-2/">
+  <meta property="og:title" content="问题求解III-HW02 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Problem A: 补图最短路
+给定一张不带权无向图，求其补图中1号点到其他各个点的最短路。
+本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。
+事实上，本题存在 $O(n&#43;m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：
+维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。 每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&rsquo;=S\cap Neighbor(v)$，则 $S-S&rsquo;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&rsquo;$。将 $v$ 标记为已访问。 Problem B: 单词接龙"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-04-07T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-09-17T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-04-07T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-09-17T00:00:00&#43;00:00">
   
 
   
@@ -266,7 +268,7 @@ In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person gam
 
 
 
-  <title>【问题求解II-HW2.A】取数游戏 | Yuyao Wang&#39;s Homepage</title>
+  <title>问题求解III-HW02 题解 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -495,7 +497,7 @@ In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person gam
         <a href="/courses/problemsolving22/solutions/2-1-c/">II-HW01-C</a>
       </li>
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/solutions/2-2-a/">II-HW02-A</a>
       </li>
       
@@ -543,7 +545,7 @@ In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person gam
         <a href="/courses/problemsolving22/solutions/3-1/">III-HW01</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/solutions/3-2/">III-HW02</a>
       </li>
       
@@ -564,46 +566,31 @@ In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person gam
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>【问题求解II-HW2.A】取数游戏</h1>
+          <h1>问题求解III-HW02 题解</h1>
 
           <div class="article-style">
             <div class="alert alert-note">
   <div>
-    <p><strong>题意概述</strong></p>
-<p>给定一个长度为 $2n$ 的数列，保证所有数的和是奇数。两个人轮流取数，每次只能取数列的第一个或最后一个数。问双方都采取最优策略的情况下谁能获得胜利。</p>
+    <p><strong>Problem A: 补图最短路</strong></p>
+<p>给定一张不带权无向图，求其补图中1号点到其他各个点的最短路。</p>
   </div>
 </div>
-<p>为了说明这道题目的合理性，我们介绍策梅洛定理 (以下是摘自 Wikipedia 的解释)：</p>
-<blockquote>
-<p>In game theory, Zermelo&rsquo;s theorem is a theorem about finite two-person games of perfect information in which the players move alternately and in which chance does not affect the decision making process. It says that if the game cannot end in a draw, then one of the two players must have a winning strategy (i.e. can force a win).</p>
-</blockquote>
-<p>简单来说，一个双方轮流行动的游戏如果满足</p>
+<p>本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。</p>
+<p>事实上，本题存在 $O(n+m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：</p>
 <ul>
-<li>在有限步内结束。</li>
-<li>场上所有信息对双方公开。</li>
-<li>没有随机因素。</li>
-<li>没有平局。</li>
+<li>维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。</li>
+<li>每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&rsquo;=S\cap Neighbor(v)$，则 $S-S&rsquo;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&rsquo;$。将 $v$ 标记为已访问。</li>
 </ul>
-<p>那么必然存在先手必胜策略或后手必胜策略。常见的棋类竞技运动如象棋、围棋都是有必胜策略的 (只不过搜索空间太大人们找不到)；当然飞行棋没有必胜策略，因为扔骰子这件事情带来了随机因素。</p>
-<hr>
-<p>回到这道题，如果撇除那条充满诱导性的提示，大家很可能想到的是使用如下的一个递推过程计算谁必胜：令 $s(l, r)$ 表示用区间 $[l, r)$ 中的数玩这个游戏，先手拿到的数的和最多可以比后手多多少。那么有</p>
-<p>$$
-s(l, r)=\begin{cases}
-0, &amp;l=r\\
-\max(\\
-\qquad s(l+2, r) + a_l - a_{l+1},\\
-\qquad s(l+1, r-1) + a_l - a_{r-1},\\
-\qquad s(l+1, r-1) + a_{r-1} - a_l,\\
-\qquad s(l, r-2) + a_{r-1} - a_{r-2}\\
-), &amp;l &lt; r
-\end{cases}
-$$</p>
-<p>这个公式看上去复杂，但其实只是枚举了两个人从数列里各取一个数的四种情况： (头,头)，(头,尾)，(尾,头)，(尾,尾)。如果我们认为区间的长度代表这个问题的规模的话，那么我们的递推公式就成功将大规模的问题转化为了小规模的同质问题。如果按照区间长度从小到大的顺序递推，你可以在 $O(n^2)$ 的时间复杂度内计算出 $s(1,2n+1)$，并根据 $s(1,2n+1)$ 的正负性判断谁必胜。</p>
-<hr>
-<p>上面的过程本质上是一个<strong>动态规划 (dynamic programming)</strong>，如果你没有完全看懂也不要紧 (毕竟还没学)。我们出这道题的根本目的是为了展示一个更妙的想法：</p>
-<p>称 kk 取一个数，ff 再取一个数的两次操作为一轮。考虑每个数在原数列中的下标的奇偶性，我们容易发现：因为任意时刻剩余的数列一定是原数列的一个连续的子区间，所以每一轮开始时，剩余的数列在原数列中的位置一定是 “奇偶奇偶……” 或者 “偶奇偶奇……”。此时 kk 有着挑选奇偶的权利：如果 kk 拿走奇数位置的数，那么 ff 只能从两个偶数位置的数里选一个，反之亦然。</p>
-<p>因为每一轮 kk 都有挑选奇偶的权利，所以 kk 有能力拿走原数列中所有奇数位置的数，或者原数列中所有偶数位置的数。而“所有奇数位置的数的和”与“所有偶数位置的数的和”必定有一个更大，所以 kk 一定能把大的那组拿走，把小的留给 ff。所以这个游戏 kk 必胜。</p>
-<p>这道题旨在展示：通过充分动脑筋，一个看似复杂的问题可以解得非常简单。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>Problem B: 单词接龙</strong></p>
+<p>给定 $\text{beginWord}$, $\text{endWord}$ 和一个单词池，求从开始词到结束词最短的接龙序列，接龙序列中相邻的单词只能有一个字母不同。</p>
+  </div>
+</div>
+<p>如果将每个单词看作图上的顶点，两个单词之间连边当且仅当他们相差一个字母，那么原问题就转化为了从开始词顶点到结束词顶点的最短路径问题，可以通过 BFS 解决。</p>
+<p>最朴素的想法是枚举所有的单词对并判断是否可以连边。该做法的时间复杂度为 $O(n^2\cdot l)$，其中 $l$ 为单词的长度。<del>虽然有很多人这样水过了</del>需要继续优化。</p>
+<p>朴素做法过慢的一个原因是：有太多不可能连边的单词对被枚举了——一个单词不可能有这么多的“相邻”单词。事实上，一个单词的相邻单词数最多为 $|\Sigma|\cdot l$，其中 $\Sigma$ 为字符集。因此，我们可以将单词池中的单词加入哈希表，对每个单词枚举它所有可能的相邻单词 (枚举位置+替换字母) 并在哈希表中查询是否存在，如果存在则连边。这样算法复杂度降到 $O(n\cdot |\Sigma|\cdot l)$，可以通过。</p>
+<p>本题的 $\Sigma$ 为小写字母集。如果 $\Sigma$ 很大上述做法仍然效率过低。事实上我们有更巧妙的建图方法：以单词 <code>cat</code> 为例，我们建立虚拟节点 <code>*at</code>, <code>c*t</code> 和 <code>ca*</code>，将 <code>cat</code> 连向这三个虚拟节点。这里的 <code>*</code> 可以理解为“百搭”。这样只有一个字母不一样的两个单词就可以通过共同的虚拟节点被连接起来。最后求出的最短距离只要除以2就是我们需要的答案。算法复杂度 $O(n\cdot l)$。</p>
 
           </div>
 
@@ -619,15 +606,8 @@ $$</p>
   
   
   <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/solutions/2-3-c/" rel="next">【问题求解II-HW3.C】单词接龙</a>
-  </div>
-  
-  
-  
-  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/solutions/2-1-c/" rel="prev">【问题求解II-HW1.C】新马走日</a>
+    <a href="/courses/problemsolving22/solutions/3-1/" rel="prev">问题求解III-HW01 题解</a>
   </div>
   
 </div>
@@ -637,7 +617,7 @@ $$</p>
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Apr 7, 2023</p>
+          <p>Last updated on Sep 17, 2023</p>
 
           
 
