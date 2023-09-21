@@ -29,9 +29,9 @@
   
     
   
-  <meta name="description" content="A. 最长路 题面描述 给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。 $1\leq n\leq 2\times 10^{5},1\leq m\leq min\{\frac{n(n-1)}{2},5\times 10^5\}$。 题解 令 $dp[u]$ 表示从节点 $u$ 出发的最长路长度，则 $dp[u]=max_{(u,v)\in E} dp[v]&#43;w(u,v)$。
+  <meta name="description" content="A. 最长路 题面描述  给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。 $1\leq n\leq 2\times 10^{5},1\leq m\leq min\{\frac{n(n-1)}{2},5\times 10^5\}$。  题解 令 $dp[u]$ 表示从节点 $u$ 出发的最长路长度，则 $dp[u]=max_{(u,v)\in E} dp[v]&#43;w(u,v)$。
 总时间复杂度 $O(n&#43;m)$。
-B. 旅行问题 题面描述 给定一个 $n$ 个点的完全图，$A_{ij}$ 表示从 $i$ 到 $j$ 的边权。现要求从任意一点出发，至少经过每个点一次，到任意一点结束，求最小路径长度。 $n\leq 20$。 题解 先用 Floyd 预处理两两之间的最短路 $dist[i][j]$。然后考虑状压 dp: 令 $dp[Mask][i]$ 表示当前在节点 $i$ ，已经经过的点的状态为 $Mask$ 的情况下的最小距离，转移考虑枚举上一个节点 $j$ 即可。即 $$ dp[Mask][i]=\min_{j\in Mask,j\neq i}dp[Mask-j][j]&#43;dist[i][j] $$ 注意我们无需担心在从 $i$ 到 $j$ 的最短路上经过的其他点没有被标注进 $Mask$，因为如果没有被标注进是对答案的损失，而事实上一定有一种转移方式是正确的。">
+B. 旅行问题 题面描述  给定一个 $n$ 个点的完全图，$A_{ij}$ 表示从 $i$ 到 $j$ 的边权。现要求从任意一点出发，至少经过每个点一次，到任意一点结束，求最小路径长度。 $n\leq 20$。  题解 先用 Floyd 预处理两两之间的最短路 $dist[i][j]$。然后考虑状压 dp: 令 $dp[Mask][i]$ 表示当前在节点 $i$ ，已经经过的点的状态为 $Mask$ 的情况下的最小距离，转移考虑枚举上一个节点 $j$ 即可。即 $$ dp[Mask][i]=\min_{j\in Mask,j\neq i}dp[Mask-j][j]&#43;dist[i][j] $$ 注意我们无需担心在从 $i$ 到 $j$ 的最短路上经过的其他点没有被标注进 $Mask$，因为如果没有被标注进是对答案的损失，而事实上一定有一种转移方式是正确的。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-02/">
@@ -237,9 +237,9 @@ B. 旅行问题 题面描述 给定一个 $n$ 个点的完全图，$A_{ij}$ 表�
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-02/">
   <meta property="og:title" content="问题求解 III - 02 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="A. 最长路 题面描述 给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。 $1\leq n\leq 2\times 10^{5},1\leq m\leq min\{\frac{n(n-1)}{2},5\times 10^5\}$。 题解 令 $dp[u]$ 表示从节点 $u$ 出发的最长路长度，则 $dp[u]=max_{(u,v)\in E} dp[v]&#43;w(u,v)$。
+  <meta property="og:description" content="A. 最长路 题面描述  给定一个 $n$ 个点 $m$ 条边的有向无环图，求图中最长路的长度。 $1\leq n\leq 2\times 10^{5},1\leq m\leq min\{\frac{n(n-1)}{2},5\times 10^5\}$。  题解 令 $dp[u]$ 表示从节点 $u$ 出发的最长路长度，则 $dp[u]=max_{(u,v)\in E} dp[v]&#43;w(u,v)$。
 总时间复杂度 $O(n&#43;m)$。
-B. 旅行问题 题面描述 给定一个 $n$ 个点的完全图，$A_{ij}$ 表示从 $i$ 到 $j$ 的边权。现要求从任意一点出发，至少经过每个点一次，到任意一点结束，求最小路径长度。 $n\leq 20$。 题解 先用 Floyd 预处理两两之间的最短路 $dist[i][j]$。然后考虑状压 dp: 令 $dp[Mask][i]$ 表示当前在节点 $i$ ，已经经过的点的状态为 $Mask$ 的情况下的最小距离，转移考虑枚举上一个节点 $j$ 即可。即 $$ dp[Mask][i]=\min_{j\in Mask,j\neq i}dp[Mask-j][j]&#43;dist[i][j] $$ 注意我们无需担心在从 $i$ 到 $j$ 的最短路上经过的其他点没有被标注进 $Mask$，因为如果没有被标注进是对答案的损失，而事实上一定有一种转移方式是正确的。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+B. 旅行问题 题面描述  给定一个 $n$ 个点的完全图，$A_{ij}$ 表示从 $i$ 到 $j$ 的边权。现要求从任意一点出发，至少经过每个点一次，到任意一点结束，求最小路径长度。 $n\leq 20$。  题解 先用 Floyd 预处理两两之间的最短路 $dist[i][j]$。然后考虑状压 dp: 令 $dp[Mask][i]$ 表示当前在节点 $i$ ，已经经过的点的状态为 $Mask$ 的情况下的最小距离，转移考虑枚举上一个节点 $j$ 即可。即 $$ dp[Mask][i]=\min_{j\in Mask,j\neq i}dp[Mask-j][j]&#43;dist[i][j] $$ 注意我们无需担心在从 $i$ 到 $j$ 的最短路上经过的其他点没有被标注进 $Mask$，因为如果没有被标注进是对答案的损失，而事实上一定有一种转移方式是正确的。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -742,7 +742,7 @@ $$ 由于我们不能确定转移的顺序，所以可以建图之后跑最短�
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

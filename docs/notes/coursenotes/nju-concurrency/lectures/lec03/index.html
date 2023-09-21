@@ -29,7 +29,7 @@
   
     
   
-  <meta name="description" content="A Simple Concurrent Programming Language Basic Setup Thread Subsystem Storage Subsystem Linking the Two The Thread Subsystem Thread Local Steps Lifting to Concurrent Programs SC Storage subsystem Linking the Thread and Storage Subsystems x86&rsquo;s TSO Storage Subsystem: Linking The Thread and Storage Subsystem Exercise: PSO Storage System A Simple Concurrent Programming Language Basic domains:">
+  <meta name="description" content="A Simple Concurrent Programming Language  Basic Setup   Thread Subsystem  Storage Subsystem  Linking the Two    The Thread Subsystem   Thread Local Steps  Lifting to Concurrent Programs    SC Storage subsystem   Linking the Thread and Storage Subsystems    x86&rsquo;s TSO Storage Subsystem:   Linking The Thread and Storage Subsystem    Exercise: PSO Storage System  A Simple Concurrent Programming Language Basic domains:">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-concurrency/lectures/lec03/">
@@ -235,7 +235,7 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-concurrency/lectures/lec03/">
   <meta property="og:title" content="Lecture 03: Operational Semantics for Concurrency | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="A Simple Concurrent Programming Language Basic Setup Thread Subsystem Storage Subsystem Linking the Two The Thread Subsystem Thread Local Steps Lifting to Concurrent Programs SC Storage subsystem Linking the Thread and Storage Subsystems x86&rsquo;s TSO Storage Subsystem: Linking The Thread and Storage Subsystem Exercise: PSO Storage System A Simple Concurrent Programming Language Basic domains:"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="A Simple Concurrent Programming Language  Basic Setup   Thread Subsystem  Storage Subsystem  Linking the Two    The Thread Subsystem   Thread Local Steps  Lifting to Concurrent Programs    SC Storage subsystem   Linking the Thread and Storage Subsystems    x86&rsquo;s TSO Storage Subsystem:   Linking The Thread and Storage Subsystem    Exercise: PSO Storage System  A Simple Concurrent Programming Language Basic domains:"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -593,8 +593,8 @@ else
 <p>Different memory models usually share the same thread behaviors while have different implementation on the read/write side. Therefore we decompose the system into thread subsystem and storage subsystem and set an &ldquo;virtual&rdquo; interface between them.</p>
 <h3 id="thread-subsystem">Thread Subsystem</h3>
 <ul>
-<li>thread local step: $(c,s)\overset{l}{\to}(c&rsquo;,s&rsquo;)$,</li>
-<li>Lift them to program steps: $(P,S)\overset{i,l}{\to}(P&rsquo;,S&rsquo;)$.</li>
+<li>thread local step: $(c,s)\overset{l}{\to}(c',s')$,</li>
+<li>Lift them to program steps: $(P,S)\overset{i,l}{\to}(P',S')$.</li>
 </ul>
 <h3 id="storage-subsystem">Storage Subsystem</h3>
 <ul>
@@ -605,11 +605,11 @@ else
 <p>Describe the effect of memory accesses and fences.</p>
 </li>
 <li>
-<p>$M\overset{i:l}{\to}M&rsquo;$.</p>
+<p>$M\overset{i:l}{\to}M'$.</p>
 </li>
 </ul>
 <h3 id="linking-the-two">Linking the Two</h3>
-<p>Either the thread or the storage subsystem make an internel step, i.e., $\epsilon$, or they make matching $i:l$ steps. The transformation is denoted as $P,S,M\Rightarrow P&rsquo;,S&rsquo;,M&rsquo;$.</p>
+<p>Either the thread or the storage subsystem make an internel step, i.e., $\epsilon$, or they make matching $i:l$ steps. The transformation is denoted as $P,S,M\Rightarrow P',S',M'$.</p>
 <h2 id="the-thread-subsystem">The Thread Subsystem</h2>
 <h3 id="thread-local-steps">Thread Local Steps</h3>
 <p><strong>Store:</strong> $s:\text{Reg}\to \text{Val}$ (initially $s_0\triangleq \lambda r.0$).</p>
@@ -621,11 +621,11 @@ $$
 $$</p>
 <p>Sequential:</p>
 <p>$$
-\frac{c_1,s\overset{l}{\to}c_1&rsquo;,s&rsquo;}{c_1;c_2,s\overset{l}{\to}c_1&rsquo;,c_2,s&rsquo;}
+\frac{c_1,s\overset{l}{\to}c_1',s'}{c_1;c_2,s\overset{l}{\to}c_1',c_2,s'}
 $$</p>
 <p>Register operations:
 $$
-\frac{s&rsquo;=s[r\mapsto s(e)]}{\text{r:=e},s\overset{\epsilon}{\to}\mathbf{skip},s&rsquo;}
+\frac{s'=s[r\mapsto s(e)]}{\text{r:=e},s\overset{\epsilon}{\to}\mathbf{skip},s'}
 $$
 Memory read:
 $$
@@ -690,11 +690,11 @@ $$</p>
 <h3 id="linking-the-thread-and-storage-subsystems">Linking the Thread and Storage Subsystems</h3>
 <p>Silent:
 $$
-\frac{P,S\overset{i:\epsilon}{\to}P&rsquo;, S&rsquo;}{P,S,M\Rightarrow P&rsquo;,S&rsquo;,M}
+\frac{P,S\overset{i:\epsilon}{\to}P', S'}{P,S,M\Rightarrow P',S',M}
 $$
 Non-silent:
 $$
-\frac{P,S\overset{i:l}{\to}P&rsquo;,S&rsquo;\quad M\overset{i:l}{\to}M&rsquo;}{P,S,M\Rightarrow P&rsquo;,S&rsquo;,M&rsquo;}
+\frac{P,S\overset{i:l}{\to}P',S'\quad M\overset{i:l}{\to}M'}{P,S,M\Rightarrow P',S',M'}
 $$
 An outcome $O:\text{Tid}\to\text{Store}$ is allowed for a program $P$ under SC if there exists $M$ such that
 $$
@@ -734,15 +734,15 @@ Fence is used as forced synchronization.</p>
 <h3 id="linking-the-thread-and-storage-subsystem">Linking The Thread and Storage Subsystem</h3>
 <p>Silent thread:
 $$
-\frac{P,S\overset{i:\epsilon}{\to}P&rsquo;,S&rsquo;}{P,S,M,B\Rightarrow P,S&rsquo;,M,B}
+\frac{P,S\overset{i:\epsilon}{\to}P',S'}{P,S,M,B\Rightarrow P,S',M,B}
 $$
 Silent storage:
 $$
-\frac{M,B\overset{i:\epsilon}{\to}M&rsquo;,B&rsquo;}{P,S,M,B\Rightarrow P,S,M&rsquo;,B&rsquo;}
+\frac{M,B\overset{i:\epsilon}{\to}M',B'}{P,S,M,B\Rightarrow P,S,M',B'}
 $$
 Non silent:
 $$
-\frac{P,S\overset{i:l}{\to}P&rsquo;,S&rsquo;\qquad M,B\overset{i:l}{\to}M&rsquo;,B&rsquo;}{P,S,M,B\Rightarrow P&rsquo;,S&rsquo;,M&rsquo;,B&rsquo;}
+\frac{P,S\overset{i:l}{\to}P',S'\qquad M,B\overset{i:l}{\to}M',B'}{P,S,M,B\Rightarrow P',S',M',B'}
 $$
 The definition of allowed outcome is similar to that of SC.</p>
 <h2 id="exercise-pso-storage-system">Exercise: PSO Storage System</h2>
@@ -754,7 +754,7 @@ y = 1;  ||  b = x; // 0;
 <p>(1) Operational semantics for PSO:</p>
 <p>We only need to redefine the propagate rule in TSO:
 $$
-\frac{B(i)=b&rsquo;\cdot(x,v)\cdot b\qquad b=(x_t,v_t)\cdot\ldots\cdot(x_1,v_1),\forall 1\leq i\leq t,x_i\neq x}{M,B\overset{i:\epsilon}{\to}M[x\mapsto v],B[i\mapsto b&rsquo;\cdot b]}
+\frac{B(i)=b'\cdot(x,v)\cdot b\qquad b=(x_t,v_t)\cdot\ldots\cdot(x_1,v_1),\forall 1\leq i\leq t,x_i\neq x}{M,B\overset{i:\epsilon}{\to}M[x\mapsto v],B[i\mapsto b'\cdot b]}
 $$
 (2) store-store fence:</p>
 <p>In the thread subsystem:
@@ -768,7 +768,7 @@ $$
 $$
 Propagation rule needn&rsquo;t be changed because our conditions implicitly require that there&rsquo;s no store-store fence before the target operation. But we need an additional rule to move away &ldquo;F&rdquo; marks:
 $$
-\frac{B(i)=b\cdot F}{M,B\overset{i:\epsilon}{\to}M&rsquo;,B[i\mapsto b]}
+\frac{B(i)=b\cdot F}{M,B\overset{i:\epsilon}{\to}M',B[i\mapsto b]}
 $$
 (3) Show that programs containing store-store fences between every two writes have the same outcomes under TSO and PSO:</p>
 <p>TSO and PSO differ only in their propagation rules. If there is a store-store fence between every two writes, it&rsquo;s easy to prove that at any point, the buffer of arbitrary thread should be in the form of $(x_n,v_n)\cdot F\cdot \ldots \cdot F\cdot (x_2,v_2)\cdot F\cdot (x_1,v_1)$. Therefore at any point the propagation rule in PSO can only choose the least recent operation in the buffer to propagate, which makes it completely the same as TSO&rsquo;s propagation rule.</p>
@@ -893,7 +893,7 @@ $$
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

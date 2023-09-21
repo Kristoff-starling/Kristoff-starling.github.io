@@ -29,7 +29,7 @@
   
     
   
-  <meta name="description" content="Separate Compilation Proof by Induction Proofs Within Proofs Formal vs. Informal Proof Exercises Exercise: 2 stars, standard, especially useful (basic_induction) Exercise: 2 stars, standard (double_plus) Exercise: 2 stars, standard (eqb_refl) Exercise: 2 stars, standard, optional (even_S) Exercise: 3 stars, standard, especially useful (mul_comm) Exercise: 2 stars, standard, optional (plus_leb_compat_l) Exercise: 3 stars, standard, optional (more_exercises) Exercise: 2 stars, standard, optional (add_shuffle3&rsquo;) Exercise: 3 stars, standard, especially useful (binary_commute) Exercise: 3 stars, standard (nat_bin_nat) Exercise: 2 stars, advanced (double_bin) Exercise: 4 stars, advanced (bin_nat_bin) Separate Compilation 如果想在新的 .">
+  <meta name="description" content="Separate Compilation  Proof by Induction  Proofs Within Proofs  Formal vs. Informal Proof  Exercises   Exercise: 2 stars, standard, especially useful (basic_induction)  Exercise: 2 stars, standard (double_plus)  Exercise: 2 stars, standard (eqb_refl)  Exercise: 2 stars, standard, optional (even_S)  Exercise: 3 stars, standard, especially useful (mul_comm)  Exercise: 2 stars, standard, optional (plus_leb_compat_l)  Exercise: 3 stars, standard, optional (more_exercises)  Exercise: 2 stars, standard, optional (add_shuffle3&#39;)  Exercise: 3 stars, standard, especially useful (binary_commute)  Exercise: 3 stars, standard (nat_bin_nat)  Exercise: 2 stars, advanced (double_bin)  Exercise: 4 stars, advanced (bin_nat_bin)    Separate Compilation 如果想在新的 .">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/booknotes/softwarefoundations/lf/induction/">
@@ -235,7 +235,7 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/softwarefoundations/lf/induction/">
   <meta property="og:title" content="Proof by Indution | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Separate Compilation Proof by Induction Proofs Within Proofs Formal vs. Informal Proof Exercises Exercise: 2 stars, standard, especially useful (basic_induction) Exercise: 2 stars, standard (double_plus) Exercise: 2 stars, standard (eqb_refl) Exercise: 2 stars, standard, optional (even_S) Exercise: 3 stars, standard, especially useful (mul_comm) Exercise: 2 stars, standard, optional (plus_leb_compat_l) Exercise: 3 stars, standard, optional (more_exercises) Exercise: 2 stars, standard, optional (add_shuffle3&rsquo;) Exercise: 3 stars, standard, especially useful (binary_commute) Exercise: 3 stars, standard (nat_bin_nat) Exercise: 2 stars, advanced (double_bin) Exercise: 4 stars, advanced (bin_nat_bin) Separate Compilation 如果想在新的 ."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="Separate Compilation  Proof by Induction  Proofs Within Proofs  Formal vs. Informal Proof  Exercises   Exercise: 2 stars, standard, especially useful (basic_induction)  Exercise: 2 stars, standard (double_plus)  Exercise: 2 stars, standard (eqb_refl)  Exercise: 2 stars, standard, optional (even_S)  Exercise: 3 stars, standard, especially useful (mul_comm)  Exercise: 2 stars, standard, optional (plus_leb_compat_l)  Exercise: 3 stars, standard, optional (more_exercises)  Exercise: 2 stars, standard, optional (add_shuffle3&#39;)  Exercise: 3 stars, standard, especially useful (binary_commute)  Exercise: 3 stars, standard (nat_bin_nat)  Exercise: 2 stars, advanced (double_bin)  Exercise: 4 stars, advanced (bin_nat_bin)    Separate Compilation 如果想在新的 ."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -538,7 +538,7 @@
 <li>
 <a href="#exercise-3-stars-standard-optional-more_exercises">Exercise: 3 stars, standard, optional (more_exercises)</a></li>
 <li>
-<a href="#exercise-2-stars-standard-optional-add_shuffle3">Exercise: 2 stars, standard, optional (add_shuffle3&rsquo;)</a></li>
+<a href="#exercise-2-stars-standard-optional-add_shuffle3">Exercise: 2 stars, standard, optional (add_shuffle3')</a></li>
 <li>
 <a href="#exercise-3-stars-standard-especially-useful-binary_commute">Exercise: 3 stars, standard, especially useful (binary_commute)</a></li>
 <li>
@@ -970,7 +970,7 @@ Proof.
     reflexivity.
 Qed.
 </code></pre>
-<p>为了证明最终的定理，笔者先证明了 3 个引理，主要围绕着 <code>*2</code>/<code>*2+1</code> 和在 bin前面添加 B0/B1 的一致性讨论。最终定理的证明中比较精妙的部分是关于 <code>bin_to_nat b'</code> 的讨论。在归纳步骤中等式右边是 <code>normalize (B0 b')</code>，如果我们不能确定 <code>b'</code> 不是 Z，那么括号里的 B0 就提不出来，可如果对着 b&rsquo; 的结构直接进行讨论，又容易陷入循环论证 (如果 <code>b'= B0 b''</code>，仍然说明不了问题)，因此在这里选择对 b&rsquo; 转化成自然数后的结果进行讨论。</p>
+<p>为了证明最终的定理，笔者先证明了 3 个引理，主要围绕着 <code>*2</code>/<code>*2+1</code> 和在 bin前面添加 B0/B1 的一致性讨论。最终定理的证明中比较精妙的部分是关于 <code>bin_to_nat b'</code> 的讨论。在归纳步骤中等式右边是 <code>normalize (B0 b')</code>，如果我们不能确定 <code>b'</code> 不是 Z，那么括号里的 B0 就提不出来，可如果对着 b' 的结构直接进行讨论，又容易陷入循环论证 (如果 <code>b'= B0 b''</code>，仍然说明不了问题)，因此在这里选择对 b' 转化成自然数后的结果进行讨论。</p>
 
           </div>
 
@@ -1092,7 +1092,7 @@ Qed.
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

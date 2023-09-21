@@ -696,7 +696,7 @@ Proof. reflexivity. Qed.
 &lt;li&gt;
 &lt;a href=&#34;#exercise-3-stars-standard-optional-more_exercises&#34;&gt;Exercise: 3 stars, standard, optional (more_exercises)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;
-&lt;a href=&#34;#exercise-2-stars-standard-optional-add_shuffle3&#34;&gt;Exercise: 2 stars, standard, optional (add_shuffle3&amp;rsquo;)&lt;/a&gt;&lt;/li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-optional-add_shuffle3&#34;&gt;Exercise: 2 stars, standard, optional (add_shuffle3&#39;)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;
 &lt;a href=&#34;#exercise-3-stars-standard-especially-useful-binary_commute&#34;&gt;Exercise: 3 stars, standard, especially useful (binary_commute)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;
@@ -1128,7 +1128,7 @@ Proof.
     reflexivity.
 Qed.
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;为了证明最终的定理，笔者先证明了 3 个引理，主要围绕着 &lt;code&gt;*2&lt;/code&gt;/&lt;code&gt;*2+1&lt;/code&gt; 和在 bin前面添加 B0/B1 的一致性讨论。最终定理的证明中比较精妙的部分是关于 &lt;code&gt;bin_to_nat b&#39;&lt;/code&gt; 的讨论。在归纳步骤中等式右边是 &lt;code&gt;normalize (B0 b&#39;)&lt;/code&gt;，如果我们不能确定 &lt;code&gt;b&#39;&lt;/code&gt; 不是 Z，那么括号里的 B0 就提不出来，可如果对着 b&amp;rsquo; 的结构直接进行讨论，又容易陷入循环论证 (如果 &lt;code&gt;b&#39;= B0 b&#39;&#39;&lt;/code&gt;，仍然说明不了问题)，因此在这里选择对 b&amp;rsquo; 转化成自然数后的结果进行讨论。&lt;/p&gt;
+&lt;p&gt;为了证明最终的定理，笔者先证明了 3 个引理，主要围绕着 &lt;code&gt;*2&lt;/code&gt;/&lt;code&gt;*2+1&lt;/code&gt; 和在 bin前面添加 B0/B1 的一致性讨论。最终定理的证明中比较精妙的部分是关于 &lt;code&gt;bin_to_nat b&#39;&lt;/code&gt; 的讨论。在归纳步骤中等式右边是 &lt;code&gt;normalize (B0 b&#39;)&lt;/code&gt;，如果我们不能确定 &lt;code&gt;b&#39;&lt;/code&gt; 不是 Z，那么括号里的 B0 就提不出来，可如果对着 b&#39; 的结构直接进行讨论，又容易陷入循环论证 (如果 &lt;code&gt;b&#39;= B0 b&#39;&#39;&lt;/code&gt;，仍然说明不了问题)，因此在这里选择对 b&#39; 转化成自然数后的结果进行讨论。&lt;/p&gt;
 </description>
     </item>
     

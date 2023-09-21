@@ -32,8 +32,8 @@
   <meta name="description" content="并发：一个计算机程序被分成了若干个部分，在不改变程序最终运行结果的情况下，这些部分被乱序地执行。并发执行的多个部分会共享资源。
 State Machine 在单线程视角中，C 程序的状态机包括全局变量，堆区，栈帧列表等。全局变量和堆区的内容是全局的，是所有函数共享的，理应作为共享资源；栈帧中的变量都是局部变量，栈帧与栈帧之间独立性较强，可以交给多个线程。
 多线程视角下的状态机：
-全局变量，堆区等全局共享资源； 若干个栈帧链，每条栈帧链属于一个线程。 在并发程序中，每一步的结果都是 non-deterministic 的，它的状态转移图是长成这样的：
-stateDiagram state1: (g, T1, T2) state1 --&gt; state2: 线程T1执行 state1 --&gt; state3: 线程T2执行 state2: (g&#39;,T1&#39;,T2) state3: (g&#39;,T1,T2&#39;) state2 --&gt; state4: 线程T1执行 state2 --&gt; state5: 线程T2执行 state3 --&gt; state6: 线程T1执行 state3 --&gt; state7: 线程T2执行 state4: …… state5: …… state6: …… state7: …… Simplified Thread API // thread.">
+ 全局变量，堆区等全局共享资源； 若干个栈帧链，每条栈帧链属于一个线程。  在并发程序中，每一步的结果都是 non-deterministic 的，它的状态转移图是长成这样的：
+stateDiagram state1: (g, T1, T2) state1 --&gt; state2: 线程T1执行 state1 --&gt; state3: 线程T2执行 state2: (g&#39;,T1&#39;,T2) state3: (g&#39;,T1,T2&#39;) state2 --&gt; state4: 线程T1执行 state2 --&gt; state5: 线程T2执行 state3 --&gt; state6: 线程T1执行 state3 --&gt; state7: 线程T2执行 state4: …… state5: …… state6: …… state7: ……  Simplified Thread API // thread.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec03/">
@@ -242,8 +242,8 @@ stateDiagram state1: (g, T1, T2) state1 --&gt; state2: 线程T1执行 state1 --&
   <meta property="og:description" content="并发：一个计算机程序被分成了若干个部分，在不改变程序最终运行结果的情况下，这些部分被乱序地执行。并发执行的多个部分会共享资源。
 State Machine 在单线程视角中，C 程序的状态机包括全局变量，堆区，栈帧列表等。全局变量和堆区的内容是全局的，是所有函数共享的，理应作为共享资源；栈帧中的变量都是局部变量，栈帧与栈帧之间独立性较强，可以交给多个线程。
 多线程视角下的状态机：
-全局变量，堆区等全局共享资源； 若干个栈帧链，每条栈帧链属于一个线程。 在并发程序中，每一步的结果都是 non-deterministic 的，它的状态转移图是长成这样的：
-stateDiagram state1: (g, T1, T2) state1 --&gt; state2: 线程T1执行 state1 --&gt; state3: 线程T2执行 state2: (g&#39;,T1&#39;,T2) state3: (g&#39;,T1,T2&#39;) state2 --&gt; state4: 线程T1执行 state2 --&gt; state5: 线程T2执行 state3 --&gt; state6: 线程T1执行 state3 --&gt; state7: 线程T2执行 state4: …… state5: …… state6: …… state7: …… Simplified Thread API // thread."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ 全局变量，堆区等全局共享资源； 若干个栈帧链，每条栈帧链属于一个线程。  在并发程序中，每一步的结果都是 non-deterministic 的，它的状态转移图是长成这样的：
+stateDiagram state1: (g, T1, T2) state1 --&gt; state2: 线程T1执行 state1 --&gt; state3: 线程T2执行 state2: (g&#39;,T1&#39;,T2) state3: (g&#39;,T1,T2&#39;) state2 --&gt; state4: 线程T1执行 state2 --&gt; state5: 线程T2执行 state3 --&gt; state6: 线程T1执行 state3 --&gt; state7: 线程T2执行 state4: …… state5: …… state6: …… state7: ……  Simplified Thread API // thread."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -1184,7 +1184,7 @@ movl (y), %eax # --+
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="27.1 Thread Creation 创建线程的 API 为
-int pthread_create( pthread_t *thread, const pthread_attr_t *attr, void * (*start_routine)(void*), void * arg); thread 是指向 pthread_t 类型变量的指针，我们将来要通过这个结构体来控制这个线程，所以现在需要对其进行初始化。 attr 表明了希望该线程拥有的属性，大多数情况下可以传 NULL，表示按照默认属性创建。 start_routine 是一个指向函数的指针，新创建的线程会从这个函数开始执行。 arg 是传给 start_routine() 的参数。 这里参数的类型和返回值类型都是 void * 类型的指针 (相当于只要求地址，不要求对地址类型的解读)，这是为了使得函数支持任意类型的参数和返回值。">
+int pthread_create( pthread_t *thread, const pthread_attr_t *attr, void * (*start_routine)(void*), void * arg);   thread 是指向 pthread_t 类型变量的指针，我们将来要通过这个结构体来控制这个线程，所以现在需要对其进行初始化。 attr 表明了希望该线程拥有的属性，大多数情况下可以传 NULL，表示按照默认属性创建。 start_routine 是一个指向函数的指针，新创建的线程会从这个函数开始执行。 arg 是传给 start_routine() 的参数。  这里参数的类型和返回值类型都是 void * 类型的指针 (相当于只要求地址，不要求对地址类型的解读)，这是为了使得函数支持任意类型的参数和返回值。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch27/">
@@ -237,7 +237,7 @@ int pthread_create( pthread_t *thread, const pthread_attr_t *attr, void * (*star
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch27/">
   <meta property="og:title" content="Chapter 27: Interlude: Thread API | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="27.1 Thread Creation 创建线程的 API 为
-int pthread_create( pthread_t *thread, const pthread_attr_t *attr, void * (*start_routine)(void*), void * arg); thread 是指向 pthread_t 类型变量的指针，我们将来要通过这个结构体来控制这个线程，所以现在需要对其进行初始化。 attr 表明了希望该线程拥有的属性，大多数情况下可以传 NULL，表示按照默认属性创建。 start_routine 是一个指向函数的指针，新创建的线程会从这个函数开始执行。 arg 是传给 start_routine() 的参数。 这里参数的类型和返回值类型都是 void * 类型的指针 (相当于只要求地址，不要求对地址类型的解读)，这是为了使得函数支持任意类型的参数和返回值。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+int pthread_create( pthread_t *thread, const pthread_attr_t *attr, void * (*start_routine)(void*), void * arg);   thread 是指向 pthread_t 类型变量的指针，我们将来要通过这个结构体来控制这个线程，所以现在需要对其进行初始化。 attr 表明了希望该线程拥有的属性，大多数情况下可以传 NULL，表示按照默认属性创建。 start_routine 是一个指向函数的指针，新创建的线程会从这个函数开始执行。 arg 是传给 start_routine() 的参数。  这里参数的类型和返回值类型都是 void * 类型的指针 (相当于只要求地址，不要求对地址类型的解读)，这是为了使得函数支持任意类型的参数和返回值。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -790,7 +790,7 @@ int pthread_cond_signal(pthread_cond_t *cond);
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

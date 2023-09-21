@@ -30,10 +30,8 @@
     
   
   <meta name="description" content="本节课默认只有静态链接。
-Overview 可执行文件的本质描述状态机初始状态 (数据) 和迁移 (指令) 的数据结构：可执行文件在 execve() 的时候使用，操作系统根据可执行文件的描述设置状态机并开始执行。
-更具体地说，可执行文件是一个描述了状态机初始状态的数据结构。状态机的初始状态一般包括以下几个方面：
-寄存器：大部分寄存器的值由 ABI 规定 (比如哪些寄存器应该清零)，由操作系统负责设置。但也有一些重要的寄存器的值是可执行文件指定的，比如 PC 的值。 地址空间 (内存)：由二进制文件和 ABI 共同决定，比如某一段数据应该放到内存中的哪里，以及 argv, envp 的内容。 其他有用的信息 (比如调试信息) 什么样的文件可以被执行？
-一个文件需要满足若干条件才能被执行。假设我们有源代码 a.c，直接执行它 (./a.c) 会获得 Permission denied (bash)，即使我们用 chmod &#43;x a.">
+ Overview 可执行文件的本质描述状态机初始状态 (数据) 和迁移 (指令) 的数据结构：可执行文件在 execve() 的时候使用，操作系统根据可执行文件的描述设置状态机并开始执行。更具体地说，可执行文件是一个描述了状态机初始状态的数据结构。状态机的初始状态一般包括以下几个方面：
+ 寄存器：大部分寄存器的值由 ABI 规定 (比如哪些寄存器应该清零)，由操作系统负责设置。但也有一些重要的寄存器的值是可执行文件指定的，比如 PC 的值。 地址空间 (内存)：由二进制文件和 ABI 共同决定，比如某一段数据应该放到内存中的哪里，以及 argv, envp 的内容。 其他有用的信息 (比如调试信息)   什么样的文件可以被执行？">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec16/">
@@ -240,10 +238,8 @@ Overview 可执行文件的本质描述状态机初始状态 (数据) 和迁移 
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec16/">
   <meta property="og:title" content="Lecture 16: Executable Files | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="本节课默认只有静态链接。
-Overview 可执行文件的本质描述状态机初始状态 (数据) 和迁移 (指令) 的数据结构：可执行文件在 execve() 的时候使用，操作系统根据可执行文件的描述设置状态机并开始执行。
-更具体地说，可执行文件是一个描述了状态机初始状态的数据结构。状态机的初始状态一般包括以下几个方面：
-寄存器：大部分寄存器的值由 ABI 规定 (比如哪些寄存器应该清零)，由操作系统负责设置。但也有一些重要的寄存器的值是可执行文件指定的，比如 PC 的值。 地址空间 (内存)：由二进制文件和 ABI 共同决定，比如某一段数据应该放到内存中的哪里，以及 argv, envp 的内容。 其他有用的信息 (比如调试信息) 什么样的文件可以被执行？
-一个文件需要满足若干条件才能被执行。假设我们有源代码 a.c，直接执行它 (./a.c) 会获得 Permission denied (bash)，即使我们用 chmod &#43;x a."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ Overview 可执行文件的本质描述状态机初始状态 (数据) 和迁移 (指令) 的数据结构：可执行文件在 execve() 的时候使用，操作系统根据可执行文件的描述设置状态机并开始执行。更具体地说，可执行文件是一个描述了状态机初始状态的数据结构。状态机的初始状态一般包括以下几个方面：
+ 寄存器：大部分寄存器的值由 ABI 规定 (比如哪些寄存器应该清零)，由操作系统负责设置。但也有一些重要的寄存器的值是可执行文件指定的，比如 PC 的值。 地址空间 (内存)：由二进制文件和 ABI 共同决定，比如某一段数据应该放到内存中的哪里，以及 argv, envp 的内容。 其他有用的信息 (比如调试信息)   什么样的文件可以被执行？"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -996,7 +992,7 @@ struct symbol {uint32_t offset, const char *name;}
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

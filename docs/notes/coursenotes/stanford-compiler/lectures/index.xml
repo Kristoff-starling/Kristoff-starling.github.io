@@ -130,8 +130,8 @@ bool S() {
 &lt;p&gt;The program will result in infinite loop (&lt;code&gt;S()&lt;/code&gt; calls &lt;code&gt;S1()&lt;/code&gt;, &lt;code&gt;S1()&lt;/code&gt; calls &lt;code&gt;S()&lt;/code&gt; and so on). The problem is that the grammar is left recursive - the derivation generate strings from right to left, but our parser scans from left to right. We need to rewrite the grammars as right recursive:
 $$
 \begin{align}
-S&amp;amp;\to \beta S&amp;rsquo;\\
-S&amp;rsquo;&amp;amp;\to \alpha S&amp;rsquo;\space |\space \epsilon
+S&amp;amp;\to \beta S&#39;\\
+S&#39;&amp;amp;\to \alpha S&#39;\space |\space \epsilon
 \end{align}
 $$
 In principle, grammars can be transformed to right recursive ones automatically. But in practice people manually do the transformation.&lt;/p&gt;
@@ -226,11 +226,11 @@ s7 --&amp;gt; s10((id))
 &lt;p&gt;Rewrite grammar unambiguously. Write
 $$
 \begin{align}
-E&amp;amp;\to E&amp;rsquo;+E\space |\space E&amp;rsquo;\\
-E&amp;rsquo;&amp;amp;\to id*E&amp;rsquo;\space |\space id\space |\space (E)*E&amp;rsquo;\space |\space (E)
+E&amp;amp;\to E&#39;+E\space |\space E&#39;\\
+E&#39;&amp;amp;\to id*E&#39;\space |\space id\space |\space (E)*E&#39;\space |\space (E)
 \end{align}
 $$
-instead of one production ( $E$ can represent arbitrary $E&amp;rsquo;$s summing together, $E&amp;rsquo;$ is responsible for &lt;code&gt;*&lt;/code&gt; )&lt;/p&gt;
+instead of one production ( $E$ can represent arbitrary $E&#39;$s summing together, $E&#39;$ is responsible for &lt;code&gt;*&lt;/code&gt; )&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Enforces precedence of operators (&lt;code&gt;*&lt;/code&gt; over &lt;code&gt;+&lt;/code&gt;).&lt;/p&gt;
@@ -491,7 +491,7 @@ DO 5 I = 1.25
 &lt;p&gt;2 base cases:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Single character: $c\triangleq {c}$&lt;/li&gt;
-&lt;li&gt;Epsilon: $\epsilon\triangleq {&amp;rsquo;&amp;rsquo;}$&lt;/li&gt;
+&lt;li&gt;Epsilon: $\epsilon\triangleq {&#39;&#39;}$&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;3 compound expressions:&lt;/p&gt;
 &lt;ul&gt;
@@ -516,7 +516,7 @@ $$&lt;/p&gt;
 &lt;p&gt;A &lt;strong&gt;meaning function&lt;/strong&gt; $L:\text{expression}\to \text{set of strings}$ is a mapping that maps syntax to semantics. For example, the rigorous way of defining regular expression symbols are:
 $$
 \begin{align}
-L(\epsilon)&amp;amp;={&amp;rsquo;&amp;rsquo;}\\
+L(\epsilon)&amp;amp;={&#39;&#39;}\\
 L(c)&amp;amp;={c}\\
 L(A+B)&amp;amp;=L(A)\cup L(B)\\
 L(AB)&amp;amp;={ab:a\in L(A),b\in L(B)}\\
@@ -545,15 +545,15 @@ The mappings between expressions and meanings are not 1-to-1. it&amp;rsquo;s man
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Whitespace: a non-empty sequence of blanks, newlines and tabs.&lt;/p&gt;
-&lt;p&gt;$\text{Whitespace}=(\text{&amp;rsquo; &amp;lsquo;}+\text{&amp;rsquo;\n&amp;rsquo;}+\text{&amp;rsquo;\t&amp;rsquo;})^+$.&lt;/p&gt;
+&lt;p&gt;$\text{Whitespace}=(\text{&#39; &amp;lsquo;}+\text{&#39;\n&amp;rsquo;}+\text{&#39;\t&#39;})^+$.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;example-pascal-numbers&#34;&gt;Example: Pascal Numbers&lt;/h3&gt;
 &lt;p&gt;$$
 \begin{align}
 \text{num} &amp;amp;= \text{digits}\space\space \text{opt_fraction}\space\space \text{opt_exponent}\\
-\text{opt_fraction}&amp;amp;=(\text{&amp;rsquo;.&amp;rsquo;}\space\space \text{digits})+\epsilon\\
-\text{opt_exponent}&amp;amp;=(\text{&amp;lsquo;E&amp;rsquo;}\space (\text{&amp;rsquo;+&amp;rsquo;}+\text{&amp;rsquo;-&amp;rsquo;}+\epsilon)\space \text{digits})+\epsilon\\
+\text{opt_fraction}&amp;amp;=(\text{&#39;.&#39;}\space\space \text{digits})+\epsilon\\
+\text{opt_exponent}&amp;amp;=(\text{&amp;lsquo;E&amp;rsquo;}\space (\text{&#39;+&#39;}+\text{&#39;-&#39;}+\epsilon)\space \text{digits})+\epsilon\\
 \text{digits}&amp;amp;=\text{digit}^+\\
 \text{digit}&amp;amp;=[0-9]
 \end{align}
@@ -561,8 +561,8 @@ $$&lt;/p&gt;
 &lt;p&gt;We observe that &amp;ldquo;$+\epsilon$&amp;rdquo; in regular expressions indicates &amp;ldquo;optional&amp;rdquo;, i.e. the elements before can be either present or absent. For convenience, we denote $A?\triangleq A+\epsilon$, so the rules above can be rewritten as
 $$
 \begin{align}
-\text{opt_fraction} &amp;amp;= (\text{&amp;rsquo;.&amp;rsquo;}\space \text{digits})?\\
-\text{opt_exponent} &amp;amp;= (\text{&amp;lsquo;E&amp;rsquo;}\space (\text{&amp;rsquo;+&amp;rsquo;}+\text{&amp;rsquo;-&amp;rsquo;})?\space \text{digits})?
+\text{opt_fraction} &amp;amp;= (\text{&#39;.&#39;}\space \text{digits})?\\
+\text{opt_exponent} &amp;amp;= (\text{&amp;lsquo;E&amp;rsquo;}\space (\text{&#39;+&#39;}+\text{&#39;-&#39;})?\space \text{digits})?
 \end{align}
 $$
 It&amp;rsquo;s worth notice that regular expressions defines the set of strings we want, but we still need an implementation, i.e. given a string $s$ and a regular expression $R$, we want to know whether $s\in L(R)$.&lt;/p&gt;

@@ -150,7 +150,7 @@ y[N/x]&amp;amp;\triangleq y\\
 (M\space P)[N/x]&amp;amp;\triangleq (M[N/x])(P[N/x])\\
 (\lambda x.M)[N/x]&amp;amp;\triangleq \lambda x.M\\
 (\lambda y.M)[N/x]&amp;amp;\triangleq \lambda y.(M[N/x])\qquad\qquad \text{if }x\neq y\text{ and }y\neq FV(N)\\
-(\lambda y.M)[N/x]&amp;amp;\triangleq \lambda y&amp;rsquo;.(M\{y&amp;rsquo;/y\}[N/x])\quad \text{if }x\neq y,y\in FV(N) \text{ and }y&amp;rsquo; \text{ fresh}
+(\lambda y.M)[N/x]&amp;amp;\triangleq \lambda y&#39;.(M\{y&#39;/y\}[N/x])\quad \text{if }x\neq y,y\in FV(N) \text{ and }y&#39; \text{ fresh}
 \end{align}
 $$&lt;/p&gt;
 &lt;h2 id=&#34;24-introduction-to-beta-reduction&#34;&gt;2.4 Introduction to $\beta$-Reduction&lt;/h2&gt;
@@ -180,13 +180,13 @@ $$
 $$&lt;/p&gt;
 &lt;p&gt;$$
 \begin{align}
-\frac{M\to_\beta M&amp;rsquo;}{M\space N\to_\beta M&amp;rsquo;\space N}\\
-\frac{N\to_\beta N&amp;rsquo;}{M\space N\to_\beta M\space N&amp;rsquo;}\\
-\frac{M\to_\beta M&amp;rsquo;}{\lambda x.M\to_\beta \lambda x.M&amp;rsquo;}
+\frac{M\to_\beta M&#39;}{M\space N\to_\beta M&#39;\space N}\\
+\frac{N\to_\beta N&#39;}{M\space N\to_\beta M\space N&#39;}\\
+\frac{M\to_\beta M&#39;}{\lambda x.M\to_\beta \lambda x.M&#39;}
 \end{align}
 $$&lt;/p&gt;
-&lt;p&gt;$\fbox{Definition}$ $M\twoheadrightarrow_\beta M&amp;rsquo;$ 当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 得到 $M&amp;rsquo;$。形式化地，$\twoheadrightarrow_\beta$ 定义了 $\to_\beta$ 的传递闭包。&lt;/p&gt;
-&lt;p&gt;$\fbox{Definition}$ 我们称 $M$ 和 $M&amp;rsquo;$ 满足 &lt;strong&gt;$\beta$-equivalence&lt;/strong&gt;，记作 $M=&lt;em&gt;\beta M&amp;rsquo;$，当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 及其逆操作得到 $M&amp;rsquo;$。形式化地，$=&lt;/em&gt;\beta$ 定义了 $\to_\beta$ 的对称闭包。&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ $M\twoheadrightarrow_\beta M&#39;$ 当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 得到 $M&#39;$。形式化地，$\twoheadrightarrow_\beta$ 定义了 $\to_\beta$ 的传递闭包。&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ 我们称 $M$ 和 $M&#39;$ 满足 &lt;strong&gt;$\beta$-equivalence&lt;/strong&gt;，记作 $M=&lt;em&gt;\beta M&#39;$，当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 及其逆操作得到 $M&#39;$。形式化地，$=&lt;/em&gt;\beta$ 定义了 $\to_\beta$ 的对称闭包。&lt;/p&gt;
 </description>
     </item>
     
@@ -208,8 +208,8 @@ $$
 $$
 \begin{align}
 \mathbf{not}&amp;amp;\triangleq \lambda b.b\space \mathbf{False}\space \mathbf{True}\\
-\mathbf{and}&amp;amp;\triangleq \lambda b.\lambda b&amp;rsquo;.b\space b&amp;rsquo;\space \mathbf{False}\\
-\mathbf{or}&amp;amp;\triangleq \lambda b.\lambda b&amp;rsquo;.b\space \mathbf{True}\space b&#39;
+\mathbf{and}&amp;amp;\triangleq \lambda b.\lambda b&#39;.b\space b&#39;\space \mathbf{False}\\
+\mathbf{or}&amp;amp;\triangleq \lambda b.\lambda b&#39;.b\space \mathbf{True}\space b&#39;
 \end{align}
 $$
 if-then-else：

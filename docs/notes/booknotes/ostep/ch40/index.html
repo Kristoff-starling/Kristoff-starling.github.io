@@ -29,9 +29,8 @@
   
     
   
-  <meta name="description" content="文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。
-40.1 The Way To Think 设计文件系统我们通常考虑两件事情：
-数据结构：我们准备使用什么数据结构来组织磁盘上的数据和元数据？在简单的文件系统实现中我们通常使用简单的块链表，在一些比较精密的文件系统实现中也有使用树状结构的。 访问方式：进程使用的 open(), read(), write() 等函数该如何对应到文件系统的结构上？对于一个特定的系统调用，哪些数据需要被读写？每一步的效率如何？ 40.2 Overall Organization vsfs (very simple file system，一个 UNIX 文件系统的精简版本) 的结构如下：
+  <meta name="description" content="文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。40.1 The Way To Think 设计文件系统我们通常考虑两件事情：
+ 数据结构：我们准备使用什么数据结构来组织磁盘上的数据和元数据？在简单的文件系统实现中我们通常使用简单的块链表，在一些比较精密的文件系统实现中也有使用树状结构的。 访问方式：进程使用的 open(), read(), write() 等函数该如何对应到文件系统的结构上？对于一个特定的系统调用，哪些数据需要被读写？每一步的效率如何？  40.2 Overall Organization vsfs (very simple file system，一个 UNIX 文件系统的精简版本) 的结构如下：
 整个磁盘被划分成 64 个 block，每个 block 的大小是 4KB。">
 
   
@@ -238,9 +237,8 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch40/">
   <meta property="og:title" content="Chapter 40: File System Implementation | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。
-40.1 The Way To Think 设计文件系统我们通常考虑两件事情：
-数据结构：我们准备使用什么数据结构来组织磁盘上的数据和元数据？在简单的文件系统实现中我们通常使用简单的块链表，在一些比较精密的文件系统实现中也有使用树状结构的。 访问方式：进程使用的 open(), read(), write() 等函数该如何对应到文件系统的结构上？对于一个特定的系统调用，哪些数据需要被读写？每一步的效率如何？ 40.2 Overall Organization vsfs (very simple file system，一个 UNIX 文件系统的精简版本) 的结构如下：
+  <meta property="og:description" content="文件系统是一个纯粹的软件，因此在本章节中我们不考虑加入任何的硬件 feature 使文件系统工作得更好 (当然我们还是会注意块设备本身的特性)。文件系统设计本身有很大的弹性，因此现存的文件系统很多，它们使用不同的数据结构，在各方面的表现也各有千秋。40.1 The Way To Think 设计文件系统我们通常考虑两件事情：
+ 数据结构：我们准备使用什么数据结构来组织磁盘上的数据和元数据？在简单的文件系统实现中我们通常使用简单的块链表，在一些比较精密的文件系统实现中也有使用树状结构的。 访问方式：进程使用的 open(), read(), write() 等函数该如何对应到文件系统的结构上？对于一个特定的系统调用，哪些数据需要被读写？每一步的效率如何？  40.2 Overall Organization vsfs (very simple file system，一个 UNIX 文件系统的精简版本) 的结构如下：
 整个磁盘被划分成 64 个 block，每个 block 的大小是 4KB。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
@@ -810,7 +808,7 @@ sector = ((blk * blockSize) + inodeStartAddr) / sectorSize;
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

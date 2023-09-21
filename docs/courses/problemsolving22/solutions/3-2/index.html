@@ -31,9 +31,9 @@
   
   <meta name="description" content="Problem A: 补图最短路
 给定一张不带权无向图，求其补图中1号点到其他各个点的最短路。
-本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。
+  本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。
 事实上，本题存在 $O(n&#43;m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：
-维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。 每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&rsquo;=S\cap Neighbor(v)$，则 $S-S&rsquo;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&rsquo;$。将 $v$ 标记为已访问。 Problem B: 单词接龙">
+ 维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。 每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&#39;=S\cap Neighbor(v)$，则 $S-S&#39;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&#39;$。将 $v$ 标记为已访问。   Problem B: 单词接龙">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-2/">
@@ -241,9 +241,9 @@
   <meta property="og:title" content="问题求解III-HW02 题解 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Problem A: 补图最短路
 给定一张不带权无向图，求其补图中1号点到其他各个点的最短路。
-本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。
+  本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。
 事实上，本题存在 $O(n&#43;m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：
-维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。 每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&rsquo;=S\cap Neighbor(v)$，则 $S-S&rsquo;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&rsquo;$。将 $v$ 标记为已访问。 Problem B: 单词接龙"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ 维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。 每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&#39;=S\cap Neighbor(v)$，则 $S-S&#39;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&#39;$。将 $v$ 标记为已访问。   Problem B: 单词接龙"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -549,6 +549,10 @@
         <a href="/courses/problemsolving22/solutions/3-2/">III-HW02</a>
       </li>
       
+      <li >
+        <a href="/courses/problemsolving22/solutions/3-3/">III-HW03</a>
+      </li>
+      
     </ul>
     
 
@@ -579,7 +583,7 @@
 <p>事实上，本题存在 $O(n+m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：</p>
 <ul>
 <li>维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。</li>
-<li>每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&rsquo;=S\cap Neighbor(v)$，则 $S-S&rsquo;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&rsquo;$。将 $v$ 标记为已访问。</li>
+<li>每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S'=S\cap Neighbor(v)$，则 $S-S'$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S'$。将 $v$ 标记为已访问。</li>
 </ul>
 <div class="alert alert-note">
   <div>
@@ -602,6 +606,13 @@
           <div class="article-widget">
             
 <div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving22/solutions/3-3/" rel="next">问题求解III-HW03 题解</a>
+  </div>
   
   
   
@@ -705,7 +716,7 @@
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

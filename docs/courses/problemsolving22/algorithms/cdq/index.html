@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="cdq分治是一种常用的分治思想，最早由 陈丹琦 整理和总结 ( 原文地址)。这种思想从 high-level 层面来说十分简单和抽象：当我们希望解决某个问题 solve(l, r) 时，我们可以考虑如下的分治步骤：
-解决 solve(l, mid)。 考虑 [l, mid] 对 [mid&#43;1, r] 的贡献。 解决 solve(mid&#43;1, r)。 第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。
+ 解决 solve(l, mid)。 考虑 [l, mid] 对 [mid&#43;1, r] 的贡献。 解决 solve(mid&#43;1, r)。  第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。
 二维偏序问题指对于一个二元组序列 $(a_1, b_1), (a_2, b_2),\cdots, (a_n, b_n)$，求满足 $a_i&lt;a_j$ 且 $b_i&lt;b_j$ 的数对 $(i, j)$ 的个数。显然我们如果将二元组按照 $a_i$ 从小到大排序，那么该问题就转化为了 $b_i$ 序列的逆序数问题。我们尝试套用cdq分治的“模板”来解决它。令 $solve(l, r)$ 表示区间 $[l, r]$ 内的逆序对个数，最终答案显然为 $solve(1, n)$。$solve(l, r)$ 分为三个步骤：">
 
   
@@ -238,7 +238,7 @@
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/">
   <meta property="og:title" content="cdq分治 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="cdq分治是一种常用的分治思想，最早由 陈丹琦 整理和总结 ( 原文地址)。这种思想从 high-level 层面来说十分简单和抽象：当我们希望解决某个问题 solve(l, r) 时，我们可以考虑如下的分治步骤：
-解决 solve(l, mid)。 考虑 [l, mid] 对 [mid&#43;1, r] 的贡献。 解决 solve(mid&#43;1, r)。 第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。
+ 解决 solve(l, mid)。 考虑 [l, mid] 对 [mid&#43;1, r] 的贡献。 解决 solve(mid&#43;1, r)。  第一步和第三步非常简明，但第二步的“贡献”非常抽象，需要具体问题具体分析。这里我们以二维偏序和三维偏序为例示范一些“贡献”的计算方法。
 二维偏序问题指对于一个二元组序列 $(a_1, b_1), (a_2, b_2),\cdots, (a_n, b_n)$，求满足 $a_i&lt;a_j$ 且 $b_i&lt;b_j$ 的数对 $(i, j)$ 的个数。显然我们如果将二元组按照 $a_i$ 从小到大排序，那么该问题就转化为了 $b_i$ 序列的逆序数问题。我们尝试套用cdq分治的“模板”来解决它。令 $solve(l, r)$ 表示区间 $[l, r]$ 内的逆序对个数，最终答案显然为 $solve(1, n)$。$solve(l, r)$ 分为三个步骤："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
@@ -546,8 +546,7 @@
 <div class="alert alert-note">
   <div>
     <p><strong>致歉</strong></p>
-<p>本讲义写的相当糟糕——cdq分治难度较大，思想比较微妙，笔者功力有限，用语言难以描述清楚。我们提供两份额外的参考资料，一是 
-<a href="https://oi-wiki.org/misc/cdq-divide/" target="_blank" rel="noopener">OIWiki</a> 上对于 cdq 分治的讲解，二是一份 cdq 套 cdq 的三维偏序的参考实现，希望尽可能帮助感兴趣的同学理解。</p>
+<p>本讲义写的相当糟糕——cdq分治难度较大，思想比较微妙，笔者功力有限，用语言难以描述清楚。我们提供两份额外的参考资料，一是 <a href="https://oi-wiki.org/misc/cdq-divide/">OIWiki</a> 上对于 cdq 分治的讲解，二是一份 cdq 套 cdq 的三维偏序的参考实现，希望尽可能帮助感兴趣的同学理解。</p>
   </div>
 </div>
 <details><summary><b>Code</b> :: <i>Click to expand</i></summary>
@@ -746,7 +745,7 @@ int main ()
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

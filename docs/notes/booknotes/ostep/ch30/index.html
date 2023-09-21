@@ -29,8 +29,7 @@
   
     
   
-  <meta name="description" content="很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：
-volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return NULL; } int main () { pthread_t c; Pthread_create(&amp;c, NULL, child, NULL); while (done == 0) ; do_something_else(); return 0; } 但这样做主线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。">
+  <meta name="description" content="很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return NULL; } int main () { pthread_t c; Pthread_create(&amp;c, NULL, child, NULL); while (done == 0) ; do_something_else(); return 0; }  但这样做主线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch30/">
@@ -236,8 +235,7 @@ volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch30/">
   <meta property="og:title" content="Chapter 30: Condition Variables | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：
-volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return NULL; } int main () { pthread_t c; Pthread_create(&amp;c, NULL, child, NULL); while (done == 0) ; do_something_else(); return 0; } 但这样做主线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="很多时候，我们有一个任务等待另一个任务的需求，比如主线程等到子线程结束后再继续执行 (这个函数通常被称为 join() )。一个朴素的想法是利用一个共享变量实现：volatile int done = 0; void *child(void *arg) { do_something(); done = 1; return NULL; } int main () { pthread_t c; Pthread_create(&amp;c, NULL, child, NULL); while (done == 0) ; do_something_else(); return 0; }  但这样做主线程会在 done 变量上不停地自旋，占 CPU 不干活。我们希望有更高效的实现方法。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -832,7 +830,7 @@ void free(void *ptr, int size) {
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

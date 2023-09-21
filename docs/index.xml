@@ -35,6 +35,75 @@
     </item>
     
     <item>
+      <title>问题求解III-HW03 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-3/</link>
+      <pubDate>Thu, 21 Sep 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-3/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 一笔画&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;求无向图 $G=(V, E)$ 的欧拉回路。&lt;/li&gt;
+&lt;li&gt;$|V|\leq 10^5, |E|\leq 10^6$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;本题数据范围较大，使用 fleury 算法无法通过，需要实现线性的 Hierholzer 算法。Hierholzer 算法的思路如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果存在奇数度数点 $u, v$，则取任意一条 $uv$ 迹，否则取图中任意一条迹。记当前的路径为 $T$。&lt;/li&gt;
+&lt;li&gt;取 $T$ 中仍有未访问邻边的非孤立节点 $w$，寻找一条 $ww$ 迹，将这条闭迹插入到 $T$ 中。&lt;/li&gt;
+&lt;li&gt;重复步骤 2 直到所有的边均被访问。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;寻找合法的 $uv$ 迹和 $ww$ 迹看似困难，其实在如下几条性质的加持下非常简单：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在一个有两个奇数度数节点的图中从一个奇点出发，以任意方法不走重复边地遍历，直到走到死路，最后一定停留在另一个奇点上。且去掉这条迹之后，图中所有点度数均为偶数。&lt;/li&gt;
+&lt;li&gt;在一个所有节点度数均为偶数的图中从任意节点 $w$ 出发，以任意方法不走重复边地遍历，直到走到死路，最后一定回到 $w$。且去掉这条迹之后，图中所有点度数仍然均为偶数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这两条性质的证明并不困难，形象化地，对于一个偶数度数点来说，有“进”则必有“出”，所以最后一定会停在奇点/出发点上。因此在上述算法中，所有找迹的部分只要“闷头向前搜”即可。&lt;/p&gt;
+&lt;p&gt;现在的另外一个问题是：如何寻找步骤2中的合法出发点 $w$，以及找到 $ww$ 迹之后如何高效插入。Hierholzer 算法存在经典且精巧的回溯实现可以完成这两件事。我们直接给出伪代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def hierholzer(u):
+    for (u, v) in G.edges:
+        delete (u, v) from G.edges
+        hierholzer(v)
+    path.append(u)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;大家可以仔细阅读这段代码并思考两个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该函数是如何通过回溯找到当前路径上仍有出边的节点的？&lt;/li&gt;
+&lt;li&gt;该函数在走完所有 $u$ 的出边后将 $u$ 加入路径，该顺序是如何做到将步骤 2 中的 $ww$ 迹“插入”原路径&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 观光&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;求带权无向图 $G=(V,E)$ 中权值最小的哈密尔顿路径。&lt;/li&gt;
+&lt;li&gt;$|V|\leq 15$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 id=&#34;做法1-折半搜索&#34;&gt;做法1: 折半搜索&lt;/h3&gt;
+&lt;p&gt;折半搜索的主要思想是将一个大任务拆成两个规模各为一半的子任务，然后尝试在中间将两部分拼接起来。假设我们可以高效地拼接，记原算法复杂度为 $f(n)$，则折半搜索可以将复杂度优化为 $2\cdot f(n/2)$。当 $f$ 是一个指数或更高阶的函数时，折半搜索通常能显著降低复杂度。&lt;/p&gt;
+&lt;p&gt;直接阶乘枚举所有可能路径的时间复杂度为 $O(n!)$。如果使用折半搜索，我们可以计算图中所有长度为 $n/2$ 的路径的长度。然后枚举每条“半路径”(此时另一半路径的顶点已知)和另一半路径与当前路径连接的端点，更新最短的哈密尔顿路径。时间复杂度为 $O(C(n, n/2)\cdot n)$。&lt;/p&gt;
+&lt;h3 id=&#34;做法2状态压缩动态规划&#34;&gt;做法2：状态压缩动态规划&lt;/h3&gt;
+&lt;p&gt;本题更正统的做法是采取状态压缩动态规划。所谓状态压缩，是指用一个 01 串表示当前已经经过的顶点的集合 (1表示已经走过)，这样一个 01 串又可以映射到一个十进制数的二进制表示，因此我们可以用 $[0, 2^n)$ 中的整数来刻画所有的经过状态。以下为了表示方便，我们以 $0$ 到 $n-1$ 标号节点。&lt;/p&gt;
+&lt;p&gt;令 $dp(Mask, u)$ 表示当前已经经过的节点集合为 Mask，当前节点为 $u$ 的情况下，$Mask$ 中经过节点构成的哈密尔顿路径的最短长度。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;边界条件是容易的：对于所有的 $0\leq x\leq n-1$，有 $dp(2^x, x)=0$ (只有一个点的路径，当前长度为 0)。&lt;/li&gt;
+&lt;li&gt;转移只需枚举路径下一个节点 $v$(需要保证 $v$ 尚未经过)，状态转移方程式为
+$$
+dp(Mask|2^v, v) = \min\{dp(Mask|2^v, v), dp(Mask, u) + c(u, v)\}
+$$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最终答案为
+$$
+ans = \min_{0\leq x&amp;lt;n}dp(2^n-1, x)
+$$
+状态的数量为 $O(2^n\cdot n)$，每个状态可以向 $O(n)$ 个状态转移，因此总时间复杂度为 $O(2^n\cdot n^2)$。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>问题求解III-HW02 题解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-2/</link>
       <pubDate>Sun, 17 Sep 2023 00:00:00 +0000</pubDate>
@@ -49,7 +118,7 @@
 &lt;p&gt;事实上，本题存在 $O(n+m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。&lt;/li&gt;
-&lt;li&gt;每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&amp;rsquo;=S\cap Neighbor(v)$，则 $S-S&amp;rsquo;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&amp;rsquo;$。将 $v$ 标记为已访问。&lt;/li&gt;
+&lt;li&gt;每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&#39;=S\cap Neighbor(v)$，则 $S-S&#39;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&#39;$。将 $v$ 标记为已访问。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
@@ -154,8 +223,7 @@ $$
 &lt;div class=&#34;alert alert-tip&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;本题其实相当有难度，这是因为人很难克服惯性思维：题目中要对各个子串的最小代价求和，所以我们很自然地想对每个子串单独求代价，最后相加。将视角转化为对每个元素计算可以不在多少个区间中被覆盖，打破了原题中对总代价的划分方式，这步转化需要相当的功力。&lt;/p&gt;
-&lt;p&gt;这道题目的原型是 
-&lt;a href=&#34;https://codeforces.com/contest/1827/problem/B1&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Codeforces-1827B&lt;/a&gt;，区别在于原题中排序一个区间的代价不是 $r-l+1$，而是 $r-l$。这一点小小的差异对题目难度的影响其实是巨大的——因为排序一个区间的代价不等于区间的长度，所以“省下”一个元素不被覆盖的收益难以定义，从而原题更加复杂。感兴趣的同学可以去挑战一下。&lt;/p&gt;
+&lt;p&gt;这道题目的原型是 &lt;a href=&#34;https://codeforces.com/contest/1827/problem/B1&#34;&gt;Codeforces-1827B&lt;/a&gt;，区别在于原题中排序一个区间的代价不是 $r-l+1$，而是 $r-l$。这一点小小的差异对题目难度的影响其实是巨大的——因为排序一个区间的代价不等于区间的长度，所以“省下”一个元素不被覆盖的收益难以定义，从而原题更加复杂。感兴趣的同学可以去挑战一下。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -261,16 +329,16 @@ while l &amp;lt;= r:
 }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;你需要重点关注的是 &lt;code&gt;find_anc()&lt;/code&gt; 函数，它只用一行就在查询集合代表元的同时完成了路径压缩，本质上是在找到代表元之后将路径上所有的节点直接挂到根下。&lt;/p&gt;
-&lt;p&gt;如果你觉得麻烦，可以省略按秩合并的部分 (但要付出一点点复杂度的代价，通常可以接受)。还有一些程序员会选择用启发式合并代替按秩合并 (即维护每个集合的元素个数，每次将小的集合合并到大的集合当中)，可以证明路径压缩+启发式合并也可以做到 $O(\alpha(n))$&lt;sup id=&#34;fnref1:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
-&lt;div class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;p&gt;如果你觉得麻烦，可以省略按秩合并的部分 (但要付出一点点复杂度的代价，通常可以接受)。还有一些程序员会选择用启发式合并代替按秩合并 (即维护每个集合的元素个数，每次将小的集合合并到大的集合当中)，可以证明路径压缩+启发式合并也可以做到 $O(\alpha(n))$&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;。&lt;/p&gt;
+&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
 &lt;hr&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn:1&#34;&gt;
+&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
 &lt;p&gt;如果你感兴趣，可以参考 
-&lt;a href=&#34;https://www.luogu.com.cn/blog/Atalod/shi-jian-fu-za-du-shi-neng-fen-xi-qian-tan&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这篇博文&lt;/a&gt; 详细了解。&amp;#160;&lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&amp;#160;&lt;a href=&#34;#fnref1:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;a href=&#34;https://www.luogu.com.cn/blog/Atalod/shi-jian-fu-za-du-shi-neng-fen-xi-qian-tan&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这篇博文&lt;/a&gt; 详细了解。&amp;#160;&lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;
+&lt;/section&gt;
 </description>
     </item>
     
@@ -409,18 +477,18 @@ $$&lt;/p&gt;
 $$&lt;/p&gt;
 &lt;p&gt;鸡蛋落地的结果序列必须可以和楼层建立一一映射，否则一定存在无法分辨的两个楼层 (可以参考使用决策树证明基于比较的排序算法的复杂度下界的过程来理解这句话)，所以答案的上界是 $\sum_{i=1}^k\binom{m}{i}$。又因为每次鸡蛋碎与不碎会将我们引导到两个不相交的区域 ($[1, x-1]$ 和 $[x, n]$) 进行下一步操作，所以这个上界是可以做到的。因此 $f(k, m)=\sum_{i=1}^k\binom{m}{i}$。进一步地，你可以发现我们在此处定义 0 为碎的巧妙之处：将所有状态串按照字典序从小到大排序，排在第 $i$ 位的字符串恰好就是确定第 $i$ 层的扔法。&lt;/p&gt;
 &lt;p&gt;有了这个结果，我们可以直接二分 $m$，然后计算 $f(k, m)$ 并与 $n$ 比较。时间复杂度 $O(k\log n)$。&lt;/p&gt;
-&lt;div class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
 &lt;hr&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn:1&#34;&gt;
+&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
 &lt;p&gt;LeetCode的 
 &lt;a href=&#34;https://leetcode.cn/problems/super-egg-drop/solution/ji-dan-diao-luo-by-leetcode-solution-2/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;官方题解&lt;/a&gt; 不加证明地给出了 $O(k\sqrt[k]{n})$ 的复杂度。&amp;#160;&lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
-&lt;li id=&#34;fn:2&#34;&gt;
+&lt;li id=&#34;fn:2&#34; role=&#34;doc-endnote&#34;&gt;
 &lt;p&gt;事实上，第二种解法里的动态规划状态转移方程本身长的就很像二项式系数的递推式。如果你对这个转移方程进行差分等数学处理，也可以得到如下的结果。&amp;#160;&lt;a href=&#34;#fnref:2&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;
+&lt;/section&gt;
 </description>
     </item>
     
@@ -772,8 +840,7 @@ int main ()
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;致歉&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;本讲义写的相当糟糕——cdq分治难度较大，思想比较微妙，笔者功力有限，用语言难以描述清楚。我们提供两份额外的参考资料，一是 
-&lt;a href=&#34;https://oi-wiki.org/misc/cdq-divide/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;OIWiki&lt;/a&gt; 上对于 cdq 分治的讲解，二是一份 cdq 套 cdq 的三维偏序的参考实现，希望尽可能帮助感兴趣的同学理解。&lt;/p&gt;
+&lt;p&gt;本讲义写的相当糟糕——cdq分治难度较大，思想比较微妙，笔者功力有限，用语言难以描述清楚。我们提供两份额外的参考资料，一是 &lt;a href=&#34;https://oi-wiki.org/misc/cdq-divide/&#34;&gt;OIWiki&lt;/a&gt; 上对于 cdq 分治的讲解，二是一份 cdq 套 cdq 的三维偏序的参考实现，希望尽可能帮助感兴趣的同学理解。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;details&gt;&lt;summary&gt;&lt;b&gt;Code&lt;/b&gt; :: &lt;i&gt;Click to expand&lt;/i&gt;&lt;/summary&gt;
@@ -1064,7 +1131,7 @@ $$
 &lt;p&gt;优化状态设计的动机是：我们最关心的其实是单词的开头/结尾字母，而小写字母一共只有 26 个。因此我们应该在这方面作文章，把每次遍历前面所有单词的过程节省掉。考虑如下状态：令 $dp(i, ch)$ 表示在前 $i$ 个单词中，以字符 $ch$ 结尾的最长可接龙子序列的长度 &lt;strong&gt;(注意！不再要求一定以 $word_i$ 结尾！)&lt;/strong&gt;。转移考虑对以下两种情况取 max：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;最长子序列不包括第 $i$ 个单词: $dp(i-1, ch)$。&lt;/li&gt;
-&lt;li&gt;最长子序列包括第 $i$ 个单词，且第 $i$ 个单词确实以 $ch$ 结尾: 设第 $i$ 个单词的开头字符为 $ch&amp;rsquo;$，则这种情况的最长序列长度为 $dp(i-1, ch&amp;rsquo;) + 1$。&lt;/li&gt;
+&lt;li&gt;最长子序列包括第 $i$ 个单词，且第 $i$ 个单词确实以 $ch$ 结尾: 设第 $i$ 个单词的开头字符为 $ch&#39;$，则这种情况的最长序列长度为 $dp(i-1, ch&#39;) + 1$。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;因此状态转移方程可以写为&lt;/p&gt;
 &lt;p&gt;$$
@@ -1141,8 +1208,7 @@ $$&lt;/p&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;树&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;如果你对“树”一无所知，你可以参考 
-&lt;a href=&#34;https://en.wikipedia.org/wiki/Tree_%28data_structure%29&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;维基百科&lt;/a&gt; 中的解释。这里强调一些简明的入门概念。&lt;/p&gt;
+&lt;p&gt;如果你对“树”一无所知，你可以参考 &lt;a href=&#34;https://en.wikipedia.org/wiki/Tree_(data_structure)&#34;&gt;维基百科&lt;/a&gt; 中的解释。这里强调一些简明的入门概念。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。&lt;/li&gt;
 &lt;li&gt;如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。&lt;/li&gt;
@@ -1911,7 +1977,7 @@ Matrix quick_pow(Matrix x, int y)
 &lt;p&gt;$$
 f_n=\sum_{k=1}^m c_kf_{n-k}
 $$&lt;/p&gt;
-&lt;p&gt;Since the answer may be too large, we usually focus on $f&amp;rsquo;_n=f_n\mod M$. We are more interested in cases where $M$ is suitable for FFT, such as $998,244,353$, because polynomial-related techniques can be leveraged to accelerate the computation. In the whole passage, we will use $f_n$ (instead of $f&amp;rsquo;_n$) to represent the answer under modulation for simplicity.&lt;/p&gt;
+&lt;p&gt;Since the answer may be too large, we usually focus on $f&#39;_n=f_n\mod M$. We are more interested in cases where $M$ is suitable for FFT, such as $998,244,353$, because polynomial-related techniques can be leveraged to accelerate the computation. In the whole passage, we will use $f_n$ (instead of $f&#39;_n$) to represent the answer under modulation for simplicity.&lt;/p&gt;
 &lt;h2 id=&#34;getting-started-fibonacci&#34;&gt;Getting Started: Fibonacci&lt;/h2&gt;
 &lt;p&gt;Let’s start with one of the simplest (and most famous) sequences: Fibonacci.&lt;/p&gt;
 &lt;p&gt;$$
@@ -2052,7 +2118,7 @@ $$&lt;/p&gt;
 &lt;p&gt;$$
 F(x)=F(x)G(x)+R(x)
 $$&lt;/p&gt;
-&lt;p&gt;Where $R(x)$ is a polynomial for correcting the first few terms in the sequence and can be obtained by computing $F&amp;rsquo;(x)-F&amp;rsquo;(x)G(x)$, where $F&amp;rsquo;(x)$ is the first $k$ terms of $F(x)$.&lt;/p&gt;
+&lt;p&gt;Where $R(x)$ is a polynomial for correcting the first few terms in the sequence and can be obtained by computing $F&#39;(x)-F&#39;(x)G(x)$, where $F&#39;(x)$ is the first $k$ terms of $F(x)$.&lt;/p&gt;
 &lt;p&gt;Therefore&lt;/p&gt;
 &lt;p&gt;$$
 F(x)=\frac{R(x)}{1-G(x)}
@@ -2851,7 +2917,7 @@ domain::=\&amp;lt;string &#39;.&#39; string&amp;gt;
 &lt;ol&gt;
 &lt;li&gt;初始状态&lt;/li&gt;
 &lt;li&gt;位于第一个string的状态&lt;/li&gt;
-&lt;li&gt;位于&amp;rsquo;@&amp;lsquo;的状态&lt;/li&gt;
+&lt;li&gt;位于&#39;@&amp;lsquo;的状态&lt;/li&gt;
 &lt;li&gt;位于第二个string的状态&lt;/li&gt;
 &lt;li&gt;位于&amp;rsquo;.&amp;lsquo;的状态&lt;/li&gt;
 &lt;li&gt;位于第三个string的状态&lt;/li&gt;
@@ -3998,7 +4064,7 @@ y[N/x]&amp;amp;\triangleq y\\
 (M\space P)[N/x]&amp;amp;\triangleq (M[N/x])(P[N/x])\\
 (\lambda x.M)[N/x]&amp;amp;\triangleq \lambda x.M\\
 (\lambda y.M)[N/x]&amp;amp;\triangleq \lambda y.(M[N/x])\qquad\qquad \text{if }x\neq y\text{ and }y\neq FV(N)\\
-(\lambda y.M)[N/x]&amp;amp;\triangleq \lambda y&amp;rsquo;.(M\{y&amp;rsquo;/y\}[N/x])\quad \text{if }x\neq y,y\in FV(N) \text{ and }y&amp;rsquo; \text{ fresh}
+(\lambda y.M)[N/x]&amp;amp;\triangleq \lambda y&#39;.(M\{y&#39;/y\}[N/x])\quad \text{if }x\neq y,y\in FV(N) \text{ and }y&#39; \text{ fresh}
 \end{align}
 $$&lt;/p&gt;
 &lt;h2 id=&#34;24-introduction-to-beta-reduction&#34;&gt;2.4 Introduction to $\beta$-Reduction&lt;/h2&gt;
@@ -4028,13 +4094,13 @@ $$
 $$&lt;/p&gt;
 &lt;p&gt;$$
 \begin{align}
-\frac{M\to_\beta M&amp;rsquo;}{M\space N\to_\beta M&amp;rsquo;\space N}\\
-\frac{N\to_\beta N&amp;rsquo;}{M\space N\to_\beta M\space N&amp;rsquo;}\\
-\frac{M\to_\beta M&amp;rsquo;}{\lambda x.M\to_\beta \lambda x.M&amp;rsquo;}
+\frac{M\to_\beta M&#39;}{M\space N\to_\beta M&#39;\space N}\\
+\frac{N\to_\beta N&#39;}{M\space N\to_\beta M\space N&#39;}\\
+\frac{M\to_\beta M&#39;}{\lambda x.M\to_\beta \lambda x.M&#39;}
 \end{align}
 $$&lt;/p&gt;
-&lt;p&gt;$\fbox{Definition}$ $M\twoheadrightarrow_\beta M&amp;rsquo;$ 当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 得到 $M&amp;rsquo;$。形式化地，$\twoheadrightarrow_\beta$ 定义了 $\to_\beta$ 的传递闭包。&lt;/p&gt;
-&lt;p&gt;$\fbox{Definition}$ 我们称 $M$ 和 $M&amp;rsquo;$ 满足 &lt;strong&gt;$\beta$-equivalence&lt;/strong&gt;，记作 $M=&lt;em&gt;\beta M&amp;rsquo;$，当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 及其逆操作得到 $M&amp;rsquo;$。形式化地，$=&lt;/em&gt;\beta$ 定义了 $\to_\beta$ 的对称闭包。&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ $M\twoheadrightarrow_\beta M&#39;$ 当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 得到 $M&#39;$。形式化地，$\twoheadrightarrow_\beta$ 定义了 $\to_\beta$ 的传递闭包。&lt;/p&gt;
+&lt;p&gt;$\fbox{Definition}$ 我们称 $M$ 和 $M&#39;$ 满足 &lt;strong&gt;$\beta$-equivalence&lt;/strong&gt;，记作 $M=&lt;em&gt;\beta M&#39;$，当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 及其逆操作得到 $M&#39;$。形式化地，$=&lt;/em&gt;\beta$ 定义了 $\to_\beta$ 的对称闭包。&lt;/p&gt;
 </description>
     </item>
     
@@ -4056,8 +4122,8 @@ $$
 $$
 \begin{align}
 \mathbf{not}&amp;amp;\triangleq \lambda b.b\space \mathbf{False}\space \mathbf{True}\\
-\mathbf{and}&amp;amp;\triangleq \lambda b.\lambda b&amp;rsquo;.b\space b&amp;rsquo;\space \mathbf{False}\\
-\mathbf{or}&amp;amp;\triangleq \lambda b.\lambda b&amp;rsquo;.b\space \mathbf{True}\space b&#39;
+\mathbf{and}&amp;amp;\triangleq \lambda b.\lambda b&#39;.b\space b&#39;\space \mathbf{False}\\
+\mathbf{or}&amp;amp;\triangleq \lambda b.\lambda b&#39;.b\space \mathbf{True}\space b&#39;
 \end{align}
 $$
 if-then-else：
@@ -4273,17 +4339,17 @@ where $x\in \text{Loc}$ and $v_r,v_w\in \text{Val}$.&lt;/p&gt;
 &lt;p&gt;A sequential graph can be constructed from commands by the following rules:&lt;/p&gt;
 &lt;p&gt;Silent:
 $$
-\frac{c,s\overset{\epsilon}{\to}c&amp;rsquo;,s&amp;rsquo;}{c,s,G\Rightarrow c&amp;rsquo;,s&amp;rsquo;,G}
+\frac{c,s\overset{\epsilon}{\to}c&#39;,s&#39;}{c,s,G\Rightarrow c&#39;,s&#39;,G}
 $$
 Non-silent:
 $$
-\frac{c,s\overset{l}{\to}c&amp;rsquo;,s&amp;rsquo;\qquad a=\langle n,0,l\rangle\qquad n\notin {\text{id}(b)|b\in G.E}}{c,s,G\Rightarrow c&amp;rsquo;,s&amp;rsquo;,Add(a,G)}
+\frac{c,s\overset{l}{\to}c&#39;,s&#39;\qquad a=\langle n,0,l\rangle\qquad n\notin {\text{id}(b)|b\in G.E}}{c,s,G\Rightarrow c&#39;,s&#39;,Add(a,G)}
 $$
-where $Add(a,G)$ yields an execution graph $G&amp;rsquo;$ givens by&lt;/p&gt;
+where $Add(a,G)$ yields an execution graph $G&#39;$ givens by&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;$G&amp;rsquo;.E=G.E\cup {a}$&lt;/li&gt;
-&lt;li&gt;$G&amp;rsquo;.po=G.po\cup (G.E\times {a})$&lt;/li&gt;
-&lt;li&gt;$G&amp;rsquo;.rf=G.rf$&lt;/li&gt;
+&lt;li&gt;$G&#39;.E=G.E\cup {a}$&lt;/li&gt;
+&lt;li&gt;$G&#39;.po=G.po\cup (G.E\times {a})$&lt;/li&gt;
+&lt;li&gt;$G&#39;.rf=G.rf$&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;$G$ is an execution graph of a command &lt;code&gt;c&lt;/code&gt; with a final store &lt;code&gt;s&lt;/code&gt; if $c,s_0,G_\emptyset\Rightarrow^*\mathbf{skip},s,G$.&lt;/p&gt;
 &lt;h3 id=&#34;consistency-predicate&#34;&gt;Consistency Predicate&lt;/h3&gt;
@@ -4897,8 +4963,8 @@ else
 &lt;p&gt;Different memory models usually share the same thread behaviors while have different implementation on the read/write side. Therefore we decompose the system into thread subsystem and storage subsystem and set an &amp;ldquo;virtual&amp;rdquo; interface between them.&lt;/p&gt;
 &lt;h3 id=&#34;thread-subsystem&#34;&gt;Thread Subsystem&lt;/h3&gt;
 &lt;ul&gt;
-&lt;li&gt;thread local step: $(c,s)\overset{l}{\to}(c&amp;rsquo;,s&amp;rsquo;)$,&lt;/li&gt;
-&lt;li&gt;Lift them to program steps: $(P,S)\overset{i,l}{\to}(P&amp;rsquo;,S&amp;rsquo;)$.&lt;/li&gt;
+&lt;li&gt;thread local step: $(c,s)\overset{l}{\to}(c&#39;,s&#39;)$,&lt;/li&gt;
+&lt;li&gt;Lift them to program steps: $(P,S)\overset{i,l}{\to}(P&#39;,S&#39;)$.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;storage-subsystem&#34;&gt;Storage Subsystem&lt;/h3&gt;
 &lt;ul&gt;
@@ -4909,11 +4975,11 @@ else
 &lt;p&gt;Describe the effect of memory accesses and fences.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;$M\overset{i:l}{\to}M&amp;rsquo;$.&lt;/p&gt;
+&lt;p&gt;$M\overset{i:l}{\to}M&#39;$.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;linking-the-two&#34;&gt;Linking the Two&lt;/h3&gt;
-&lt;p&gt;Either the thread or the storage subsystem make an internel step, i.e., $\epsilon$, or they make matching $i:l$ steps. The transformation is denoted as $P,S,M\Rightarrow P&amp;rsquo;,S&amp;rsquo;,M&amp;rsquo;$.&lt;/p&gt;
+&lt;p&gt;Either the thread or the storage subsystem make an internel step, i.e., $\epsilon$, or they make matching $i:l$ steps. The transformation is denoted as $P,S,M\Rightarrow P&#39;,S&#39;,M&#39;$.&lt;/p&gt;
 &lt;h2 id=&#34;the-thread-subsystem&#34;&gt;The Thread Subsystem&lt;/h2&gt;
 &lt;h3 id=&#34;thread-local-steps&#34;&gt;Thread Local Steps&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;Store:&lt;/strong&gt; $s:\text{Reg}\to \text{Val}$ (initially $s_0\triangleq \lambda r.0$).&lt;/p&gt;
@@ -4925,11 +4991,11 @@ $$
 $$&lt;/p&gt;
 &lt;p&gt;Sequential:&lt;/p&gt;
 &lt;p&gt;$$
-\frac{c_1,s\overset{l}{\to}c_1&amp;rsquo;,s&amp;rsquo;}{c_1;c_2,s\overset{l}{\to}c_1&amp;rsquo;,c_2,s&amp;rsquo;}
+\frac{c_1,s\overset{l}{\to}c_1&#39;,s&#39;}{c_1;c_2,s\overset{l}{\to}c_1&#39;,c_2,s&#39;}
 $$&lt;/p&gt;
 &lt;p&gt;Register operations:
 $$
-\frac{s&amp;rsquo;=s[r\mapsto s(e)]}{\text{r:=e},s\overset{\epsilon}{\to}\mathbf{skip},s&amp;rsquo;}
+\frac{s&#39;=s[r\mapsto s(e)]}{\text{r:=e},s\overset{\epsilon}{\to}\mathbf{skip},s&#39;}
 $$
 Memory read:
 $$
@@ -4994,11 +5060,11 @@ $$&lt;/p&gt;
 &lt;h3 id=&#34;linking-the-thread-and-storage-subsystems&#34;&gt;Linking the Thread and Storage Subsystems&lt;/h3&gt;
 &lt;p&gt;Silent:
 $$
-\frac{P,S\overset{i:\epsilon}{\to}P&amp;rsquo;, S&amp;rsquo;}{P,S,M\Rightarrow P&amp;rsquo;,S&amp;rsquo;,M}
+\frac{P,S\overset{i:\epsilon}{\to}P&#39;, S&#39;}{P,S,M\Rightarrow P&#39;,S&#39;,M}
 $$
 Non-silent:
 $$
-\frac{P,S\overset{i:l}{\to}P&amp;rsquo;,S&amp;rsquo;\quad M\overset{i:l}{\to}M&amp;rsquo;}{P,S,M\Rightarrow P&amp;rsquo;,S&amp;rsquo;,M&amp;rsquo;}
+\frac{P,S\overset{i:l}{\to}P&#39;,S&#39;\quad M\overset{i:l}{\to}M&#39;}{P,S,M\Rightarrow P&#39;,S&#39;,M&#39;}
 $$
 An outcome $O:\text{Tid}\to\text{Store}$ is allowed for a program $P$ under SC if there exists $M$ such that
 $$
@@ -5038,15 +5104,15 @@ Fence is used as forced synchronization.&lt;/p&gt;
 &lt;h3 id=&#34;linking-the-thread-and-storage-subsystem&#34;&gt;Linking The Thread and Storage Subsystem&lt;/h3&gt;
 &lt;p&gt;Silent thread:
 $$
-\frac{P,S\overset{i:\epsilon}{\to}P&amp;rsquo;,S&amp;rsquo;}{P,S,M,B\Rightarrow P,S&amp;rsquo;,M,B}
+\frac{P,S\overset{i:\epsilon}{\to}P&#39;,S&#39;}{P,S,M,B\Rightarrow P,S&#39;,M,B}
 $$
 Silent storage:
 $$
-\frac{M,B\overset{i:\epsilon}{\to}M&amp;rsquo;,B&amp;rsquo;}{P,S,M,B\Rightarrow P,S,M&amp;rsquo;,B&amp;rsquo;}
+\frac{M,B\overset{i:\epsilon}{\to}M&#39;,B&#39;}{P,S,M,B\Rightarrow P,S,M&#39;,B&#39;}
 $$
 Non silent:
 $$
-\frac{P,S\overset{i:l}{\to}P&amp;rsquo;,S&amp;rsquo;\qquad M,B\overset{i:l}{\to}M&amp;rsquo;,B&amp;rsquo;}{P,S,M,B\Rightarrow P&amp;rsquo;,S&amp;rsquo;,M&amp;rsquo;,B&amp;rsquo;}
+\frac{P,S\overset{i:l}{\to}P&#39;,S&#39;\qquad M,B\overset{i:l}{\to}M&#39;,B&#39;}{P,S,M,B\Rightarrow P&#39;,S&#39;,M&#39;,B&#39;}
 $$
 The definition of allowed outcome is similar to that of SC.&lt;/p&gt;
 &lt;h2 id=&#34;exercise-pso-storage-system&#34;&gt;Exercise: PSO Storage System&lt;/h2&gt;
@@ -5058,7 +5124,7 @@ y = 1;  ||  b = x; // 0;
 &lt;p&gt;(1) Operational semantics for PSO:&lt;/p&gt;
 &lt;p&gt;We only need to redefine the propagate rule in TSO:
 $$
-\frac{B(i)=b&amp;rsquo;\cdot(x,v)\cdot b\qquad b=(x_t,v_t)\cdot\ldots\cdot(x_1,v_1),\forall 1\leq i\leq t,x_i\neq x}{M,B\overset{i:\epsilon}{\to}M[x\mapsto v],B[i\mapsto b&amp;rsquo;\cdot b]}
+\frac{B(i)=b&#39;\cdot(x,v)\cdot b\qquad b=(x_t,v_t)\cdot\ldots\cdot(x_1,v_1),\forall 1\leq i\leq t,x_i\neq x}{M,B\overset{i:\epsilon}{\to}M[x\mapsto v],B[i\mapsto b&#39;\cdot b]}
 $$
 (2) store-store fence:&lt;/p&gt;
 &lt;p&gt;In the thread subsystem:
@@ -5072,7 +5138,7 @@ $$
 $$
 Propagation rule needn&amp;rsquo;t be changed because our conditions implicitly require that there&amp;rsquo;s no store-store fence before the target operation. But we need an additional rule to move away &amp;ldquo;F&amp;rdquo; marks:
 $$
-\frac{B(i)=b\cdot F}{M,B\overset{i:\epsilon}{\to}M&amp;rsquo;,B[i\mapsto b]}
+\frac{B(i)=b\cdot F}{M,B\overset{i:\epsilon}{\to}M&#39;,B[i\mapsto b]}
 $$
 (3) Show that programs containing store-store fences between every two writes have the same outcomes under TSO and PSO:&lt;/p&gt;
 &lt;p&gt;TSO and PSO differ only in their propagation rules. If there is a store-store fence between every two writes, it&amp;rsquo;s easy to prove that at any point, the buffer of arbitrary thread should be in the form of $(x_n,v_n)\cdot F\cdot \ldots \cdot F\cdot (x_2,v_2)\cdot F\cdot (x_1,v_1)$. Therefore at any point the propagation rule in PSO can only choose the least recent operation in the buffer to propagate, which makes it completely the same as TSO&amp;rsquo;s propagation rule.&lt;/p&gt;
@@ -5324,7 +5390,7 @@ $$&lt;/p&gt;
 &lt;li&gt;Identity: $\text{Id}_s\triangleq \{(x, y)\space |\space x\in S\}$.&lt;/li&gt;
 &lt;li&gt;Domain: $dom(\rho)\triangleq \{x\space |\space \exists\space y. (x,y)\in \rho\}$.&lt;/li&gt;
 &lt;li&gt;Range: $ran(\rho)\triangleq \{y\space |\space \exists\space x. (x, y)\in\rho\}$.&lt;/li&gt;
-&lt;li&gt;Composition: $\rho&amp;rsquo;\circ\rho\triangleq \{(x,z)\space |\space \exists\space y.(x,y)\in \rho \space\wedge\space (y,z)\in\rho&amp;rsquo;\}$.&lt;/li&gt;
+&lt;li&gt;Composition: $\rho&#39;\circ\rho\triangleq \{(x,z)\space |\space \exists\space y.(x,y)\in \rho \space\wedge\space (y,z)\in\rho&#39;\}$.&lt;/li&gt;
 &lt;li&gt;Inverse: $\rho^{-1}\triangleq \{(x, y)\space |\space (y,x)\in \rho\}$&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;equivalence-relations&#34;&gt;Equivalence Relations&lt;/h3&gt;
@@ -5335,7 +5401,7 @@ $$&lt;/p&gt;
 &lt;li&gt;Transitivity: $\rho \circ\rho \subseteq \rho$.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2 id=&#34;functions&#34;&gt;Functions&lt;/h2&gt;
-&lt;p&gt;A relation $\rho$ is a function if for all $x,y,y&amp;rsquo;$, $(x,y)\in \rho$ and $(x,y&amp;rsquo;)\in\rho$ imply $y=y&amp;rsquo;$.&lt;/p&gt;
+&lt;p&gt;A relation $\rho$ is a function if for all $x,y,y&#39;$, $(x,y)\in \rho$ and $(x,y&#39;)\in\rho$ imply $y=y&#39;$.&lt;/p&gt;
 &lt;p&gt;Empty set is a special function (check the definition).&lt;/p&gt;
 &lt;p&gt;Functions can be denoted by Typed Lambda Expressions: $\lambda x\in S. E$ denotes the function $f$ with domain $S$ such that $f(x)=E$ for all $x\in S$.&lt;/p&gt;
 &lt;h3 id=&#34;variation&#34;&gt;Variation&lt;/h3&gt;
@@ -5442,7 +5508,7 @@ $$&lt;/p&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Memory models define which reads see which writes. Sequential Consistency (SC) model is the simplest memory model: several threads&amp;rsquo; executions are interleaved (interleaving semantics), every read fetches the most recent write (full visibility).&lt;/p&gt;
+&lt;p&gt;Memory models define which reads see which writes. Sequential Consistency (SC) model is the simplest memory model: several threads&#39; executions are interleaved (interleaving semantics), every read fetches the most recent write (full visibility).&lt;/p&gt;
 &lt;h2 id=&#34;the-need-of-weak-memory-model&#34;&gt;The Need of Weak Memory Model&lt;/h2&gt;
 &lt;p&gt;SC mode prohibits many optimizations, e.g. store buffering&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;Initially: x = y = 0;
@@ -5822,8 +5888,8 @@ bool S() {
 &lt;p&gt;The program will result in infinite loop (&lt;code&gt;S()&lt;/code&gt; calls &lt;code&gt;S1()&lt;/code&gt;, &lt;code&gt;S1()&lt;/code&gt; calls &lt;code&gt;S()&lt;/code&gt; and so on). The problem is that the grammar is left recursive - the derivation generate strings from right to left, but our parser scans from left to right. We need to rewrite the grammars as right recursive:
 $$
 \begin{align}
-S&amp;amp;\to \beta S&amp;rsquo;\\
-S&amp;rsquo;&amp;amp;\to \alpha S&amp;rsquo;\space |\space \epsilon
+S&amp;amp;\to \beta S&#39;\\
+S&#39;&amp;amp;\to \alpha S&#39;\space |\space \epsilon
 \end{align}
 $$
 In principle, grammars can be transformed to right recursive ones automatically. But in practice people manually do the transformation.&lt;/p&gt;
@@ -5918,11 +5984,11 @@ s7 --&amp;gt; s10((id))
 &lt;p&gt;Rewrite grammar unambiguously. Write
 $$
 \begin{align}
-E&amp;amp;\to E&amp;rsquo;+E\space |\space E&amp;rsquo;\\
-E&amp;rsquo;&amp;amp;\to id*E&amp;rsquo;\space |\space id\space |\space (E)*E&amp;rsquo;\space |\space (E)
+E&amp;amp;\to E&#39;+E\space |\space E&#39;\\
+E&#39;&amp;amp;\to id*E&#39;\space |\space id\space |\space (E)*E&#39;\space |\space (E)
 \end{align}
 $$
-instead of one production ( $E$ can represent arbitrary $E&amp;rsquo;$s summing together, $E&amp;rsquo;$ is responsible for &lt;code&gt;*&lt;/code&gt; )&lt;/p&gt;
+instead of one production ( $E$ can represent arbitrary $E&#39;$s summing together, $E&#39;$ is responsible for &lt;code&gt;*&lt;/code&gt; )&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Enforces precedence of operators (&lt;code&gt;*&lt;/code&gt; over &lt;code&gt;+&lt;/code&gt;).&lt;/p&gt;
@@ -6378,7 +6444,7 @@ DO 5 I = 1.25
 &lt;p&gt;2 base cases:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Single character: $c\triangleq {c}$&lt;/li&gt;
-&lt;li&gt;Epsilon: $\epsilon\triangleq {&amp;rsquo;&amp;rsquo;}$&lt;/li&gt;
+&lt;li&gt;Epsilon: $\epsilon\triangleq {&#39;&#39;}$&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;3 compound expressions:&lt;/p&gt;
 &lt;ul&gt;
@@ -6403,7 +6469,7 @@ $$&lt;/p&gt;
 &lt;p&gt;A &lt;strong&gt;meaning function&lt;/strong&gt; $L:\text{expression}\to \text{set of strings}$ is a mapping that maps syntax to semantics. For example, the rigorous way of defining regular expression symbols are:
 $$
 \begin{align}
-L(\epsilon)&amp;amp;={&amp;rsquo;&amp;rsquo;}\\
+L(\epsilon)&amp;amp;={&#39;&#39;}\\
 L(c)&amp;amp;={c}\\
 L(A+B)&amp;amp;=L(A)\cup L(B)\\
 L(AB)&amp;amp;={ab:a\in L(A),b\in L(B)}\\
@@ -6432,15 +6498,15 @@ The mappings between expressions and meanings are not 1-to-1. it&amp;rsquo;s man
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Whitespace: a non-empty sequence of blanks, newlines and tabs.&lt;/p&gt;
-&lt;p&gt;$\text{Whitespace}=(\text{&amp;rsquo; &amp;lsquo;}+\text{&amp;rsquo;\n&amp;rsquo;}+\text{&amp;rsquo;\t&amp;rsquo;})^+$.&lt;/p&gt;
+&lt;p&gt;$\text{Whitespace}=(\text{&#39; &amp;lsquo;}+\text{&#39;\n&amp;rsquo;}+\text{&#39;\t&#39;})^+$.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;h3 id=&#34;example-pascal-numbers&#34;&gt;Example: Pascal Numbers&lt;/h3&gt;
 &lt;p&gt;$$
 \begin{align}
 \text{num} &amp;amp;= \text{digits}\space\space \text{opt_fraction}\space\space \text{opt_exponent}\\
-\text{opt_fraction}&amp;amp;=(\text{&amp;rsquo;.&amp;rsquo;}\space\space \text{digits})+\epsilon\\
-\text{opt_exponent}&amp;amp;=(\text{&amp;lsquo;E&amp;rsquo;}\space (\text{&amp;rsquo;+&amp;rsquo;}+\text{&amp;rsquo;-&amp;rsquo;}+\epsilon)\space \text{digits})+\epsilon\\
+\text{opt_fraction}&amp;amp;=(\text{&#39;.&#39;}\space\space \text{digits})+\epsilon\\
+\text{opt_exponent}&amp;amp;=(\text{&amp;lsquo;E&amp;rsquo;}\space (\text{&#39;+&#39;}+\text{&#39;-&#39;}+\epsilon)\space \text{digits})+\epsilon\\
 \text{digits}&amp;amp;=\text{digit}^+\\
 \text{digit}&amp;amp;=[0-9]
 \end{align}
@@ -6448,8 +6514,8 @@ $$&lt;/p&gt;
 &lt;p&gt;We observe that &amp;ldquo;$+\epsilon$&amp;rdquo; in regular expressions indicates &amp;ldquo;optional&amp;rdquo;, i.e. the elements before can be either present or absent. For convenience, we denote $A?\triangleq A+\epsilon$, so the rules above can be rewritten as
 $$
 \begin{align}
-\text{opt_fraction} &amp;amp;= (\text{&amp;rsquo;.&amp;rsquo;}\space \text{digits})?\\
-\text{opt_exponent} &amp;amp;= (\text{&amp;lsquo;E&amp;rsquo;}\space (\text{&amp;rsquo;+&amp;rsquo;}+\text{&amp;rsquo;-&amp;rsquo;})?\space \text{digits})?
+\text{opt_fraction} &amp;amp;= (\text{&#39;.&#39;}\space \text{digits})?\\
+\text{opt_exponent} &amp;amp;= (\text{&amp;lsquo;E&amp;rsquo;}\space (\text{&#39;+&#39;}+\text{&#39;-&#39;})?\space \text{digits})?
 \end{align}
 $$
 It&amp;rsquo;s worth notice that regular expressions defines the set of strings we want, but we still need an implementation, i.e. given a string $s$ and a regular expression $R$, we want to know whether $s\in L(R)$.&lt;/p&gt;
@@ -7620,7 +7686,7 @@ void hanoi(int n, char from, char to, char via) {
 &lt;li&gt;迁移：执行一条指令&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;如果整个程序的行为是确定的，状态机应该长成一条直线：$(M_0,R_0)\rightarrow (M_1,R_1)\rightarrow\cdots$ 。如果引入了一些 non-deterministic 的元素，比如 &lt;code&gt;rdrand&lt;/code&gt; 指令 (读取一个硬件随机数到寄存器中)，那么状态机会有分叉。但无论如何，这是一个有限状态机 (内存、寄存器数量是有限的)，如果只有计算指令，有限步之后我们必然会回到一个经历过的状态。我们无法实现输入输出，甚至是停止程序。&lt;/p&gt;
-&lt;p&gt;因此，程序中有一条特殊的指令：&lt;code&gt;syscall&lt;/code&gt;。程序将自己的状态机 $(M,R)$ 交给操作系统，任其修改，最终操作系统返回一个状态机 $(M&amp;rsquo;,R&amp;rsquo;)$，程序继续执行。因此程序=计算+syscall+计算+syscall+……&lt;/p&gt;
+&lt;p&gt;因此，程序中有一条特殊的指令：&lt;code&gt;syscall&lt;/code&gt;。程序将自己的状态机 $(M,R)$ 交给操作系统，任其修改，最终操作系统返回一个状态机 $(M&#39;,R&#39;)$，程序继续执行。因此程序=计算+syscall+计算+syscall+……&lt;/p&gt;
 &lt;h3 id=&#34;example-a-smallest-hello-world&#34;&gt;Example: A smallest &amp;ldquo;Hello, world&amp;rdquo;&lt;/h3&gt;
 &lt;p&gt;我们想象中的最小函数：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void _start() {
@@ -11725,7 +11791,7 @@ static void dlload(struct symbol *sym) {
 &lt;p&gt;因为启动第一个进程的时候 xv6 还没有初始化文件系统，无法通过 exec() 系统调用来加载 image，所以 xv6 的第一个进程 initcode 是写死的一段汇编代码 (在 forkret() 中有初始化文件系统的相关代码)，具体的信息可以见 MIT 6.S081 Lecture 03。&lt;/p&gt;
 &lt;p&gt;通过 &lt;code&gt;ecall&lt;/code&gt; 指令走 trampoline 然后进入 usertrap() 的流程可以见 MIT 6.S081 Lecture 6。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;为什么我在 GDB 中加断点 &lt;code&gt;b *0x0&lt;/code&gt; 会报错：&amp;ldquo;cannnot access memory?&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;为什么我在 GDB 中加断点 &lt;code&gt;b *0x0&lt;/code&gt; 会报错：&amp;ldquo;cannnot access memory?&amp;quot;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;2020版之前的 xv6 需要在 &lt;code&gt;.gdbinit.tmpl-riscv&lt;/code&gt; 中添加一条配置：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;set riscv use-compressed-breakpoints yes
 &lt;/code&gt;&lt;/pre&gt;
@@ -12148,7 +12214,7 @@ void pagefault(Event e, Context *c) {
 &lt;li&gt;
 &lt;p&gt;磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;&amp;ldquo;Segmentation fault (core dumped)&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Segmentation fault (core dumped)&amp;quot;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 &lt;code&gt;ulimit -a&lt;/code&gt; 查看)，可以通过 &lt;code&gt;ulimit -c size&lt;/code&gt; 来修改。&lt;/p&gt;
 &lt;p&gt;此外，在 Ubuntu 系统中，我们还需要在 root 权限下通过&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;echo core &amp;gt; /proc/sys/kernel/core_pattern
@@ -12215,7 +12281,7 @@ void pagefault(Event e, Context *c) {
 &lt;p&gt;迅速击败软盘，成为人手 $n$ 个的移动存储设备。&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;Flash memory 有一个关键的问题：放电会放不干净，一个 cell 经过了成千上万次读写操作后，剩余的电子就会多到好像是 1 的状态，这个 cell 成为了一个 dead cell。&lt;/p&gt;
-&lt;p&gt;该问题的解决方法类似于虚拟内存：在 OS 眼中不论是 SSD 还是 HDD 都类似于一个大数组，但事实上 SSD 里面有一个小型的计算机系统：系统会根据每个 cell 的读写次数，将所谓的 “100号cell&amp;quot; 映射到一个其他的 cell，就像一个 MMU 一样。这样可以保证每个 cell 使用次数差不多，也可以绕开一些 dead cell。&lt;/p&gt;
+&lt;p&gt;该问题的解决方法类似于虚拟内存：在 OS 眼中不论是 SSD 还是 HDD 都类似于一个大数组，但事实上 SSD 里面有一个小型的计算机系统：系统会根据每个 cell 的读写次数，将所谓的 “100号cell&amp;rdquo; 映射到一个其他的 cell，就像一个 MMU 一样。这样可以保证每个 cell 使用次数差不多，也可以绕开一些 dead cell。&lt;/p&gt;
 </description>
     </item>
     
@@ -14995,7 +15061,7 @@ p_X(x)=\begin{cases}
 0&amp;amp;,x&amp;lt;0
 \end{cases}
 $$
-$Y=g(X)=1-e^{-2X}$，$g&amp;rsquo;(x)=-e^{-2x}\cdot (-2)=2e^{-2x}&amp;gt;0$，所以 $g(x)$ 严格单调递增且处处可导。因此
+$Y=g(X)=1-e^{-2X}$，$g&#39;(x)=-e^{-2x}\cdot (-2)=2e^{-2x}&amp;gt;0$，所以 $g(x)$ 严格单调递增且处处可导。因此
 $$
 \begin{align}
 p_Y(y)&amp;amp;=p_X(g^{-1}(y))\cdot \left|g^{-1}(y)\right|\\
@@ -15954,7 +16020,7 @@ $$
 $$&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;若 $p(x)$ 在 $x_0$ 连续，则 $F(x)$ 在 $x_0$ 处可导，且 $F&amp;rsquo;(x_0)=p(x_0)$。&lt;/p&gt;
+&lt;p&gt;若 $p(x)$ 在 $x_0$ 连续，则 $F(x)$ 在 $x_0$ 处可导，且 $F&#39;(x_0)=p(x_0)$。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;$$
 \begin{align}
@@ -16097,7 +16163,7 @@ $$&lt;/p&gt;
 $$
 F_Y(y)=P(Y\leq y)=P(g(X)\leq y)=P(x\in {x|g(x)\leq y})=\int_{x:g(x)\leq y} p_X(x)dx
 $$
-最后的积分式含参数 $y$，结果是关于 $y$ 的表达式。若 $F_Y(y)$ 可导，则 $p_Y(y)=F_Y&amp;rsquo;(y)$。&lt;/p&gt;
+最后的积分式含参数 $y$，结果是关于 $y$ 的表达式。若 $F_Y(y)$ 可导，则 $p_Y(y)=F_Y&#39;(y)$。&lt;/p&gt;
 &lt;p&gt;【例】$X\sim N(0,1)$，求 $Y=X^2$ 的分布。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;解：注意到 $Y\geq 0$，所以对于任意 $y&amp;lt;0$，$F_y(y)=0$。&lt;/p&gt;
@@ -16108,7 +16174,7 @@ $$
 欲求 $p_Y(y)$，我们要对 $F_Y(y)$ 求导，注意使用链式法则：
 $$
 \begin{align}
-P_Y(y)&amp;amp;=F_Y&amp;rsquo;(y)=F_X&amp;rsquo;(\sqrt{y})-F_X&amp;rsquo;(-\sqrt{y})\\
+P_Y(y)&amp;amp;=F_Y&#39;(y)=F_X&#39;(\sqrt{y})-F_X&#39;(-\sqrt{y})\\
 &amp;amp;=p_X(\sqrt{y})\frac{1}{2\sqrt{y}}-p_X(-\sqrt{y})\frac{-1}{2\sqrt{y}}\\
 &amp;amp;=\frac{1}{\sqrt{y}}p_X(\sqrt{y})=\frac{1}{\sqrt{2\pi y}}e^{-\frac{y}{2}}
 \end{align}
@@ -16121,15 +16187,15 @@ $$&lt;/p&gt;
 &lt;p&gt;注：$Y=X^2$ 称为服从一个自由度的 $\chi^2$ 分布。$\chi^2$ 分布是统计学中的一个重要分布。&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;上述做法需要先计算 $F_Y(y)$ 再求导计算 $p_Y(y)$。若 $y=g(x)$ 严格单调，则对 $g(x)$ 加以一些可导条件，可以直接计算密度函数 $p_Y(y)$。&lt;/p&gt;
-&lt;p&gt;$\fbox{Theorem 7.1}$ 设 $X$ 为连续型随机变量，密度函数为 $p_X(x)$。设 $y=g(x)$ 严格单调处处可导且恒有 $g&amp;rsquo;(x)&amp;gt;0$ 或 $g&amp;rsquo;(x)&amp;lt;0$，则 $Y=g(X)$ 也为连续型随机变量，且
+&lt;p&gt;$\fbox{Theorem 7.1}$ 设 $X$ 为连续型随机变量，密度函数为 $p_X(x)$。设 $y=g(x)$ 严格单调处处可导且恒有 $g&#39;(x)&amp;gt;0$ 或 $g&#39;(x)&amp;lt;0$，则 $Y=g(X)$ 也为连续型随机变量，且
 $$
 p_Y(y)=\begin{cases}
-p_X(g^{-1}(y))\cdot \left|(g^{-1}(y))&amp;rsquo;\right|&amp;amp;,Y可取到y\\
+p_X(g^{-1}(y))\cdot \left|(g^{-1}(y))&#39;\right|&amp;amp;,Y可取到y\\
 0&amp;amp;,Y取不到y
 \end{cases}
 $$
 其中 $g^{-1}(y)$ 是 $g(x)$ 的反函数。&lt;/p&gt;
-&lt;p&gt;注：当 $g(x)$ 单调且 $g&amp;rsquo;(x_0)$ 存在非零，可以证明 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处可导。但即使严格单调，$g&amp;rsquo;(x)$ 仍可能在某个 $x_0$ 取到 0 (如 $f(x)=x^3$ 的 $x=0$ 处)，此时 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处的可导性存在问题，故要求 $g&amp;rsquo;(x)$ 不能取 0。&lt;/p&gt;
+&lt;p&gt;注：当 $g(x)$ 单调且 $g&#39;(x_0)$ 存在非零，可以证明 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处可导。但即使严格单调，$g&#39;(x)$ 仍可能在某个 $x_0$ 取到 0 (如 $f(x)=x^3$ 的 $x=0$ 处)，此时 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处的可导性存在问题，故要求 $g&#39;(x)$ 不能取 0。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;证明：这里仅证单调递增的情况，单调递减大同小异 (最终使结论添上绝对值)：
 $$
@@ -16141,15 +16207,15 @@ F_Y(y_0)=\int_{-\infty}^{y_0}p_X(g^{-1}(y))dg^{-1}(y)=\int_{-\infty}^{y_0}p_X(g^
 $$
 根据微积分基本定理，
 $$
-p_Y(y_0)=F_Y&amp;rsquo;(y_0)=p_X(g^{-1}(y_0))(g^{-1}(y_0))&amp;rsquo;
+p_Y(y_0)=F_Y&amp;rsquo;(y_0)=p_X(g^{-1}(y_0))(g^{-1}(y_0))&#39;
 $$&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;【例】$X\sim N(\mu, \sigma^2)$，$Z=\frac{X-\mu}{\sigma}$，即 $g(x)=\frac{x-\mu}{\sigma}$，$Z=g(X)$。求 $Z$ 的分布。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;解：显然 $g(x)$ 单调递增，且 $g&amp;rsquo;(x)=\frac{1}{\sigma}&amp;gt;0$。$g^{-1}(z)=\sigma z+\mu$。
+&lt;p&gt;解：显然 $g(x)$ 单调递增，且 $g&#39;(x)=\frac{1}{\sigma}&amp;gt;0$。$g^{-1}(z)=\sigma z+\mu$。
 $$
 \begin{align}
-p_Z(z)&amp;amp;=p_X(g^{-1}(z))\left|(g^{-1}(z))&amp;rsquo;\right|=p_X(\sigma z+\mu)\cdot \sigma\\
+p_Z(z)&amp;amp;=p_X(g^{-1}(z))\left|(g^{-1}(z))&#39;\right|=p_X(\sigma z+\mu)\cdot \sigma\\
 &amp;amp;=\sigma\cdot \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(\sigma z+\mu-\mu)^2}{2\sigma^2}}\\
 &amp;amp;=\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}
 \end{align}
@@ -16158,7 +16224,7 @@ $$
 &lt;/blockquote&gt;
 &lt;p&gt;【例】若 $X$ 服从 $\left(-\frac{\pi}{2},\frac{\pi}{2}\right)$ 上的均匀分布，$Y=\tan X$，求 $Y$ 的分布。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;解：$y=g(x)=\tan x$，$x=g^{-1}(y)=\arctan y$，$(\arctan y)&amp;rsquo;=\frac{1}{1+y^2}$。于是
+&lt;p&gt;解：$y=g(x)=\tan x$，$x=g^{-1}(y)=\arctan y$，$(\arctan y)&#39;=\frac{1}{1+y^2}$。于是
 $$
 \begin{align}
 p_Y(y)&amp;amp;=p_X(\arctan y)\cdot \left|\frac{1}{1+y^2}\right|\\
@@ -16533,7 +16599,7 @@ F_Z(z)&amp;amp;=P(g(X,Y)\leq z)=P((X,Y)\in {(x,y)|g(x,y)\leq z})\\
 &amp;amp;=\iint_{{(x,y):g(x,y)\leq z}}p(x,y)dxdy
 \end{align}
 $$
-若 $F_Z(z)$ 可导，则 $p_Z(z)=F_Z&amp;rsquo;(z)$。&lt;/p&gt;
+若 $F_Z(z)$ 可导，则 $p_Z(z)=F_Z&#39;(z)$。&lt;/p&gt;
 &lt;p&gt;对于混合情形，若 $X$ 为连续型随机变量，密度函数为 $p(x)$，$Y$ 为离散型随机变量，分布为 $P(Y=y_j)=q_j,j=1,2,\cdots$。那么
 $$
 \begin{align}
@@ -16658,7 +16724,7 @@ $$
 在有效区域内，有 $p(x,y)=p_X(x)p_Y(y)=\frac{1}{2}$。考虑拿直线 $x+y\leq z$ 滑过平面，看直线左侧。&lt;/p&gt;
 &lt;p&gt;容易看出 $z\leq 0$ 时 $F_Z(z)=0$；$z\geq 3$ 时 $F_Z(z)=1$。剩下的几种情形需要仔细考虑：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;$0&amp;lt;z&amp;lt;1$，此时获得的是一个三角形，$F_Z(z)=\frac{1}{2}\cdot \frac{z^2}{2}=\frac{z^2}{4},p_Z(z)=F&amp;rsquo;_Z(z)=\frac{z}{2}$。&lt;/li&gt;
+&lt;li&gt;$0&amp;lt;z&amp;lt;1$，此时获得的是一个三角形，$F_Z(z)=\frac{1}{2}\cdot \frac{z^2}{2}=\frac{z^2}{4},p_Z(z)=F&#39;_Z(z)=\frac{z}{2}$。&lt;/li&gt;
 &lt;li&gt;$1\leq z&amp;lt;2$，此时获得的是一个梯形，$F_Z(z)=\frac{1}{2}\cdot \frac{z-1+z}{2}=\frac{z}{2}-\frac{1}{4}，p_Z(z)=\frac{1}{2}$。&lt;/li&gt;
 &lt;li&gt;$2\leq z&amp;lt;3$，此时获得的是矩形减去一个三角形，$F_Z(z)=\frac{1}{2}\cdot (2-\frac{1}{2}(3-z)^2)=1-\frac{1}{4}(3-z)^2$，$p_Z(z)=\frac{1}{2}(3-z)$。&lt;/li&gt;
 &lt;/ul&gt;
@@ -16699,7 +16765,7 @@ F_Z(z)&amp;amp;=\int_0^z\int_0^x3xdydx+\int_z^1\int_{x-z}^x3xdydx\\
 &amp;amp;=-\frac{1}{2}z^3+\frac{3}{2}z
 \end{align}
 $$
-从而 $p_Z(z)=F_Z&amp;rsquo;(z)=-\frac{3}{2}z^2+\frac{3}{2}$。&lt;/p&gt;
+从而 $p_Z(z)=F_Z&#39;(z)=-\frac{3}{2}z^2+\frac{3}{2}$。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;【例】 (积和商的分布) 设 $(X,Y)$ 的密度为 $p(x,y)$，考虑两者积和商的分布：&lt;/p&gt;
 &lt;ul&gt;
@@ -16748,7 +16814,7 @@ $$
 $$
 F_Z(z)=\int_0^z\int_0^1\frac{1}{2}dydx+\int_z^2\int_0^{\frac{z}{x}}\frac{1}{2}dydx=\frac{z}{2}(\ln 2+1-\ln z)
 $$
-从而 $p_Z(z)=F_Z&amp;rsquo;(z)=\frac{1}{2}(\ln 2-\ln z)$。&lt;/p&gt;
+从而 $p_Z(z)=F_Z&#39;(z)=\frac{1}{2}(\ln 2-\ln z)$。&lt;/p&gt;
 &lt;/blockquote&gt;
 </description>
     </item>
@@ -16790,7 +16856,7 @@ $$
 E[x]&amp;amp;=\sum_{k=1}^\infty kP(X=k)=\sum_{k=1}^n k\binom{n}{k}p^k(1-p)^{n-k}\\
 &amp;amp;=\sum_{k=1}^n \frac{n!}{(k-1)!(n-k)!}p^k(1-p)^{n-k}\\
 &amp;amp;=np\sum_{k=1}^n\frac{(n-1)!}{(k-1)!(n-k)!}p^{k-1}(1-p)^{n-k}\\
-&amp;amp;=np\sum_{k&amp;rsquo;=0}^{n-1}\binom{n-1}{k&amp;rsquo;}p^{k&amp;rsquo;}(1-p)^{n-1-k&amp;rsquo;}\\
+&amp;amp;=np\sum_{k&#39;=0}^{n-1}\binom{n-1}{k&#39;}p^{k&#39;}(1-p)^{n-1-k&#39;}\\
 &amp;amp;=np\cdot [p+(1-p)]^{n-1}\\
 &amp;amp;=np
 \end{align}
@@ -16816,7 +16882,7 @@ $$
 $$
 所以
 $$
-E[x]=-pF&amp;rsquo;(p)=-p\cdot \left(\frac{1-p}{p}\right)&amp;rsquo;=-p\cdot -\frac{1}{p^2}=\frac{1}{p}
+E[x]=-pF&#39;(p)=-p\cdot \left(\frac{1-p}{p}\right)&#39;=-p\cdot -\frac{1}{p^2}=\frac{1}{p}
 $$
 【例】 (圣彼得堡悖论) 连续扔一枚均匀硬币，当出现反面时停止。若此前出现的正面次数为 $k$ 次，则收益为 $2^k$，求该游戏收益的期望。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -19889,7 +19955,7 @@ int main()
 &lt;li&gt;
 &lt;a href=&#34;#exercise-3-stars-standard-optional-more_exercises&#34;&gt;Exercise: 3 stars, standard, optional (more_exercises)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;
-&lt;a href=&#34;#exercise-2-stars-standard-optional-add_shuffle3&#34;&gt;Exercise: 2 stars, standard, optional (add_shuffle3&amp;rsquo;)&lt;/a&gt;&lt;/li&gt;
+&lt;a href=&#34;#exercise-2-stars-standard-optional-add_shuffle3&#34;&gt;Exercise: 2 stars, standard, optional (add_shuffle3&#39;)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;
 &lt;a href=&#34;#exercise-3-stars-standard-especially-useful-binary_commute&#34;&gt;Exercise: 3 stars, standard, especially useful (binary_commute)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;
@@ -20321,7 +20387,7 @@ Proof.
     reflexivity.
 Qed.
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;为了证明最终的定理，笔者先证明了 3 个引理，主要围绕着 &lt;code&gt;*2&lt;/code&gt;/&lt;code&gt;*2+1&lt;/code&gt; 和在 bin前面添加 B0/B1 的一致性讨论。最终定理的证明中比较精妙的部分是关于 &lt;code&gt;bin_to_nat b&#39;&lt;/code&gt; 的讨论。在归纳步骤中等式右边是 &lt;code&gt;normalize (B0 b&#39;)&lt;/code&gt;，如果我们不能确定 &lt;code&gt;b&#39;&lt;/code&gt; 不是 Z，那么括号里的 B0 就提不出来，可如果对着 b&amp;rsquo; 的结构直接进行讨论，又容易陷入循环论证 (如果 &lt;code&gt;b&#39;= B0 b&#39;&#39;&lt;/code&gt;，仍然说明不了问题)，因此在这里选择对 b&amp;rsquo; 转化成自然数后的结果进行讨论。&lt;/p&gt;
+&lt;p&gt;为了证明最终的定理，笔者先证明了 3 个引理，主要围绕着 &lt;code&gt;*2&lt;/code&gt;/&lt;code&gt;*2+1&lt;/code&gt; 和在 bin前面添加 B0/B1 的一致性讨论。最终定理的证明中比较精妙的部分是关于 &lt;code&gt;bin_to_nat b&#39;&lt;/code&gt; 的讨论。在归纳步骤中等式右边是 &lt;code&gt;normalize (B0 b&#39;)&lt;/code&gt;，如果我们不能确定 &lt;code&gt;b&#39;&lt;/code&gt; 不是 Z，那么括号里的 B0 就提不出来，可如果对着 b&#39; 的结构直接进行讨论，又容易陷入循环论证 (如果 &lt;code&gt;b&#39;= B0 b&#39;&#39;&lt;/code&gt;，仍然说明不了问题)，因此在这里选择对 b&#39; 转化成自然数后的结果进行讨论。&lt;/p&gt;
 </description>
     </item>
     
@@ -21079,7 +21145,7 @@ Qed.
 &lt;p&gt;There&amp;rsquo;s a demand for switching between applications. Because there&amp;rsquo;s no OS, &lt;code&gt;shell&lt;/code&gt; needs to proactively &amp;ldquo;give up&amp;rdquo; and &amp;ldquo;quit&amp;rdquo; the CPU to let others use the hardware. This is the so-called cooperating schedule. However, if there&amp;rsquo;s a dead loop in &lt;code&gt;shell&lt;/code&gt; or &lt;code&gt;shell&lt;/code&gt; is a malware, it will not quit and the hardware is completely occupied by this application. Therefore, we need a kind of &amp;ldquo;enforced multipliexing&amp;rdquo;: &lt;strong&gt;no matter what the application does, it will be forced to give up the CPU once in a while&lt;/strong&gt;.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;Different applications share the same memory space. For example, &lt;code&gt;shell&lt;/code&gt;&amp;rsquo;s memory may start at address 1000 and &lt;code&gt;echo&lt;/code&gt;&amp;rsquo;s memory may start at address 2000. There&amp;rsquo;s no boundary between their memory space and it&amp;rsquo;s easy for one application to overwrite others&amp;rsquo; memory and cause tricky bugs.&lt;/p&gt;
+&lt;p&gt;Different applications share the same memory space. For example, &lt;code&gt;shell&lt;/code&gt;&amp;rsquo;s memory may start at address 1000 and &lt;code&gt;echo&lt;/code&gt;&amp;rsquo;s memory may start at address 2000. There&amp;rsquo;s no boundary between their memory space and it&amp;rsquo;s easy for one application to overwrite others&#39; memory and cause tricky bugs.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;In summary, we need operating systems to &lt;strong&gt;enforce both multiplexing and strong memory isolation&lt;/strong&gt;. Strawman design is not very common in today&amp;rsquo;s computer system. Some real-time system doesn&amp;rsquo;t have OS because applications trust each other, but in most cases we need OS to ensure isolation.&lt;/p&gt;
@@ -22542,11 +22608,11 @@ putc(int fd, char c)
 &lt;p&gt;&lt;code&gt;ecall&lt;/code&gt; only does the minimum things. Some hardware does more when triggering a system call: they save the registers, switch the page table and set the stack pointer. RISC-V doesn&amp;rsquo;t choose to include those parts into the hardware because it wants the software to achieve the maximum flexibility. For example:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;In some system calls the kernel can finish jobs without the help of kernel page table. Also, some operating systems combine the user page table and kernel page table together, which means they don&amp;rsquo;t need to change the page table during system calls.&lt;/li&gt;
-&lt;li&gt;According to the specific function, some system calls won&amp;rsquo;t use all the general registers and some registers&amp;rsquo; values don&amp;rsquo;t need to be saved.&lt;/li&gt;
+&lt;li&gt;According to the specific function, some system calls won&amp;rsquo;t use all the general registers and some registers&#39; values don&amp;rsquo;t need to be saved.&lt;/li&gt;
 &lt;li&gt;Some easy system call may not require a kernel stack. Stack switching is not necessary.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Although xv6 doesn&amp;rsquo;t utilize those freedom, modern operating systems care a lot about the performance. There are a lot of sophisticated, clever schemes that make full use of the flexibility and achieve better efficiency.&lt;/p&gt;
-&lt;p&gt;If we check the general registers&amp;rsquo; values, we&amp;rsquo;ll find that they are the same as those in the user space. Currently we cannot modify any register, otherwise the user data would be damaged. We should firstly store them somewhere and restore them before returning.&lt;/p&gt;
+&lt;p&gt;If we check the general registers&#39; values, we&amp;rsquo;ll find that they are the same as those in the user space. Currently we cannot modify any register, otherwise the user data would be damaged. We should firstly store them somewhere and restore them before returning.&lt;/p&gt;
 &lt;p&gt;Some hardware may switch to the kernel page table and store the 32 values somewhere in a physical page. But now we even don&amp;rsquo;t know the address of the kernel page table! xv6&amp;rsquo;s solution for saving registers includes two parts:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Use a trap frame. User page table contains the mapping of this per-process trap frame. The trap frame contains 32 slots for register values, and some other useful values such as the address of kernel page table.&lt;/li&gt;
@@ -23114,7 +23180,7 @@ getcmd(char *buf, int nbuf)
 &lt;pre&gt;&lt;code&gt;lock(d1); erase(&amp;quot;d1/x&amp;quot;); release(d1); (**)
 lock(d2); add(&amp;quot;d2/y&amp;quot;); release(d2);
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;then at time &lt;code&gt;**&lt;/code&gt;, from other processes&amp;rsquo; perspective, the file doesn&amp;rsquo;t exist! - obviously incorrect. The correct implementation is&lt;/p&gt;
+&lt;p&gt;then at time &lt;code&gt;**&lt;/code&gt;, from other processes&#39; perspective, the file doesn&amp;rsquo;t exist! - obviously incorrect. The correct implementation is&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;lock(d1 and d2); erase(&amp;quot;d1/x&amp;quot;); add(&amp;quot;d2/y&amp;quot;); release(d1 and d2);
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In this example, we see that sometimes we need multiple locks before doing operations.&lt;/p&gt;
@@ -23407,7 +23473,7 @@ yield(void)
   release(&amp;amp;p-&amp;gt;lock);
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Before doing jobs, yield() firstly acquires the lock of the current process because it&amp;rsquo;s about to change the state of the process to RUNNABLE. We want this procedure to be atomic to other cores because the invariant that &lt;code&gt;p-&amp;gt;state&lt;/code&gt; represents the current status of the process is temporarily violated: the process is indeed running, but the status becomes RUNNABLE. If other cores&amp;rsquo; scheduler threads were able to see the change now and decide to execute this process, our current process would be running simultaneously on multiple CPUs, which is a disaster.&lt;/p&gt;
+&lt;p&gt;Before doing jobs, yield() firstly acquires the lock of the current process because it&amp;rsquo;s about to change the state of the process to RUNNABLE. We want this procedure to be atomic to other cores because the invariant that &lt;code&gt;p-&amp;gt;state&lt;/code&gt; represents the current status of the process is temporarily violated: the process is indeed running, but the status becomes RUNNABLE. If other cores&#39; scheduler threads were able to see the change now and decide to execute this process, our current process would be running simultaneously on multiple CPUs, which is a disaster.&lt;/p&gt;
 &lt;p&gt;We go into sched(). After finishing several sanity checks, sched() calls swtch(), which is the core function of thread switching.&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;swtch(&amp;amp;p-&amp;gt;context, &amp;amp;c-&amp;gt;context);
 &lt;/code&gt;&lt;/pre&gt;
@@ -23448,7 +23514,7 @@ yield(void)
 &lt;p&gt;After scheduler() decides the target process to switch to, it will call swtch() again, save scheduler thread&amp;rsquo;s context into c-&amp;gt;context, restore context in p-&amp;gt;context (another process&amp;rsquo;s kernel thread&amp;rsquo;s context), and resume executing that process.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;How can a process be switched to at the first time, since it hasn&amp;rsquo;t called swtch() yet?&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;In xv6 there is a function forkret(), it serves as the target address of the first &amp;ldquo;fake&amp;rdquo; context: in allocproc(), we set up a fake context with &lt;code&gt;ra&lt;/code&gt; pointing to forkret() and &lt;code&gt;sp&lt;/code&gt; pointing to the corresponding kernel stack. We don&amp;rsquo;t care about other registers&amp;rsquo; values before the first execution. The only thing forkret() does is to release the process lock.&lt;/p&gt;
+&lt;p&gt;In xv6 there is a function forkret(), it serves as the target address of the first &amp;ldquo;fake&amp;rdquo; context: in allocproc(), we set up a fake context with &lt;code&gt;ra&lt;/code&gt; pointing to forkret() and &lt;code&gt;sp&lt;/code&gt; pointing to the corresponding kernel stack. We don&amp;rsquo;t care about other registers&#39; values before the first execution. The only thing forkret() does is to release the process lock.&lt;/p&gt;
 &lt;p&gt;In addition, there is a situation in which xv6 creates a &amp;ldquo;fake&amp;rdquo; trapframe: in userinit(), xv6 creates a fake trapframe with &lt;code&gt;epc=0&lt;/code&gt; and &lt;code&gt;sp=PGSIZE&lt;/code&gt;. In other situations, a new process is created by fork() and fork() copies the trapframe of parent process.&lt;/p&gt;
 &lt;/blockquote&gt;
 </description>
@@ -24199,7 +24265,7 @@ $$ 由于我们不能确定转移的顺序，所以可以建图之后跑最短�
 &lt;p&gt;原型是洛谷3227切糕，比较难想的最小割建模。&lt;/p&gt;
 &lt;p&gt;如果没有额外限制，那么一个最小割模型是显然的：对于每个函数，建一条有 $R-L+1$ 条边的链。每条边的容量是二次函数自变量在该处取值时的函数值。将 $n$ 条链的首尾分别与超级源点，超级汇点连接即可。&lt;/p&gt;
 &lt;p&gt;现在考虑如何满足额外限制。&lt;strong&gt;最小割建模模拟限制的核心思想在于使网络在约束不满足时有无法割去的 $s-t$ 通路。&lt;/strong&gt; 对于一个 $x_u\leq x_v+d$，当 $x_v=x$ 时，我们在 $v$ 的函数上割去的是对应 $x$ 的边，那么 $x+1$ 即以上的边都属于 $T$ 集合。如果此时 $x_u\geq x+d+1$，那么边 $x+d+1$ 左边的节点一定在 $S$ 集合中。因此，我们只要对于每个 $x$，从 $u$ 函数的 $x+d+1$ 边左端点向 $v$ 函数的 $x+1$ 边左端点连容量为 $\infty$ 的边即可。&lt;/p&gt;
-&lt;p&gt;还有一个微小的问题是这样求出的是目标函数的最小值，而我们要求的是最大值。我们可以设定一个很大的阈值 $M$，然后令 $f&amp;rsquo;(x)=M-f(x)$，这样最小化 $\sum_{i=1}^nf&amp;rsquo;(x_i)$ 就是最大化 $\sum_{i=1}^nf(x_i)$。&lt;/p&gt;
+&lt;p&gt;还有一个微小的问题是这样求出的是目标函数的最小值，而我们要求的是最大值。我们可以设定一个很大的阈值 $M$，然后令 $f&#39;(x)=M-f(x)$，这样最小化 $\sum_{i=1}^nf&#39;(x_i)$ 就是最大化 $\sum_{i=1}^nf(x_i)$。&lt;/p&gt;
 &lt;h2 id=&#34;c-最小化&#34;&gt;C. 最小化&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
 &lt;ul&gt;
@@ -24262,8 +24328,8 @@ $$
 &lt;h3 id=&#34;题解-1&#34;&gt;题解&lt;/h3&gt;
 &lt;p&gt;当 $n=1$ 时，显然当 $m$ 为偶数时有 1 种方案，$m$ 为奇数时没有方案。&lt;/p&gt;
 &lt;p&gt;当 $n=2$ 时，容易发现答案是 Fibonacci 数列的第 $m$ 项，使用矩阵快速幂计算答案即可。&lt;/p&gt;
-&lt;p&gt;当 $n=3$ 时，首先考虑一个状压 dp 的思路：令 $dp[i][Mask]$ 表示当前看到第 $i$ 行，第 $i$ 行已经被覆盖的状态为 $Mask$ 的方案数。由于骨牌的长度不超过 2，所以在第 $i$ 行放骨牌只会影响第 $i$ 行和第 $i+1$ 行，从 $dp[i][Mask]$ 可以轻松转移到 $dp[i+1][Mask&amp;rsquo;]$。&lt;/p&gt;
-&lt;p&gt;但此题 $m$ 过大，需要优化该 dp 思路。我们可以把 $dp[i][Mask]\rightarrow dp[i+1][Mask&amp;rsquo;]$ 的转移方式写成一个 $8\times 8$ 的矩阵，将 $dp[i]$ 写成一个 $8$ 维向量，使得乘上该矩阵即可从 $i$ 转移到 $i+1$ ，这样就可以用矩阵快速幂优化了。&lt;/p&gt;
+&lt;p&gt;当 $n=3$ 时，首先考虑一个状压 dp 的思路：令 $dp[i][Mask]$ 表示当前看到第 $i$ 行，第 $i$ 行已经被覆盖的状态为 $Mask$ 的方案数。由于骨牌的长度不超过 2，所以在第 $i$ 行放骨牌只会影响第 $i$ 行和第 $i+1$ 行，从 $dp[i][Mask]$ 可以轻松转移到 $dp[i+1][Mask&#39;]$。&lt;/p&gt;
+&lt;p&gt;但此题 $m$ 过大，需要优化该 dp 思路。我们可以把 $dp[i][Mask]\rightarrow dp[i+1][Mask&#39;]$ 的转移方式写成一个 $8\times 8$ 的矩阵，将 $dp[i]$ 写成一个 $8$ 维向量，使得乘上该矩阵即可从 $i$ 转移到 $i+1$ ，这样就可以用矩阵快速幂优化了。&lt;/p&gt;
 &lt;p&gt;总时间复杂度 $O(2^nlogm)$。&lt;/p&gt;
 &lt;h2 id=&#34;c-简单的题&#34;&gt;C. 简单的题&lt;/h2&gt;
 &lt;h3 id=&#34;题面描述-2&#34;&gt;题面描述&lt;/h3&gt;
@@ -25058,7 +25124,7 @@ entry(&amp;quot;exit&amp;quot;);
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td&gt;72 $\rightarrow$ &amp;lsquo;r&amp;rsquo;&lt;/td&gt;
-&lt;td&gt;6c $\rightarrow$ &amp;rsquo;l&#39;&lt;/td&gt;
+&lt;td&gt;6c $\rightarrow$ &amp;lsquo;l&amp;rsquo;&lt;/td&gt;
 &lt;td&gt;64 $\rightarrow$ &amp;rsquo;d&#39;&lt;/td&gt;
 &lt;td&gt;00 $\rightarrow$ &amp;lsquo;\0&amp;rsquo;&lt;/td&gt;
 &lt;/tr&gt;
@@ -25213,7 +25279,7 @@ struct dirent
 &lt;p&gt;笔者最初实现完发现文件系统后面的若干的文件都显示 &lt;code&gt;find: cannot open ...&lt;/code&gt;，经过筛查发现这是因为没有多余的文件描述符可以使用了。在 xv6 中，资源比较有限，&lt;strong&gt;我们应该养成打开一个文件，读取完相关信息就关闭它的好习惯&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;xargs-moderate&#34;&gt;xargs (moderate)&lt;/h2&gt;
 &lt;p&gt;有一些命令不支持从管道读取输入，而 &lt;code&gt;xargs&lt;/code&gt; 命令可以帮助这些命令从管道读取信息。注意：管道的创建和输出输入的重定向是由 shell 来完成的，我们的 xargs 程序无需关心输入的来源，只需要从标准输入 (文件描述符 1) 读取信息即可。&lt;/p&gt;
-&lt;p&gt;为新命令准备参数的环节是较好的 C 语言指针练习。笔者新建了一个 &lt;code&gt;char *child_args[MAXARG]&lt;/code&gt; 数组来为子进程传递参数。xargs 后紧跟的那几个参数是确定的，再后面的参数需要读入，目前还不能确定长度，所以应该在读取完之后用 &lt;code&gt;malloc()&lt;/code&gt; 来申请内存空间，并在子进程执行完成后用 &lt;code&gt;free()&lt;/code&gt; 释放空间防止内存泄漏。为了能够准确识别到 &lt;code&gt;\n&lt;/code&gt; 以执行多条指令，笔者采取了一个字符一个字符地从标准输入读取信息的方式。读取到的字符暂存在局部数组 buf 中，一旦遇到 &amp;rsquo; &amp;rsquo; 或 &amp;lsquo;\n&amp;rsquo; 就根据 buf 的长度申请内存，将 buf 复制到参数数组里。&lt;/p&gt;
+&lt;p&gt;为新命令准备参数的环节是较好的 C 语言指针练习。笔者新建了一个 &lt;code&gt;char *child_args[MAXARG]&lt;/code&gt; 数组来为子进程传递参数。xargs 后紧跟的那几个参数是确定的，再后面的参数需要读入，目前还不能确定长度，所以应该在读取完之后用 &lt;code&gt;malloc()&lt;/code&gt; 来申请内存空间，并在子进程执行完成后用 &lt;code&gt;free()&lt;/code&gt; 释放空间防止内存泄漏。为了能够准确识别到 &lt;code&gt;\n&lt;/code&gt; 以执行多条指令，笔者采取了一个字符一个字符地从标准输入读取信息的方式。读取到的字符暂存在局部数组 buf 中，一旦遇到 &#39; &#39; 或 &amp;lsquo;\n&amp;rsquo; 就根据 buf 的长度申请内存，将 buf 复制到参数数组里。&lt;/p&gt;
 </description>
     </item>
     
@@ -25750,8 +25816,8 @@ R=\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 1 &amp;amp; 1\\ 0 &amp;amp; 1 &amp
 $$
 Through $R$, we can see that the first two columns are pivot columns, so the first two columns of $A$ are basis of $C(A)$. Here we do row operations on $A$, so $C(A)\neq C(R)$ of course, but &lt;strong&gt;considering the fact that doing row operations is just doing linear combinations of row vectors of $A$, $C(A^T)=C(R^T)$.&lt;/strong&gt; And we can easily tell that $\dim R^T=2=r$ and &lt;strong&gt;the first $r$ row vectors of $R$ are basis of $C(A^T)$.&lt;/strong&gt; (They&amp;rsquo;re independent and if we do the row operations inversely, we can get all the rows of $A$)&lt;/p&gt;
 &lt;p&gt;To find out a basis for $N(A^T)$. Firstly we want to figure out the matrix that represents the row operations of $A\rightarrow R$, i.e. we want to find a matrix $E$ such that $EA=R$.&lt;/p&gt;
-&lt;p&gt;According to Gauss-Jordan, we put a identity matrix besides $A$, i.e. $A&amp;rsquo;=[A_{m\times n}\quad I_{m\times m}]$. Suppose $EA&amp;rsquo;=$&lt;/p&gt;
-&lt;p&gt;$E[A\quad I]=[R\quad E&amp;rsquo;]$, then we have $E=E&amp;rsquo;$, so by applying all the row operations on $I$, we can get $E$. In the above example, we can get
+&lt;p&gt;According to Gauss-Jordan, we put a identity matrix besides $A$, i.e. $A&#39;=[A_{m\times n}\quad I_{m\times m}]$. Suppose $EA&#39;=$&lt;/p&gt;
+&lt;p&gt;$E[A\quad I]=[R\quad E&#39;]$, then we have $E=E&#39;$, so by applying all the row operations on $I$, we can get $E$. In the above example, we can get
 $$
 E=\left[\begin{matrix}-1 &amp;amp; 2 &amp;amp; 0\\1 &amp;amp; -1 &amp;amp; 0\\-1 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
 $$
@@ -28187,8 +28253,7 @@ else
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;suffix_char = j == col - 1 ? &#39;\n&#39; : &#39; &#39;;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;可不可以呢？
-在坐等答案之前，你应该做的事情是把括号去掉并尝试运行程序，这是你自己通过试验寻求问题答案的途径。当然在这里我们会告诉你：上面两段代码是没有问题的，因为 C/C++ 中不同的符号存在优先级差异。正如算术中乘除法比加减法优先级高，C/C++内部也有一套严格的优先级金字塔。优先级相同的运算符优先计算左侧的；优先级不同的运算符优先计算等级高的。这个
-&lt;a href=&#34;https://en.cppreference.com/w/cpp/language/operator_precedence&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;链接&lt;/a&gt; 详细讲述了优先级的划分。&lt;/p&gt;
+在坐等答案之前，你应该做的事情是把括号去掉并尝试运行程序，这是你自己通过试验寻求问题答案的途径。当然在这里我们会告诉你：上面两段代码是没有问题的，因为 C/C++ 中不同的符号存在优先级差异。正如算术中乘除法比加减法优先级高，C/C++内部也有一套严格的优先级金字塔。优先级相同的运算符优先计算左侧的；优先级不同的运算符优先计算等级高的。这个&lt;a href=&#34;https://en.cppreference.com/w/cpp/language/operator_precedence&#34;&gt;链接&lt;/a&gt; 详细讲述了优先级的划分。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;下面展示一个更精巧的例子，它的作用是打印出一个字符三角形：&lt;/p&gt;

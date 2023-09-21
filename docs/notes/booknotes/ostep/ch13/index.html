@@ -29,14 +29,13 @@
   
     
   
-  <meta name="description" content="13.1 Early Systems 早期的系统非常简单，操作系统没有为程序提供任何的抽象，整个计算机中只有一个物理地址空间，操作系统代码以及操作系统为程序提供的一些库函数存放在内存中，此外还有一个运行的程序，它可以使用剩下的内存。
-13.2 Multiprogramming and Time Sharing 随着时代发展，人们对计算机的需求激增，于是一个计算机上需要运行多个程序，由操作系统负责调度程序的运行，time sharing 的概念也被提了出来。一个最简单的想法是：先将第一个程序加载到内存中，让它拥有全部的地址空间，它的时间片用完之后，将整个内存状态保存到磁盘上，然后加载下一个程序。这个做法因为效率太低而被淘汰。
+  <meta name="description" content="13.1 Early Systems 早期的系统非常简单，操作系统没有为程序提供任何的抽象，整个计算机中只有一个物理地址空间，操作系统代码以及操作系统为程序提供的一些库函数存放在内存中，此外还有一个运行的程序，它可以使用剩下的内存。13.2 Multiprogramming and Time Sharing 随着时代发展，人们对计算机的需求激增，于是一个计算机上需要运行多个程序，由操作系统负责调度程序的运行，time sharing 的概念也被提了出来。一个最简单的想法是：先将第一个程序加载到内存中，让它拥有全部的地址空间，它的时间片用完之后，将整个内存状态保存到磁盘上，然后加载下一个程序。这个做法因为效率太低而被淘汰。
 人们希望在进程切换的时候，被切的程序的状态可以仍然保留在内存中，等待下次被切回来的时候继续使用。这样 OS 调度就会更有效率。将各个进程的状态同时保存在内存中就必然涉及到保护问题，我们不希望一个进程可以干扰另一个进程的状态。
 13.3 The Address Space 地址空间是操作系统提供给运行中的程序的内存的模样。运行中的程序看到的内存包括三个部分：代码区，栈区和堆区。代码区的内容是固定不变的，通常放在地址空间底部。栈区和堆区的大小都是会动态变化的，因此他们通常一个在底部一个在顶部，两者往相反的方向生长。
 需要注意的是，虽然在进程眼中地址空间是这种简洁的结构，但这是操作系统提供给进程的 illusion，在实际的物理内存中，一个进程的地址空间可能会被存放在任意位置。操作系统通过虚拟化内存的方式来为进程提供这种 illusion：进程眼中的地址都是虚拟地址，操作系统/MMU硬件负责将虚拟地址映射到正确的物理地址。
-The Principle Of Isolation
+ The Principle Of Isolation
 隔离是构建一个可靠系统的必要条件。在有效隔离的情况下，一个程序的崩溃不会影响别的程序的运行。操作系统通过虚拟内存等各种手段保证隔离，一些现代的内核通过将内核各个模块拆开的方式做到了更强的隔离，这种微内核设计比传统的宏内核更安全。
-13.4 Goals 虚拟内存的目标如下：">
+ 13.4 Goals 虚拟内存的目标如下：">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch13/">
@@ -242,14 +241,13 @@ The Principle Of Isolation
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch13/">
   <meta property="og:title" content="Chapter 13: The Abstraction: The Address Space | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="13.1 Early Systems 早期的系统非常简单，操作系统没有为程序提供任何的抽象，整个计算机中只有一个物理地址空间，操作系统代码以及操作系统为程序提供的一些库函数存放在内存中，此外还有一个运行的程序，它可以使用剩下的内存。
-13.2 Multiprogramming and Time Sharing 随着时代发展，人们对计算机的需求激增，于是一个计算机上需要运行多个程序，由操作系统负责调度程序的运行，time sharing 的概念也被提了出来。一个最简单的想法是：先将第一个程序加载到内存中，让它拥有全部的地址空间，它的时间片用完之后，将整个内存状态保存到磁盘上，然后加载下一个程序。这个做法因为效率太低而被淘汰。
+  <meta property="og:description" content="13.1 Early Systems 早期的系统非常简单，操作系统没有为程序提供任何的抽象，整个计算机中只有一个物理地址空间，操作系统代码以及操作系统为程序提供的一些库函数存放在内存中，此外还有一个运行的程序，它可以使用剩下的内存。13.2 Multiprogramming and Time Sharing 随着时代发展，人们对计算机的需求激增，于是一个计算机上需要运行多个程序，由操作系统负责调度程序的运行，time sharing 的概念也被提了出来。一个最简单的想法是：先将第一个程序加载到内存中，让它拥有全部的地址空间，它的时间片用完之后，将整个内存状态保存到磁盘上，然后加载下一个程序。这个做法因为效率太低而被淘汰。
 人们希望在进程切换的时候，被切的程序的状态可以仍然保留在内存中，等待下次被切回来的时候继续使用。这样 OS 调度就会更有效率。将各个进程的状态同时保存在内存中就必然涉及到保护问题，我们不希望一个进程可以干扰另一个进程的状态。
 13.3 The Address Space 地址空间是操作系统提供给运行中的程序的内存的模样。运行中的程序看到的内存包括三个部分：代码区，栈区和堆区。代码区的内容是固定不变的，通常放在地址空间底部。栈区和堆区的大小都是会动态变化的，因此他们通常一个在底部一个在顶部，两者往相反的方向生长。
 需要注意的是，虽然在进程眼中地址空间是这种简洁的结构，但这是操作系统提供给进程的 illusion，在实际的物理内存中，一个进程的地址空间可能会被存放在任意位置。操作系统通过虚拟化内存的方式来为进程提供这种 illusion：进程眼中的地址都是虚拟地址，操作系统/MMU硬件负责将虚拟地址映射到正确的物理地址。
-The Principle Of Isolation
+ The Principle Of Isolation
 隔离是构建一个可靠系统的必要条件。在有效隔离的情况下，一个程序的崩溃不会影响别的程序的运行。操作系统通过虚拟内存等各种手段保证隔离，一些现代的内核通过将内核各个模块拆开的方式做到了更强的隔离，这种微内核设计比传统的宏内核更安全。
-13.4 Goals 虚拟内存的目标如下："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ 13.4 Goals 虚拟内存的目标如下："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -743,7 +741,7 @@ location of stack : 0x7ffd13ff4374
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

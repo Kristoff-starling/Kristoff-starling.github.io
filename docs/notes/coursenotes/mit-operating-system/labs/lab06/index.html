@@ -29,7 +29,7 @@
   
     
   
-  <meta name="description" content="Progress Implement copy-on write (hard) Implement Copy-on Write 写时拷贝 fork 的大体思路是：在 fork 时不为子进程创建新的页面，而是让子进程指向父进程的所有页面，并将页面的权限改为只读。将来如果某个进程 (父/子) 需要修改页面，会发生 page fault exception，在 kernel 的处理程序中，如果是 COW page，则新分配一个页面，将当前的只读页面内容复制过去，让当前进程的页表指向这个新的页面并将权限设置为可读可写。
+  <meta name="description" content="Progress  Implement copy-on write (hard)  Implement Copy-on Write 写时拷贝 fork 的大体思路是：在 fork 时不为子进程创建新的页面，而是让子进程指向父进程的所有页面，并将页面的权限改为只读。将来如果某个进程 (父/子) 需要修改页面，会发生 page fault exception，在 kernel 的处理程序中，如果是 COW page，则新分配一个页面，将当前的只读页面内容复制过去，让当前进程的页表指向这个新的页面并将权限设置为可读可写。
 kalloc()/kfree() 引入了 copy-on write 之后，一个物理页面可能会被多个进程的页表指向，这使得 kfree() 变得困难：某个进程被释放时，它拥有的物理页面不能被直接释放，否则别的进程就用不了这个页面了。我们需要为每个页面维护一个 reference count，只有一个页面的 reference count 为 0 了才能释放它。">
 
   
@@ -236,7 +236,7 @@ kalloc()/kfree() 引入了 copy-on write 之后，一个物理页面可能会被
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/labs/lab06/">
   <meta property="og:title" content="MIT-6.S081 Lab 06: Copy-on-write fork | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Progress Implement copy-on write (hard) Implement Copy-on Write 写时拷贝 fork 的大体思路是：在 fork 时不为子进程创建新的页面，而是让子进程指向父进程的所有页面，并将页面的权限改为只读。将来如果某个进程 (父/子) 需要修改页面，会发生 page fault exception，在 kernel 的处理程序中，如果是 COW page，则新分配一个页面，将当前的只读页面内容复制过去，让当前进程的页表指向这个新的页面并将权限设置为可读可写。
+  <meta property="og:description" content="Progress  Implement copy-on write (hard)  Implement Copy-on Write 写时拷贝 fork 的大体思路是：在 fork 时不为子进程创建新的页面，而是让子进程指向父进程的所有页面，并将页面的权限改为只读。将来如果某个进程 (父/子) 需要修改页面，会发生 page fault exception，在 kernel 的处理程序中，如果是 COW page，则新分配一个页面，将当前的只读页面内容复制过去，让当前进程的页表指向这个新的页面并将权限设置为可读可写。
 kalloc()/kfree() 引入了 copy-on write 之后，一个物理页面可能会被多个进程的页表指向，这使得 kfree() 变得困难：某个进程被释放时，它拥有的物理页面不能被直接释放，否则别的进程就用不了这个页面了。我们需要为每个页面维护一个 reference count，只有一个页面的 reference count 为 0 了才能释放它。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
@@ -678,7 +678,7 @@ else
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

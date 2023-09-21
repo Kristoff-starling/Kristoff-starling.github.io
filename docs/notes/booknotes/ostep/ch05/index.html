@@ -30,8 +30,7 @@
     
   
   <meta name="description" content="5.1 The fork() System Call fork() 系统调用会创建一个和当前进程完全相同的子进程，这两个进程除了 fork() 的返回值不同，其他完全相同。fork() 在父进程中返回子进程的进程号，在子进程中返回 0，这可以用于区分两个进程。
-p1.c 展示了一个使用 fork() 的例子，其中 getpid() 函数可以获得当前进程的进程号。注意这个程序的运行结果是 non-deterministic 的：父进程和子进程谁会先输出，这取决于 OS 的调度器。现代操作系统的调度策略极其复杂，可以看 这篇文章 有一个大概的了解。
-5.2 The wait() System Call p2.c 展示了一个使用 wait() 的例子，wait() 提供一种同步机制，保证了父进程在子进程结束之后再执行。如果父进程先被调度器选中，那么它执行 wait() 会被阻塞，直到子进程结束；如果子进程先被调度器选中，那么父进程执行 wait() 时看到子进程已经退出则会立刻返回。">
+ p1.c 展示了一个使用 fork() 的例子，其中 getpid() 函数可以获得当前进程的进程号。注意这个程序的运行结果是 non-deterministic 的：父进程和子进程谁会先输出，这取决于 OS 的调度器。现代操作系统的调度策略极其复杂，可以看 这篇文章 有一个大概的了解。5.2 The wait() System Call  p2.c 展示了一个使用 wait() 的例子，wait() 提供一种同步机制，保证了父进程在子进程结束之后再执行。如果父进程先被调度器选中，那么它执行 wait() 会被阻塞，直到子进程结束；如果子进程先被调度器选中，那么父进程执行 wait() 时看到子进程已经退出则会立刻返回。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch05/">
@@ -238,8 +237,7 @@ p1.c 展示了一个使用 fork() 的例子，其中 getpid() 函数可以获得
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch05/">
   <meta property="og:title" content="Chapter 05: Interlude: Process API | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="5.1 The fork() System Call fork() 系统调用会创建一个和当前进程完全相同的子进程，这两个进程除了 fork() 的返回值不同，其他完全相同。fork() 在父进程中返回子进程的进程号，在子进程中返回 0，这可以用于区分两个进程。
-p1.c 展示了一个使用 fork() 的例子，其中 getpid() 函数可以获得当前进程的进程号。注意这个程序的运行结果是 non-deterministic 的：父进程和子进程谁会先输出，这取决于 OS 的调度器。现代操作系统的调度策略极其复杂，可以看 这篇文章 有一个大概的了解。
-5.2 The wait() System Call p2.c 展示了一个使用 wait() 的例子，wait() 提供一种同步机制，保证了父进程在子进程结束之后再执行。如果父进程先被调度器选中，那么它执行 wait() 会被阻塞，直到子进程结束；如果子进程先被调度器选中，那么父进程执行 wait() 时看到子进程已经退出则会立刻返回。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ p1.c 展示了一个使用 fork() 的例子，其中 getpid() 函数可以获得当前进程的进程号。注意这个程序的运行结果是 non-deterministic 的：父进程和子进程谁会先输出，这取决于 OS 的调度器。现代操作系统的调度策略极其复杂，可以看 这篇文章 有一个大概的了解。5.2 The wait() System Call  p2.c 展示了一个使用 wait() 的例子，wait() 提供一种同步机制，保证了父进程在子进程结束之后再执行。如果父进程先被调度器选中，那么它执行 wait() 会被阻塞，直到子进程结束；如果子进程先被调度器选中，那么父进程执行 wait() 时看到子进程已经退出则会立刻返回。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -718,7 +716,7 @@ p1.c 展示了一个使用 fork() 的例子，其中 getpid() 函数可以获得
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

@@ -29,7 +29,7 @@
   
     
   
-  <meta name="description" content="A. 常系数线性递推 题面描述 给定递推式 $a_n=x_0&#43;\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。 $k\leq 60,p\leq 2\times 10^9$。 题解 令向量 $$ x_{n}= \left( \begin{matrix} a_n\\a_{n&#43;1}\\ \vdots\\a_{n&#43;k-1}\\x_0 \end{matrix} \right) $$ 则令 $$ A=\left[\begin{matrix}1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\0 &amp; 1 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; \vdots &amp; &amp; \vdots &amp; \vdots\\0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0\\ x_k &amp; x_{k-1} &amp; \dots &amp; x_1 &amp; 1\\0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1\end{matrix}\right] $$ 有 $$ Ax_n=x_{n&#43;1} $$ 因此只要求 $A^{p-k&#43;1}x_0$，即可求得 $a_p$。矩阵乘法可以用快速幂加速。总时间复杂度 $O(k^3logp)$。">
+  <meta name="description" content="A. 常系数线性递推 题面描述  给定递推式 $a_n=x_0&#43;\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。 $k\leq 60,p\leq 2\times 10^9$。  题解 令向量 $$ x_{n}= \left( \begin{matrix} a_n\\a_{n&#43;1}\\ \vdots\\a_{n&#43;k-1}\\x_0 \end{matrix} \right) $$ 则令 $$ A=\left[\begin{matrix}1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\0 &amp; 1 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; \vdots &amp; &amp; \vdots &amp; \vdots\\0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0\\ x_k &amp; x_{k-1} &amp; \dots &amp; x_1 &amp; 1\\0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1\end{matrix}\right] $$ 有 $$ Ax_n=x_{n&#43;1} $$ 因此只要求 $A^{p-k&#43;1}x_0$，即可求得 $a_p$。矩阵乘法可以用快速幂加速。总时间复杂度 $O(k^3logp)$。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
@@ -235,7 +235,7 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-05/">
   <meta property="og:title" content="问题求解 III - 05 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="A. 常系数线性递推 题面描述 给定递推式 $a_n=x_0&#43;\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。 $k\leq 60,p\leq 2\times 10^9$。 题解 令向量 $$ x_{n}= \left( \begin{matrix} a_n\\a_{n&#43;1}\\ \vdots\\a_{n&#43;k-1}\\x_0 \end{matrix} \right) $$ 则令 $$ A=\left[\begin{matrix}1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\0 &amp; 1 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; \vdots &amp; &amp; \vdots &amp; \vdots\\0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0\\ x_k &amp; x_{k-1} &amp; \dots &amp; x_1 &amp; 1\\0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1\end{matrix}\right] $$ 有 $$ Ax_n=x_{n&#43;1} $$ 因此只要求 $A^{p-k&#43;1}x_0$，即可求得 $a_p$。矩阵乘法可以用快速幂加速。总时间复杂度 $O(k^3logp)$。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="A. 常系数线性递推 题面描述  给定递推式 $a_n=x_0&#43;\sum_{i=1}^kx_ia_{n-i}$，求 $a_p$。 $k\leq 60,p\leq 2\times 10^9$。  题解 令向量 $$ x_{n}= \left( \begin{matrix} a_n\\a_{n&#43;1}\\ \vdots\\a_{n&#43;k-1}\\x_0 \end{matrix} \right) $$ 则令 $$ A=\left[\begin{matrix}1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0\\0 &amp; 1 &amp; \cdots &amp; 0 &amp; 0\\ \vdots &amp; \vdots &amp; &amp; \vdots &amp; \vdots\\0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0\\ x_k &amp; x_{k-1} &amp; \dots &amp; x_1 &amp; 1\\0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1\end{matrix}\right] $$ 有 $$ Ax_n=x_{n&#43;1} $$ 因此只要求 $A^{p-k&#43;1}x_0$，即可求得 $a_p$。矩阵乘法可以用快速幂加速。总时间复杂度 $O(k^3logp)$。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -571,8 +571,8 @@ $$
 <h3 id="题解-1">题解</h3>
 <p>当 $n=1$ 时，显然当 $m$ 为偶数时有 1 种方案，$m$ 为奇数时没有方案。</p>
 <p>当 $n=2$ 时，容易发现答案是 Fibonacci 数列的第 $m$ 项，使用矩阵快速幂计算答案即可。</p>
-<p>当 $n=3$ 时，首先考虑一个状压 dp 的思路：令 $dp[i][Mask]$ 表示当前看到第 $i$ 行，第 $i$ 行已经被覆盖的状态为 $Mask$ 的方案数。由于骨牌的长度不超过 2，所以在第 $i$ 行放骨牌只会影响第 $i$ 行和第 $i+1$ 行，从 $dp[i][Mask]$ 可以轻松转移到 $dp[i+1][Mask&rsquo;]$。</p>
-<p>但此题 $m$ 过大，需要优化该 dp 思路。我们可以把 $dp[i][Mask]\rightarrow dp[i+1][Mask&rsquo;]$ 的转移方式写成一个 $8\times 8$ 的矩阵，将 $dp[i]$ 写成一个 $8$ 维向量，使得乘上该矩阵即可从 $i$ 转移到 $i+1$ ，这样就可以用矩阵快速幂优化了。</p>
+<p>当 $n=3$ 时，首先考虑一个状压 dp 的思路：令 $dp[i][Mask]$ 表示当前看到第 $i$ 行，第 $i$ 行已经被覆盖的状态为 $Mask$ 的方案数。由于骨牌的长度不超过 2，所以在第 $i$ 行放骨牌只会影响第 $i$ 行和第 $i+1$ 行，从 $dp[i][Mask]$ 可以轻松转移到 $dp[i+1][Mask']$。</p>
+<p>但此题 $m$ 过大，需要优化该 dp 思路。我们可以把 $dp[i][Mask]\rightarrow dp[i+1][Mask']$ 的转移方式写成一个 $8\times 8$ 的矩阵，将 $dp[i]$ 写成一个 $8$ 维向量，使得乘上该矩阵即可从 $i$ 转移到 $i+1$ ，这样就可以用矩阵快速幂优化了。</p>
 <p>总时间复杂度 $O(2^nlogm)$。</p>
 <h2 id="c-简单的题">C. 简单的题</h2>
 <h3 id="题面描述-2">题面描述</h3>
@@ -725,7 +725,7 @@ $$
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

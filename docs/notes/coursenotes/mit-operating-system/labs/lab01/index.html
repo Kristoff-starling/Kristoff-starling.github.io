@@ -29,9 +29,9 @@
   
     
   
-  <meta name="description" content="Progress boot xv6 (easy) sleep (easy) pingpong (easy) primes (medium)/(hard) find (medium) xargs (medium) Boot xv6 (easy) 刚刚克隆完项目后文件夹里没有东西，这是正常的。切换到 util 分支之后即可看到内容。
+  <meta name="description" content="Progress  boot xv6 (easy) sleep (easy) pingpong (easy) primes (medium)/(hard) find (medium) xargs (medium)  Boot xv6 (easy) 刚刚克隆完项目后文件夹里没有东西，这是正常的。切换到 util 分支之后即可看到内容。
 使用 make grade 命令进行尝试时发现报错：
-/usr/bin/env: python: No such file or directory 笔者根据 stakoverflow 上的 这个回答进行了修复：首先检查了一下 python3 是否安装，发现已经安装。出现上述报错的原因是系统内只有 python3 这个程序。因此只要创建一个名为 python 的指向 python3 的软链接即可。">
+/usr/bin/env: python: No such file or directory  笔者根据 stakoverflow 上的 这个回答进行了修复：首先检查了一下 python3 是否安装，发现已经安装。出现上述报错的原因是系统内只有 python3 这个程序。因此只要创建一个名为 python 的指向 python3 的软链接即可。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/labs/lab01/">
@@ -237,9 +237,9 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/labs/lab01/">
   <meta property="og:title" content="MIT-6.S081 Lab 01: Xv6 and Unix utilities | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Progress boot xv6 (easy) sleep (easy) pingpong (easy) primes (medium)/(hard) find (medium) xargs (medium) Boot xv6 (easy) 刚刚克隆完项目后文件夹里没有东西，这是正常的。切换到 util 分支之后即可看到内容。
+  <meta property="og:description" content="Progress  boot xv6 (easy) sleep (easy) pingpong (easy) primes (medium)/(hard) find (medium) xargs (medium)  Boot xv6 (easy) 刚刚克隆完项目后文件夹里没有东西，这是正常的。切换到 util 分支之后即可看到内容。
 使用 make grade 命令进行尝试时发现报错：
-/usr/bin/env: python: No such file or directory 笔者根据 stakoverflow 上的 这个回答进行了修复：首先检查了一下 python3 是否安装，发现已经安装。出现上述报错的原因是系统内只有 python3 这个程序。因此只要创建一个名为 python 的指向 python3 的软链接即可。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+/usr/bin/env: python: No such file or directory  笔者根据 stakoverflow 上的 这个回答进行了修复：首先检查了一下 python3 是否安装，发现已经安装。出现上述报错的原因是系统内只有 python3 这个程序。因此只要创建一个名为 python 的指向 python3 的软链接即可。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -628,7 +628,7 @@ struct dirent
 <p>笔者最初实现完发现文件系统后面的若干的文件都显示 <code>find: cannot open ...</code>，经过筛查发现这是因为没有多余的文件描述符可以使用了。在 xv6 中，资源比较有限，<strong>我们应该养成打开一个文件，读取完相关信息就关闭它的好习惯</strong>。</p>
 <h2 id="xargs-moderate">xargs (moderate)</h2>
 <p>有一些命令不支持从管道读取输入，而 <code>xargs</code> 命令可以帮助这些命令从管道读取信息。注意：管道的创建和输出输入的重定向是由 shell 来完成的，我们的 xargs 程序无需关心输入的来源，只需要从标准输入 (文件描述符 1) 读取信息即可。</p>
-<p>为新命令准备参数的环节是较好的 C 语言指针练习。笔者新建了一个 <code>char *child_args[MAXARG]</code> 数组来为子进程传递参数。xargs 后紧跟的那几个参数是确定的，再后面的参数需要读入，目前还不能确定长度，所以应该在读取完之后用 <code>malloc()</code> 来申请内存空间，并在子进程执行完成后用 <code>free()</code> 释放空间防止内存泄漏。为了能够准确识别到 <code>\n</code> 以执行多条指令，笔者采取了一个字符一个字符地从标准输入读取信息的方式。读取到的字符暂存在局部数组 buf 中，一旦遇到 &rsquo; &rsquo; 或 &lsquo;\n&rsquo; 就根据 buf 的长度申请内存，将 buf 复制到参数数组里。</p>
+<p>为新命令准备参数的环节是较好的 C 语言指针练习。笔者新建了一个 <code>char *child_args[MAXARG]</code> 数组来为子进程传递参数。xargs 后紧跟的那几个参数是确定的，再后面的参数需要读入，目前还不能确定长度，所以应该在读取完之后用 <code>malloc()</code> 来申请内存空间，并在子进程执行完成后用 <code>free()</code> 释放空间防止内存泄漏。为了能够准确识别到 <code>\n</code> 以执行多条指令，笔者采取了一个字符一个字符地从标准输入读取信息的方式。读取到的字符暂存在局部数组 buf 中，一旦遇到 ' ' 或 &lsquo;\n&rsquo; 就根据 buf 的长度申请内存，将 buf 复制到参数数组里。</p>
 
           </div>
 
@@ -744,7 +744,7 @@ struct dirent
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

@@ -31,7 +31,7 @@
   
   <meta name="description" content="设 $X$ 是一个随机变量，函数 $g(x):\mathbb R\rightarrow \mathbb{R}$。构造随机变量 $Y$，当 $X=x$ 时，$Y=g(x)$，称 $Y$ 是 $X$ 的函数，记为 $Y=g(X)$。在已知 $X$ 的分布时，我们希望求出 $Y$ 的分布。
 Discrete Situation 设 $X$ 是一个离散型随机变量，其分布律为
-$x_1$ $x_2$ $\cdots$ $x_k$ $\cdots$ $p_1$ $p_2$ $\cdots$ $p_k$ $\cdots$ 那么 $Y\in {g(x_k)}_{k=1}^n$，去重后可以写成 ${y_1,y_2,\cdots,y_k,\cdots}$，显然 $Y$ 也是离散型随机变量。">
+   $x_1$ $x_2$ $\cdots$ $x_k$ $\cdots$     $p_1$ $p_2$ $\cdots$ $p_k$ $\cdots$    那么 $Y\in {g(x_k)}_{k=1}^n$，去重后可以写成 ${y_1,y_2,\cdots,y_k,\cdots}$，显然 $Y$ 也是离散型随机变量。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-probability/lec07/">
@@ -239,7 +239,7 @@ $x_1$ $x_2$ $\cdots$ $x_k$ $\cdots$ $p_1$ $p_2$ $\cdots$ $p_k$ $\cdots$ 那么 $
   <meta property="og:title" content="Lecture 07: Distribution of Random Variable Function | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="设 $X$ 是一个随机变量，函数 $g(x):\mathbb R\rightarrow \mathbb{R}$。构造随机变量 $Y$，当 $X=x$ 时，$Y=g(x)$，称 $Y$ 是 $X$ 的函数，记为 $Y=g(X)$。在已知 $X$ 的分布时，我们希望求出 $Y$ 的分布。
 Discrete Situation 设 $X$ 是一个离散型随机变量，其分布律为
-$x_1$ $x_2$ $\cdots$ $x_k$ $\cdots$ $p_1$ $p_2$ $\cdots$ $p_k$ $\cdots$ 那么 $Y\in {g(x_k)}_{k=1}^n$，去重后可以写成 ${y_1,y_2,\cdots,y_k,\cdots}$，显然 $Y$ 也是离散型随机变量。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+   $x_1$ $x_2$ $\cdots$ $x_k$ $\cdots$     $p_1$ $p_2$ $\cdots$ $p_k$ $\cdots$    那么 $Y\in {g(x_k)}_{k=1}^n$，去重后可以写成 ${y_1,y_2,\cdots,y_k,\cdots}$，显然 $Y$ 也是离散型随机变量。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -638,7 +638,7 @@ $$</p>
 $$
 F_Y(y)=P(Y\leq y)=P(g(X)\leq y)=P(x\in {x|g(x)\leq y})=\int_{x:g(x)\leq y} p_X(x)dx
 $$
-最后的积分式含参数 $y$，结果是关于 $y$ 的表达式。若 $F_Y(y)$ 可导，则 $p_Y(y)=F_Y&rsquo;(y)$。</p>
+最后的积分式含参数 $y$，结果是关于 $y$ 的表达式。若 $F_Y(y)$ 可导，则 $p_Y(y)=F_Y'(y)$。</p>
 <p>【例】$X\sim N(0,1)$，求 $Y=X^2$ 的分布。</p>
 <blockquote>
 <p>解：注意到 $Y\geq 0$，所以对于任意 $y&lt;0$，$F_y(y)=0$。</p>
@@ -649,7 +649,7 @@ $$
 欲求 $p_Y(y)$，我们要对 $F_Y(y)$ 求导，注意使用链式法则：
 $$
 \begin{align}
-P_Y(y)&amp;=F_Y&rsquo;(y)=F_X&rsquo;(\sqrt{y})-F_X&rsquo;(-\sqrt{y})\\
+P_Y(y)&amp;=F_Y'(y)=F_X'(\sqrt{y})-F_X'(-\sqrt{y})\\
 &amp;=p_X(\sqrt{y})\frac{1}{2\sqrt{y}}-p_X(-\sqrt{y})\frac{-1}{2\sqrt{y}}\\
 &amp;=\frac{1}{\sqrt{y}}p_X(\sqrt{y})=\frac{1}{\sqrt{2\pi y}}e^{-\frac{y}{2}}
 \end{align}
@@ -662,15 +662,15 @@ $$</p>
 <p>注：$Y=X^2$ 称为服从一个自由度的 $\chi^2$ 分布。$\chi^2$ 分布是统计学中的一个重要分布。</p>
 <hr>
 <p>上述做法需要先计算 $F_Y(y)$ 再求导计算 $p_Y(y)$。若 $y=g(x)$ 严格单调，则对 $g(x)$ 加以一些可导条件，可以直接计算密度函数 $p_Y(y)$。</p>
-<p>$\fbox{Theorem 7.1}$ 设 $X$ 为连续型随机变量，密度函数为 $p_X(x)$。设 $y=g(x)$ 严格单调处处可导且恒有 $g&rsquo;(x)&gt;0$ 或 $g&rsquo;(x)&lt;0$，则 $Y=g(X)$ 也为连续型随机变量，且
+<p>$\fbox{Theorem 7.1}$ 设 $X$ 为连续型随机变量，密度函数为 $p_X(x)$。设 $y=g(x)$ 严格单调处处可导且恒有 $g'(x)&gt;0$ 或 $g'(x)&lt;0$，则 $Y=g(X)$ 也为连续型随机变量，且
 $$
 p_Y(y)=\begin{cases}
-p_X(g^{-1}(y))\cdot \left|(g^{-1}(y))&rsquo;\right|&amp;,Y可取到y\\
+p_X(g^{-1}(y))\cdot \left|(g^{-1}(y))'\right|&amp;,Y可取到y\\
 0&amp;,Y取不到y
 \end{cases}
 $$
 其中 $g^{-1}(y)$ 是 $g(x)$ 的反函数。</p>
-<p>注：当 $g(x)$ 单调且 $g&rsquo;(x_0)$ 存在非零，可以证明 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处可导。但即使严格单调，$g&rsquo;(x)$ 仍可能在某个 $x_0$ 取到 0 (如 $f(x)=x^3$ 的 $x=0$ 处)，此时 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处的可导性存在问题，故要求 $g&rsquo;(x)$ 不能取 0。</p>
+<p>注：当 $g(x)$ 单调且 $g'(x_0)$ 存在非零，可以证明 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处可导。但即使严格单调，$g'(x)$ 仍可能在某个 $x_0$ 取到 0 (如 $f(x)=x^3$ 的 $x=0$ 处)，此时 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处的可导性存在问题，故要求 $g'(x)$ 不能取 0。</p>
 <blockquote>
 <p>证明：这里仅证单调递增的情况，单调递减大同小异 (最终使结论添上绝对值)：
 $$
@@ -682,15 +682,15 @@ F_Y(y_0)=\int_{-\infty}^{y_0}p_X(g^{-1}(y))dg^{-1}(y)=\int_{-\infty}^{y_0}p_X(g^
 $$
 根据微积分基本定理，
 $$
-p_Y(y_0)=F_Y&rsquo;(y_0)=p_X(g^{-1}(y_0))(g^{-1}(y_0))&rsquo;
+p_Y(y_0)=F_Y&rsquo;(y_0)=p_X(g^{-1}(y_0))(g^{-1}(y_0))'
 $$</p>
 </blockquote>
 <p>【例】$X\sim N(\mu, \sigma^2)$，$Z=\frac{X-\mu}{\sigma}$，即 $g(x)=\frac{x-\mu}{\sigma}$，$Z=g(X)$。求 $Z$ 的分布。</p>
 <blockquote>
-<p>解：显然 $g(x)$ 单调递增，且 $g&rsquo;(x)=\frac{1}{\sigma}&gt;0$。$g^{-1}(z)=\sigma z+\mu$。
+<p>解：显然 $g(x)$ 单调递增，且 $g'(x)=\frac{1}{\sigma}&gt;0$。$g^{-1}(z)=\sigma z+\mu$。
 $$
 \begin{align}
-p_Z(z)&amp;=p_X(g^{-1}(z))\left|(g^{-1}(z))&rsquo;\right|=p_X(\sigma z+\mu)\cdot \sigma\\
+p_Z(z)&amp;=p_X(g^{-1}(z))\left|(g^{-1}(z))'\right|=p_X(\sigma z+\mu)\cdot \sigma\\
 &amp;=\sigma\cdot \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(\sigma z+\mu-\mu)^2}{2\sigma^2}}\\
 &amp;=\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}
 \end{align}
@@ -699,7 +699,7 @@ $$
 </blockquote>
 <p>【例】若 $X$ 服从 $\left(-\frac{\pi}{2},\frac{\pi}{2}\right)$ 上的均匀分布，$Y=\tan X$，求 $Y$ 的分布。</p>
 <blockquote>
-<p>解：$y=g(x)=\tan x$，$x=g^{-1}(y)=\arctan y$，$(\arctan y)&rsquo;=\frac{1}{1+y^2}$。于是
+<p>解：$y=g(x)=\tan x$，$x=g^{-1}(y)=\arctan y$，$(\arctan y)'=\frac{1}{1+y^2}$。于是
 $$
 \begin{align}
 p_Y(y)&amp;=p_X(\arctan y)\cdot \left|\frac{1}{1+y^2}\right|\\
@@ -829,7 +829,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

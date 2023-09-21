@@ -30,11 +30,9 @@
     
   
   <meta name="description" content="机器指令模型只有两种当前状态：寄存器和物理内存。这些状态在物理世界中应当有真实的对应。我们的需求是：
-可以寻址：比如可以根据编号访问某个单元格。 访问速度尽可能快 (甚至不惜掉电后丢失状态)。 “当前状态”的存储
-延迟线 (delay line)：像一根存储了数据的绳子不断地转，信号会随着时间衰减，因此数据会不断通过放大器来保持不丢失。
-磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。
-&ldquo;Segmentation fault (core dumped)&rdquo;
-这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 ulimit -a 查看)，可以通过 ulimit -c size 来修改。">
+ 可以寻址：比如可以根据编号访问某个单元格。 访问速度尽可能快 (甚至不惜掉电后丢失状态)。  “当前状态”的存储
+  延迟线 (delay line)：像一根存储了数据的绳子不断地转，信号会随着时间衰减，因此数据会不断通过放大器来保持不丢失。
+  磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec23/">
@@ -241,11 +239,9 @@
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec23/">
   <meta property="og:title" content="Lecture 23: 1Bit Storage | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="机器指令模型只有两种当前状态：寄存器和物理内存。这些状态在物理世界中应当有真实的对应。我们的需求是：
-可以寻址：比如可以根据编号访问某个单元格。 访问速度尽可能快 (甚至不惜掉电后丢失状态)。 “当前状态”的存储
-延迟线 (delay line)：像一根存储了数据的绳子不断地转，信号会随着时间衰减，因此数据会不断通过放大器来保持不丢失。
-磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。
-&ldquo;Segmentation fault (core dumped)&rdquo;
-这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 ulimit -a 查看)，可以通过 ulimit -c size 来修改。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ 可以寻址：比如可以根据编号访问某个单元格。 访问速度尽可能快 (甚至不惜掉电后丢失状态)。  “当前状态”的存储
+  延迟线 (delay line)：像一根存储了数据的绳子不断地转，信号会随着时间衰减，因此数据会不断通过放大器来保持不丢失。
+  磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -636,7 +632,7 @@
 <li>
 <p>磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。</p>
 <blockquote>
-<p><strong>&ldquo;Segmentation fault (core dumped)&rdquo;</strong></p>
+<p><strong>&ldquo;Segmentation fault (core dumped)&quot;</strong></p>
 <p>这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 <code>ulimit -a</code> 查看)，可以通过 <code>ulimit -c size</code> 来修改。</p>
 <p>此外，在 Ubuntu 系统中，我们还需要在 root 权限下通过</p>
 <pre><code class="language-bash">echo core &gt; /proc/sys/kernel/core_pattern
@@ -703,7 +699,7 @@
 <p>迅速击败软盘，成为人手 $n$ 个的移动存储设备。</p>
 <hr>
 <p>Flash memory 有一个关键的问题：放电会放不干净，一个 cell 经过了成千上万次读写操作后，剩余的电子就会多到好像是 1 的状态，这个 cell 成为了一个 dead cell。</p>
-<p>该问题的解决方法类似于虚拟内存：在 OS 眼中不论是 SSD 还是 HDD 都类似于一个大数组，但事实上 SSD 里面有一个小型的计算机系统：系统会根据每个 cell 的读写次数，将所谓的 “100号cell&quot; 映射到一个其他的 cell，就像一个 MMU 一样。这样可以保证每个 cell 使用次数差不多，也可以绕开一些 dead cell。</p>
+<p>该问题的解决方法类似于虚拟内存：在 OS 眼中不论是 SSD 还是 HDD 都类似于一个大数组，但事实上 SSD 里面有一个小型的计算机系统：系统会根据每个 cell 的读写次数，将所谓的 “100号cell&rdquo; 映射到一个其他的 cell，就像一个 MMU 一样。这样可以保证每个 cell 使用次数差不多，也可以绕开一些 dead cell。</p>
 
           </div>
 
@@ -827,7 +823,7 @@
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

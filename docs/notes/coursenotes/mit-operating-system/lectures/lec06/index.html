@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="Introduction When going into traps, we need to carefully change the hardware state so that isolation will not be broken. The hardware state of RISC-V machine includes:
-32 general registers">
+  32 general registers">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/lectures/lec06/">
@@ -237,7 +237,7 @@
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/lectures/lec06/">
   <meta property="og:title" content="MIT-6.S081 Lecture 06: Traps | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Introduction When going into traps, we need to carefully change the hardware state so that isolation will not be broken. The hardware state of RISC-V machine includes:
-32 general registers"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  32 general registers"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -621,11 +621,11 @@ putc(int fd, char c)
 <p><code>ecall</code> only does the minimum things. Some hardware does more when triggering a system call: they save the registers, switch the page table and set the stack pointer. RISC-V doesn&rsquo;t choose to include those parts into the hardware because it wants the software to achieve the maximum flexibility. For example:</p>
 <ul>
 <li>In some system calls the kernel can finish jobs without the help of kernel page table. Also, some operating systems combine the user page table and kernel page table together, which means they don&rsquo;t need to change the page table during system calls.</li>
-<li>According to the specific function, some system calls won&rsquo;t use all the general registers and some registers&rsquo; values don&rsquo;t need to be saved.</li>
+<li>According to the specific function, some system calls won&rsquo;t use all the general registers and some registers' values don&rsquo;t need to be saved.</li>
 <li>Some easy system call may not require a kernel stack. Stack switching is not necessary.</li>
 </ul>
 <p>Although xv6 doesn&rsquo;t utilize those freedom, modern operating systems care a lot about the performance. There are a lot of sophisticated, clever schemes that make full use of the flexibility and achieve better efficiency.</p>
-<p>If we check the general registers&rsquo; values, we&rsquo;ll find that they are the same as those in the user space. Currently we cannot modify any register, otherwise the user data would be damaged. We should firstly store them somewhere and restore them before returning.</p>
+<p>If we check the general registers' values, we&rsquo;ll find that they are the same as those in the user space. Currently we cannot modify any register, otherwise the user data would be damaged. We should firstly store them somewhere and restore them before returning.</p>
 <p>Some hardware may switch to the kernel page table and store the 32 values somewhere in a physical page. But now we even don&rsquo;t know the address of the kernel page table! xv6&rsquo;s solution for saving registers includes two parts:</p>
 <ul>
 <li>Use a trap frame. User page table contains the mapping of this per-process trap frame. The trap frame contains 32 slots for register values, and some other useful values such as the address of kernel page table.</li>
@@ -806,7 +806,7 @@ p-&gt;trapframe-&gt;epc = r_sepc();
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

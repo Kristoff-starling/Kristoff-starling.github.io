@@ -30,8 +30,8 @@
     
   
   <meta name="description" content="L1 一把大锁保平安策略：全局用一把锁，把所有需要保护的代码都用 atomic {} 框起来。
-#define atomic \ for (int __i = (lock(), 0); i &lt; 1; unlock(), __i&#43;&#43;) 这个 for 循环的语义如下：
-lock(); __i = 0;	// C语言逗号表达式总是取后面的值 check i &lt; 1 =&gt; yes body __i&#43;&#43;; unlock(); check i &lt; 1 =&gt; no, break 使用这个 atomic {} 我们要保证程序不能在 atomic 内部 break 或 return。">
+#define atomic \ for (int __i = (lock(), 0); i &lt; 1; unlock(), __i&#43;&#43;)  这个 for 循环的语义如下：
+lock(); __i = 0;	// C语言逗号表达式总是取后面的值 check i &lt; 1 =&gt; yes body __i&#43;&#43;; unlock(); check i &lt; 1 =&gt; no, break  使用这个 atomic {} 我们要保证程序不能在 atomic 内部 break 或 return。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec22/">
@@ -238,8 +238,8 @@ lock(); __i = 0;	// C语言逗号表达式总是取后面的值 check i &lt; 1 =
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec22/">
   <meta property="og:title" content="Lecture 22: OSLab Speedrun | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="L1 一把大锁保平安策略：全局用一把锁，把所有需要保护的代码都用 atomic {} 框起来。
-#define atomic \ for (int __i = (lock(), 0); i &lt; 1; unlock(), __i&#43;&#43;) 这个 for 循环的语义如下：
-lock(); __i = 0;	// C语言逗号表达式总是取后面的值 check i &lt; 1 =&gt; yes body __i&#43;&#43;; unlock(); check i &lt; 1 =&gt; no, break 使用这个 atomic {} 我们要保证程序不能在 atomic 内部 break 或 return。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+#define atomic \ for (int __i = (lock(), 0); i &lt; 1; unlock(), __i&#43;&#43;)  这个 for 循环的语义如下：
+lock(); __i = 0;	// C语言逗号表达式总是取后面的值 check i &lt; 1 =&gt; yes body __i&#43;&#43;; unlock(); check i &lt; 1 =&gt; no, break  使用这个 atomic {} 我们要保证程序不能在 atomic 内部 break 或 return。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -937,7 +937,7 @@ void pagefault(Event e, Context *c) {
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="Why File System? 如果设备直接将读/写/控制的接口暴露给应用程序，那么多个应用程序在并发地使用设备时很容易发生竞争。我们考虑下面的例子：
-// printf-race.c #include &lt;stdio.h&gt; #include &quot;thread.h&quot; void use_printf(const char *s) { printf(&quot;%s&quot;, s); } void use_putchar(const char *s) { for (; *s; s&#43;&#43;) { putchar(*s); } } void (*print)(const char *) = use_printf; void Tworker() { char buf[128]; int c = gettid() % 4 &#43; 1; sprintf(buf, &quot;\033[3%dm%d\033[0m&quot;, c, c); while (1) { print(buf); } } int main(int argc, char *argv[]) { if (argc &gt; 1) { print = use_putchar; } setbuf(stdout, NULL); for (int i = 0; i &lt; 4; i&#43;&#43;) { create(Tworker); } } 在 printf-race.">
+// printf-race.c #include &lt;stdio.h&gt; #include &quot;thread.h&quot; void use_printf(const char *s) { printf(&quot;%s&quot;, s); } void use_putchar(const char *s) { for (; *s; s&#43;&#43;) { putchar(*s); } } void (*print)(const char *) = use_printf; void Tworker() { char buf[128]; int c = gettid() % 4 &#43; 1; sprintf(buf, &quot;\033[3%dm%d\033[0m&quot;, c, c); while (1) { print(buf); } } int main(int argc, char *argv[]) { if (argc &gt; 1) { print = use_putchar; } setbuf(stdout, NULL); for (int i = 0; i &lt; 4; i&#43;&#43;) { create(Tworker); } }  在 printf-race.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec26/">
@@ -237,7 +237,7 @@
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec26/">
   <meta property="og:title" content="Lecture 26: File System API | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Why File System? 如果设备直接将读/写/控制的接口暴露给应用程序，那么多个应用程序在并发地使用设备时很容易发生竞争。我们考虑下面的例子：
-// printf-race.c #include &lt;stdio.h&gt; #include &quot;thread.h&quot; void use_printf(const char *s) { printf(&quot;%s&quot;, s); } void use_putchar(const char *s) { for (; *s; s&#43;&#43;) { putchar(*s); } } void (*print)(const char *) = use_printf; void Tworker() { char buf[128]; int c = gettid() % 4 &#43; 1; sprintf(buf, &quot;\033[3%dm%d\033[0m&quot;, c, c); while (1) { print(buf); } } int main(int argc, char *argv[]) { if (argc &gt; 1) { print = use_putchar; } setbuf(stdout, NULL); for (int i = 0; i &lt; 4; i&#43;&#43;) { create(Tworker); } } 在 printf-race."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+// printf-race.c #include &lt;stdio.h&gt; #include &quot;thread.h&quot; void use_printf(const char *s) { printf(&quot;%s&quot;, s); } void use_putchar(const char *s) { for (; *s; s&#43;&#43;) { putchar(*s); } } void (*print)(const char *) = use_printf; void Tworker() { char buf[128]; int c = gettid() % 4 &#43; 1; sprintf(buf, &quot;\033[3%dm%d\033[0m&quot;, c, c); while (1) { print(buf); } } int main(int argc, char *argv[]) { if (argc &gt; 1) { print = use_putchar; } setbuf(stdout, NULL); for (int i = 0; i &lt; 4; i&#43;&#43;) { create(Tworker); } }  在 printf-race."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -860,7 +860,7 @@ read(fd, buf, 512)
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

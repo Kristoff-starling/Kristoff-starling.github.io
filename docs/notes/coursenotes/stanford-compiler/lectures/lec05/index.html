@@ -602,11 +602,11 @@ s7 --&gt; s10((id))
 <p>Rewrite grammar unambiguously. Write
 $$
 \begin{align}
-E&amp;\to E&rsquo;+E\space |\space E&rsquo;\\
-E&rsquo;&amp;\to id*E&rsquo;\space |\space id\space |\space (E)*E&rsquo;\space |\space (E)
+E&amp;\to E'+E\space |\space E'\\
+E'&amp;\to id*E'\space |\space id\space |\space (E)*E'\space |\space (E)
 \end{align}
 $$
-instead of one production ( $E$ can represent arbitrary $E&rsquo;$s summing together, $E&rsquo;$ is responsible for <code>*</code> )</p>
+instead of one production ( $E$ can represent arbitrary $E'$s summing together, $E'$ is responsible for <code>*</code> )</p>
 </li>
 <li>
 <p>Enforces precedence of operators (<code>*</code> over <code>+</code>).</p>
@@ -766,7 +766,7 @@ along with declarations</p>
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

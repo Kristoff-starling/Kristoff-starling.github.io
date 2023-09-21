@@ -228,7 +228,7 @@ void hanoi(int n, char from, char to, char via) {
 &lt;li&gt;迁移：执行一条指令&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;如果整个程序的行为是确定的，状态机应该长成一条直线：$(M_0,R_0)\rightarrow (M_1,R_1)\rightarrow\cdots$ 。如果引入了一些 non-deterministic 的元素，比如 &lt;code&gt;rdrand&lt;/code&gt; 指令 (读取一个硬件随机数到寄存器中)，那么状态机会有分叉。但无论如何，这是一个有限状态机 (内存、寄存器数量是有限的)，如果只有计算指令，有限步之后我们必然会回到一个经历过的状态。我们无法实现输入输出，甚至是停止程序。&lt;/p&gt;
-&lt;p&gt;因此，程序中有一条特殊的指令：&lt;code&gt;syscall&lt;/code&gt;。程序将自己的状态机 $(M,R)$ 交给操作系统，任其修改，最终操作系统返回一个状态机 $(M&amp;rsquo;,R&amp;rsquo;)$，程序继续执行。因此程序=计算+syscall+计算+syscall+……&lt;/p&gt;
+&lt;p&gt;因此，程序中有一条特殊的指令：&lt;code&gt;syscall&lt;/code&gt;。程序将自己的状态机 $(M,R)$ 交给操作系统，任其修改，最终操作系统返回一个状态机 $(M&#39;,R&#39;)$，程序继续执行。因此程序=计算+syscall+计算+syscall+……&lt;/p&gt;
 &lt;h3 id=&#34;example-a-smallest-hello-world&#34;&gt;Example: A smallest &amp;ldquo;Hello, world&amp;rdquo;&lt;/h3&gt;
 &lt;p&gt;我们想象中的最小函数：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;void _start() {
@@ -4333,7 +4333,7 @@ static void dlload(struct symbol *sym) {
 &lt;p&gt;因为启动第一个进程的时候 xv6 还没有初始化文件系统，无法通过 exec() 系统调用来加载 image，所以 xv6 的第一个进程 initcode 是写死的一段汇编代码 (在 forkret() 中有初始化文件系统的相关代码)，具体的信息可以见 MIT 6.S081 Lecture 03。&lt;/p&gt;
 &lt;p&gt;通过 &lt;code&gt;ecall&lt;/code&gt; 指令走 trampoline 然后进入 usertrap() 的流程可以见 MIT 6.S081 Lecture 6。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;为什么我在 GDB 中加断点 &lt;code&gt;b *0x0&lt;/code&gt; 会报错：&amp;ldquo;cannnot access memory?&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;为什么我在 GDB 中加断点 &lt;code&gt;b *0x0&lt;/code&gt; 会报错：&amp;ldquo;cannnot access memory?&amp;quot;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;2020版之前的 xv6 需要在 &lt;code&gt;.gdbinit.tmpl-riscv&lt;/code&gt; 中添加一条配置：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;set riscv use-compressed-breakpoints yes
 &lt;/code&gt;&lt;/pre&gt;
@@ -4756,7 +4756,7 @@ void pagefault(Event e, Context *c) {
 &lt;li&gt;
 &lt;p&gt;磁芯内存 (Magnetic core)：类似于一个二维的小磁铁阵列，当给第 $i$ 行第 $j$ 列加电时，坐标在 $(i,j)$ 处的小磁铁就有足够大的电流可以旋转。磁芯内存是 non volatile memory - 掉电后 core 的信息是不会丢失的。但信息的改变依赖小磁铁转动这一物理动作，因此速度不够高。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;&amp;ldquo;Segmentation fault (core dumped)&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&amp;ldquo;Segmentation fault (core dumped)&amp;quot;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;这里的“核心已转储”的说法就是源自于磁芯内存。Linux 系统中默认的 core file size 是 0 (可以通过命令 &lt;code&gt;ulimit -a&lt;/code&gt; 查看)，可以通过 &lt;code&gt;ulimit -c size&lt;/code&gt; 来修改。&lt;/p&gt;
 &lt;p&gt;此外，在 Ubuntu 系统中，我们还需要在 root 权限下通过&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-bash&#34;&gt;echo core &amp;gt; /proc/sys/kernel/core_pattern
@@ -4823,7 +4823,7 @@ void pagefault(Event e, Context *c) {
 &lt;p&gt;迅速击败软盘，成为人手 $n$ 个的移动存储设备。&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;Flash memory 有一个关键的问题：放电会放不干净，一个 cell 经过了成千上万次读写操作后，剩余的电子就会多到好像是 1 的状态，这个 cell 成为了一个 dead cell。&lt;/p&gt;
-&lt;p&gt;该问题的解决方法类似于虚拟内存：在 OS 眼中不论是 SSD 还是 HDD 都类似于一个大数组，但事实上 SSD 里面有一个小型的计算机系统：系统会根据每个 cell 的读写次数，将所谓的 “100号cell&amp;quot; 映射到一个其他的 cell，就像一个 MMU 一样。这样可以保证每个 cell 使用次数差不多，也可以绕开一些 dead cell。&lt;/p&gt;
+&lt;p&gt;该问题的解决方法类似于虚拟内存：在 OS 眼中不论是 SSD 还是 HDD 都类似于一个大数组，但事实上 SSD 里面有一个小型的计算机系统：系统会根据每个 cell 的读写次数，将所谓的 “100号cell&amp;rdquo; 映射到一个其他的 cell，就像一个 MMU 一样。这样可以保证每个 cell 使用次数差不多，也可以绕开一些 dead cell。&lt;/p&gt;
 </description>
     </item>
     

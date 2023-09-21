@@ -29,8 +29,7 @@
   
     
   
-  <meta name="description" content="Overview Execution Graph Concepts Consistency Predicate Sequential Consistency Coherent Consistency Release/Acquire Consistency Happen-before and C/C&#43;&#43;11 Memory Model Overview The basic procedure of declarative/axiomatic concurrency semantics:
-Define the notion of a program execution (generalization of an execution trace) Map a program to a set of executions Define a consistency predicate on executions Semantics = the set of consistent executions of a program Exception: &ldquo;catch-fire&rdquo; semantics">
+  <meta name="description" content="Overview  Execution Graph   Concepts  Consistency Predicate    Sequential Consistency  Coherent Consistency  Release/Acquire Consistency  Happen-before and C/C&#43;&#43;11 Memory Model  Overview The basic procedure of declarative/axiomatic concurrency semantics:">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-concurrency/lectures/lec04/">
@@ -236,8 +235,7 @@ Define the notion of a program execution (generalization of an execution trace) 
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-concurrency/lectures/lec04/">
   <meta property="og:title" content="Lecture 04: Declarative Semantics for Concurrency | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Overview Execution Graph Concepts Consistency Predicate Sequential Consistency Coherent Consistency Release/Acquire Consistency Happen-before and C/C&#43;&#43;11 Memory Model Overview The basic procedure of declarative/axiomatic concurrency semantics:
-Define the notion of a program execution (generalization of an execution trace) Map a program to a set of executions Define a consistency predicate on executions Semantics = the set of consistent executions of a program Exception: &ldquo;catch-fire&rdquo; semantics"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="Overview  Execution Graph   Concepts  Consistency Predicate    Sequential Consistency  Coherent Consistency  Release/Acquire Consistency  Happen-before and C/C&#43;&#43;11 Memory Model  Overview The basic procedure of declarative/axiomatic concurrency semantics:"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -585,17 +583,17 @@ where $x\in \text{Loc}$ and $v_r,v_w\in \text{Val}$.</p>
 <p>A sequential graph can be constructed from commands by the following rules:</p>
 <p>Silent:
 $$
-\frac{c,s\overset{\epsilon}{\to}c&rsquo;,s&rsquo;}{c,s,G\Rightarrow c&rsquo;,s&rsquo;,G}
+\frac{c,s\overset{\epsilon}{\to}c',s'}{c,s,G\Rightarrow c',s',G}
 $$
 Non-silent:
 $$
-\frac{c,s\overset{l}{\to}c&rsquo;,s&rsquo;\qquad a=\langle n,0,l\rangle\qquad n\notin {\text{id}(b)|b\in G.E}}{c,s,G\Rightarrow c&rsquo;,s&rsquo;,Add(a,G)}
+\frac{c,s\overset{l}{\to}c',s'\qquad a=\langle n,0,l\rangle\qquad n\notin {\text{id}(b)|b\in G.E}}{c,s,G\Rightarrow c',s',Add(a,G)}
 $$
-where $Add(a,G)$ yields an execution graph $G&rsquo;$ givens by</p>
+where $Add(a,G)$ yields an execution graph $G'$ givens by</p>
 <ul>
-<li>$G&rsquo;.E=G.E\cup {a}$</li>
-<li>$G&rsquo;.po=G.po\cup (G.E\times {a})$</li>
-<li>$G&rsquo;.rf=G.rf$</li>
+<li>$G'.E=G.E\cup {a}$</li>
+<li>$G'.po=G.po\cup (G.E\times {a})$</li>
+<li>$G'.rf=G.rf$</li>
 </ul>
 <p>$G$ is an execution graph of a command <code>c</code> with a final store <code>s</code> if $c,s_0,G_\emptyset\Rightarrow^*\mathbf{skip},s,G$.</p>
 <h3 id="consistency-predicate">Consistency Predicate</h3>
@@ -886,7 +884,7 @@ Here $W^{\supseteq \text{rel}}$ means the set of write events that have access m
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

@@ -558,16 +558,16 @@ namespace DSU { int pre[MAXN], rnk[MAXN]; void init() { for (int i = 1; i &lt;= 
 }
 </code></pre>
 <p>你需要重点关注的是 <code>find_anc()</code> 函数，它只用一行就在查询集合代表元的同时完成了路径压缩，本质上是在找到代表元之后将路径上所有的节点直接挂到根下。</p>
-<p>如果你觉得麻烦，可以省略按秩合并的部分 (但要付出一点点复杂度的代价，通常可以接受)。还有一些程序员会选择用启发式合并代替按秩合并 (即维护每个集合的元素个数，每次将小的集合合并到大的集合当中)，可以证明路径压缩+启发式合并也可以做到 $O(\alpha(n))$<sup id="fnref1:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。</p>
-<div class="footnotes" role="doc-endnotes">
+<p>如果你觉得麻烦，可以省略按秩合并的部分 (但要付出一点点复杂度的代价，通常可以接受)。还有一些程序员会选择用启发式合并代替按秩合并 (即维护每个集合的元素个数，每次将小的集合合并到大的集合当中)，可以证明路径压缩+启发式合并也可以做到 $O(\alpha(n))$<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>。</p>
+<section class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1">
+<li id="fn:1" role="doc-endnote">
 <p>如果你感兴趣，可以参考 
-<a href="https://www.luogu.com.cn/blog/Atalod/shi-jian-fu-za-du-shi-neng-fen-xi-qian-tan" target="_blank" rel="noopener">这篇博文</a> 详细了解。&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a>&#160;<a href="#fnref1:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+<a href="https://www.luogu.com.cn/blog/Atalod/shi-jian-fu-za-du-shi-neng-fen-xi-qian-tan" target="_blank" rel="noopener">这篇博文</a> 详细了解。&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</div>
+</section>
 
           </div>
 
@@ -682,7 +682,7 @@ namespace DSU { int pre[MAXN], rnk[MAXN]; void init() { for (int i = 1; i &lt;= 
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

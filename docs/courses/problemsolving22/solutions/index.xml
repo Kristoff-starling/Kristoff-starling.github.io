@@ -5,12 +5,81 @@
     <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
       <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/index.xml" rel="self" type="application/rss+xml" />
     <description>OJ习题讲解</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 17 Sep 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 21 Sep 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>OJ习题讲解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
     </image>
+    
+    <item>
+      <title>问题求解III-HW03 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-3/</link>
+      <pubDate>Thu, 21 Sep 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-3/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 一笔画&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;求无向图 $G=(V, E)$ 的欧拉回路。&lt;/li&gt;
+&lt;li&gt;$|V|\leq 10^5, |E|\leq 10^6$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;本题数据范围较大，使用 fleury 算法无法通过，需要实现线性的 Hierholzer 算法。Hierholzer 算法的思路如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;如果存在奇数度数点 $u, v$，则取任意一条 $uv$ 迹，否则取图中任意一条迹。记当前的路径为 $T$。&lt;/li&gt;
+&lt;li&gt;取 $T$ 中仍有未访问邻边的非孤立节点 $w$，寻找一条 $ww$ 迹，将这条闭迹插入到 $T$ 中。&lt;/li&gt;
+&lt;li&gt;重复步骤 2 直到所有的边均被访问。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;寻找合法的 $uv$ 迹和 $ww$ 迹看似困难，其实在如下几条性质的加持下非常简单：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在一个有两个奇数度数节点的图中从一个奇点出发，以任意方法不走重复边地遍历，直到走到死路，最后一定停留在另一个奇点上。且去掉这条迹之后，图中所有点度数均为偶数。&lt;/li&gt;
+&lt;li&gt;在一个所有节点度数均为偶数的图中从任意节点 $w$ 出发，以任意方法不走重复边地遍历，直到走到死路，最后一定回到 $w$。且去掉这条迹之后，图中所有点度数仍然均为偶数。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这两条性质的证明并不困难，形象化地，对于一个偶数度数点来说，有“进”则必有“出”，所以最后一定会停在奇点/出发点上。因此在上述算法中，所有找迹的部分只要“闷头向前搜”即可。&lt;/p&gt;
+&lt;p&gt;现在的另外一个问题是：如何寻找步骤2中的合法出发点 $w$，以及找到 $ww$ 迹之后如何高效插入。Hierholzer 算法存在经典且精巧的回溯实现可以完成这两件事。我们直接给出伪代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;def hierholzer(u):
+    for (u, v) in G.edges:
+        delete (u, v) from G.edges
+        hierholzer(v)
+    path.append(u)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;大家可以仔细阅读这段代码并思考两个问题：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该函数是如何通过回溯找到当前路径上仍有出边的节点的？&lt;/li&gt;
+&lt;li&gt;该函数在走完所有 $u$ 的出边后将 $u$ 加入路径，该顺序是如何做到将步骤 2 中的 $ww$ 迹“插入”原路径&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 观光&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;求带权无向图 $G=(V,E)$ 中权值最小的哈密尔顿路径。&lt;/li&gt;
+&lt;li&gt;$|V|\leq 15$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;h3 id=&#34;做法1-折半搜索&#34;&gt;做法1: 折半搜索&lt;/h3&gt;
+&lt;p&gt;折半搜索的主要思想是将一个大任务拆成两个规模各为一半的子任务，然后尝试在中间将两部分拼接起来。假设我们可以高效地拼接，记原算法复杂度为 $f(n)$，则折半搜索可以将复杂度优化为 $2\cdot f(n/2)$。当 $f$ 是一个指数或更高阶的函数时，折半搜索通常能显著降低复杂度。&lt;/p&gt;
+&lt;p&gt;直接阶乘枚举所有可能路径的时间复杂度为 $O(n!)$。如果使用折半搜索，我们可以计算图中所有长度为 $n/2$ 的路径的长度。然后枚举每条“半路径”(此时另一半路径的顶点已知)和另一半路径与当前路径连接的端点，更新最短的哈密尔顿路径。时间复杂度为 $O(C(n, n/2)\cdot n)$。&lt;/p&gt;
+&lt;h3 id=&#34;做法2状态压缩动态规划&#34;&gt;做法2：状态压缩动态规划&lt;/h3&gt;
+&lt;p&gt;本题更正统的做法是采取状态压缩动态规划。所谓状态压缩，是指用一个 01 串表示当前已经经过的顶点的集合 (1表示已经走过)，这样一个 01 串又可以映射到一个十进制数的二进制表示，因此我们可以用 $[0, 2^n)$ 中的整数来刻画所有的经过状态。以下为了表示方便，我们以 $0$ 到 $n-1$ 标号节点。&lt;/p&gt;
+&lt;p&gt;令 $dp(Mask, u)$ 表示当前已经经过的节点集合为 Mask，当前节点为 $u$ 的情况下，$Mask$ 中经过节点构成的哈密尔顿路径的最短长度。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;边界条件是容易的：对于所有的 $0\leq x\leq n-1$，有 $dp(2^x, x)=0$ (只有一个点的路径，当前长度为 0)。&lt;/li&gt;
+&lt;li&gt;转移只需枚举路径下一个节点 $v$(需要保证 $v$ 尚未经过)，状态转移方程式为
+$$
+dp(Mask|2^v, v) = \min\{dp(Mask|2^v, v), dp(Mask, u) + c(u, v)\}
+$$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;最终答案为
+$$
+ans = \min_{0\leq x&amp;lt;n}dp(2^n-1, x)
+$$
+状态的数量为 $O(2^n\cdot n)$，每个状态可以向 $O(n)$ 个状态转移，因此总时间复杂度为 $O(2^n\cdot n^2)$。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>问题求解III-HW02 题解</title>
@@ -27,7 +96,7 @@
 &lt;p&gt;事实上，本题存在 $O(n+m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。&lt;/li&gt;
-&lt;li&gt;每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&amp;rsquo;=S\cap Neighbor(v)$，则 $S-S&amp;rsquo;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&amp;rsquo;$。将 $v$ 标记为已访问。&lt;/li&gt;
+&lt;li&gt;每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&#39;=S\cap Neighbor(v)$，则 $S-S&#39;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&#39;$。将 $v$ 标记为已访问。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
@@ -132,8 +201,7 @@ $$
 &lt;div class=&#34;alert alert-tip&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;本题其实相当有难度，这是因为人很难克服惯性思维：题目中要对各个子串的最小代价求和，所以我们很自然地想对每个子串单独求代价，最后相加。将视角转化为对每个元素计算可以不在多少个区间中被覆盖，打破了原题中对总代价的划分方式，这步转化需要相当的功力。&lt;/p&gt;
-&lt;p&gt;这道题目的原型是 
-&lt;a href=&#34;https://codeforces.com/contest/1827/problem/B1&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Codeforces-1827B&lt;/a&gt;，区别在于原题中排序一个区间的代价不是 $r-l+1$，而是 $r-l$。这一点小小的差异对题目难度的影响其实是巨大的——因为排序一个区间的代价不等于区间的长度，所以“省下”一个元素不被覆盖的收益难以定义，从而原题更加复杂。感兴趣的同学可以去挑战一下。&lt;/p&gt;
+&lt;p&gt;这道题目的原型是 &lt;a href=&#34;https://codeforces.com/contest/1827/problem/B1&#34;&gt;Codeforces-1827B&lt;/a&gt;，区别在于原题中排序一个区间的代价不是 $r-l+1$，而是 $r-l$。这一点小小的差异对题目难度的影响其实是巨大的——因为排序一个区间的代价不等于区间的长度，所以“省下”一个元素不被覆盖的收益难以定义，从而原题更加复杂。感兴趣的同学可以去挑战一下。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -299,18 +367,18 @@ $$&lt;/p&gt;
 $$&lt;/p&gt;
 &lt;p&gt;鸡蛋落地的结果序列必须可以和楼层建立一一映射，否则一定存在无法分辨的两个楼层 (可以参考使用决策树证明基于比较的排序算法的复杂度下界的过程来理解这句话)，所以答案的上界是 $\sum_{i=1}^k\binom{m}{i}$。又因为每次鸡蛋碎与不碎会将我们引导到两个不相交的区域 ($[1, x-1]$ 和 $[x, n]$) 进行下一步操作，所以这个上界是可以做到的。因此 $f(k, m)=\sum_{i=1}^k\binom{m}{i}$。进一步地，你可以发现我们在此处定义 0 为碎的巧妙之处：将所有状态串按照字典序从小到大排序，排在第 $i$ 位的字符串恰好就是确定第 $i$ 层的扔法。&lt;/p&gt;
 &lt;p&gt;有了这个结果，我们可以直接二分 $m$，然后计算 $f(k, m)$ 并与 $n$ 比较。时间复杂度 $O(k\log n)$。&lt;/p&gt;
-&lt;div class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
 &lt;hr&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn:1&#34;&gt;
+&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
 &lt;p&gt;LeetCode的 
 &lt;a href=&#34;https://leetcode.cn/problems/super-egg-drop/solution/ji-dan-diao-luo-by-leetcode-solution-2/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;官方题解&lt;/a&gt; 不加证明地给出了 $O(k\sqrt[k]{n})$ 的复杂度。&amp;#160;&lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
-&lt;li id=&#34;fn:2&#34;&gt;
+&lt;li id=&#34;fn:2&#34; role=&#34;doc-endnote&#34;&gt;
 &lt;p&gt;事实上，第二种解法里的动态规划状态转移方程本身长的就很像二项式系数的递推式。如果你对这个转移方程进行差分等数学处理，也可以得到如下的结果。&amp;#160;&lt;a href=&#34;#fnref:2&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/div&gt;
+&lt;/section&gt;
 </description>
     </item>
     
@@ -557,7 +625,7 @@ $$
 &lt;p&gt;优化状态设计的动机是：我们最关心的其实是单词的开头/结尾字母，而小写字母一共只有 26 个。因此我们应该在这方面作文章，把每次遍历前面所有单词的过程节省掉。考虑如下状态：令 $dp(i, ch)$ 表示在前 $i$ 个单词中，以字符 $ch$ 结尾的最长可接龙子序列的长度 &lt;strong&gt;(注意！不再要求一定以 $word_i$ 结尾！)&lt;/strong&gt;。转移考虑对以下两种情况取 max：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;最长子序列不包括第 $i$ 个单词: $dp(i-1, ch)$。&lt;/li&gt;
-&lt;li&gt;最长子序列包括第 $i$ 个单词，且第 $i$ 个单词确实以 $ch$ 结尾: 设第 $i$ 个单词的开头字符为 $ch&amp;rsquo;$，则这种情况的最长序列长度为 $dp(i-1, ch&amp;rsquo;) + 1$。&lt;/li&gt;
+&lt;li&gt;最长子序列包括第 $i$ 个单词，且第 $i$ 个单词确实以 $ch$ 结尾: 设第 $i$ 个单词的开头字符为 $ch&#39;$，则这种情况的最长序列长度为 $dp(i-1, ch&#39;) + 1$。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;因此状态转移方程可以写为&lt;/p&gt;
 &lt;p&gt;$$

@@ -30,9 +30,8 @@
     
   
   <meta name="description" content="线程同步：在某个时间点共同达到互相已知的状态。(每个线程都有可能做自己的某个耗时很长的工作)
-nnpy：等我洗完头就吃饭/等我打完游戏就吃饭。 “先到先等”的同步机制。 Producer-Consumer Problem void Tproducer() {while (1) puts(&quot;(&quot;);} void Tconsmuer() {while (1) puts(&quot;)&quot;);} 我们希望生成合法的括号序列，且括号序列嵌套深度不超过给定值 $n$：
-producer: 序列深度小于 $n$ 才能打印； consumer: 序列深度大于等于 1 才能打印。 我们可以用一个队列来维护任务池，producer 将任务放到队尾，consumer 从队头取任务。取和放的操作都要在锁的保护下进行。
-// pc.c #include &quot;thread.">
+ nnpy：等我洗完头就吃饭/等我打完游戏就吃饭。 “先到先等”的同步机制。  Producer-Consumer Problem void Tproducer() {while (1) puts(&quot;(&quot;);} void Tconsmuer() {while (1) puts(&quot;)&quot;);}  我们希望生成合法的括号序列，且括号序列嵌套深度不超过给定值 $n$：
+ producer: 序列深度小于 $n$ 才能打印； consumer: 序列深度大于等于 1 才能打印。  我们可以用一个队列来维护任务池，producer 将任务放到队尾，consumer 从队头取任务。取和放的操作都要在锁的保护下进行。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec06/">
@@ -239,9 +238,8 @@ producer: 序列深度小于 $n$ 才能打印； consumer: 序列深度大于等
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec06/">
   <meta property="og:title" content="Lecture 06: Concurrent Programming: Synchronization | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="线程同步：在某个时间点共同达到互相已知的状态。(每个线程都有可能做自己的某个耗时很长的工作)
-nnpy：等我洗完头就吃饭/等我打完游戏就吃饭。 “先到先等”的同步机制。 Producer-Consumer Problem void Tproducer() {while (1) puts(&quot;(&quot;);} void Tconsmuer() {while (1) puts(&quot;)&quot;);} 我们希望生成合法的括号序列，且括号序列嵌套深度不超过给定值 $n$：
-producer: 序列深度小于 $n$ 才能打印； consumer: 序列深度大于等于 1 才能打印。 我们可以用一个队列来维护任务池，producer 将任务放到队尾，consumer 从队头取任务。取和放的操作都要在锁的保护下进行。
-// pc.c #include &quot;thread."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ nnpy：等我洗完头就吃饭/等我打完游戏就吃饭。 “先到先等”的同步机制。  Producer-Consumer Problem void Tproducer() {while (1) puts(&quot;(&quot;);} void Tconsmuer() {while (1) puts(&quot;)&quot;);}  我们希望生成合法的括号序列，且括号序列嵌套深度不超过给定值 $n$：
+ producer: 序列深度小于 $n$ 才能打印； consumer: 序列深度大于等于 1 才能打印。  我们可以用一个队列来维护任务池，producer 将任务放到队尾，consumer 从队头取任务。取和放的操作都要在锁的保护下进行。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -1225,7 +1223,7 @@ void Twaiter() {
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

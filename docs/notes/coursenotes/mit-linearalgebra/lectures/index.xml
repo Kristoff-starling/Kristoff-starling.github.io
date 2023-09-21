@@ -545,8 +545,8 @@ R=\left[\begin{matrix}1 &amp;amp; 0 &amp;amp; 1 &amp;amp; 1\\ 0 &amp;amp; 1 &amp
 $$
 Through $R$, we can see that the first two columns are pivot columns, so the first two columns of $A$ are basis of $C(A)$. Here we do row operations on $A$, so $C(A)\neq C(R)$ of course, but &lt;strong&gt;considering the fact that doing row operations is just doing linear combinations of row vectors of $A$, $C(A^T)=C(R^T)$.&lt;/strong&gt; And we can easily tell that $\dim R^T=2=r$ and &lt;strong&gt;the first $r$ row vectors of $R$ are basis of $C(A^T)$.&lt;/strong&gt; (They&amp;rsquo;re independent and if we do the row operations inversely, we can get all the rows of $A$)&lt;/p&gt;
 &lt;p&gt;To find out a basis for $N(A^T)$. Firstly we want to figure out the matrix that represents the row operations of $A\rightarrow R$, i.e. we want to find a matrix $E$ such that $EA=R$.&lt;/p&gt;
-&lt;p&gt;According to Gauss-Jordan, we put a identity matrix besides $A$, i.e. $A&amp;rsquo;=[A_{m\times n}\quad I_{m\times m}]$. Suppose $EA&amp;rsquo;=$&lt;/p&gt;
-&lt;p&gt;$E[A\quad I]=[R\quad E&amp;rsquo;]$, then we have $E=E&amp;rsquo;$, so by applying all the row operations on $I$, we can get $E$. In the above example, we can get
+&lt;p&gt;According to Gauss-Jordan, we put a identity matrix besides $A$, i.e. $A&#39;=[A_{m\times n}\quad I_{m\times m}]$. Suppose $EA&#39;=$&lt;/p&gt;
+&lt;p&gt;$E[A\quad I]=[R\quad E&#39;]$, then we have $E=E&#39;$, so by applying all the row operations on $I$, we can get $E$. In the above example, we can get
 $$
 E=\left[\begin{matrix}-1 &amp;amp; 2 &amp;amp; 0\\1 &amp;amp; -1 &amp;amp; 0\\-1 &amp;amp; 0 &amp;amp; 1\end{matrix}\right]
 $$

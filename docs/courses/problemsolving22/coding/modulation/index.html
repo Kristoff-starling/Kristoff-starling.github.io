@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="不少同学被OJ的取模问题折磨得心力憔悴——不论多么仔细地检查每一处四则运算，总会有一处漏网之鱼让程序输出错误的结果。这里我们展示一种比较优雅的代码书写方式：
-const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) x -= MOD; return x;} int sub(int x, int y) { x -= y; if (x &lt; 0) x &#43;= MOD; return x; } int mul(int x, int y) { return 1ll * x * y % MOD; } void Add(int &amp;x, int y) { x = add(x, y); } void Sub(int &amp;x, int y) { x = sub(x, y); } void Mul(int &amp;x, int y) { x = mul(x, y); } 这里我们定义了 MOD 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现：">
+const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) x -= MOD; return x;} int sub(int x, int y) { x -= y; if (x &lt; 0) x &#43;= MOD; return x; } int mul(int x, int y) { return 1ll * x * y % MOD; } void Add(int &amp;x, int y) { x = add(x, y); } void Sub(int &amp;x, int y) { x = sub(x, y); } void Mul(int &amp;x, int y) { x = mul(x, y); }  这里我们定义了 MOD 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现：">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/coding/modulation/">
@@ -237,7 +237,7 @@ const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) 
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/coding/modulation/">
   <meta property="og:title" content="优雅地取模 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="不少同学被OJ的取模问题折磨得心力憔悴——不论多么仔细地检查每一处四则运算，总会有一处漏网之鱼让程序输出错误的结果。这里我们展示一种比较优雅的代码书写方式：
-const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) x -= MOD; return x;} int sub(int x, int y) { x -= y; if (x &lt; 0) x &#43;= MOD; return x; } int mul(int x, int y) { return 1ll * x * y % MOD; } void Add(int &amp;x, int y) { x = add(x, y); } void Sub(int &amp;x, int y) { x = sub(x, y); } void Mul(int &amp;x, int y) { x = mul(x, y); } 这里我们定义了 MOD 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) x -= MOD; return x;} int sub(int x, int y) { x -= y; if (x &lt; 0) x &#43;= MOD; return x; } int mul(int x, int y) { return 1ll * x * y % MOD; } void Add(int &amp;x, int y) { x = add(x, y); } void Sub(int &amp;x, int y) { x = sub(x, y); } void Mul(int &amp;x, int y) { x = mul(x, y); }  这里我们定义了 MOD 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -683,7 +683,7 @@ Mul(a_very_very_long_variable_name, c);
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

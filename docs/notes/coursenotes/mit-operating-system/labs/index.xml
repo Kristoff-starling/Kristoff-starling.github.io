@@ -348,7 +348,7 @@ entry(&amp;quot;exit&amp;quot;);
 &lt;tbody&gt;
 &lt;tr&gt;
 &lt;td&gt;72 $\rightarrow$ &amp;lsquo;r&amp;rsquo;&lt;/td&gt;
-&lt;td&gt;6c $\rightarrow$ &amp;rsquo;l&#39;&lt;/td&gt;
+&lt;td&gt;6c $\rightarrow$ &amp;lsquo;l&amp;rsquo;&lt;/td&gt;
 &lt;td&gt;64 $\rightarrow$ &amp;rsquo;d&#39;&lt;/td&gt;
 &lt;td&gt;00 $\rightarrow$ &amp;lsquo;\0&amp;rsquo;&lt;/td&gt;
 &lt;/tr&gt;
@@ -503,7 +503,7 @@ struct dirent
 &lt;p&gt;笔者最初实现完发现文件系统后面的若干的文件都显示 &lt;code&gt;find: cannot open ...&lt;/code&gt;，经过筛查发现这是因为没有多余的文件描述符可以使用了。在 xv6 中，资源比较有限，&lt;strong&gt;我们应该养成打开一个文件，读取完相关信息就关闭它的好习惯&lt;/strong&gt;。&lt;/p&gt;
 &lt;h2 id=&#34;xargs-moderate&#34;&gt;xargs (moderate)&lt;/h2&gt;
 &lt;p&gt;有一些命令不支持从管道读取输入，而 &lt;code&gt;xargs&lt;/code&gt; 命令可以帮助这些命令从管道读取信息。注意：管道的创建和输出输入的重定向是由 shell 来完成的，我们的 xargs 程序无需关心输入的来源，只需要从标准输入 (文件描述符 1) 读取信息即可。&lt;/p&gt;
-&lt;p&gt;为新命令准备参数的环节是较好的 C 语言指针练习。笔者新建了一个 &lt;code&gt;char *child_args[MAXARG]&lt;/code&gt; 数组来为子进程传递参数。xargs 后紧跟的那几个参数是确定的，再后面的参数需要读入，目前还不能确定长度，所以应该在读取完之后用 &lt;code&gt;malloc()&lt;/code&gt; 来申请内存空间，并在子进程执行完成后用 &lt;code&gt;free()&lt;/code&gt; 释放空间防止内存泄漏。为了能够准确识别到 &lt;code&gt;\n&lt;/code&gt; 以执行多条指令，笔者采取了一个字符一个字符地从标准输入读取信息的方式。读取到的字符暂存在局部数组 buf 中，一旦遇到 &amp;rsquo; &amp;rsquo; 或 &amp;lsquo;\n&amp;rsquo; 就根据 buf 的长度申请内存，将 buf 复制到参数数组里。&lt;/p&gt;
+&lt;p&gt;为新命令准备参数的环节是较好的 C 语言指针练习。笔者新建了一个 &lt;code&gt;char *child_args[MAXARG]&lt;/code&gt; 数组来为子进程传递参数。xargs 后紧跟的那几个参数是确定的，再后面的参数需要读入，目前还不能确定长度，所以应该在读取完之后用 &lt;code&gt;malloc()&lt;/code&gt; 来申请内存空间，并在子进程执行完成后用 &lt;code&gt;free()&lt;/code&gt; 释放空间防止内存泄漏。为了能够准确识别到 &lt;code&gt;\n&lt;/code&gt; 以执行多条指令，笔者采取了一个字符一个字符地从标准输入读取信息的方式。读取到的字符暂存在局部数组 buf 中，一旦遇到 &#39; &#39; 或 &amp;lsquo;\n&amp;rsquo; 就根据 buf 的长度申请内存，将 buf 复制到参数数组里。&lt;/p&gt;
 </description>
     </item>
     

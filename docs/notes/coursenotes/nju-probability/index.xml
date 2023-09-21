@@ -284,7 +284,7 @@ p_X(x)=\begin{cases}
 0&amp;amp;,x&amp;lt;0
 \end{cases}
 $$
-$Y=g(X)=1-e^{-2X}$，$g&amp;rsquo;(x)=-e^{-2x}\cdot (-2)=2e^{-2x}&amp;gt;0$，所以 $g(x)$ 严格单调递增且处处可导。因此
+$Y=g(X)=1-e^{-2X}$，$g&#39;(x)=-e^{-2x}\cdot (-2)=2e^{-2x}&amp;gt;0$，所以 $g(x)$ 严格单调递增且处处可导。因此
 $$
 \begin{align}
 p_Y(y)&amp;amp;=p_X(g^{-1}(y))\cdot \left|g^{-1}(y)\right|\\
@@ -750,7 +750,7 @@ $$
 $$&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;若 $p(x)$ 在 $x_0$ 连续，则 $F(x)$ 在 $x_0$ 处可导，且 $F&amp;rsquo;(x_0)=p(x_0)$。&lt;/p&gt;
+&lt;p&gt;若 $p(x)$ 在 $x_0$ 连续，则 $F(x)$ 在 $x_0$ 处可导，且 $F&#39;(x_0)=p(x_0)$。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;$$
 \begin{align}
@@ -893,7 +893,7 @@ $$&lt;/p&gt;
 $$
 F_Y(y)=P(Y\leq y)=P(g(X)\leq y)=P(x\in {x|g(x)\leq y})=\int_{x:g(x)\leq y} p_X(x)dx
 $$
-最后的积分式含参数 $y$，结果是关于 $y$ 的表达式。若 $F_Y(y)$ 可导，则 $p_Y(y)=F_Y&amp;rsquo;(y)$。&lt;/p&gt;
+最后的积分式含参数 $y$，结果是关于 $y$ 的表达式。若 $F_Y(y)$ 可导，则 $p_Y(y)=F_Y&#39;(y)$。&lt;/p&gt;
 &lt;p&gt;【例】$X\sim N(0,1)$，求 $Y=X^2$ 的分布。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;解：注意到 $Y\geq 0$，所以对于任意 $y&amp;lt;0$，$F_y(y)=0$。&lt;/p&gt;
@@ -904,7 +904,7 @@ $$
 欲求 $p_Y(y)$，我们要对 $F_Y(y)$ 求导，注意使用链式法则：
 $$
 \begin{align}
-P_Y(y)&amp;amp;=F_Y&amp;rsquo;(y)=F_X&amp;rsquo;(\sqrt{y})-F_X&amp;rsquo;(-\sqrt{y})\\
+P_Y(y)&amp;amp;=F_Y&#39;(y)=F_X&#39;(\sqrt{y})-F_X&#39;(-\sqrt{y})\\
 &amp;amp;=p_X(\sqrt{y})\frac{1}{2\sqrt{y}}-p_X(-\sqrt{y})\frac{-1}{2\sqrt{y}}\\
 &amp;amp;=\frac{1}{\sqrt{y}}p_X(\sqrt{y})=\frac{1}{\sqrt{2\pi y}}e^{-\frac{y}{2}}
 \end{align}
@@ -917,15 +917,15 @@ $$&lt;/p&gt;
 &lt;p&gt;注：$Y=X^2$ 称为服从一个自由度的 $\chi^2$ 分布。$\chi^2$ 分布是统计学中的一个重要分布。&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;上述做法需要先计算 $F_Y(y)$ 再求导计算 $p_Y(y)$。若 $y=g(x)$ 严格单调，则对 $g(x)$ 加以一些可导条件，可以直接计算密度函数 $p_Y(y)$。&lt;/p&gt;
-&lt;p&gt;$\fbox{Theorem 7.1}$ 设 $X$ 为连续型随机变量，密度函数为 $p_X(x)$。设 $y=g(x)$ 严格单调处处可导且恒有 $g&amp;rsquo;(x)&amp;gt;0$ 或 $g&amp;rsquo;(x)&amp;lt;0$，则 $Y=g(X)$ 也为连续型随机变量，且
+&lt;p&gt;$\fbox{Theorem 7.1}$ 设 $X$ 为连续型随机变量，密度函数为 $p_X(x)$。设 $y=g(x)$ 严格单调处处可导且恒有 $g&#39;(x)&amp;gt;0$ 或 $g&#39;(x)&amp;lt;0$，则 $Y=g(X)$ 也为连续型随机变量，且
 $$
 p_Y(y)=\begin{cases}
-p_X(g^{-1}(y))\cdot \left|(g^{-1}(y))&amp;rsquo;\right|&amp;amp;,Y可取到y\\
+p_X(g^{-1}(y))\cdot \left|(g^{-1}(y))&#39;\right|&amp;amp;,Y可取到y\\
 0&amp;amp;,Y取不到y
 \end{cases}
 $$
 其中 $g^{-1}(y)$ 是 $g(x)$ 的反函数。&lt;/p&gt;
-&lt;p&gt;注：当 $g(x)$ 单调且 $g&amp;rsquo;(x_0)$ 存在非零，可以证明 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处可导。但即使严格单调，$g&amp;rsquo;(x)$ 仍可能在某个 $x_0$ 取到 0 (如 $f(x)=x^3$ 的 $x=0$ 处)，此时 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处的可导性存在问题，故要求 $g&amp;rsquo;(x)$ 不能取 0。&lt;/p&gt;
+&lt;p&gt;注：当 $g(x)$ 单调且 $g&#39;(x_0)$ 存在非零，可以证明 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处可导。但即使严格单调，$g&#39;(x)$ 仍可能在某个 $x_0$ 取到 0 (如 $f(x)=x^3$ 的 $x=0$ 处)，此时 $g^{-1}(y)$ 在 $y_0=g(x_0)$ 处的可导性存在问题，故要求 $g&#39;(x)$ 不能取 0。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;证明：这里仅证单调递增的情况，单调递减大同小异 (最终使结论添上绝对值)：
 $$
@@ -937,15 +937,15 @@ F_Y(y_0)=\int_{-\infty}^{y_0}p_X(g^{-1}(y))dg^{-1}(y)=\int_{-\infty}^{y_0}p_X(g^
 $$
 根据微积分基本定理，
 $$
-p_Y(y_0)=F_Y&amp;rsquo;(y_0)=p_X(g^{-1}(y_0))(g^{-1}(y_0))&amp;rsquo;
+p_Y(y_0)=F_Y&amp;rsquo;(y_0)=p_X(g^{-1}(y_0))(g^{-1}(y_0))&#39;
 $$&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;【例】$X\sim N(\mu, \sigma^2)$，$Z=\frac{X-\mu}{\sigma}$，即 $g(x)=\frac{x-\mu}{\sigma}$，$Z=g(X)$。求 $Z$ 的分布。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;解：显然 $g(x)$ 单调递增，且 $g&amp;rsquo;(x)=\frac{1}{\sigma}&amp;gt;0$。$g^{-1}(z)=\sigma z+\mu$。
+&lt;p&gt;解：显然 $g(x)$ 单调递增，且 $g&#39;(x)=\frac{1}{\sigma}&amp;gt;0$。$g^{-1}(z)=\sigma z+\mu$。
 $$
 \begin{align}
-p_Z(z)&amp;amp;=p_X(g^{-1}(z))\left|(g^{-1}(z))&amp;rsquo;\right|=p_X(\sigma z+\mu)\cdot \sigma\\
+p_Z(z)&amp;amp;=p_X(g^{-1}(z))\left|(g^{-1}(z))&#39;\right|=p_X(\sigma z+\mu)\cdot \sigma\\
 &amp;amp;=\sigma\cdot \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(\sigma z+\mu-\mu)^2}{2\sigma^2}}\\
 &amp;amp;=\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}
 \end{align}
@@ -954,7 +954,7 @@ $$
 &lt;/blockquote&gt;
 &lt;p&gt;【例】若 $X$ 服从 $\left(-\frac{\pi}{2},\frac{\pi}{2}\right)$ 上的均匀分布，$Y=\tan X$，求 $Y$ 的分布。&lt;/p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;解：$y=g(x)=\tan x$，$x=g^{-1}(y)=\arctan y$，$(\arctan y)&amp;rsquo;=\frac{1}{1+y^2}$。于是
+&lt;p&gt;解：$y=g(x)=\tan x$，$x=g^{-1}(y)=\arctan y$，$(\arctan y)&#39;=\frac{1}{1+y^2}$。于是
 $$
 \begin{align}
 p_Y(y)&amp;amp;=p_X(\arctan y)\cdot \left|\frac{1}{1+y^2}\right|\\
@@ -1329,7 +1329,7 @@ F_Z(z)&amp;amp;=P(g(X,Y)\leq z)=P((X,Y)\in {(x,y)|g(x,y)\leq z})\\
 &amp;amp;=\iint_{{(x,y):g(x,y)\leq z}}p(x,y)dxdy
 \end{align}
 $$
-若 $F_Z(z)$ 可导，则 $p_Z(z)=F_Z&amp;rsquo;(z)$。&lt;/p&gt;
+若 $F_Z(z)$ 可导，则 $p_Z(z)=F_Z&#39;(z)$。&lt;/p&gt;
 &lt;p&gt;对于混合情形，若 $X$ 为连续型随机变量，密度函数为 $p(x)$，$Y$ 为离散型随机变量，分布为 $P(Y=y_j)=q_j,j=1,2,\cdots$。那么
 $$
 \begin{align}
@@ -1454,7 +1454,7 @@ $$
 在有效区域内，有 $p(x,y)=p_X(x)p_Y(y)=\frac{1}{2}$。考虑拿直线 $x+y\leq z$ 滑过平面，看直线左侧。&lt;/p&gt;
 &lt;p&gt;容易看出 $z\leq 0$ 时 $F_Z(z)=0$；$z\geq 3$ 时 $F_Z(z)=1$。剩下的几种情形需要仔细考虑：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;$0&amp;lt;z&amp;lt;1$，此时获得的是一个三角形，$F_Z(z)=\frac{1}{2}\cdot \frac{z^2}{2}=\frac{z^2}{4},p_Z(z)=F&amp;rsquo;_Z(z)=\frac{z}{2}$。&lt;/li&gt;
+&lt;li&gt;$0&amp;lt;z&amp;lt;1$，此时获得的是一个三角形，$F_Z(z)=\frac{1}{2}\cdot \frac{z^2}{2}=\frac{z^2}{4},p_Z(z)=F&#39;_Z(z)=\frac{z}{2}$。&lt;/li&gt;
 &lt;li&gt;$1\leq z&amp;lt;2$，此时获得的是一个梯形，$F_Z(z)=\frac{1}{2}\cdot \frac{z-1+z}{2}=\frac{z}{2}-\frac{1}{4}，p_Z(z)=\frac{1}{2}$。&lt;/li&gt;
 &lt;li&gt;$2\leq z&amp;lt;3$，此时获得的是矩形减去一个三角形，$F_Z(z)=\frac{1}{2}\cdot (2-\frac{1}{2}(3-z)^2)=1-\frac{1}{4}(3-z)^2$，$p_Z(z)=\frac{1}{2}(3-z)$。&lt;/li&gt;
 &lt;/ul&gt;
@@ -1495,7 +1495,7 @@ F_Z(z)&amp;amp;=\int_0^z\int_0^x3xdydx+\int_z^1\int_{x-z}^x3xdydx\\
 &amp;amp;=-\frac{1}{2}z^3+\frac{3}{2}z
 \end{align}
 $$
-从而 $p_Z(z)=F_Z&amp;rsquo;(z)=-\frac{3}{2}z^2+\frac{3}{2}$。&lt;/p&gt;
+从而 $p_Z(z)=F_Z&#39;(z)=-\frac{3}{2}z^2+\frac{3}{2}$。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;【例】 (积和商的分布) 设 $(X,Y)$ 的密度为 $p(x,y)$，考虑两者积和商的分布：&lt;/p&gt;
 &lt;ul&gt;
@@ -1544,7 +1544,7 @@ $$
 $$
 F_Z(z)=\int_0^z\int_0^1\frac{1}{2}dydx+\int_z^2\int_0^{\frac{z}{x}}\frac{1}{2}dydx=\frac{z}{2}(\ln 2+1-\ln z)
 $$
-从而 $p_Z(z)=F_Z&amp;rsquo;(z)=\frac{1}{2}(\ln 2-\ln z)$。&lt;/p&gt;
+从而 $p_Z(z)=F_Z&#39;(z)=\frac{1}{2}(\ln 2-\ln z)$。&lt;/p&gt;
 &lt;/blockquote&gt;
 </description>
     </item>
@@ -1586,7 +1586,7 @@ $$
 E[x]&amp;amp;=\sum_{k=1}^\infty kP(X=k)=\sum_{k=1}^n k\binom{n}{k}p^k(1-p)^{n-k}\\
 &amp;amp;=\sum_{k=1}^n \frac{n!}{(k-1)!(n-k)!}p^k(1-p)^{n-k}\\
 &amp;amp;=np\sum_{k=1}^n\frac{(n-1)!}{(k-1)!(n-k)!}p^{k-1}(1-p)^{n-k}\\
-&amp;amp;=np\sum_{k&amp;rsquo;=0}^{n-1}\binom{n-1}{k&amp;rsquo;}p^{k&amp;rsquo;}(1-p)^{n-1-k&amp;rsquo;}\\
+&amp;amp;=np\sum_{k&#39;=0}^{n-1}\binom{n-1}{k&#39;}p^{k&#39;}(1-p)^{n-1-k&#39;}\\
 &amp;amp;=np\cdot [p+(1-p)]^{n-1}\\
 &amp;amp;=np
 \end{align}
@@ -1612,7 +1612,7 @@ $$
 $$
 所以
 $$
-E[x]=-pF&amp;rsquo;(p)=-p\cdot \left(\frac{1-p}{p}\right)&amp;rsquo;=-p\cdot -\frac{1}{p^2}=\frac{1}{p}
+E[x]=-pF&#39;(p)=-p\cdot \left(\frac{1-p}{p}\right)&#39;=-p\cdot -\frac{1}{p^2}=\frac{1}{p}
 $$
 【例】 (圣彼得堡悖论) 连续扔一枚均匀硬币，当出现反面时停止。若此前出现的正面次数为 $k$ 次，则收益为 $2^k$，求该游戏收益的期望。&lt;/p&gt;
 &lt;blockquote&gt;

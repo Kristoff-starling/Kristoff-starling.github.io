@@ -29,7 +29,7 @@
   
     
   
-  <meta name="description" content="Isolation We want strong isolation between applications so that if there&rsquo;s a bug in one application, the others will not be damaged. We also want isolation between applications and the operating system so that if weird arguments were passed to the OS, OS wouldn&rsquo;t crash.">
+  <meta name="description" content="Isolation  We want strong isolation between applications so that if there&rsquo;s a bug in one application, the others will not be damaged. We also want isolation between applications and the operating system so that if weird arguments were passed to the OS, OS wouldn&rsquo;t crash.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/lectures/lec03/">
@@ -235,7 +235,7 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/lectures/lec03/">
   <meta property="og:title" content="MIT-6.S081 Lecture 03: OS Organization and System Calls | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Isolation We want strong isolation between applications so that if there&rsquo;s a bug in one application, the others will not be damaged. We also want isolation between applications and the operating system so that if weird arguments were passed to the OS, OS wouldn&rsquo;t crash."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="Isolation  We want strong isolation between applications so that if there&rsquo;s a bug in one application, the others will not be damaged. We also want isolation between applications and the operating system so that if weird arguments were passed to the OS, OS wouldn&rsquo;t crash."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -542,7 +542,7 @@
 <p>There&rsquo;s a demand for switching between applications. Because there&rsquo;s no OS, <code>shell</code> needs to proactively &ldquo;give up&rdquo; and &ldquo;quit&rdquo; the CPU to let others use the hardware. This is the so-called cooperating schedule. However, if there&rsquo;s a dead loop in <code>shell</code> or <code>shell</code> is a malware, it will not quit and the hardware is completely occupied by this application. Therefore, we need a kind of &ldquo;enforced multipliexing&rdquo;: <strong>no matter what the application does, it will be forced to give up the CPU once in a while</strong>.</p>
 </li>
 <li>
-<p>Different applications share the same memory space. For example, <code>shell</code>&rsquo;s memory may start at address 1000 and <code>echo</code>&rsquo;s memory may start at address 2000. There&rsquo;s no boundary between their memory space and it&rsquo;s easy for one application to overwrite others&rsquo; memory and cause tricky bugs.</p>
+<p>Different applications share the same memory space. For example, <code>shell</code>&rsquo;s memory may start at address 1000 and <code>echo</code>&rsquo;s memory may start at address 2000. There&rsquo;s no boundary between their memory space and it&rsquo;s easy for one application to overwrite others' memory and cause tricky bugs.</p>
 </li>
 </ul>
 <p>In summary, we need operating systems to <strong>enforce both multiplexing and strong memory isolation</strong>. Strawman design is not very common in today&rsquo;s computer system. Some real-time system doesn&rsquo;t have OS because applications trust each other, but in most cases we need OS to ensure isolation.</p>
@@ -772,7 +772,7 @@ syscall(void)
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

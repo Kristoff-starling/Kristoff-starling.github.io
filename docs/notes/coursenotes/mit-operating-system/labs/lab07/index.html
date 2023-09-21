@@ -29,8 +29,8 @@
   
     
   
-  <meta name="description" content="Progress Uthread: switching between threads (moderate) Using threads (moderate) Barrier (moderate) Uthread: Switching Between Threads (moderate) 该实验要实现一个“用户态协程库”，每个协程通过 yield() 函数主动让出 CPU 来让其他协程运行。笔者定义了如下的结构体：
-struct thread { char stack[STACK_SIZE]; /* the thread&#39;s stack */ int state; /* FREE, RUNNING, RUNNABLE */ struct context *context; }; 其中 context 指针指向的地方用于存储和恢复寄存器现场，笔者的代码会利用堆栈低地址处的 sizeof(struct context) 的空间来存放这个 context。">
+  <meta name="description" content="Progress  Uthread: switching between threads (moderate) Using threads (moderate) Barrier (moderate)  Uthread: Switching Between Threads (moderate) 该实验要实现一个“用户态协程库”，每个协程通过 yield() 函数主动让出 CPU 来让其他协程运行。笔者定义了如下的结构体：
+struct thread { char stack[STACK_SIZE]; /* the thread&#39;s stack */ int state; /* FREE, RUNNING, RUNNABLE */ struct context *context; };  其中 context 指针指向的地方用于存储和恢复寄存器现场，笔者的代码会利用堆栈低地址处的 sizeof(struct context) 的空间来存放这个 context。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/labs/lab07/">
@@ -236,8 +236,8 @@ struct thread { char stack[STACK_SIZE]; /* the thread&#39;s stack */ int state; 
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/labs/lab07/">
   <meta property="og:title" content="MIT-6.S081 Lab 07: Multithreading | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Progress Uthread: switching between threads (moderate) Using threads (moderate) Barrier (moderate) Uthread: Switching Between Threads (moderate) 该实验要实现一个“用户态协程库”，每个协程通过 yield() 函数主动让出 CPU 来让其他协程运行。笔者定义了如下的结构体：
-struct thread { char stack[STACK_SIZE]; /* the thread&#39;s stack */ int state; /* FREE, RUNNING, RUNNABLE */ struct context *context; }; 其中 context 指针指向的地方用于存储和恢复寄存器现场，笔者的代码会利用堆栈低地址处的 sizeof(struct context) 的空间来存放这个 context。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="Progress  Uthread: switching between threads (moderate) Using threads (moderate) Barrier (moderate)  Uthread: Switching Between Threads (moderate) 该实验要实现一个“用户态协程库”，每个协程通过 yield() 函数主动让出 CPU 来让其他协程运行。笔者定义了如下的结构体：
+struct thread { char stack[STACK_SIZE]; /* the thread&#39;s stack */ int state; /* FREE, RUNNING, RUNNABLE */ struct context *context; };  其中 context 指针指向的地方用于存储和恢复寄存器现场，笔者的代码会利用堆栈低地址处的 sizeof(struct context) 的空间来存放这个 context。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -672,7 +672,7 @@ struct thread { char stack[STACK_SIZE]; /* the thread&#39;s stack */ int state; 
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

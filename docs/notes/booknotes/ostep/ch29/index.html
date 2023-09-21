@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="29.1 Concurrent Counters 一个最简单的 thread-safe 的计数器实现如下 (用锁保护每次读写)：
-typedef struct __counter_t { int value; pthread_mutex_t lock; } counter_t; void init(counter_t *c) { c-&gt;value = 0; Pthread_mutex_init(&amp;c-&gt;lock, NULL); } void increment(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); c-&gt;value&#43;&#43;; Pthread_mutex_unlock(&amp;c-&gt;lock); } void decrement(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); c-&gt;value--; Pthread_mutex_unlock(&amp;c-&gt;lock); } int get(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); int rc = c-&gt;value; Pthread_mutex_unlock(&amp;c-&gt;lock); return rc; } 但这种实现的 scalability 很差：如果给 $n$ 个核分配等量的任务，最终所消耗的时间几乎是单个任务时长的 $n$ 倍。大部分时间 CPU 核之间在互相等锁，我们没有利用多处理器达到并行的效率。">
+typedef struct __counter_t { int value; pthread_mutex_t lock; } counter_t; void init(counter_t *c) { c-&gt;value = 0; Pthread_mutex_init(&amp;c-&gt;lock, NULL); } void increment(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); c-&gt;value&#43;&#43;; Pthread_mutex_unlock(&amp;c-&gt;lock); } void decrement(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); c-&gt;value--; Pthread_mutex_unlock(&amp;c-&gt;lock); } int get(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); int rc = c-&gt;value; Pthread_mutex_unlock(&amp;c-&gt;lock); return rc; }  但这种实现的 scalability 很差：如果给 $n$ 个核分配等量的任务，最终所消耗的时间几乎是单个任务时长的 $n$ 倍。大部分时间 CPU 核之间在互相等锁，我们没有利用多处理器达到并行的效率。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/booknotes/ostep/ch29/">
@@ -237,7 +237,7 @@ typedef struct __counter_t { int value; pthread_mutex_t lock; } counter_t; void 
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch29/">
   <meta property="og:title" content="Chapter 29: Lock-based Concurrent Data Structures | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="29.1 Concurrent Counters 一个最简单的 thread-safe 的计数器实现如下 (用锁保护每次读写)：
-typedef struct __counter_t { int value; pthread_mutex_t lock; } counter_t; void init(counter_t *c) { c-&gt;value = 0; Pthread_mutex_init(&amp;c-&gt;lock, NULL); } void increment(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); c-&gt;value&#43;&#43;; Pthread_mutex_unlock(&amp;c-&gt;lock); } void decrement(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); c-&gt;value--; Pthread_mutex_unlock(&amp;c-&gt;lock); } int get(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); int rc = c-&gt;value; Pthread_mutex_unlock(&amp;c-&gt;lock); return rc; } 但这种实现的 scalability 很差：如果给 $n$ 个核分配等量的任务，最终所消耗的时间几乎是单个任务时长的 $n$ 倍。大部分时间 CPU 核之间在互相等锁，我们没有利用多处理器达到并行的效率。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+typedef struct __counter_t { int value; pthread_mutex_t lock; } counter_t; void init(counter_t *c) { c-&gt;value = 0; Pthread_mutex_init(&amp;c-&gt;lock, NULL); } void increment(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); c-&gt;value&#43;&#43;; Pthread_mutex_unlock(&amp;c-&gt;lock); } void decrement(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); c-&gt;value--; Pthread_mutex_unlock(&amp;c-&gt;lock); } int get(counter_t *c) { Pthread_mutex_lock(&amp;c-&gt;lock); int rc = c-&gt;value; Pthread_mutex_unlock(&amp;c-&gt;lock); return rc; }  但这种实现的 scalability 很差：如果给 $n$ 个核分配等量的任务，最终所消耗的时间几乎是单个任务时长的 $n$ 倍。大部分时间 CPU 核之间在互相等锁，我们没有利用多处理器达到并行的效率。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -836,7 +836,7 @@ int Hash_Lookup(hash_t *H, int key) {
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

@@ -238,7 +238,7 @@ int main()
 &lt;p&gt;There&amp;rsquo;s a demand for switching between applications. Because there&amp;rsquo;s no OS, &lt;code&gt;shell&lt;/code&gt; needs to proactively &amp;ldquo;give up&amp;rdquo; and &amp;ldquo;quit&amp;rdquo; the CPU to let others use the hardware. This is the so-called cooperating schedule. However, if there&amp;rsquo;s a dead loop in &lt;code&gt;shell&lt;/code&gt; or &lt;code&gt;shell&lt;/code&gt; is a malware, it will not quit and the hardware is completely occupied by this application. Therefore, we need a kind of &amp;ldquo;enforced multipliexing&amp;rdquo;: &lt;strong&gt;no matter what the application does, it will be forced to give up the CPU once in a while&lt;/strong&gt;.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;Different applications share the same memory space. For example, &lt;code&gt;shell&lt;/code&gt;&amp;rsquo;s memory may start at address 1000 and &lt;code&gt;echo&lt;/code&gt;&amp;rsquo;s memory may start at address 2000. There&amp;rsquo;s no boundary between their memory space and it&amp;rsquo;s easy for one application to overwrite others&amp;rsquo; memory and cause tricky bugs.&lt;/p&gt;
+&lt;p&gt;Different applications share the same memory space. For example, &lt;code&gt;shell&lt;/code&gt;&amp;rsquo;s memory may start at address 1000 and &lt;code&gt;echo&lt;/code&gt;&amp;rsquo;s memory may start at address 2000. There&amp;rsquo;s no boundary between their memory space and it&amp;rsquo;s easy for one application to overwrite others&#39; memory and cause tricky bugs.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;In summary, we need operating systems to &lt;strong&gt;enforce both multiplexing and strong memory isolation&lt;/strong&gt;. Strawman design is not very common in today&amp;rsquo;s computer system. Some real-time system doesn&amp;rsquo;t have OS because applications trust each other, but in most cases we need OS to ensure isolation.&lt;/p&gt;
@@ -587,11 +587,11 @@ putc(int fd, char c)
 &lt;p&gt;&lt;code&gt;ecall&lt;/code&gt; only does the minimum things. Some hardware does more when triggering a system call: they save the registers, switch the page table and set the stack pointer. RISC-V doesn&amp;rsquo;t choose to include those parts into the hardware because it wants the software to achieve the maximum flexibility. For example:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;In some system calls the kernel can finish jobs without the help of kernel page table. Also, some operating systems combine the user page table and kernel page table together, which means they don&amp;rsquo;t need to change the page table during system calls.&lt;/li&gt;
-&lt;li&gt;According to the specific function, some system calls won&amp;rsquo;t use all the general registers and some registers&amp;rsquo; values don&amp;rsquo;t need to be saved.&lt;/li&gt;
+&lt;li&gt;According to the specific function, some system calls won&amp;rsquo;t use all the general registers and some registers&#39; values don&amp;rsquo;t need to be saved.&lt;/li&gt;
 &lt;li&gt;Some easy system call may not require a kernel stack. Stack switching is not necessary.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Although xv6 doesn&amp;rsquo;t utilize those freedom, modern operating systems care a lot about the performance. There are a lot of sophisticated, clever schemes that make full use of the flexibility and achieve better efficiency.&lt;/p&gt;
-&lt;p&gt;If we check the general registers&amp;rsquo; values, we&amp;rsquo;ll find that they are the same as those in the user space. Currently we cannot modify any register, otherwise the user data would be damaged. We should firstly store them somewhere and restore them before returning.&lt;/p&gt;
+&lt;p&gt;If we check the general registers&#39; values, we&amp;rsquo;ll find that they are the same as those in the user space. Currently we cannot modify any register, otherwise the user data would be damaged. We should firstly store them somewhere and restore them before returning.&lt;/p&gt;
 &lt;p&gt;Some hardware may switch to the kernel page table and store the 32 values somewhere in a physical page. But now we even don&amp;rsquo;t know the address of the kernel page table! xv6&amp;rsquo;s solution for saving registers includes two parts:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Use a trap frame. User page table contains the mapping of this per-process trap frame. The trap frame contains 32 slots for register values, and some other useful values such as the address of kernel page table.&lt;/li&gt;
@@ -1113,7 +1113,7 @@ getcmd(char *buf, int nbuf)
 &lt;pre&gt;&lt;code&gt;lock(d1); erase(&amp;quot;d1/x&amp;quot;); release(d1); (**)
 lock(d2); add(&amp;quot;d2/y&amp;quot;); release(d2);
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;then at time &lt;code&gt;**&lt;/code&gt;, from other processes&amp;rsquo; perspective, the file doesn&amp;rsquo;t exist! - obviously incorrect. The correct implementation is&lt;/p&gt;
+&lt;p&gt;then at time &lt;code&gt;**&lt;/code&gt;, from other processes&#39; perspective, the file doesn&amp;rsquo;t exist! - obviously incorrect. The correct implementation is&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;lock(d1 and d2); erase(&amp;quot;d1/x&amp;quot;); add(&amp;quot;d2/y&amp;quot;); release(d1 and d2);
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In this example, we see that sometimes we need multiple locks before doing operations.&lt;/p&gt;
@@ -1326,7 +1326,7 @@ yield(void)
   release(&amp;amp;p-&amp;gt;lock);
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Before doing jobs, yield() firstly acquires the lock of the current process because it&amp;rsquo;s about to change the state of the process to RUNNABLE. We want this procedure to be atomic to other cores because the invariant that &lt;code&gt;p-&amp;gt;state&lt;/code&gt; represents the current status of the process is temporarily violated: the process is indeed running, but the status becomes RUNNABLE. If other cores&amp;rsquo; scheduler threads were able to see the change now and decide to execute this process, our current process would be running simultaneously on multiple CPUs, which is a disaster.&lt;/p&gt;
+&lt;p&gt;Before doing jobs, yield() firstly acquires the lock of the current process because it&amp;rsquo;s about to change the state of the process to RUNNABLE. We want this procedure to be atomic to other cores because the invariant that &lt;code&gt;p-&amp;gt;state&lt;/code&gt; represents the current status of the process is temporarily violated: the process is indeed running, but the status becomes RUNNABLE. If other cores&#39; scheduler threads were able to see the change now and decide to execute this process, our current process would be running simultaneously on multiple CPUs, which is a disaster.&lt;/p&gt;
 &lt;p&gt;We go into sched(). After finishing several sanity checks, sched() calls swtch(), which is the core function of thread switching.&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c&#34;&gt;swtch(&amp;amp;p-&amp;gt;context, &amp;amp;c-&amp;gt;context);
 &lt;/code&gt;&lt;/pre&gt;
@@ -1367,7 +1367,7 @@ yield(void)
 &lt;p&gt;After scheduler() decides the target process to switch to, it will call swtch() again, save scheduler thread&amp;rsquo;s context into c-&amp;gt;context, restore context in p-&amp;gt;context (another process&amp;rsquo;s kernel thread&amp;rsquo;s context), and resume executing that process.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;How can a process be switched to at the first time, since it hasn&amp;rsquo;t called swtch() yet?&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;In xv6 there is a function forkret(), it serves as the target address of the first &amp;ldquo;fake&amp;rdquo; context: in allocproc(), we set up a fake context with &lt;code&gt;ra&lt;/code&gt; pointing to forkret() and &lt;code&gt;sp&lt;/code&gt; pointing to the corresponding kernel stack. We don&amp;rsquo;t care about other registers&amp;rsquo; values before the first execution. The only thing forkret() does is to release the process lock.&lt;/p&gt;
+&lt;p&gt;In xv6 there is a function forkret(), it serves as the target address of the first &amp;ldquo;fake&amp;rdquo; context: in allocproc(), we set up a fake context with &lt;code&gt;ra&lt;/code&gt; pointing to forkret() and &lt;code&gt;sp&lt;/code&gt; pointing to the corresponding kernel stack. We don&amp;rsquo;t care about other registers&#39; values before the first execution. The only thing forkret() does is to release the process lock.&lt;/p&gt;
 &lt;p&gt;In addition, there is a situation in which xv6 creates a &amp;ldquo;fake&amp;rdquo; trapframe: in userinit(), xv6 creates a fake trapframe with &lt;code&gt;epc=0&lt;/code&gt; and &lt;code&gt;sp=PGSIZE&lt;/code&gt;. In other situations, a new process is created by fork() and fork() copies the trapframe of parent process.&lt;/p&gt;
 &lt;/blockquote&gt;
 </description>

@@ -29,7 +29,7 @@
   
     
   
-  <meta name="description" content="2.1 Syntax 2.2 Free and Bound Variable, $\alpha$-Equivalence 2.3 Substitution 2.4 Introduction to $\beta$-Reduction 2.5 Formal Definitions of $\beta$-reduction and $\beta$-equivalence 2.1 Syntax $\fbox{Definition}$ (lambda term) 在一个无限的变量集合 $V$ 下 (将其中的变量命名为 $x,y,z&hellip;$)，lambda term 可以由如下的 BNF 范式定义： $$ \text{Lambda terms:}\quad M,N::=x|(M\space N)|(\lambda x.">
+  <meta name="description" content="2.1 Syntax  2.2 Free and Bound Variable, $\alpha$-Equivalence  2.3 Substitution  2.4 Introduction to $\beta$-Reduction  2.5 Formal Definitions of $\beta$-reduction and $\beta$-equivalence  2.1 Syntax $\fbox{Definition}$ (lambda term) 在一个无限的变量集合 $V$ 下 (将其中的变量命名为 $x,y,z&hellip;$)，lambda term 可以由如下的 BNF 范式定义： $$ \text{Lambda terms:}\quad M,N::=x|(M\space N)|(\lambda x.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-formal-semantics/material/lambda-calculus/ch02/">
@@ -235,7 +235,7 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-formal-semantics/material/lambda-calculus/ch02/">
   <meta property="og:title" content="Chapter 02: The Untyped Lambda Calculus | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="2.1 Syntax 2.2 Free and Bound Variable, $\alpha$-Equivalence 2.3 Substitution 2.4 Introduction to $\beta$-Reduction 2.5 Formal Definitions of $\beta$-reduction and $\beta$-equivalence 2.1 Syntax $\fbox{Definition}$ (lambda term) 在一个无限的变量集合 $V$ 下 (将其中的变量命名为 $x,y,z&hellip;$)，lambda term 可以由如下的 BNF 范式定义： $$ \text{Lambda terms:}\quad M,N::=x|(M\space N)|(\lambda x."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="2.1 Syntax  2.2 Free and Bound Variable, $\alpha$-Equivalence  2.3 Substitution  2.4 Introduction to $\beta$-Reduction  2.5 Formal Definitions of $\beta$-reduction and $\beta$-equivalence  2.1 Syntax $\fbox{Definition}$ (lambda term) 在一个无限的变量集合 $V$ 下 (将其中的变量命名为 $x,y,z&hellip;$)，lambda term 可以由如下的 BNF 范式定义： $$ \text{Lambda terms:}\quad M,N::=x|(M\space N)|(\lambda x."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -568,7 +568,7 @@ y[N/x]&amp;\triangleq y\\
 (M\space P)[N/x]&amp;\triangleq (M[N/x])(P[N/x])\\
 (\lambda x.M)[N/x]&amp;\triangleq \lambda x.M\\
 (\lambda y.M)[N/x]&amp;\triangleq \lambda y.(M[N/x])\qquad\qquad \text{if }x\neq y\text{ and }y\neq FV(N)\\
-(\lambda y.M)[N/x]&amp;\triangleq \lambda y&rsquo;.(M\{y&rsquo;/y\}[N/x])\quad \text{if }x\neq y,y\in FV(N) \text{ and }y&rsquo; \text{ fresh}
+(\lambda y.M)[N/x]&amp;\triangleq \lambda y'.(M\{y'/y\}[N/x])\quad \text{if }x\neq y,y\in FV(N) \text{ and }y' \text{ fresh}
 \end{align}
 $$</p>
 <h2 id="24-introduction-to-beta-reduction">2.4 Introduction to $\beta$-Reduction</h2>
@@ -598,13 +598,13 @@ $$
 $$</p>
 <p>$$
 \begin{align}
-\frac{M\to_\beta M&rsquo;}{M\space N\to_\beta M&rsquo;\space N}\\
-\frac{N\to_\beta N&rsquo;}{M\space N\to_\beta M\space N&rsquo;}\\
-\frac{M\to_\beta M&rsquo;}{\lambda x.M\to_\beta \lambda x.M&rsquo;}
+\frac{M\to_\beta M'}{M\space N\to_\beta M'\space N}\\
+\frac{N\to_\beta N'}{M\space N\to_\beta M\space N'}\\
+\frac{M\to_\beta M'}{\lambda x.M\to_\beta \lambda x.M'}
 \end{align}
 $$</p>
-<p>$\fbox{Definition}$ $M\twoheadrightarrow_\beta M&rsquo;$ 当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 得到 $M&rsquo;$。形式化地，$\twoheadrightarrow_\beta$ 定义了 $\to_\beta$ 的传递闭包。</p>
-<p>$\fbox{Definition}$ 我们称 $M$ 和 $M&rsquo;$ 满足 <strong>$\beta$-equivalence</strong>，记作 $M=<em>\beta M&rsquo;$，当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 及其逆操作得到 $M&rsquo;$。形式化地，$=</em>\beta$ 定义了 $\to_\beta$ 的对称闭包。</p>
+<p>$\fbox{Definition}$ $M\twoheadrightarrow_\beta M'$ 当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 得到 $M'$。形式化地，$\twoheadrightarrow_\beta$ 定义了 $\to_\beta$ 的传递闭包。</p>
+<p>$\fbox{Definition}$ 我们称 $M$ 和 $M'$ 满足 <strong>$\beta$-equivalence</strong>，记作 $M=<em>\beta M'$，当且仅当 $M$ 可以通过任意多步 (包括 0 步) $\beta$-reduction 及其逆操作得到 $M'$。形式化地，$=</em>\beta$ 定义了 $\to_\beta$ 的对称闭包。</p>
 
           </div>
 
@@ -726,7 +726,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

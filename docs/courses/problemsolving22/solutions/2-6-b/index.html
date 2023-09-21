@@ -30,8 +30,7 @@
     
   
   <meta name="description" content="题意概述
-有两块 Cache 和 $n$ 个程序，每个程序有一个类别 (共有 $k$ 种类别)，在同一块 Cache 上连续执行相同种类的程序第二次只需 $hot_i$ 的时间，否则需要 $cold_i$ 的时间。问串行执行所有程序所需的最小时间。 $n, k\leq 5000$。 本题摘自 Codeforces 1799D1。你可以点击网站右侧的 Tutorial 查看官方题解 (官方题解从最朴素的时间复杂度为 $O(nk^2)$ 的动态规划讲起，逐步优化，清晰易懂，非常建议同学们仔细阅读)。这里我们给出一个另外的解法，比官方解法更加简洁高效。
-我们首先可以发现一个贪心性质。对于某一个类型为 $t$ 的程序来说，如果它只需要花 $hot_t$ 的时间执行，那么情况一定是：在这个程序之前最近的一个类型为 $t$ 的程序在某块 Cache 上 (不妨记为 Cache 0) 执行之后，它们中间的程序都在 Cache 1 上执行，然后当前程序在 Cache 0 上执行。为什么当前程序不可能“继承&quot;更早的 $t$ 类型程序使用的 Cache 呢？假设这种情况发生了，如下图：">
+ 有两块 Cache 和 $n$ 个程序，每个程序有一个类别 (共有 $k$ 种类别)，在同一块 Cache 上连续执行相同种类的程序第二次只需 $hot_i$ 的时间，否则需要 $cold_i$ 的时间。问串行执行所有程序所需的最小时间。 $n, k\leq 5000$。    本题摘自 Codeforces 1799D1。你可以点击网站右侧的 Tutorial 查看官方题解 (官方题解从最朴素的时间复杂度为 $O(nk^2)$ 的动态规划讲起，逐步优化，清晰易懂，非常建议同学们仔细阅读)。这里我们给出一个另外的解法，比官方解法更加简洁高效。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-6-b/">
@@ -238,8 +237,7 @@
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-6-b/">
   <meta property="og:title" content="【问题求解II-HW6.B】Cache调度 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="题意概述
-有两块 Cache 和 $n$ 个程序，每个程序有一个类别 (共有 $k$ 种类别)，在同一块 Cache 上连续执行相同种类的程序第二次只需 $hot_i$ 的时间，否则需要 $cold_i$ 的时间。问串行执行所有程序所需的最小时间。 $n, k\leq 5000$。 本题摘自 Codeforces 1799D1。你可以点击网站右侧的 Tutorial 查看官方题解 (官方题解从最朴素的时间复杂度为 $O(nk^2)$ 的动态规划讲起，逐步优化，清晰易懂，非常建议同学们仔细阅读)。这里我们给出一个另外的解法，比官方解法更加简洁高效。
-我们首先可以发现一个贪心性质。对于某一个类型为 $t$ 的程序来说，如果它只需要花 $hot_t$ 的时间执行，那么情况一定是：在这个程序之前最近的一个类型为 $t$ 的程序在某块 Cache 上 (不妨记为 Cache 0) 执行之后，它们中间的程序都在 Cache 1 上执行，然后当前程序在 Cache 0 上执行。为什么当前程序不可能“继承&quot;更早的 $t$ 类型程序使用的 Cache 呢？假设这种情况发生了，如下图："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ 有两块 Cache 和 $n$ 个程序，每个程序有一个类别 (共有 $k$ 种类别)，在同一块 Cache 上连续执行相同种类的程序第二次只需 $hot_i$ 的时间，否则需要 $cold_i$ 的时间。问串行执行所有程序所需的最小时间。 $n, k\leq 5000$。    本题摘自 Codeforces 1799D1。你可以点击网站右侧的 Tutorial 查看官方题解 (官方题解从最朴素的时间复杂度为 $O(nk^2)$ 的动态规划讲起，逐步优化，清晰易懂，非常建议同学们仔细阅读)。这里我们给出一个另外的解法，比官方解法更加简洁高效。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -545,6 +543,10 @@
         <a href="/courses/problemsolving22/solutions/3-2/">III-HW02</a>
       </li>
       
+      <li >
+        <a href="/courses/problemsolving22/solutions/3-3/">III-HW03</a>
+      </li>
+      
     </ul>
     
 
@@ -731,7 +733,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

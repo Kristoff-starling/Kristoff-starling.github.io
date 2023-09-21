@@ -30,8 +30,8 @@
     
   
   <meta name="description" content="Xv6 中的 .d .sym .asm 文件是什么？
-.d 文件描述了 Makefile 中文件所需的依赖关系。我们考虑如下程序：
-a.o: a.c gcc -c a.c // a.c #include &quot;a.h&quot; // a.h // Cannot compile Makefile 的逻辑是：a.o 依赖文件 a.c，在执行 make 时，如果 a.">
+ .d 文件描述了 Makefile 中文件所需的依赖关系。我们考虑如下程序：
+a.o: a.c gcc -c a.c  // a.c #include &quot;a.h&quot;  // a.h // Cannot compile  Makefile 的逻辑是：a.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec18/">
@@ -238,8 +238,8 @@ a.o: a.c gcc -c a.c // a.c #include &quot;a.h&quot; // a.h // Cannot compile Mak
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec18/">
   <meta property="og:title" content="Lecture 18: Xv6 Code Guide | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Xv6 中的 .d .sym .asm 文件是什么？
-.d 文件描述了 Makefile 中文件所需的依赖关系。我们考虑如下程序：
-a.o: a.c gcc -c a.c // a.c #include &quot;a.h&quot; // a.h // Cannot compile Makefile 的逻辑是：a.o 依赖文件 a.c，在执行 make 时，如果 a."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ .d 文件描述了 Makefile 中文件所需的依赖关系。我们考虑如下程序：
+a.o: a.c gcc -c a.c  // a.c #include &quot;a.h&quot;  // a.h // Cannot compile  Makefile 的逻辑是：a."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -642,7 +642,7 @@ a.o: a.c gcc -c a.c // a.c #include &quot;a.h&quot; // a.h // Cannot compile Mak
 <p>因为启动第一个进程的时候 xv6 还没有初始化文件系统，无法通过 exec() 系统调用来加载 image，所以 xv6 的第一个进程 initcode 是写死的一段汇编代码 (在 forkret() 中有初始化文件系统的相关代码)，具体的信息可以见 MIT 6.S081 Lecture 03。</p>
 <p>通过 <code>ecall</code> 指令走 trampoline 然后进入 usertrap() 的流程可以见 MIT 6.S081 Lecture 6。</p>
 <blockquote>
-<p><strong>为什么我在 GDB 中加断点 <code>b *0x0</code> 会报错：&ldquo;cannnot access memory?&rdquo;</strong></p>
+<p><strong>为什么我在 GDB 中加断点 <code>b *0x0</code> 会报错：&ldquo;cannnot access memory?&quot;</strong></p>
 <p>2020版之前的 xv6 需要在 <code>.gdbinit.tmpl-riscv</code> 中添加一条配置：</p>
 <pre><code class="language-bash">set riscv use-compressed-breakpoints yes
 </code></pre>
@@ -770,7 +770,7 @@ a.o: a.c gcc -c a.c // a.c #include &quot;a.h&quot; // a.h // Cannot compile Mak
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

@@ -29,8 +29,7 @@
   
     
   
-  <meta name="description" content="我们对磁盘有三个维度的需求：我们希望它读写速度快 (I/O 操作速度慢，因而成为整个系统的速度瓶颈)，我们希望它容量大，我们还希望它可靠 (如果发生磁盘损坏，仍然能恢复数据)。
-本章节主要介绍 Redundant Arrays of Inexpensive Disks (RAIDs) 技术，它的核心思想是用多块物理磁盘去构建一个大容量的，高速的，可靠性高的磁盘。对外来看，RAID 虚拟出了一块可读可写的磁盘；在其内部，RAID 由一个非常复杂的系统构成，包含了若干个物理磁盘和一个或多个用于控制的芯片，可以说 RAID 内部就是一个小型的计算机系统。
+  <meta name="description" content="我们对磁盘有三个维度的需求：我们希望它读写速度快 (I/O 操作速度慢，因而成为整个系统的速度瓶颈)，我们希望它容量大，我们还希望它可靠 (如果发生磁盘损坏，仍然能恢复数据)。本章节主要介绍 Redundant Arrays of Inexpensive Disks (RAIDs) 技术，它的核心思想是用多块物理磁盘去构建一个大容量的，高速的，可靠性高的磁盘。对外来看，RAID 虚拟出了一块可读可写的磁盘；在其内部，RAID 由一个非常复杂的系统构成，包含了若干个物理磁盘和一个或多个用于控制的芯片，可以说 RAID 内部就是一个小型的计算机系统。
 RAID 的优点在于：它可以通过多块磁盘并行的读写来提供很好的 performance；通过叠加磁盘的数量来获得 capacity；通过存储一部分的冗余数据来保证数据的 reliability。更重要的是，RAID 可以透明地提供这些优势，这里透明的意思是对于其他硬件/OS来说，RAID 看上去就像是一整块普通的磁盘。整个系统的其他部分不需要做任何修改就可以兼容 RAID。这一点极大地提升了 RAID 的可部署性 (deployability)。用户可以放心地将自己现有的磁盘更换成 RAID，不需要担心兼容问题。
 38.1 Interface And RAID Internals 对于上层的文件系统来说，RAID deng |看上去就像一个磁盘。和其他单块磁盘的抽象一样，RAID 对外暴露成一个线性的 block array，每个块都可读可写。">
 
@@ -238,8 +237,7 @@ RAID 的优点在于：它可以通过多块磁盘并行的读写来提供很好
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/booknotes/ostep/ch38/">
   <meta property="og:title" content="Chapter 38: Redundant Arrays of Inexpensive Disks (RAIDs) | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="我们对磁盘有三个维度的需求：我们希望它读写速度快 (I/O 操作速度慢，因而成为整个系统的速度瓶颈)，我们希望它容量大，我们还希望它可靠 (如果发生磁盘损坏，仍然能恢复数据)。
-本章节主要介绍 Redundant Arrays of Inexpensive Disks (RAIDs) 技术，它的核心思想是用多块物理磁盘去构建一个大容量的，高速的，可靠性高的磁盘。对外来看，RAID 虚拟出了一块可读可写的磁盘；在其内部，RAID 由一个非常复杂的系统构成，包含了若干个物理磁盘和一个或多个用于控制的芯片，可以说 RAID 内部就是一个小型的计算机系统。
+  <meta property="og:description" content="我们对磁盘有三个维度的需求：我们希望它读写速度快 (I/O 操作速度慢，因而成为整个系统的速度瓶颈)，我们希望它容量大，我们还希望它可靠 (如果发生磁盘损坏，仍然能恢复数据)。本章节主要介绍 Redundant Arrays of Inexpensive Disks (RAIDs) 技术，它的核心思想是用多块物理磁盘去构建一个大容量的，高速的，可靠性高的磁盘。对外来看，RAID 虚拟出了一块可读可写的磁盘；在其内部，RAID 由一个非常复杂的系统构成，包含了若干个物理磁盘和一个或多个用于控制的芯片，可以说 RAID 内部就是一个小型的计算机系统。
 RAID 的优点在于：它可以通过多块磁盘并行的读写来提供很好的 performance；通过叠加磁盘的数量来获得 capacity；通过存储一部分的冗余数据来保证数据的 reliability。更重要的是，RAID 可以透明地提供这些优势，这里透明的意思是对于其他硬件/OS来说，RAID 看上去就像是一整块普通的磁盘。整个系统的其他部分不需要做任何修改就可以兼容 RAID。这一点极大地提升了 RAID 的可部署性 (deployability)。用户可以放心地将自己现有的磁盘更换成 RAID，不需要担心兼容问题。
 38.1 Interface And RAID Internals 对于上层的文件系统来说，RAID deng |看上去就像一个磁盘。和其他单块磁盘的抽象一样，RAID 对外暴露成一个线性的 block array，每个块都可读可写。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
@@ -1071,7 +1069,7 @@ Offset = A / numbre_of_disks;
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

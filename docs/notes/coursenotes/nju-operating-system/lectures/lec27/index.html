@@ -30,9 +30,9 @@
     
   
   <meta name="description" content="数据结构课的一些潜藏的假设：
-random access memory，word addressing (不同于磁盘，磁盘是以块为单位访问的) load/store 指令和计算指令执行的代价都是 $O(1)$。 在块设备中，即使访问一个 byte 也需要将它所在的一整个 block 拿出来，因此内存中的数据结构用在磁盘上会造成极大的性能问题。
+ random access memory，word addressing (不同于磁盘，磁盘是以块为单位访问的) load/store 指令和计算指令执行的代价都是 $O(1)$。  在块设备中，即使访问一个 byte 也需要将它所在的一整个 block 拿出来，因此内存中的数据结构用在磁盘上会造成极大的性能问题。
 块设备提供的设备抽象：
-struct block blocks[NBLK]; // 磁盘 void bread(int id, struct block *buf) { memcpy(buf, &amp;blocks[id], sizeof(struct block)); } void bwrite(int id, const struct block *buf) { memcpy(&amp;blocks[id], buf, sizeof(struct block)); } bread() 将磁盘中的一个块拉到内存里，bwrite() 将内存中的一个块写入磁盘。">
+struct block blocks[NBLK]; // 磁盘 void bread(int id, struct block *buf) { memcpy(buf, &amp;blocks[id], sizeof(struct block)); } void bwrite(int id, const struct block *buf) { memcpy(&amp;blocks[id], buf, sizeof(struct block)); }  bread() 将磁盘中的一个块拉到内存里，bwrite() 将内存中的一个块写入磁盘。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec27/">
@@ -239,9 +239,9 @@ struct block blocks[NBLK]; // 磁盘 void bread(int id, struct block *buf) { mem
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec27/">
   <meta property="og:title" content="Lecture 27: FAT and UNIX File System | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="数据结构课的一些潜藏的假设：
-random access memory，word addressing (不同于磁盘，磁盘是以块为单位访问的) load/store 指令和计算指令执行的代价都是 $O(1)$。 在块设备中，即使访问一个 byte 也需要将它所在的一整个 block 拿出来，因此内存中的数据结构用在磁盘上会造成极大的性能问题。
+ random access memory，word addressing (不同于磁盘，磁盘是以块为单位访问的) load/store 指令和计算指令执行的代价都是 $O(1)$。  在块设备中，即使访问一个 byte 也需要将它所在的一整个 block 拿出来，因此内存中的数据结构用在磁盘上会造成极大的性能问题。
 块设备提供的设备抽象：
-struct block blocks[NBLK]; // 磁盘 void bread(int id, struct block *buf) { memcpy(buf, &amp;blocks[id], sizeof(struct block)); } void bwrite(int id, const struct block *buf) { memcpy(&amp;blocks[id], buf, sizeof(struct block)); } bread() 将磁盘中的一个块拉到内存里，bwrite() 将内存中的一个块写入磁盘。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+struct block blocks[NBLK]; // 磁盘 void bread(int id, struct block *buf) { memcpy(buf, &amp;blocks[id], sizeof(struct block)); } void bwrite(int id, const struct block *buf) { memcpy(&amp;blocks[id], buf, sizeof(struct block)); }  bread() 将磁盘中的一个块拉到内存里，bwrite() 将内存中的一个块写入磁盘。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -787,7 +787,7 @@ void bwrite(int id, const struct block *buf) {
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

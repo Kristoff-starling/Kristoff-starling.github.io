@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="Introduction People want threads for the following reasons:
-People want their computers to &ldquo;seemingly&rdquo; simultaneously do multiple jobs. Programmers can use multiple threads to write simple and elegant code. prime.c in Lab 1 is a good example, it uses multiple processes but the principle is similar.">
+ People want their computers to &ldquo;seemingly&rdquo; simultaneously do multiple jobs. Programmers can use multiple threads to write simple and elegant code. prime.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/lectures/lec11/">
@@ -237,7 +237,7 @@ People want their computers to &ldquo;seemingly&rdquo; simultaneously do multipl
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/mit-operating-system/lectures/lec11/">
   <meta property="og:title" content="MIT-6.S081 Lecture 11: Thread Switching | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Introduction People want threads for the following reasons:
-People want their computers to &ldquo;seemingly&rdquo; simultaneously do multiple jobs. Programmers can use multiple threads to write simple and elegant code. prime.c in Lab 1 is a good example, it uses multiple processes but the principle is similar."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ People want their computers to &ldquo;seemingly&rdquo; simultaneously do multiple jobs. Programmers can use multiple threads to write simple and elegant code. prime."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -664,7 +664,7 @@ yield(void)
   release(&amp;p-&gt;lock);
 }
 </code></pre>
-<p>Before doing jobs, yield() firstly acquires the lock of the current process because it&rsquo;s about to change the state of the process to RUNNABLE. We want this procedure to be atomic to other cores because the invariant that <code>p-&gt;state</code> represents the current status of the process is temporarily violated: the process is indeed running, but the status becomes RUNNABLE. If other cores&rsquo; scheduler threads were able to see the change now and decide to execute this process, our current process would be running simultaneously on multiple CPUs, which is a disaster.</p>
+<p>Before doing jobs, yield() firstly acquires the lock of the current process because it&rsquo;s about to change the state of the process to RUNNABLE. We want this procedure to be atomic to other cores because the invariant that <code>p-&gt;state</code> represents the current status of the process is temporarily violated: the process is indeed running, but the status becomes RUNNABLE. If other cores' scheduler threads were able to see the change now and decide to execute this process, our current process would be running simultaneously on multiple CPUs, which is a disaster.</p>
 <p>We go into sched(). After finishing several sanity checks, sched() calls swtch(), which is the core function of thread switching.</p>
 <pre><code class="language-c">swtch(&amp;p-&gt;context, &amp;c-&gt;context);
 </code></pre>
@@ -705,7 +705,7 @@ yield(void)
 <p>After scheduler() decides the target process to switch to, it will call swtch() again, save scheduler thread&rsquo;s context into c-&gt;context, restore context in p-&gt;context (another process&rsquo;s kernel thread&rsquo;s context), and resume executing that process.</p>
 <blockquote>
 <p><strong>How can a process be switched to at the first time, since it hasn&rsquo;t called swtch() yet?</strong></p>
-<p>In xv6 there is a function forkret(), it serves as the target address of the first &ldquo;fake&rdquo; context: in allocproc(), we set up a fake context with <code>ra</code> pointing to forkret() and <code>sp</code> pointing to the corresponding kernel stack. We don&rsquo;t care about other registers&rsquo; values before the first execution. The only thing forkret() does is to release the process lock.</p>
+<p>In xv6 there is a function forkret(), it serves as the target address of the first &ldquo;fake&rdquo; context: in allocproc(), we set up a fake context with <code>ra</code> pointing to forkret() and <code>sp</code> pointing to the corresponding kernel stack. We don&rsquo;t care about other registers' values before the first execution. The only thing forkret() does is to release the process lock.</p>
 <p>In addition, there is a situation in which xv6 creates a &ldquo;fake&rdquo; trapframe: in userinit(), xv6 creates a fake trapframe with <code>epc=0</code> and <code>sp=PGSIZE</code>. In other situations, a new process is created by fork() and fork() copies the trapframe of parent process.</p>
 </blockquote>
 
@@ -825,7 +825,7 @@ yield(void)
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

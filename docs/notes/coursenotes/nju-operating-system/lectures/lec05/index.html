@@ -30,9 +30,9 @@
     
   
   <meta name="description" content="从 high level 来看，我们希望实现如下的结构体和 API：
-typdef struct { ... }lock; void lock(lock *lk); void unlock(lock *lk); 若 lock() 函数返回，说明获得了这个锁，别的进程会停在 lock() 里直到获得锁的人调用了 unlock()。
+typdef struct { ... }lock; void lock(lock *lk); void unlock(lock *lk);  若 lock() 函数返回，说明获得了这个锁，别的进程会停在 lock() 里直到获得锁的人调用了 unlock()。
 实现互斥的根本困难：不能同时读写共享内存。
-load 的时候不能 store，且看完之后眼睛立刻闭上，看到的都是过去的东西； store 的时候不能 load，贴字条的时候不知道覆盖了什么。 Spin Lock “解决一个问题有两种方法：一个是分析问题、提出算法、实现解决，一个是解决提出问题的人。“ —— jyy">
+ load 的时候不能 store，且看完之后眼睛立刻闭上，看到的都是过去的东西； store 的时候不能 load，贴字条的时候不知道覆盖了什么。  Spin Lock  “解决一个问题有两种方法：一个是分析问题、提出算法、实现解决，一个是解决提出问题的人。“ —— jyy">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec05/">
@@ -239,9 +239,9 @@ load 的时候不能 store，且看完之后眼睛立刻闭上，看到的都是
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec05/">
   <meta property="og:title" content="Lecture 05: Concurrent Programming: Mutex | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="从 high level 来看，我们希望实现如下的结构体和 API：
-typdef struct { ... }lock; void lock(lock *lk); void unlock(lock *lk); 若 lock() 函数返回，说明获得了这个锁，别的进程会停在 lock() 里直到获得锁的人调用了 unlock()。
+typdef struct { ... }lock; void lock(lock *lk); void unlock(lock *lk);  若 lock() 函数返回，说明获得了这个锁，别的进程会停在 lock() 里直到获得锁的人调用了 unlock()。
 实现互斥的根本困难：不能同时读写共享内存。
-load 的时候不能 store，且看完之后眼睛立刻闭上，看到的都是过去的东西； store 的时候不能 load，贴字条的时候不知道覆盖了什么。 Spin Lock “解决一个问题有两种方法：一个是分析问题、提出算法、实现解决，一个是解决提出问题的人。“ —— jyy"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ load 的时候不能 store，且看完之后眼睛立刻闭上，看到的都是过去的东西； store 的时候不能 load，贴字条的时候不知道覆盖了什么。  Spin Lock  “解决一个问题有两种方法：一个是分析问题、提出算法、实现解决，一个是解决提出问题的人。“ —— jyy"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -918,7 +918,7 @@ syscall(SYSCALL_unlock, &amp;lk);	// 释放lk，并唤醒正在等待lk的进程
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

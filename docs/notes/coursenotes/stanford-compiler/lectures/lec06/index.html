@@ -30,8 +30,8 @@
     
   
   <meta name="description" content="Error Handling Purpose of the compiler:
-to detect non-valid programs to translate the valid ones. The error handler should
-Report errors accurately and clearly Recover from an error quickly Not slow down compilation too much.">
+ to detect non-valid programs to translate the valid ones.  The error handler should
+ Report errors accurately and clearly Recover from an error quickly Not slow down compilation too much.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/stanford-compiler/lectures/lec06/">
@@ -238,8 +238,8 @@ Report errors accurately and clearly Recover from an error quickly Not slow down
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/stanford-compiler/lectures/lec06/">
   <meta property="og:title" content="Stanford-CS143 Lecture 06: Syntax-Directed Translation | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Error Handling Purpose of the compiler:
-to detect non-valid programs to translate the valid ones. The error handler should
-Report errors accurately and clearly Recover from an error quickly Not slow down compilation too much."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ to detect non-valid programs to translate the valid ones.  The error handler should
+ Report errors accurately and clearly Recover from an error quickly Not slow down compilation too much."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -634,8 +634,8 @@ bool S() {
 <p>The program will result in infinite loop (<code>S()</code> calls <code>S1()</code>, <code>S1()</code> calls <code>S()</code> and so on). The problem is that the grammar is left recursive - the derivation generate strings from right to left, but our parser scans from left to right. We need to rewrite the grammars as right recursive:
 $$
 \begin{align}
-S&amp;\to \beta S&rsquo;\\
-S&rsquo;&amp;\to \alpha S&rsquo;\space |\space \epsilon
+S&amp;\to \beta S'\\
+S'&amp;\to \alpha S'\space |\space \epsilon
 \end{align}
 $$
 In principle, grammars can be transformed to right recursive ones automatically. But in practice people manually do the transformation.</p>
@@ -755,7 +755,7 @@ In principle, grammars can be transformed to right recursive ones automatically.
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

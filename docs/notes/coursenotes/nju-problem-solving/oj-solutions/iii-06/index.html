@@ -29,8 +29,8 @@
   
     
   
-  <meta name="description" content="A. 最大内切球 题面描述 给定 $n$ 个半平面，求半平面围出的三维凸包的最大内切球的半径。 $\sum n\leq 2500$。 题解 设球的半径为 $r$，则我们的约束是球心到每个平面的距离不小于 $r$。此处根据空间解析几何的知识，如果一个半平面形如 $ax&#43;by&#43;cz&#43;d\leq 0$，那么将其单位化之后（即令 $cos\alpha=\frac{a}{\sqrt{a^2&#43;b^2&#43;c^2}},cos\beta=\frac{b}{\sqrt{a^2&#43;b^2&#43;c^2}},$$cos\gamma=\frac{c}{\sqrt{a^2&#43;b^2&#43;c^2}}$，将方程改写为 $cos\alpha\cdot x&#43;cos\beta\cdot y&#43;cos\gamma\cdot z&#43;\rho=0$的形式），直接将点的坐标代入即可得到点到平面的距离，因此每个约束都是一个线性不等式，共有 4 个变量，我们要最大化的式子就是 $r$，用单纯形求解即可。
-B. 文理分科 题面描述 给定排成矩阵的 $n\times m$ 个学生，每个学生学文有 $a_{ij}$ 的收益，学理有 $b_{ij}$ 的收益。如果一个学生和他相邻的所有学生都学文/理，可以额外获得 $sa_{ij}/sb_{ij}$ 的收益。求最大收益。 $n,m\leq 100$。 题解 考虑最小割，我们先假设所有人拿满了学文学理的收益和区域相同的收益，考虑最少需要扣除多少收益。">
+  <meta name="description" content="A. 最大内切球 题面描述  给定 $n$ 个半平面，求半平面围出的三维凸包的最大内切球的半径。 $\sum n\leq 2500$。  题解 设球的半径为 $r$，则我们的约束是球心到每个平面的距离不小于 $r$。此处根据空间解析几何的知识，如果一个半平面形如 $ax&#43;by&#43;cz&#43;d\leq 0$，那么将其单位化之后（即令 $cos\alpha=\frac{a}{\sqrt{a^2&#43;b^2&#43;c^2}},cos\beta=\frac{b}{\sqrt{a^2&#43;b^2&#43;c^2}},$$cos\gamma=\frac{c}{\sqrt{a^2&#43;b^2&#43;c^2}}$，将方程改写为 $cos\alpha\cdot x&#43;cos\beta\cdot y&#43;cos\gamma\cdot z&#43;\rho=0$的形式），直接将点的坐标代入即可得到点到平面的距离，因此每个约束都是一个线性不等式，共有 4 个变量，我们要最大化的式子就是 $r$，用单纯形求解即可。
+B. 文理分科 题面描述  给定排成矩阵的 $n\times m$ 个学生，每个学生学文有 $a_{ij}$ 的收益，学理有 $b_{ij}$ 的收益。如果一个学生和他相邻的所有学生都学文/理，可以额外获得 $sa_{ij}/sb_{ij}$ 的收益。求最大收益。 $n,m\leq 100$。  题解 考虑最小割，我们先假设所有人拿满了学文学理的收益和区域相同的收益，考虑最少需要扣除多少收益。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-06/">
@@ -236,8 +236,8 @@ B. 文理分科 题面描述 给定排成矩阵的 $n\times m$ 个学生，每�
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-problem-solving/oj-solutions/iii-06/">
   <meta property="og:title" content="问题求解 III - 06 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="A. 最大内切球 题面描述 给定 $n$ 个半平面，求半平面围出的三维凸包的最大内切球的半径。 $\sum n\leq 2500$。 题解 设球的半径为 $r$，则我们的约束是球心到每个平面的距离不小于 $r$。此处根据空间解析几何的知识，如果一个半平面形如 $ax&#43;by&#43;cz&#43;d\leq 0$，那么将其单位化之后（即令 $cos\alpha=\frac{a}{\sqrt{a^2&#43;b^2&#43;c^2}},cos\beta=\frac{b}{\sqrt{a^2&#43;b^2&#43;c^2}},$$cos\gamma=\frac{c}{\sqrt{a^2&#43;b^2&#43;c^2}}$，将方程改写为 $cos\alpha\cdot x&#43;cos\beta\cdot y&#43;cos\gamma\cdot z&#43;\rho=0$的形式），直接将点的坐标代入即可得到点到平面的距离，因此每个约束都是一个线性不等式，共有 4 个变量，我们要最大化的式子就是 $r$，用单纯形求解即可。
-B. 文理分科 题面描述 给定排成矩阵的 $n\times m$ 个学生，每个学生学文有 $a_{ij}$ 的收益，学理有 $b_{ij}$ 的收益。如果一个学生和他相邻的所有学生都学文/理，可以额外获得 $sa_{ij}/sb_{ij}$ 的收益。求最大收益。 $n,m\leq 100$。 题解 考虑最小割，我们先假设所有人拿满了学文学理的收益和区域相同的收益，考虑最少需要扣除多少收益。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="A. 最大内切球 题面描述  给定 $n$ 个半平面，求半平面围出的三维凸包的最大内切球的半径。 $\sum n\leq 2500$。  题解 设球的半径为 $r$，则我们的约束是球心到每个平面的距离不小于 $r$。此处根据空间解析几何的知识，如果一个半平面形如 $ax&#43;by&#43;cz&#43;d\leq 0$，那么将其单位化之后（即令 $cos\alpha=\frac{a}{\sqrt{a^2&#43;b^2&#43;c^2}},cos\beta=\frac{b}{\sqrt{a^2&#43;b^2&#43;c^2}},$$cos\gamma=\frac{c}{\sqrt{a^2&#43;b^2&#43;c^2}}$，将方程改写为 $cos\alpha\cdot x&#43;cos\beta\cdot y&#43;cos\gamma\cdot z&#43;\rho=0$的形式），直接将点的坐标代入即可得到点到平面的距离，因此每个约束都是一个线性不等式，共有 4 个变量，我们要最大化的式子就是 $r$，用单纯形求解即可。
+B. 文理分科 题面描述  给定排成矩阵的 $n\times m$ 个学生，每个学生学文有 $a_{ij}$ 的收益，学理有 $b_{ij}$ 的收益。如果一个学生和他相邻的所有学生都学文/理，可以额外获得 $sa_{ij}/sb_{ij}$ 的收益。求最大收益。 $n,m\leq 100$。  题解 考虑最小割，我们先假设所有人拿满了学文学理的收益和区域相同的收益，考虑最少需要扣除多少收益。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -699,7 +699,7 @@ $$注意到该动态规划是线性递推，因此可以将 $f$ 和 $g$ 写成�
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

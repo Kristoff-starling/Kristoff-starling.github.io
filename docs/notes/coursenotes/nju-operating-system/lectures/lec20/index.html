@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="处理器调度问题的简单假设 (1960s)：
-系统中有一个处理器 系统中有多个进程/线程共享 CPU 包括系统调用 (进程/线程的一部分在内核代码中) 偶尔会等待 I/O 返回，不使用 CPU。 Policy Round-Robin 按照时间片轮转，轮流运行所有的进程/线程。
+ 系统中有一个处理器 系统中有多个进程/线程共享 CPU  包括系统调用 (进程/线程的一部分在内核代码中) 偶尔会等待 I/O 返回，不使用 CPU。    Policy Round-Robin 按照时间片轮转，轮流运行所有的进程/线程。
 问题：假设当前有一个前台的 vim 进程和很多计算型的后台进程，如果使用 round robin，很容易出现前台 vim 进程很卡的现象 (vim 进程一旦被切出去了，就要等一整轮才能获得一个时间片)。
 我们希望引入某种“优先级”，使得和用户交互比较频繁的前台进程可以获得更高的调度优先级，优化用户的使用体验。
 UNIX Niceness UNIX 的 niceness 是一个 -20 .">
@@ -240,7 +240,7 @@ UNIX Niceness UNIX 的 niceness 是一个 -20 .">
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec20/">
   <meta property="og:title" content="Lecture 20: Scheduling | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="处理器调度问题的简单假设 (1960s)：
-系统中有一个处理器 系统中有多个进程/线程共享 CPU 包括系统调用 (进程/线程的一部分在内核代码中) 偶尔会等待 I/O 返回，不使用 CPU。 Policy Round-Robin 按照时间片轮转，轮流运行所有的进程/线程。
+ 系统中有一个处理器 系统中有多个进程/线程共享 CPU  包括系统调用 (进程/线程的一部分在内核代码中) 偶尔会等待 I/O 返回，不使用 CPU。    Policy Round-Robin 按照时间片轮转，轮流运行所有的进程/线程。
 问题：假设当前有一个前台的 vim 进程和很多计算型的后台进程，如果使用 round robin，很容易出现前台 vim 进程很卡的现象 (vim 进程一旦被切出去了，就要等一整轮才能获得一个时间片)。
 我们希望引入某种“优先级”，使得和用户交互比较频繁的前台进程可以获得更高的调度优先级，优化用户的使用体验。
 UNIX Niceness UNIX 的 niceness 是一个 -20 ."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
@@ -861,7 +861,7 @@ void low()    {mutex_lock();}
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

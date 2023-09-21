@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="Digital Logic 数字电路：
-状态：寄存器中保存的值； 初始状态：RESET； 迁移：组合逻辑电路下计算寄存器下一个周期的值。 Example: Seven-seg // logisim.c #include &lt;stdio.h&gt; #include &lt;unistd.h&gt; #define REGS_FOREACH(_) _(X) _(Y) #define OUTS_FOREACH(_) _(A) _(B) _(C) _(D) _(E) _(F) _(G) #define RUN_LOGIC X1 = !">
+ 状态：寄存器中保存的值； 初始状态：RESET； 迁移：组合逻辑电路下计算寄存器下一个周期的值。  Example: Seven-seg // logisim.c #include &lt;stdio.h&gt; #include &lt;unistd.h&gt; #define REGS_FOREACH(_) _(X) _(Y) #define OUTS_FOREACH(_) _(A) _(B) _(C) _(D) _(E) _(F) _(G) #define RUN_LOGIC X1 = !">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec02/">
@@ -237,7 +237,7 @@
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec02/">
   <meta property="og:title" content="Lecture 02: Programs on Operating Systems | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Digital Logic 数字电路：
-状态：寄存器中保存的值； 初始状态：RESET； 迁移：组合逻辑电路下计算寄存器下一个周期的值。 Example: Seven-seg // logisim.c #include &lt;stdio.h&gt; #include &lt;unistd.h&gt; #define REGS_FOREACH(_) _(X) _(Y) #define OUTS_FOREACH(_) _(A) _(B) _(C) _(D) _(E) _(F) _(G) #define RUN_LOGIC X1 = !"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ 状态：寄存器中保存的值； 初始状态：RESET； 迁移：组合逻辑电路下计算寄存器下一个周期的值。  Example: Seven-seg // logisim.c #include &lt;stdio.h&gt; #include &lt;unistd.h&gt; #define REGS_FOREACH(_) _(X) _(Y) #define OUTS_FOREACH(_) _(A) _(B) _(C) _(D) _(E) _(F) _(G) #define RUN_LOGIC X1 = !"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -754,7 +754,7 @@ void hanoi(int n, char from, char to, char via) {
 <li>迁移：执行一条指令</li>
 </ul>
 <p>如果整个程序的行为是确定的，状态机应该长成一条直线：$(M_0,R_0)\rightarrow (M_1,R_1)\rightarrow\cdots$ 。如果引入了一些 non-deterministic 的元素，比如 <code>rdrand</code> 指令 (读取一个硬件随机数到寄存器中)，那么状态机会有分叉。但无论如何，这是一个有限状态机 (内存、寄存器数量是有限的)，如果只有计算指令，有限步之后我们必然会回到一个经历过的状态。我们无法实现输入输出，甚至是停止程序。</p>
-<p>因此，程序中有一条特殊的指令：<code>syscall</code>。程序将自己的状态机 $(M,R)$ 交给操作系统，任其修改，最终操作系统返回一个状态机 $(M&rsquo;,R&rsquo;)$，程序继续执行。因此程序=计算+syscall+计算+syscall+……</p>
+<p>因此，程序中有一条特殊的指令：<code>syscall</code>。程序将自己的状态机 $(M,R)$ 交给操作系统，任其修改，最终操作系统返回一个状态机 $(M',R')$，程序继续执行。因此程序=计算+syscall+计算+syscall+……</p>
 <h3 id="example-a-smallest-hello-world">Example: A smallest &ldquo;Hello, world&rdquo;</h3>
 <p>我们想象中的最小函数：</p>
 <pre><code class="language-c">void _start() {
@@ -1020,7 +1020,7 @@ int main() {
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

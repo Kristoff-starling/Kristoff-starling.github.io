@@ -181,7 +181,7 @@ domain::=\&amp;lt;string &#39;.&#39; string&amp;gt;
 &lt;ol&gt;
 &lt;li&gt;初始状态&lt;/li&gt;
 &lt;li&gt;位于第一个string的状态&lt;/li&gt;
-&lt;li&gt;位于&amp;rsquo;@&amp;lsquo;的状态&lt;/li&gt;
+&lt;li&gt;位于&#39;@&amp;lsquo;的状态&lt;/li&gt;
 &lt;li&gt;位于第二个string的状态&lt;/li&gt;
 &lt;li&gt;位于&amp;rsquo;.&amp;lsquo;的状态&lt;/li&gt;
 &lt;li&gt;位于第三个string的状态&lt;/li&gt;

@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="4 fundamental subspaces:
-column space $C(A)$. null space $N(A)$. row space. It contains all the combinations of the row vectors of $A$. In other words, it contains all the combinations of the column vectors of $A^T$, so the notation is $C(A^T)$.">
+ column space $C(A)$. null space $N(A)$. row space. It contains all the combinations of the row vectors of $A$. In other words, it contains all the combinations of the column vectors of $A^T$, so the notation is $C(A^T)$.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec10/">
@@ -237,7 +237,7 @@ column space $C(A)$. null space $N(A)$. row space. It contains all the combinati
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/mit-linearalgebra/lectures/lec10/">
   <meta property="og:title" content="MIT-18.06 Lecture 10: 4 Fundamental Subspaces | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="4 fundamental subspaces:
-column space $C(A)$. null space $N(A)$. row space. It contains all the combinations of the row vectors of $A$. In other words, it contains all the combinations of the column vectors of $A^T$, so the notation is $C(A^T)$."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ column space $C(A)$. null space $N(A)$. row space. It contains all the combinations of the row vectors of $A$. In other words, it contains all the combinations of the column vectors of $A^T$, so the notation is $C(A^T)$."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -552,8 +552,8 @@ R=\left[\begin{matrix}1 &amp; 0 &amp; 1 &amp; 1\\ 0 &amp; 1 &amp; 1 &amp; 0\\0 &
 $$
 Through $R$, we can see that the first two columns are pivot columns, so the first two columns of $A$ are basis of $C(A)$. Here we do row operations on $A$, so $C(A)\neq C(R)$ of course, but <strong>considering the fact that doing row operations is just doing linear combinations of row vectors of $A$, $C(A^T)=C(R^T)$.</strong> And we can easily tell that $\dim R^T=2=r$ and <strong>the first $r$ row vectors of $R$ are basis of $C(A^T)$.</strong> (They&rsquo;re independent and if we do the row operations inversely, we can get all the rows of $A$)</p>
 <p>To find out a basis for $N(A^T)$. Firstly we want to figure out the matrix that represents the row operations of $A\rightarrow R$, i.e. we want to find a matrix $E$ such that $EA=R$.</p>
-<p>According to Gauss-Jordan, we put a identity matrix besides $A$, i.e. $A&rsquo;=[A_{m\times n}\quad I_{m\times m}]$. Suppose $EA&rsquo;=$</p>
-<p>$E[A\quad I]=[R\quad E&rsquo;]$, then we have $E=E&rsquo;$, so by applying all the row operations on $I$, we can get $E$. In the above example, we can get
+<p>According to Gauss-Jordan, we put a identity matrix besides $A$, i.e. $A'=[A_{m\times n}\quad I_{m\times m}]$. Suppose $EA'=$</p>
+<p>$E[A\quad I]=[R\quad E']$, then we have $E=E'$, so by applying all the row operations on $I$, we can get $E$. In the above example, we can get
 $$
 E=\left[\begin{matrix}-1 &amp; 2 &amp; 0\\1 &amp; -1 &amp; 0\\-1 &amp; 0 &amp; 1\end{matrix}\right]
 $$
@@ -673,7 +673,7 @@ We claim <strong>that the last $m-r$ row vectors of $E$ form a basis of $N(A^T)$
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

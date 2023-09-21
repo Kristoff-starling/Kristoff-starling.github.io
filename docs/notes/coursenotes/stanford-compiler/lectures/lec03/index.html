@@ -30,7 +30,7 @@
     
   
   <meta name="description" content="Token classes:
-In English: nouns, verbs, adjactives etc. In programming languages: identifiers, keywords, &ldquo;()&rdquo; etc. Identifier: strings of letters or digits, staring with a letter (variable names). Integer: a non-empty string of digits (leading zeroes are allowed).">
+ In English: nouns, verbs, adjactives etc. In programming languages: identifiers, keywords, &ldquo;()&rdquo; etc.  Identifier: strings of letters or digits, staring with a letter (variable names). Integer: a non-empty string of digits (leading zeroes are allowed).">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/stanford-compiler/lectures/lec03/">
@@ -237,7 +237,7 @@ In English: nouns, verbs, adjactives etc. In programming languages: identifiers,
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/stanford-compiler/lectures/lec03/">
   <meta property="og:title" content="Stanford-CS143 Lecture 03: Lexical Analysis | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="Token classes:
-In English: nouns, verbs, adjactives etc. In programming languages: identifiers, keywords, &ldquo;()&rdquo; etc. Identifier: strings of letters or digits, staring with a letter (variable names). Integer: a non-empty string of digits (leading zeroes are allowed)."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ In English: nouns, verbs, adjactives etc. In programming languages: identifiers, keywords, &ldquo;()&rdquo; etc.  Identifier: strings of letters or digits, staring with a letter (variable names). Integer: a non-empty string of digits (leading zeroes are allowed)."><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -566,7 +566,7 @@ DO 5 I = 1.25
 <p>2 base cases:</p>
 <ul>
 <li>Single character: $c\triangleq {c}$</li>
-<li>Epsilon: $\epsilon\triangleq {&rsquo;&rsquo;}$</li>
+<li>Epsilon: $\epsilon\triangleq {''}$</li>
 </ul>
 <p>3 compound expressions:</p>
 <ul>
@@ -591,7 +591,7 @@ $$</p>
 <p>A <strong>meaning function</strong> $L:\text{expression}\to \text{set of strings}$ is a mapping that maps syntax to semantics. For example, the rigorous way of defining regular expression symbols are:
 $$
 \begin{align}
-L(\epsilon)&amp;={&rsquo;&rsquo;}\\
+L(\epsilon)&amp;={''}\\
 L(c)&amp;={c}\\
 L(A+B)&amp;=L(A)\cup L(B)\\
 L(AB)&amp;={ab:a\in L(A),b\in L(B)}\\
@@ -620,15 +620,15 @@ The mappings between expressions and meanings are not 1-to-1. it&rsquo;s many-to
 </li>
 <li>
 <p>Whitespace: a non-empty sequence of blanks, newlines and tabs.</p>
-<p>$\text{Whitespace}=(\text{&rsquo; &lsquo;}+\text{&rsquo;\n&rsquo;}+\text{&rsquo;\t&rsquo;})^+$.</p>
+<p>$\text{Whitespace}=(\text{' &lsquo;}+\text{'\n&rsquo;}+\text{'\t'})^+$.</p>
 </li>
 </ul>
 <h3 id="example-pascal-numbers">Example: Pascal Numbers</h3>
 <p>$$
 \begin{align}
 \text{num} &amp;= \text{digits}\space\space \text{opt_fraction}\space\space \text{opt_exponent}\\
-\text{opt_fraction}&amp;=(\text{&rsquo;.&rsquo;}\space\space \text{digits})+\epsilon\\
-\text{opt_exponent}&amp;=(\text{&lsquo;E&rsquo;}\space (\text{&rsquo;+&rsquo;}+\text{&rsquo;-&rsquo;}+\epsilon)\space \text{digits})+\epsilon\\
+\text{opt_fraction}&amp;=(\text{'.'}\space\space \text{digits})+\epsilon\\
+\text{opt_exponent}&amp;=(\text{&lsquo;E&rsquo;}\space (\text{'+'}+\text{'-'}+\epsilon)\space \text{digits})+\epsilon\\
 \text{digits}&amp;=\text{digit}^+\\
 \text{digit}&amp;=[0-9]
 \end{align}
@@ -636,8 +636,8 @@ $$</p>
 <p>We observe that &ldquo;$+\epsilon$&rdquo; in regular expressions indicates &ldquo;optional&rdquo;, i.e. the elements before can be either present or absent. For convenience, we denote $A?\triangleq A+\epsilon$, so the rules above can be rewritten as
 $$
 \begin{align}
-\text{opt_fraction} &amp;= (\text{&rsquo;.&rsquo;}\space \text{digits})?\\
-\text{opt_exponent} &amp;= (\text{&lsquo;E&rsquo;}\space (\text{&rsquo;+&rsquo;}+\text{&rsquo;-&rsquo;})?\space \text{digits})?
+\text{opt_fraction} &amp;= (\text{'.'}\space \text{digits})?\\
+\text{opt_exponent} &amp;= (\text{&lsquo;E&rsquo;}\space (\text{'+'}+\text{'-'})?\space \text{digits})?
 \end{align}
 $$
 It&rsquo;s worth notice that regular expressions defines the set of strings we want, but we still need an implementation, i.e. given a string $s$ and a regular expression $R$, we want to know whether $s\in L(R)$.</p>
@@ -762,7 +762,7 @@ It&rsquo;s worth notice that regular expressions defines the set of strings we w
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

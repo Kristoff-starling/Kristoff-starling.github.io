@@ -562,7 +562,7 @@
 <p>$$
 f_n=\sum_{k=1}^m c_kf_{n-k}
 $$</p>
-<p>Since the answer may be too large, we usually focus on $f&rsquo;_n=f_n\mod M$. We are more interested in cases where $M$ is suitable for FFT, such as $998,244,353$, because polynomial-related techniques can be leveraged to accelerate the computation. In the whole passage, we will use $f_n$ (instead of $f&rsquo;_n$) to represent the answer under modulation for simplicity.</p>
+<p>Since the answer may be too large, we usually focus on $f'_n=f_n\mod M$. We are more interested in cases where $M$ is suitable for FFT, such as $998,244,353$, because polynomial-related techniques can be leveraged to accelerate the computation. In the whole passage, we will use $f_n$ (instead of $f'_n$) to represent the answer under modulation for simplicity.</p>
 <h2 id="getting-started-fibonacci">Getting Started: Fibonacci</h2>
 <p>Let’s start with one of the simplest (and most famous) sequences: Fibonacci.</p>
 <p>$$
@@ -703,7 +703,7 @@ $$</p>
 <p>$$
 F(x)=F(x)G(x)+R(x)
 $$</p>
-<p>Where $R(x)$ is a polynomial for correcting the first few terms in the sequence and can be obtained by computing $F&rsquo;(x)-F&rsquo;(x)G(x)$, where $F&rsquo;(x)$ is the first $k$ terms of $F(x)$.</p>
+<p>Where $R(x)$ is a polynomial for correcting the first few terms in the sequence and can be obtained by computing $F'(x)-F'(x)G(x)$, where $F'(x)$ is the first $k$ terms of $F(x)$.</p>
 <p>Therefore</p>
 <p>$$
 F(x)=\frac{R(x)}{1-G(x)}
@@ -818,7 +818,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

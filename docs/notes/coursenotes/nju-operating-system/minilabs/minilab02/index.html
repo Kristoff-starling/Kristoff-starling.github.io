@@ -31,7 +31,7 @@
   
   <meta name="description" content="本实验的主要目标是实现协程库 (lib coroutines)。很大程度上协程和线程非常相似，一个主要的区别是：线程可以响应中断，然后通过内核的调度器进行切换，而协程如果不主动 yield 则不会切换。
 Coroutine Struct 协程之间共享内存，但各自有独立的运行时栈。笔者定义的协程结构体大致如下：
-struct co { const char *name; void (*func)(void *); void *arg; enum co_status status; struct co *waiter; jmp_buf context; uint8_t stack[STACK_SIZE]; }coroutine[CO_SIZE]; name 字段主要用于 debug。func 和 arg 是目标函数的地址和调用时的参数。waiter 存储了指向调用 co_wait() 等待当前协程的“父协程”的指针，当本协程结束时，应该唤醒 (可能存在的) 睡眠的父协程。context 存储了切换时的寄存器上下文，在本实验中，我们使用 setjmp() 和 longjmp() 来完成跳转。">
+struct co { const char *name; void (*func)(void *); void *arg; enum co_status status; struct co *waiter; jmp_buf context; uint8_t stack[STACK_SIZE]; }coroutine[CO_SIZE];  name 字段主要用于 debug。func 和 arg 是目标函数的地址和调用时的参数。waiter 存储了指向调用 co_wait() 等待当前协程的“父协程”的指针，当本协程结束时，应该唤醒 (可能存在的) 睡眠的父协程。context 存储了切换时的寄存器上下文，在本实验中，我们使用 setjmp() 和 longjmp() 来完成跳转。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/minilabs/minilab02/">
@@ -239,7 +239,7 @@ struct co { const char *name; void (*func)(void *); void *arg; enum co_status st
   <meta property="og:title" content="MiniLab 02: Coroutine Library | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="本实验的主要目标是实现协程库 (lib coroutines)。很大程度上协程和线程非常相似，一个主要的区别是：线程可以响应中断，然后通过内核的调度器进行切换，而协程如果不主动 yield 则不会切换。
 Coroutine Struct 协程之间共享内存，但各自有独立的运行时栈。笔者定义的协程结构体大致如下：
-struct co { const char *name; void (*func)(void *); void *arg; enum co_status status; struct co *waiter; jmp_buf context; uint8_t stack[STACK_SIZE]; }coroutine[CO_SIZE]; name 字段主要用于 debug。func 和 arg 是目标函数的地址和调用时的参数。waiter 存储了指向调用 co_wait() 等待当前协程的“父协程”的指针，当本协程结束时，应该唤醒 (可能存在的) 睡眠的父协程。context 存储了切换时的寄存器上下文，在本实验中，我们使用 setjmp() 和 longjmp() 来完成跳转。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+struct co { const char *name; void (*func)(void *); void *arg; enum co_status status; struct co *waiter; jmp_buf context; uint8_t stack[STACK_SIZE]; }coroutine[CO_SIZE];  name 字段主要用于 debug。func 和 arg 是目标函数的地址和调用时的参数。waiter 存储了指向调用 co_wait() 等待当前协程的“父协程”的指针，当本协程结束时，应该唤醒 (可能存在的) 睡眠的父协程。context 存储了切换时的寄存器上下文，在本实验中，我们使用 setjmp() 和 longjmp() 来完成跳转。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -699,7 +699,7 @@ mov %rsp, %rbp
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 

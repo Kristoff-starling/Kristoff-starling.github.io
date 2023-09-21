@@ -30,10 +30,9 @@
     
   
   <meta name="description" content="fork() Semantics fork() 的语义是将当前进程的状态机完整地复制一份，这两个进程除了 fork() 的返回值以外全部相同。
-File Descriptors 我们这里关注文件描述符：根据 fork() 的语义，子进程和父进程会拥有相同的文件描述符 (文件描述符可以理解为指向操作系统对象的指针)。execve() 会重置状态机，但会继承原进程持有的所有操作系统对象。这个设计使我们在 UNIX shell 中可以利用管道技术，在 execve() 之前修改 stdin, stdout 以完成进程之间数据的传输。
-execve() 会无条件继承所有的对象吗？
+File Descriptors 我们这里关注文件描述符：根据 fork() 的语义，子进程和父进程会拥有相同的文件描述符 (文件描述符可以理解为指向操作系统对象的指针)。execve() 会重置状态机，但会继承原进程持有的所有操作系统对象。这个设计使我们在 UNIX shell 中可以利用管道技术，在 execve() 之前修改 stdin, stdout 以完成进程之间数据的传输。 execve() 会无条件继承所有的对象吗？
 在 open() 的手册中，我们可以看到打开文件时有一个标志是 O_CLOEXEC，这样打开的文件在 execve() 的时候不会被继承。
-文件描述符其实不仅仅是指向对象的指针。我们在一个程序中写两句话">
+ 文件描述符其实不仅仅是指向对象的指针。我们在一个程序中写两句话">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec15/">
@@ -240,10 +239,9 @@ execve() 会无条件继承所有的对象吗？
   <meta property="og:url" content="https://kristoff-starling.github.io/notes/coursenotes/nju-operating-system/lectures/lec15/">
   <meta property="og:title" content="Lecture 15: More about fork() | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="fork() Semantics fork() 的语义是将当前进程的状态机完整地复制一份，这两个进程除了 fork() 的返回值以外全部相同。
-File Descriptors 我们这里关注文件描述符：根据 fork() 的语义，子进程和父进程会拥有相同的文件描述符 (文件描述符可以理解为指向操作系统对象的指针)。execve() 会重置状态机，但会继承原进程持有的所有操作系统对象。这个设计使我们在 UNIX shell 中可以利用管道技术，在 execve() 之前修改 stdin, stdout 以完成进程之间数据的传输。
-execve() 会无条件继承所有的对象吗？
+File Descriptors 我们这里关注文件描述符：根据 fork() 的语义，子进程和父进程会拥有相同的文件描述符 (文件描述符可以理解为指向操作系统对象的指针)。execve() 会重置状态机，但会继承原进程持有的所有操作系统对象。这个设计使我们在 UNIX shell 中可以利用管道技术，在 execve() 之前修改 stdin, stdout 以完成进程之间数据的传输。 execve() 会无条件继承所有的对象吗？
 在 open() 的手册中，我们可以看到打开文件时有一个标志是 O_CLOEXEC，这样打开的文件在 execve() 的时候不会被继承。
-文件描述符其实不仅仅是指向对象的指针。我们在一个程序中写两句话"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+ 文件描述符其实不仅仅是指向对象的指针。我们在一个程序中写两句话"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -958,7 +956,7 @@ void display() {
     
     
     
-    <script src="/js/academic.min.ee29412d24445fe7b996c83570b83b9a.js"></script>
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
 
     
 
