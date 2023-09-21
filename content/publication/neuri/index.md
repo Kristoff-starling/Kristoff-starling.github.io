@@ -2,7 +2,7 @@
 title: "NeuRI: Diversifying DNN Generation via Inductive Rule Synthesis"
 abbr: "ESEC/FSE'23"
 periodical: "arXiv preprint arXiv:2302.02261. 2023"
-toapper: true
+toappear: true
 date: 2023-02-04
 
 authors:
