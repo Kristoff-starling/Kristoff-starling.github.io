@@ -10,7 +10,7 @@ authors:
 superuser: true
 
 # Role/position
-role: Undergraduate (Junior)
+role: Undergraduate (Senior)
 
 # Organizations/Affiliations
 organizations:
@@ -71,6 +71,6 @@ user_groups:
 - Visitors
 ---
 
-I am Yuyao Wang (王宇峣), a junior in Computer Science (Elite Class) at [Nanjing University](https://www.nju.edu.cn/en). My research interest lies in topics related to the *correctness*, *programmability* and *performance* of computer systems. 
+I am Yuyao Wang (王宇峣), a senior student in Computer Science (Elite Class) at [Nanjing University](https://www.nju.edu.cn/en). My research interest lies in topics related to the *correctness*, *programmability* and *performance* of computer systems. 
 
 I have been attached to programming and algorithm design since middle school and aspire to bring elegant solutions for tackling *real-world* problems.
