@@ -29,10 +29,16 @@
   
     
   
-  <meta name="description" content=" ">
+  <meta name="description" content="Problem A: 飘雪圣域
+给定一张 $n$ 个点 $m$ 条边的图，求图的割点。
+  求图的割点有著名的时间复杂度为 $O(n&#43;m)$ 的 Tarjan 算法，此处不做赘述。
+  Problem B: 同色三角形
+给定一张 $n$ 个点的完全图，每条边为黑色或白色，问图中有多少个同色三角形。
+  作为中秋&#43;国庆放假的福利，本题设置的数据范围可以允许最简单的 $O(n^3)$ 枚举算法通过
+这里主要讲解非平凡的 $O(n^2)$ 做法应当如何实现；将复杂度优化到平方级需要仔细分析该问题的性质以减少枚举的次数。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-4/">
 
   
 
@@ -214,14 +220,12 @@
 
 
   
-  <link rel="alternate" href="/courses/problemsolving22/solutions/index.xml" type="application/rss+xml" title="Yuyao Wang&#39;s Homepage">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-4/">
 
   
   
@@ -235,29 +239,40 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/">
-  <meta property="og:title" content="OJ习题讲解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content=" "><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-4/">
+  <meta property="og:title" content="问题求解III-HW04 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Problem A: 飘雪圣域
+给定一张 $n$ 个点 $m$ 条边的图，求图的割点。
+  求图的割点有著名的时间复杂度为 $O(n&#43;m)$ 的 Tarjan 算法，此处不做赘述。
+  Problem B: 同色三角形
+给定一张 $n$ 个点的完全图，每条边为黑色或白色，问图中有多少个同色三角形。
+  作为中秋&#43;国庆放假的福利，本题设置的数据范围可以允许最简单的 $O(n^3)$ 枚举算法通过
+这里主要讲解非平凡的 $O(n^2)$ 做法应当如何实现；将复杂度优化到平方级需要仔细分析该问题的性质以减少枚举的次数。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
-    <meta property="og:updated_time" content="2023-09-21T00:00:00&#43;00:00">
+    
+      <meta property="article:published_time" content="2023-09-21T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-09-21T00:00:00&#43;00:00">
   
 
   
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>OJ习题讲解 | Yuyao Wang&#39;s Homepage</title>
+
+
+  <title>问题求解III-HW04 题解 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -461,7 +476,7 @@
   
   
   
-  <div class="docs-toc-item active">
+  <div class="docs-toc-item">
     <a class="docs-toc-link" href="/courses/problemsolving22/solutions/">Overview</a>
 
   </div>
@@ -542,7 +557,7 @@
         <a href="/courses/problemsolving22/solutions/3-3/">III-HW03</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/solutions/3-4/">III-HW04</a>
       </li>
       
@@ -563,15 +578,31 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>OJ习题讲解</h1>
+          <h1>问题求解III-HW04 题解</h1>
 
           <div class="article-style">
-            <p>该系列文章针对 OJ 中较难的习题给出提示和解法。</p>
-<div class="alert alert-warning">
+            <div class="alert alert-note">
   <div>
-    阅读题解前请确保你已经独立思考过这些题目！
+    <p><strong>Problem A: 飘雪圣域</strong></p>
+<p>给定一张 $n$ 个点 $m$ 条边的图，求图的割点。</p>
   </div>
 </div>
+<p>求图的割点有著名的时间复杂度为 $O(n+m)$ 的 Tarjan 算法，此处不做赘述。</p>
+<hr>
+<div class="alert alert-note">
+  <div>
+    <p><strong>Problem B: 同色三角形</strong></p>
+<p>给定一张 $n$ 个点的完全图，每条边为黑色或白色，问图中有多少个同色三角形。</p>
+  </div>
+</div>
+<p><del>作为中秋+国庆放假的福利，本题设置的数据范围可以允许最简单的 $O(n^3)$ 枚举算法通过</del></p>
+<p>这里主要讲解非平凡的 $O(n^2)$ 做法应当如何实现；将复杂度优化到平方级需要仔细分析该问题的性质以减少枚举的次数。</p>
+<p>枚举同色三角形似乎很难逃出三方枚举的困境——对于每个顶点 $u$，它的任意两条同色边关联的相邻点 $v_1, v_2$ 都需要再检查边 $(v_1, v_2)$ 的颜色。因此我们换一个角度考虑：该图中三角形的总数为 $\binom{n}{3}$，我们只要转而计算图中非同色三角形的数目，就可以算出同色三角形的数目。</p>
+<p>另一个重要的观察是：<strong>对于任意顶点 $u, v_1, v_2$，如果 $\text{color}(u, v_1)\neq \text{color}(u, v_2)$，那么无论边 $(v_1, v_2)$ 是什么颜色，$(u, v_1, v_2)$ 都一定能形成一个异色三角形。</strong> 进一步地，记 $black_u$ 表示 $u$ 的黑色邻边的数目，那么顶点带有 $u$ 的异色三角形数目为 $black_u\cdot (n-1-black_u)$。因此，同色三角形的数目为</p>
+<p>$$
+ans=\binom{n}{3} - \frac{1}{2}\sum_{u\in V}black_u\cdot (n - 1 - black_u)
+$$</p>
+<p>公式中的 $1/2$ 来源于一个异色三角形会被它的两个“异色邻边顶点”计算两次。</p>
 
           </div>
 
@@ -584,6 +615,19 @@
             
 <div class="post-nav">
   
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving22/solutions/3-3/" rel="next">问题求解III-HW03 题解</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving22/solutions/3-2/" rel="prev">问题求解III-HW02 题解</a>
+  </div>
   
 </div>
 
@@ -620,8 +664,6 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 
-      
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
       
 
       
