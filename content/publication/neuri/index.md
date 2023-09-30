@@ -12,6 +12,7 @@ authors:
 - Lingming Zhang
 
 url_preprint: https://arxiv.org/abs/2302.02261
+url_artifact: https://github.com/ise-uiuc/neuri-artifact
 
 publication_types: ["1"]
 
