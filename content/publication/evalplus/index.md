@@ -13,6 +13,7 @@ authors:
 
 url_preprint: http://arxiv.org/abs/2305.01210
 url_code: https://github.com/evalplus/evalplus
+url_slides: slides/evalplus-neurips23.pdf
 
 publication_types: ["1"]
 ---
