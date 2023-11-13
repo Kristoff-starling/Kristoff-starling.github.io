@@ -35,6 +35,80 @@
     </item>
     
     <item>
+      <title>问题求解III-HW08 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-8/</link>
+      <pubDate>Mon, 13 Nov 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-8/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 加油&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;给定 $n$ 个二元组 $(x_1, y_1)\cdots (x_n, y_n)$，另给定 $k$，求 $S\subseteq \{1,\cdots, n\}$，满足&lt;/p&gt;
+&lt;p&gt;$$
+\sum_{i\in S} x_i = k\cdot \sum_{i\in S}y_i
+$$
+且
+$$
+\sum_{i\in S} x_i + y_i
+$$
+最大。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$n\leq 100, 1\leq k\leq 10, 1\leq x_i, y_i\leq 100$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;考虑如下动态规划：令 $dp(i, j)$ 表示当前考虑到第 $i$ 个物品，当前第一种混合物与第二种混合物达成 $k$ 的比例后还富余/亏欠 $j$ 的情况下，选取所有物品的最大重量。转移和背包问题类似，考虑当前物品选或不选：&lt;/p&gt;
+&lt;p&gt;$$
+dp(i, j) = \max\{dp(i-1, j), dp(i-1, j - (x_i - k\cdot y_i)) + x_i + y_i\}
+$$&lt;/p&gt;
+&lt;p&gt;$dp(n, 0)$ 即为最终的答案。&lt;/p&gt;
+&lt;p&gt;在实现上有几个细节需要注意，以下分析中记 $x_i, y_i$ 的最大值为 $v(v\leq 100)$：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;该 dp 状态中 $j$ 的值可以是负数，但 C/C++ 代码中不方便直接用数组实现负数的下标索引。因此我们可以先预估 $j$ 的真实值域，记为 $[-l, r]$，然后用数组的 $[0, l + r]$ 来模拟这个区间。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;对 $l, r$ 的预估将直接影响算法的时间和空间复杂度。一个简单且有效的预估是：如果当前的“亏欠值”已经大于了 $v\cdot n$，那么无论怎么选也“补救”不回来了。另一方面，即使将所有物品全选，第一种混合物的总量也不会超过 $v\cdot n$，所以令 $l, r=v\cdot n$ 是合理的。&lt;/p&gt;
+&lt;p&gt;值得注意的是，该 dp 第二维的真实值域其实大约是 $[-k\cdot vn, vn]$，但我们通过分析“最大的可补救范围”大大缩小了负数方向的范围，算得上是一种“剪枝”。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;时间复杂度上，动态规划的总状态数为 $O(n^2v)$，转移是 $O(1)$ 的，因此总时间复杂度为 $O(n^2v)$。如果没有考虑到上述的对第二维值域的剪枝，时间复杂度为 $O(n^2kv)$ 的算法也可以通过本题，但需要指出本题的较优实现可以做到复杂度与 $k$ 无关。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 炮兵阵地&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;给定 $n\times m$ 的方格，坐标为 $(i, j)$ 的格子是否可以放置炮兵的状态记为 $\text{accept}(i, j)$。求集合 $S\subseteq \{1,\cdots n\}\times \{1,\cdots m\}$，满足&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+&amp;amp;\forall (x, y)\in S, \text{accept}(x, y)=\mathbf{True} \ \wedge \\
+&amp;amp;\forall (x_1, y_1), (x_2, y_2)\in S, (x_1\neq x_2\vee y_1\neq y_2) \\
+&amp;amp;\qquad \Rightarrow (x_1=x_2\to |y_1-y_2|&amp;gt;2 \wedge y_1=y_2\to |x_1-x_2|&amp;gt;2)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;且 |S| 最大。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$n\leq 100, m\leq 10$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;考虑状态压缩动态规划：令 $dp(i, Mask_1, Mask_2)$ 表示当前考虑到第 $i$ 行，第 $i-1$ 行炮兵的布置情况为 $Mask_1$，第 $i-2$ 行炮兵的布置情况为 $Mask_2$ 的情况下最多能布置多少个炮兵 (之所以记录两行是因为第 $i$ 行炮兵向上的覆盖范围最多与前两行有交集)。转移考虑当前行的炮兵布置情况，状态转移方程为&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+&amp;amp;dp(i, Mask_1, Mask_2) \to dp(i + 1, Mask, Mask_1) + \text{count_one}(Mask)\\
+&amp;amp;\qquad if\ \text{valid}(Mask, Mask_1, Mask_2)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;其中 $\text{valid}$ 函数检查三行的炮兵部署是否合法。该动态规划的时间复杂度看似为 $O(2^{3m}\cdot n)$，但事实上由于同行的炮兵之间距离至少为 3，所以 $m\leq 10$ 时在本行内合法的状态数很少 (不超过 70，远小于 $2^{10}$)，因此可以通过。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>问题求解III-HW04 题解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-4/</link>
       <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
