@@ -5,12 +5,63 @@
     <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
       <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/index.xml" rel="self" type="application/rss+xml" />
     <description>OJ习题讲解</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Mon, 13 Nov 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 18 Nov 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>OJ习题讲解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
     </image>
+    
+    <item>
+      <title>问题求解III-HW09 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-9/</link>
+      <pubDate>Sat, 18 Nov 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-9/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 电路交换&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;给定一个流网络，求最大流。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;这是一道纯正的模板题，不过我们希望大家可以尽可能学会一个高效的最大流算法实现，你可以选择学习&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;增广路流派: Dinic/SAP。&lt;/li&gt;
+&lt;li&gt;预流推进流派: HLPP。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;其中 Dinic 算法较为简单。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 探索遗迹&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;给定一个 $n\times n$ 的网格，第 $i$ 行第 $j$ 列格子的权值为 $w(i, j)$。现希望选出一个集合 $S\subseteq \{1,\cdots, n\}\times \{1,\cdots, n\}$，满足&lt;/p&gt;
+&lt;p&gt;$$
+\forall (x_1, y_1), (x_2, y_2)\in S, \lnot \text{adjacent}((x_1, y_1), (x_2, y_2))
+$$&lt;/p&gt;
+&lt;p&gt;且
+$$
+\sum_{(x, y)\in S}w(x, y)
+$$&lt;/p&gt;
+&lt;p&gt;最大。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;$2\leq n\leq 25$。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;本题的数据范围容易让人想到使用状态压缩动态规划求解：令 $dp(i, Mask)$ 表示当前考虑到第 $i$ 行，上一行宝箱选择状态为 $Mask$ 的情况下的最大收益，转移考虑枚举当前行的选择即可。该思路和第8周习题“炮兵阵地”的解法类似，但本题的数据范围稍大，恰好使得该做法无法通过 &lt;del&gt;(事实上我们是故意这样设计的)&lt;/del&gt;。&lt;/p&gt;
+&lt;p&gt;本题的典型解法是使用网络流，且采用了一种“最小割建图”的思路。这种思路比较精巧，如果之前从未见过，只需欣赏即可。&lt;/p&gt;
+&lt;p&gt;我们首先转化一下问题：从方格阵中抛弃最小代价的宝物，使得剩下的宝物满足不相邻的要求。然后构建这样一个流网络：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该网络包含一个超级源点，超级汇点，和为每个方格建立的顶点，共 $n\times n+2$ 个。&lt;/li&gt;
+&lt;li&gt;将原方格图黑白染色，将两种颜色的格子分别连到源点和汇点，边的权值为该点的权值。更具体地，对于一个方格 $(x, y)$ 如果 $x+y$ 为奇数，则从源点向它连边，权值为 $w(x, y)$；如果 $x+y$ 为偶数，则从它向汇点连边，权值为 $w(x, y)$。在求割的时候，如果一个方格顶点与源点/汇点的边被割去了，则认为我们“抛弃”了这个宝物。&lt;/li&gt;
+&lt;li&gt;对于方格图中每组相邻的格子，从“奇数坐标和”点向“偶数坐标和”点连一条权值为 $\inf$ 的边。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;可以证明，这个网络的最小割就是满足要求的最小代价。这是因为该网络中从超级源点走向超级汇点的通路均满足 $S\to v_1\to v_2\to T$ 的形式，其中 $S/T$ 表示超级源点/汇点，$v_1, v_2$ 为一对相邻的方格顶点。因为 $v_1\to v_2$ 的边权值是 $\inf$，所以要破坏这条通路，我们必然要割去 $S\to v_1$ 或 $v_2\to T$ 里的至少一条，即相邻的两个方格必然会抛弃至少一个。因此任意一个割给出的都是合法方案，而最小割给出的就是最优方案。&lt;/p&gt;
+&lt;p&gt;根据最大流最小割定理，我们只需求解该网络从 $S$ 到 $T$ 的最大流即可。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>问题求解III-HW08 题解</title>
