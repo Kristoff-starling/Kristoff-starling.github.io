@@ -160,29 +160,69 @@ $$&lt;/p&gt;
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-5/</link>
       <pubDate>Mon, 23 Oct 2023 00:00:00 +0000</pubDate>
       <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-5/</guid>
-      <description>&lt;p&gt;(TBA)&lt;/p&gt;
-&lt;!-- &lt;div class=&#34;alert alert-note&#34;&gt;
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 最小环&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;给定一个 $n$ 个点 $m$ 条边的无向图，求权值最小的非平凡环。&lt;/li&gt;
 &lt;li&gt;$n\leq 200, m\leq 6000$。&lt;/li&gt;
 &lt;/ul&gt;
-
   &lt;/div&gt;
 &lt;/div&gt;
-
-
-求图的最小环 (也称为图的围长(girth)) 有多种常见的思路，以下介绍两种方法，分别适用于稀疏图和稠密图。
-
-**基于删边+最短路的算法**
-
-枚举图中的每条边，对于一条边 $(u, v)$，求出不经过这条边从 $u$ 到 $v$ 的最短路，这样拼上边 $(u, v)$ 就找到了经过边 $(u, v)$ 的最小环。
-
-该算法需要枚举每条边，暂时性地删除该边之后跑一遍 Dijkstra 算法，故时间复杂度为 $O(m^2\log n)$，适用于稀疏图。
-
-**基于Floyd的算法** --&gt;&lt;blockquote&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;求图的最小环 (也称为图的围长(girth)) 有多种常见的思路，以下介绍两种方法，分别适用于稀疏图和稠密图。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;基于删边+最短路的算法&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;枚举图中的每条边，对于一条边 $(u, v)$，求出不经过这条边从 $u$ 到 $v$ 的最短路，这样拼上边 $(u, v)$ 就找到了经过边 $(u, v)$ 的最小环。&lt;/p&gt;
+&lt;p&gt;该算法需要枚举每条边，暂时性地删除该边之后跑一遍 Dijkstra 算法，故时间复杂度为 $O(m^2\log n)$，适用于稀疏图。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;基于Floyd的算法&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;理解该算法需要对 Floyd 有比较深入的理解。上一个算法中我们对于每条边求经过它的最小环，该算法中我们对于每个顶点求&lt;strong&gt;经过它且它的标号最大的环&lt;/strong&gt;中权值最小的那个。形式化地，&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+girth(G)&amp;amp;=\min_{c\subseteq G} len(c) \qquad \text{&amp;hellip;以下所有 c 均代表环}\\
+&amp;amp;=\min_{k=1}^n\min_{c\subseteq G\wedge \text{c中标号最大的点为k}}len(c)\\
+&amp;amp;= \min_{k=1}^n\min_{1\leq i&amp;lt;j&amp;lt;k\wedge (i, k), (k, j)\in E(G)}\min_{c\subseteq G\wedge \text{c中标号最大的点为k}\wedge i, j\in V(c)} len(c) \\
+&amp;amp;= \min_{k=1}^n\min_{1\leq i&amp;lt;j&amp;lt;k\wedge (i, k), (k, j)\in E(G)}\min_{c\subseteq G\wedge \text{c中标号最大的点为k}\wedge i, j\in V(c)} w(i, k) + w(k, j) + dist(i, j, &amp;lt;k)
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;简单来说，设最大标号的顶点为 $k$，我们再枚举环上和 $k$ 相邻的两个顶点 $i$ 和 $j$，此时只要求出 &lt;strong&gt;从 $i$ 到 $j$，只经过标号小于 $k$ 的顶点的最短路&lt;/strong&gt;，将这条路与 $(i, k), (k, j)$ 拼接起来，就构成了一个经过 $(i, k), (k, j)$ 且编号最大顶点为 $k$ 的最小环。将所有这些候选环放在一起求最小，就是全局的最小环。&lt;/p&gt;
+&lt;p&gt;至于加粗部分，求法就在 Floyd 的三重循环中：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int k = 1; k &amp;lt;= n; k++)
+    /*
+     * 循环不变式：
+     * 此时 dist[i][j] 的值为从 $i$ 到 $j$ 且中途只经过小于 $k$ 的顶点的最短路
+     */
+    for (int i = 1; i &amp;lt;= n; i++)
+        for (int j = 1; j &amp;lt;= n; j++)
+            if (i != j &amp;amp;&amp;amp; i != k &amp;amp;&amp;amp; j != k)
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;大家只要证明了注释中的循环不变式，便理解了 Floyd 算法执行过程的精髓，也理解了 Floyd 算法的正确性由来。该算法的时间复杂度为 $O(n^3)$，适用于稠密图。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 全源最短路&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个点 $m$ 条边的带权有向图，求两两顶点之间的最短路。&lt;/li&gt;
+&lt;li&gt;$n\leq 3000, m\leq 6000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;多源最短路有著名的 Johnson 算法求解，其主要步骤为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;建立一个超级起点向图中所有节点连边，使用 Bellman-Ford 算法求出超级起点到所有节点的最短路，记为 $h$。该过程同时可以判断图中是否有负圈。&lt;/li&gt;
+&lt;li&gt;对于原图中的边 $(u, v)$，将其边权改为 $w&#39;(u, v) = w(u, v) + h(u) - h(v)$，枚举起点使用 Dijkstra 算法求最短路。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;该算法的正确性主要体现在：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;由于 $h$ 是最短路，所以有三角不等式：对于任意 $u, v$，有 $h(u) + w(u, v) \geq h(v)$，因此修改过后的边权 $w&#39;(u, v)$ 必为非负数，满足 Dijkstra 算法的使用条件。&lt;/li&gt;
+&lt;li&gt;$h$ 的存在很像物理中的“势能”，这是因为在修改过边权的图中，从 $u$ 到 $v$ 的任意一条路径 $p: u=x_1\to x_2\to \cdots \to x_n=v$ 的长度为
+$$
+\begin{align}
+len(p) &amp;amp;= \sum_{i=1}^{n-1} w&#39;(x_i, x_{i+1}) \\
+&amp;amp;= \sum_{i=1}^{n-1} w(x_i, x_{i+1}) + h(x_i) - h(x_{i+1}) \\
+&amp;amp;= \sum_{i=1}^{n-1} + w(x_i, x_{i+1}) + h(u) - h(v)
+\end{align}
+$$
+可以看到，修改过边权的图上的路径长度相较于原图，只和起点、终点的“势能”有关，和中间经过的节点无关。这点保证了新图上的最短路一定也是原图上的最短路。&lt;/li&gt;
+&lt;/ul&gt;
 </description>
     </item>
     
