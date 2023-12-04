@@ -59,7 +59,7 @@
   overflow: hidden;
   font-size: 17px;
   letter-spacing: 0.03em;
-  color: rgba(0,0,0,0.54);
+  color: rgba(0, 0, 0, 0.719);
 }
 
 .pub-list {
@@ -69,7 +69,8 @@
 .periodical {
     font-size: 17px;
     font-style: italic;
-    font-weight: lighter
+    font-weight: 100;
+    color: rgb(144, 142, 142)
 }
 
 .award {
@@ -88,9 +89,10 @@
     </div>
     {{ end }}
     {{ if $item.Params.toappear }}
-    <div class="tight-box">
-    <span class="badge-info">To Appear</span>
-    </div>
+      <span class="badge-info">To Appear</span>
+    {{ end }}
+    {{ if $item.Params.badges }}
+      {{ partial "publication_badge" $item }}
     {{ end }}
   </div>
   <div class="col-9">

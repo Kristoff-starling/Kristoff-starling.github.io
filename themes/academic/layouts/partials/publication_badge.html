@@ -1,0 +1,31 @@
+{{/* Display badges in a row. */}}
+
+<style>
+.artifact-badge {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.badge-row {
+    margin-top: 2px;
+    display: flex;
+    justify-content: center;
+}
+</style>
+
+{{ $badgelink := dict
+  "available" "/img/badges/available_v11.png"
+  "reusable" "/img/badges/reusable_v11.png"
+}}
+
+<div class="badge-row">
+{{- $taxonomy := "badges" }}
+{{ with .Param $taxonomy }}
+  {{ range $index, $value := . }}
+    {{ $img_link := (index $badgelink (string $value)) | default "notexist" }}
+    {{ if ne $img_link "notexist"}}
+        <img class="artifact-badge" src="{{ $img_link | urlize}}">
+    {{ end }}
+  {{- end -}}
+{{- end -}}
+</div>
