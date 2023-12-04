@@ -35,6 +35,57 @@
     </item>
     
     <item>
+      <title>问题求解III-HW10 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-10/</link>
+      <pubDate>Mon, 04 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-10/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 字符串匹配&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定由 $n$ 个字符串构成的字典，有 $m$ 次查询，每次查询给定一个字符串，问是否在字典中。&lt;/li&gt;
+&lt;li&gt;$n, m\leq 10000$，字符串长度不超过 16。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;del&gt;如果你对 C++ STL 容器比较熟悉，那么你只需要使用&lt;/del&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;std::unordered_set&amp;lt;std::string&amp;gt; dictionary;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;del&gt;即可解决此题。&lt;/del&gt;&lt;/p&gt;
+&lt;p&gt;我们出题的本意是让大家学习字符串哈希 / Trie树。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 观光旅行&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 个点 $m$ 条边的弱连通混合图，问是否存在无向边的定向方案，使得该图为欧拉图。&lt;/li&gt;
+&lt;li&gt;$n\leq 200, m\leq 700$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;用于解决无向图欧拉图判定的 Fleury/Hierholzer 算法并不能很好地运用到混合图/有向图场景。不过一个连通有向图 $G=(V, E)$ 是欧拉图的充要条件非常简单：&lt;/p&gt;
+&lt;p&gt;$$
+\text{Euler}(G)\Longleftrightarrow \forall u\in V, deg_{in}(u)=deg_{out}(u)
+$$&lt;/p&gt;
+&lt;p&gt;该结论的必要性比较显然：因为欧拉回路是一个闭迹，所以图中的每个点“进来了就要出去”，从而入度必须等于出度。充分性的证明也不难，你可以参考 Hierholzer 的工作方式来构造回路。&lt;/p&gt;
+&lt;p&gt;现在考虑混合图。我们首先为所有的无向边假定一个方向，构成一个有向图。这个初始有向图不一定是欧拉图，我们把不满足判定条件的顶点筛出来，构成两个集合：&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align*}
+S &amp;amp;= \{u\in V(G): deg_{in}(u) &amp;lt; deg_{out}(u)\} \\
+T &amp;amp;= \{u\in V(G): deg_{in}(u) &amp;gt; deg_{out}(u)\}
+\end{align*}
+$$&lt;/p&gt;
+&lt;p&gt;我们希望通过调整初始的定向策略来消除这些不平衡。具体地，如果我们可以找到一条路径 $u_1\to u_2\to \cdots \to u_t$，满足 $u_1\in S, u_2\in T$，且中间的“有向”边原本都是无向的，那么我们只要将这些边的方向都取反，就可以使 $u_1$ 的出度入度差减少2，$u_t$ 的入读出度差增加2，且路径中间的节点入度出度不变。因此，我们只要找到足够数量的这样的路径，就可以将整张图调整成欧拉图。&lt;/p&gt;
+&lt;p&gt;通过搜索寻找这样的路径不够高明，因为 (1) 我们缺乏足够的信息高效找到一条路径 (2) 图中可能有一些关键的“枢纽”边不能随便分配给任意路径，搜索可能导致我们无法找到足够数量的路径。因此我们考虑带有“反悔”机制的网络流：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;建立超级源点向 $S$ 中的所有节点连边，流量为 $\frac{1}{2}(deg_{out}(u) - deg_{in}(u))$；&lt;/li&gt;
+&lt;li&gt;建立超级汇点，$T$ 中所有节点向超级汇点连边，流量为 $\frac{1}{2}(deg_{in}(u) - deg_{out}(u))$；&lt;/li&gt;
+&lt;li&gt;将图中所有的无向边引入流网络，流量为 1，方向为初始假定的方向。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;式子中带有 $1/2$ 是因为将一条边反向会带来 2 的出度入度差影响。对上述流网络跑最大流，如果可以满流则说明可以调整成欧拉图。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>问题求解III-HW09 题解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-9/</link>
       <pubDate>Sat, 18 Nov 2023 00:00:00 +0000</pubDate>

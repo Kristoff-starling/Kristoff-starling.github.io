@@ -29,12 +29,13 @@
   
     
   
-  <meta name="description" content="题面描述
- 有 $n$ 个包，第 $i$ 个包里有 $A_i$ 个黑球和 $B_i$ 个白球。问有多少种方法选取两个包，再将包中的球排成一排。同色的球之间不可区分，选择不同的包被视为不同方案。 $n\leq 2\times 10^5, A_i, B_i\leq 2000$。    该题面描述与原题背景不太相同，但容易看出它们讨论的问题是一样的。本题解法比较精巧，供大家欣赏。
-如果我们枚举选择哪两个包，那么选取第 $i$ 个包和第 $j$ 个包的情况下，问题会被转化为将 $A_i&#43;A_j$ 个黑球和 $B_i&#43;B_j$ 个白球排成一排有多少种方案，这等价于在 $A_i&#43;A_j&#43;B_i&#43;B_j$ 个位置中选择 $A_i &#43; A_j$ 个位置放黑球。因此最终答案可以写为 $$ \sum_{i,j\in \{1,\cdots, n\}, i&lt;j} \binom{A_i&#43;A_j&#43;B_i&#43;B_j}{A_i&#43;A_j} $$ 即使我们可以通过预处理 $O(1)$ 地求解组合数，直接计算该表达式的时间复杂度也会达到 $O(n^2)$。本题 $n\leq 2\times 10^5$，无法通过。">
+  <meta name="description" content="Problem A: 字符串匹配
+ 给定由 $n$ 个字符串构成的字典，有 $m$ 次查询，每次查询给定一个字符串，问是否在字典中。 $n, m\leq 10000$，字符串长度不超过 16。    如果你对 C&#43;&#43; STL 容器比较熟悉，那么你只需要使用
+std::unordered_set&lt;std::string&gt; dictionary;  即可解决此题。
+我们出题的本意是让大家学习字符串哈希 / Trie树。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-4-c/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-10/">
 
   
 
@@ -221,7 +222,7 @@
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-4-c/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-10/">
 
   
   
@@ -235,17 +236,18 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-4-c/">
-  <meta property="og:title" content="【问题求解II-HW4.C】烧烤 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="题面描述
- 有 $n$ 个包，第 $i$ 个包里有 $A_i$ 个黑球和 $B_i$ 个白球。问有多少种方法选取两个包，再将包中的球排成一排。同色的球之间不可区分，选择不同的包被视为不同方案。 $n\leq 2\times 10^5, A_i, B_i\leq 2000$。    该题面描述与原题背景不太相同，但容易看出它们讨论的问题是一样的。本题解法比较精巧，供大家欣赏。
-如果我们枚举选择哪两个包，那么选取第 $i$ 个包和第 $j$ 个包的情况下，问题会被转化为将 $A_i&#43;A_j$ 个黑球和 $B_i&#43;B_j$ 个白球排成一排有多少种方案，这等价于在 $A_i&#43;A_j&#43;B_i&#43;B_j$ 个位置中选择 $A_i &#43; A_j$ 个位置放黑球。因此最终答案可以写为 $$ \sum_{i,j\in \{1,\cdots, n\}, i&lt;j} \binom{A_i&#43;A_j&#43;B_i&#43;B_j}{A_i&#43;A_j} $$ 即使我们可以通过预处理 $O(1)$ 地求解组合数，直接计算该表达式的时间复杂度也会达到 $O(n^2)$。本题 $n\leq 2\times 10^5$，无法通过。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-10/">
+  <meta property="og:title" content="问题求解III-HW10 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Problem A: 字符串匹配
+ 给定由 $n$ 个字符串构成的字典，有 $m$ 次查询，每次查询给定一个字符串，问是否在字典中。 $n, m\leq 10000$，字符串长度不超过 16。    如果你对 C&#43;&#43; STL 容器比较熟悉，那么你只需要使用
+std::unordered_set&lt;std::string&gt; dictionary;  即可解决此题。
+我们出题的本意是让大家学习字符串哈希 / Trie树。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-05-08T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-12-04T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-05-08T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-12-04T00:00:00&#43;00:00">
   
 
   
@@ -264,7 +266,7 @@
 
 
 
-  <title>【问题求解II-HW4.C】烧烤 | Yuyao Wang&#39;s Homepage</title>
+  <title>问题求解III-HW10 题解 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -509,7 +511,7 @@
         <a href="/courses/problemsolving22/solutions/2-3-c/">II-HW03-C</a>
       </li>
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving22/solutions/2-4-c/">II-HW04-C</a>
       </li>
       
@@ -573,7 +575,7 @@
         <a href="/courses/problemsolving22/solutions/3-9/">III-HW09</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving22/solutions/3-10/">III-HW10</a>
       </li>
       
@@ -594,47 +596,52 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>【问题求解II-HW4.C】烧烤</h1>
+          <h1>问题求解III-HW10 题解</h1>
 
           <div class="article-style">
             <div class="alert alert-note">
   <div>
-    <p><strong>题面描述</strong></p>
+    <p><strong>Problem A: 字符串匹配</strong></p>
 <ul>
-<li>有 $n$ 个包，第 $i$ 个包里有 $A_i$ 个黑球和 $B_i$ 个白球。问有多少种方法选取两个包，再将包中的球排成一排。同色的球之间不可区分，选择不同的包被视为不同方案。</li>
-<li>$n\leq 2\times 10^5, A_i, B_i\leq 2000$。</li>
+<li>给定由 $n$ 个字符串构成的字典，有 $m$ 次查询，每次查询给定一个字符串，问是否在字典中。</li>
+<li>$n, m\leq 10000$，字符串长度不超过 16。</li>
 </ul>
   </div>
 </div>
-<p>该题面描述与原题背景不太相同，但容易看出它们讨论的问题是一样的。本题解法比较精巧，供大家欣赏。</p>
-<p>如果我们枚举选择哪两个包，那么选取第 $i$ 个包和第 $j$ 个包的情况下，问题会被转化为将 $A_i+A_j$ 个黑球和 $B_i+B_j$ 个白球排成一排有多少种方案，这等价于在 $A_i+A_j+B_i+B_j$ 个位置中选择 $A_i + A_j$ 个位置放黑球。因此最终答案可以写为
-$$
-\sum_{i,j\in \{1,\cdots, n\}, i&lt;j} \binom{A_i+A_j+B_i+B_j}{A_i+A_j}
-$$
-即使我们可以通过预处理 $O(1)$ 地求解组合数，直接计算该表达式的时间复杂度也会达到 $O(n^2)$。本题 $n\leq 2\times 10^5$，无法通过。</p>
-<p>本题的关键在于一步精妙的模型转化。通常我们认为能够写出 
-<a href="https://en.wikipedia.org/wiki/Closed-form_expression" target="_blank" rel="noopener">closed form</a> 的数学表达式是优美的，但这里我们反其道而行之，将上面表达式中的组合数转化为一个具体的动态规划问题。考虑如下问题：</p>
-<blockquote>
-<p>在一张 $n\times m$ 的方格纸上，从 $(0, 0)$ 走到 $(n, m)$ 有多少种方案？</p>
-</blockquote>
-<p>很容易看出该问题的答案是 $\binom{n+m}{n}$，即从 $(0, 0)$ 到 $(n, m)$ 一共要走 $n$ 条横向边和 $m$ 条竖向边，从 $n+m$ 步中选 $n$ 步走横的。不过我们还有一个“笨方法”：令 $dp(i, j)$ 表示从 $(0, 0)$ 走到 $(i, j)$ 的方案数，显然 $(i, j)$ 可以从 $(i-1, j)$ 或 $(i, j-1)$ 转移来，因此
-$$
-dp(i, j)=
-\begin{cases}
-1&amp;, (i, j) = (0, 0)\\
-dp(i-1, j) + dp(i, j-1)&amp;, otherwise
-\end{cases}
-$$
-注意上述状态转移方程没有考虑边界问题。
-回到原问题，对于 $\binom{A_i+A_j+B_i+B_j}{A_i+A_j}$，我们可以套用走方格纸问题，将其转化为从 $(-A_i, -B_i)$ 到 $(A_j, B_j)$ 的方案数，并通过动态规划递推解决。我们看似用一个 $O(|A_i|^2)$ 的算法替代了 $O(1)$ 的组合数求解，但<strong>动态规划的递推过程是可以叠加的</strong>。我们不需要单独对每组点对跑动态规划，我们可以给地图上所有的负坐标 $(-A_i, -B_i)$ 打上 1，然后从地图的左下角开始一遍推到右上角，然后在所有的正坐标位置收取答案。这样我们花一趟完成了 $n^2$ 次动态规划，时间复杂度降低到 $O(|A_i|^2)$。</p>
-<p>这个过程有一点抽象，如果你没有完全理解，可以简单构造一个 3 个点的样例手动模拟一下算法，看看一个负坐标上的标记是如何同时贡献到所有的正坐标上，以及不同的标记是如何叠加的。</p>
-<p>此外还有一些细节需要注意：</p>
+<p><del>如果你对 C++ STL 容器比较熟悉，那么你只需要使用</del></p>
+<pre><code class="language-c++">std::unordered_set&lt;std::string&gt; dictionary;
+</code></pre>
+<p><del>即可解决此题。</del></p>
+<p>我们出题的本意是让大家学习字符串哈希 / Trie树。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>Problem B: 观光旅行</strong></p>
 <ul>
-<li>C/C++ 中无法直接支持负数下标，你可以考虑给所有的坐标加上一个偏移量 offset 转化成正数。</li>
-<li>上述递推过程会出现 $(-A_i, B_i)$ 向 $(A_i, B_i)$ 贡献的情况，相当于选取了两个一样的包，需要 $O(n)$ 地单独计算并扣除。</li>
-<li>对于任意一对 $(i, j)$，上述递推过程会同时计算 “$(-A_i, -B_i)$ 向 $(A_j, B_j)$ 贡献” 和 “$(-A_j, B_J)$ 向 $(A_i, B_i)$ 贡献”，即重复计算了两次。因此扣除第二点中的数量后还需要除以 2。</li>
-<li>在模意义下如何除以 2 不是一个简单的问题，你可以上网搜索“逆元”或 &ldquo;modular multiplicative inverse&rdquo;。现阶段你不需要过深地理解背后的数论原理，因为后续的理论课程会涉及。</li>
+<li>给定一个 $n$ 个点 $m$ 条边的弱连通混合图，问是否存在无向边的定向方案，使得该图为欧拉图。</li>
+<li>$n\leq 200, m\leq 700$。</li>
 </ul>
+  </div>
+</div>
+<p>用于解决无向图欧拉图判定的 Fleury/Hierholzer 算法并不能很好地运用到混合图/有向图场景。不过一个连通有向图 $G=(V, E)$ 是欧拉图的充要条件非常简单：</p>
+<p>$$
+\text{Euler}(G)\Longleftrightarrow \forall u\in V, deg_{in}(u)=deg_{out}(u)
+$$</p>
+<p>该结论的必要性比较显然：因为欧拉回路是一个闭迹，所以图中的每个点“进来了就要出去”，从而入度必须等于出度。充分性的证明也不难，你可以参考 Hierholzer 的工作方式来构造回路。</p>
+<p>现在考虑混合图。我们首先为所有的无向边假定一个方向，构成一个有向图。这个初始有向图不一定是欧拉图，我们把不满足判定条件的顶点筛出来，构成两个集合：</p>
+<p>$$
+\begin{align*}
+S &amp;= \{u\in V(G): deg_{in}(u) &lt; deg_{out}(u)\} \\
+T &amp;= \{u\in V(G): deg_{in}(u) &gt; deg_{out}(u)\}
+\end{align*}
+$$</p>
+<p>我们希望通过调整初始的定向策略来消除这些不平衡。具体地，如果我们可以找到一条路径 $u_1\to u_2\to \cdots \to u_t$，满足 $u_1\in S, u_2\in T$，且中间的“有向”边原本都是无向的，那么我们只要将这些边的方向都取反，就可以使 $u_1$ 的出度入度差减少2，$u_t$ 的入读出度差增加2，且路径中间的节点入度出度不变。因此，我们只要找到足够数量的这样的路径，就可以将整张图调整成欧拉图。</p>
+<p>通过搜索寻找这样的路径不够高明，因为 (1) 我们缺乏足够的信息高效找到一条路径 (2) 图中可能有一些关键的“枢纽”边不能随便分配给任意路径，搜索可能导致我们无法找到足够数量的路径。因此我们考虑带有“反悔”机制的网络流：</p>
+<ul>
+<li>建立超级源点向 $S$ 中的所有节点连边，流量为 $\frac{1}{2}(deg_{out}(u) - deg_{in}(u))$；</li>
+<li>建立超级汇点，$T$ 中所有节点向超级汇点连边，流量为 $\frac{1}{2}(deg_{in}(u) - deg_{out}(u))$；</li>
+<li>将图中所有的无向边引入流网络，流量为 1，方向为初始假定的方向。</li>
+</ul>
+<p>式子中带有 $1/2$ 是因为将一条边反向会带来 2 的出度入度差影响。对上述流网络跑最大流，如果可以满流则说明可以调整成欧拉图。</p>
 
           </div>
 
@@ -650,15 +657,8 @@ $$
   
   
   <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/solutions/2-5-c/" rel="next">【问题求解II-HW5.C】背包问题</a>
-  </div>
-  
-  
-  
-  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/solutions/2-3-a/" rel="prev">【问题求解II-HW3.A】签到题</a>
+    <a href="/courses/problemsolving22/solutions/3-9/" rel="prev">问题求解III-HW09 题解</a>
   </div>
   
 </div>
@@ -668,7 +668,7 @@ $$
         </div>
 
         <div class="body-footer">
-          <p>Last updated on May 8, 2023</p>
+          <p>Last updated on Dec 4, 2023</p>
 
           
 
