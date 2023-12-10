@@ -59,7 +59,7 @@ social:
   link: https://twitter.com/YuyaoStarling
 - icon: cv
   icon_pack: ai
-  link: files/yuyao_CV_20231101.pdf
+  link: files/yuyao_CV_20231211.pdf
 
 # Enter email to display Gravatar (if Gravatar enabled in Config)
 email: ""
