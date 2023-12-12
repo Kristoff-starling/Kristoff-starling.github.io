@@ -51,6 +51,36 @@
   Bib
 </button>
 {{ end }}
+{{ with $page.Params.url_poster }}
+  {{ $resource := $page.Resources.GetMatch . }}
+  {{ if $resource }}
+    {{ $link = $resource.RelPermalink }}
+  {{ else }}
+    {{ $link = . | relURL }}
+  {{ end }}
+<a class="btn btn-outline-primary my-1 mr-1{{ if $is_list }} btn-sm{{end}}" href="{{ $link }}" target="_blank" rel="noopener">
+  {{ i18n "btn_poster" }}
+</a>
+{{ end }}
+{{ if $page.Params.slides }}
+  {{ with (site.GetPage (printf "slides/%s" $page.Params.slides)) }}
+  <a class="btn btn-outline-primary my-1 mr-1{{ if $is_list }} btn-sm{{end}}" href="{{ .RelPermalink }}" target="_blank">
+    {{ i18n "btn_slides" }}
+  </a>
+  {{ end }}
+{{ else }}
+{{ with $page.Params.url_slides }}
+  {{ $resource := $page.Resources.GetMatch . }}
+  {{ if $resource }}
+    {{ $link = $resource.RelPermalink }}
+  {{ else }}
+    {{ $link = . | relURL }}
+  {{ end }}
+<a class="btn btn-outline-primary my-1 mr-1{{ if $is_list }} btn-sm{{end}}" href="{{ $link }}" target="_blank" rel="noopener">
+  {{ i18n "btn_slides" }}
+</a>
+{{ end }}
+{{ end }}
 {{ with $page.Params.url_artifact }}
   {{ $resource := $page.Resources.GetMatch . }}
   {{ if $resource }}
@@ -102,36 +132,7 @@
 </a>
 {{ end }}
 {{ end }}
-{{ with $page.Params.url_poster }}
-  {{ $resource := $page.Resources.GetMatch . }}
-  {{ if $resource }}
-    {{ $link = $resource.RelPermalink }}
-  {{ else }}
-    {{ $link = . | relURL }}
-  {{ end }}
-<a class="btn btn-outline-primary my-1 mr-1{{ if $is_list }} btn-sm{{end}}" href="{{ $link }}" target="_blank" rel="noopener">
-  {{ i18n "btn_poster" }}
-</a>
-{{ end }}
-{{ if $page.Params.slides }}
-  {{ with (site.GetPage (printf "slides/%s" $page.Params.slides)) }}
-  <a class="btn btn-outline-primary my-1 mr-1{{ if $is_list }} btn-sm{{end}}" href="{{ .RelPermalink }}" target="_blank">
-    {{ i18n "btn_slides" }}
-  </a>
-  {{ end }}
-{{ else }}
-{{ with $page.Params.url_slides }}
-  {{ $resource := $page.Resources.GetMatch . }}
-  {{ if $resource }}
-    {{ $link = $resource.RelPermalink }}
-  {{ else }}
-    {{ $link = . | relURL }}
-  {{ end }}
-<a class="btn btn-outline-primary my-1 mr-1{{ if $is_list }} btn-sm{{end}}" href="{{ $link }}" target="_blank" rel="noopener">
-  {{ i18n "btn_slides" }}
-</a>
-{{ end }}
-{{ end }}
+
 {{ with $page.Params.url_video }}
   {{ $resource := $page.Resources.GetMatch . }}
   {{ if $resource }}
