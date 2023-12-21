@@ -5,12 +5,64 @@
     <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
       <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/index.xml" rel="self" type="application/rss+xml" />
     <description>OJ习题讲解</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Mon, 04 Dec 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 21 Dec 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>OJ习题讲解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/</link>
     </image>
+    
+    <item>
+      <title>问题求解III-HW13 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-13/</link>
+      <pubDate>Thu, 21 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-13/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 最长回文子串&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定字符串 $s$，求其最长回文子串的长度。&lt;/li&gt;
+&lt;li&gt;$|s|\leq 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;我们希望大家掌握
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving22/algorithms/string-hash&#34;&gt;字符串的滚动哈希技术&lt;/a&gt;。简单来说，字符串滚动哈希可以在线性预处理后，$O(1)$ 地回答任意子串的哈希值。在拥有这项技术的前提下，我们只需要对输入串正着和倒着分别进行滚动哈希预处理，然后枚举字符串的每个位置作为“中间点”，二分最长的可以向左右延伸的回文长度，用哈希值验证即可。总时间复杂度 $O(n\log n)$。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;更高效的回文串算法与数据结构&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;求解最长回文子串存在线性做法。如果你感兴趣，可以上网搜索 &lt;a href=&#34;https://oi-wiki.org/string/manacher/&#34;&gt;Manacher 算法&lt;/a&gt; 或者 &lt;a href=&#34;https://oi-wiki.org/string/pam/&#34;&gt;回文自动机&lt;/a&gt;。但它们精巧程度过高且可解决的问题比较专门，所以我们仍然建议你掌握字符串滚动哈希这一“万金油”。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 方块涂色&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n\times m$ 的方格纸和 $k$ 种不同颜色的画笔，现在要将所有方格选一种颜色涂色，并要求曼哈顿距离为奇数的方格不能涂相同的颜色，问一共有多少种涂色方法。&lt;/li&gt;
+&lt;li&gt;$n, m\leq 50, k\leq n*m$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;一个重要的观察是：如果我们将初始的棋盘“黑白染色”——即将坐标和为偶数的格子归为一类，奇数的格子归为另一类，那么两个格子曼哈顿距离为奇数的充要条件就是它们属于不同的类。因此，我们只要保证这两类的格子使用的颜色集合交集为空即可。&lt;/p&gt;
+&lt;p&gt;不妨设两类格子的数量分别为 $N_1$ 和 $N_2$ (一个是 $\lfloor\frac{nm}{2}\rfloor$，另一个是 $\lceil\frac{nm}{2}\rceil$), 然后我们枚举给第一类格子使用 $k_1$ 种颜色，第二类格子使用 $k_2$ 种颜色 (颜色集合需要满足互不相交)，有：&lt;/p&gt;
+&lt;p&gt;$$
+ans=\sum_{k_1=0}^k\sum_{k_2=0}^{k-k_1}\binom{k}{k_1}\binom{k-k_1}{k_2}S(N_1, k_1)S(N_2, k_2)k_1!k_2!
+$$&lt;/p&gt;
+&lt;p&gt;其中 $S(i, j)$ 表示将 $i$ 个可区分的小球放入 $j$ 个不可区分的桶里，不准存在空桶的方案数 (第一行式子里最后有 $k_1!k_2$ 是因为颜色实际上是可区分的)，这是经典的第二类斯特林数，有简单的动态规划状态转移方程：&lt;/p&gt;
+&lt;p&gt;$$
+S(i, j) = S(i - 1, j - 1) + S(i - 1, j) * j
+$$&lt;/p&gt;
+&lt;p&gt;该公式的含义是：考虑最后一个小球，它可以自成一桶，从而剩下的 $i-1$ 个球放入剩下的 $j-1$ 个桶中；或者它不自成一桶，那么其他 $i-1$ 个球放入 $j$ 个桶后，最后一个球选一个桶放入 (注意虽然桶本身不可区分，但前 $i-1$ 个不同的球使得这些桶变得可区分了)。&lt;/p&gt;
+&lt;p&gt;综上，我们只要用预处理组合数和第二类斯特林数，最后枚举 $k_1, k_2$ 即可。总时间复杂度为 $O(nm + k^2)$。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;进一步优化&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;令 $nm$ 和 $k$ 同阶，上述算法的时间复杂度可以被进一步优化到 $O(k\log k)$。大家学习过多项式技术后可以再来想一想本题。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>问题求解III-HW10 题解</title>
