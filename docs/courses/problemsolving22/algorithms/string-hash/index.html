@@ -29,7 +29,11 @@
   
     
   
-  <meta name="description" content="(TBA)">
+  <meta name="description" content="字符串哈希的本质是将一个字符串集合映射到一个数的集合，从而将比较两个字符串是否相等转化为比较他们的哈希值是否相等，将复杂度降低到 $O(1)$。
+字符串哈希的经典哈希函数是类似于进制转换的按位权相加，即对于字符串 $s=s_1\cdots s_n$，
+$$ hash(s)=\left(\sum_{i=1}^np^{n-i}s_i\right)\ \text{mod}\ M $$
+其中 $p$ 和 $M$ 是预先选好的参数。$p$ 被称为种子，通常取大质数，$M$ 的选择有两种类型：
+ 一个大质数； $2^{64}$；该模数的好处是可以直接利用 unsigned long long 类型的自然溢出取模，速度更快写起来也更简洁。  在普通的哈希中我们通常用拉链法/线性探查法来解决哈希冲突，但在字符串哈希中，我们通常不处理冲突，而是选择“相信”不会遇到两个不同的字符串有相同哈希值。这份“自信”来源于巨大的值空间：当 $M$ 取得足够大时 (比如 $10^{18}$ 级别)，将远小于值空间数目的字符串映射进去，冲突的概率极小 (如果你对这个问题感兴趣，请参考本文最后绿色框内的补充内容1)。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/string-hash/">
@@ -235,7 +239,11 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/string-hash/">
   <meta property="og:title" content="字符串哈希 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="(TBA)"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:description" content="字符串哈希的本质是将一个字符串集合映射到一个数的集合，从而将比较两个字符串是否相等转化为比较他们的哈希值是否相等，将复杂度降低到 $O(1)$。
+字符串哈希的经典哈希函数是类似于进制转换的按位权相加，即对于字符串 $s=s_1\cdots s_n$，
+$$ hash(s)=\left(\sum_{i=1}^np^{n-i}s_i\right)\ \text{mod}\ M $$
+其中 $p$ 和 $M$ 是预先选好的参数。$p$ 被称为种子，通常取大质数，$M$ 的选择有两种类型：
+ 一个大质数； $2^{64}$；该模数的好处是可以直接利用 unsigned long long 类型的自然溢出取模，速度更快写起来也更简洁。  在普通的哈希中我们通常用拉链法/线性探查法来解决哈希冲突，但在字符串哈希中，我们通常不处理冲突，而是选择“相信”不会遇到两个不同的字符串有相同哈希值。这份“自信”来源于巨大的值空间：当 $M$ 取得足够大时 (比如 $10^{18}$ 级别)，将远小于值空间数目的字符串映射进去，冲突的概率极小 (如果你对这个问题感兴趣，请参考本文最后绿色框内的补充内容1)。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -525,7 +533,85 @@
           <h1>字符串哈希</h1>
 
           <div class="article-style">
-            <p>(TBA)</p>
+            <p>字符串哈希的本质是将一个字符串集合映射到一个数的集合，从而将比较两个字符串是否相等转化为比较他们的哈希值是否相等，将复杂度降低到 $O(1)$。</p>
+<p>字符串哈希的经典哈希函数是类似于进制转换的按位权相加，即对于字符串 $s=s_1\cdots s_n$，</p>
+<p>$$
+hash(s)=\left(\sum_{i=1}^np^{n-i}s_i\right)\ \text{mod}\ M
+$$</p>
+<p>其中 $p$ 和 $M$ 是预先选好的参数。$p$ 被称为种子，通常取大质数，$M$ 的选择有两种类型：</p>
+<ul>
+<li>一个大质数；</li>
+<li>$2^{64}$；该模数的好处是可以直接利用 unsigned long long 类型的自然溢出取模，速度更快写起来也更简洁。</li>
+</ul>
+<p>在普通的哈希中我们通常用拉链法/线性探查法来解决哈希冲突，但在字符串哈希中，我们通常不处理冲突，而是选择“相信”不会遇到两个不同的字符串有相同哈希值。这份“自信”来源于巨大的值空间：当 $M$ 取得足够大时 (比如 $10^{18}$ 级别)，将远小于值空间数目的字符串映射进去，冲突的概率极小 (如果你对这个问题感兴趣，请参考本文最后绿色框内的补充内容<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>)。</p>
+<h4 id="滚动哈希"><strong>滚动哈希</strong></h4>
+<p>计算上述的哈希值是很有技巧的。在很多情形下，我们需要对一个大字符串的多个子串计算哈希值，如果我们求出 $\sum$ 里的每一项再相加，那么每个子串的计算复杂度均为 $O(length)$，这不可接受。</p>
+<p>滚动哈希技术可以在对字符串线性预处理后，$O(1)$ 求出任意子串的哈希值。具体做法为，令</p>
+<p>$$
+H(i)=\begin{cases}
+0&amp;, i=0 \\
+H(i-1)\cdot p + s_i&amp;, i &gt; 0
+\end{cases}
+$$</p>
+<p>那么区间 $[l, r]$ 的子串的哈希值为</p>
+<p>$$
+hash(s[l\ldots r]) = H(r) - H(l - 1)\cdot p^{r - l + 1}
+$$</p>
+<p>你可以仔细计算一下以体会它的正确性。</p>
+<div class="alert alert-tip">
+  <div>
+    <p><strong>我真的可以放心地不做冲突处理地使用字符串哈希吗？</strong></p>
+<p>从理论角度，使用自然溢出的字符串单哈希是可以通过精心构造输入数据卡掉的。具体方法如下：</p>
+<ul>
+<li>采用的种子是偶数时：如果两个字符串的第 $i$ 位不同，它们在这一位的哈希值将相差 $p^i\cdot \Delta s$。那么构造两个字符串，它们的低位都相同，第一个不同的位是第 $x$ 位，那么可想而知它们哈希值的差会是 $p^x$ 的倍数。由于 $p$ 是偶数，所以当 $x\geq 64$ 时，这个差值必然是自然溢出模数的倍数，从而发生哈希冲突。</li>
+<li>采用的种子是奇数时：考虑按照如下方式构造 01 串，其中的 “not” 符号表示将字符串取反：
+$$
+\begin{align*}
+S(0) &amp;= 1\\
+S(n) &amp;= S(n - 1) + \text{not}(S(n-1))
+\end{align*}
+$$
+令 $f(n) = hash(S(n)) - hash(\text{not}(S(n)))$，有
+$$
+\begin{align*}
+f(0) &amp;= 1\\
+f(n) &amp;= f(n-1)\cdot \left(p^{2^{n-1}} - 1\right)
+\end{align*}
+$$
+从而
+$$
+f(n) = \prod_{i=0}^{n-1}\left(p^{2^i}-1\right)
+$$
+考察 $g(n)=p^{2^n}-1$ 的2因子的个数，运用平方差公式，有
+$$
+\begin{align*}
+g(n) &amp;= \left(p^{2^{n-1}}+1\right)\left(p^{2^{n-1}}-1\right) \\
+&amp;= \left(p^{2^{n-1}}+1\right)\cdot g(n-1)
+\end{align*}
+$$
+因为 $p^{2^{n-1}}+1$ 是偶数，$g(0)=p-1$ 也是偶数，所以 $g(n)$ 至少含有因子 $2^{n+1}$，从而 $f(n)$ 至少含有 $\frac{1}{2}n(n+1)$ 个2因子。只要将 $n$ 取得稍大一些，$S(n)$ 和 $\text{not}(S(n))$ 的哈希差值就会是自然溢出模数的倍数，然而他们没有一位是相同的。更加精妙的是，由于 $S(n)$ 和 $\text{not}(S(n))$ 的高度对称性，从右往左哈希的结果只是取一个负号，仍然是自然溢出等价的。</li>
+</ul>
+<p>综合以上两点，我们可以先用奇数种子的方法构造 $S(n)$ 和 $\text{not}(S(n))$，然后再在它们首尾各接上一大串相同的字符，这样不论自然溢出哈希是从左向右还是从右向左，不论种子的值是什么，这两个串都会冲突。</p>
+<hr>
+<p>以上只是从非常理论的角度分析了目前人类智慧已经可以找到不处理冲突的自然溢出哈希的反例，但事实上除非存在一个“出题人”成心想卡，自然溢出哈希的正确性和效率还是非常可观的。如果你实在不放心，可以采取以下的双哈希策略：</p>
+<p>$$
+\begin{align*}
+h_1(s) &amp;= \left(\sum_{i=1}^np_1^{n-i}s_i\right)\ \text{mod}\ M_1 \\
+h_2(s) &amp;= \left(\sum_{i=1}^np_2^{n-i}s_i\right)\ \text{mod}\ M_2 \\
+\end{align*}
+$$</p>
+<p>然后令 $s$ 的哈希值为 $(h_1(s), h_2(s))$ 这样一个 pair，其中 $p_1,p_2$ 通常取质数，$M_1, M_2$ 通常取 $10^9$ 附近的大质数。值域 $[1, M_1]\times [1, M_2]$ 的宽广性保证了哈希冲突的概率极低，且目前不存在已知的可以针对任意模数的双哈希反例构造方法。</p>
+  </div>
+</div>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p><del>搬运</del>参考了许昊然的
+<a href="https://sillycross.github.io/cnblog/2012/05/18/2012-05-18/" target="_blank" rel="noopener">博客</a>。&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
 
           </div>
 
