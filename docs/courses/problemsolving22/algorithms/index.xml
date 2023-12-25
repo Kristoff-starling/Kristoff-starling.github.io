@@ -5,12 +5,32 @@
     <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/</link>
       <atom:link href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/index.xml" rel="self" type="application/rss+xml" />
     <description>算法&amp;数据结构</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 21 Dec 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Mon, 25 Dec 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
       <title>算法&amp;数据结构</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/</link>
     </image>
+    
+    <item>
+      <title>Trie树</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie/</link>
+      <pubDate>Mon, 25 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie/</guid>
+      <description>&lt;p&gt;字典树 (又称 Trie 树) 是一个可以 $O(length)$ 地插入，$O(length)$ 地查询的 &lt;code&gt;unordered_set&amp;lt;string&amp;gt;&lt;/code&gt;，下面的图例展示了它的基本工作原理，这个 Trie 树存储的字符串有 to, tea, ted, ten, A, i, in, inn。&lt;/p&gt;
+&lt;figure&gt;
+    &lt;img src=&#34;https://kristoff-starling.github.io/img/problemsolving/trie.svg&#34; style=&#34;zoom: 70%;&#34; &gt;
+    &lt;figcaption&gt;
+    &lt;font color=&#34;grey&#34;&gt;该例子中每个字符串还存储了一个对应的数值，用这种方法，Trie也可以实现 unordered_map&amp;lt;string, Any&amp;gt;&lt;/font&gt;
+    &lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;p&gt;从根节点出发向下走，每一条路径上的字母连接起来代表一个字符串，拥有相同前缀的字符串可以共享前缀节点 (这也是它能够高效查找的核心)。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;插入字符串时，只需要根据每一位字符选择对应的边向下走 (如果不存在对应符号的边则新建边和顶点)，在最后停留的节点上打一个“存在标记”，时间复杂度为 $O(length)$。&lt;/li&gt;
+&lt;li&gt;查询字符串时，仍然根据每一位字符选择对应的边向下走，字符串存在当且仅当能完整走完且最后停留的节点上确实有“存在标记”，时间复杂度为 $O(length)$。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
     
     <item>
       <title>字符串哈希</title>

@@ -35,6 +35,96 @@
     </item>
     
     <item>
+      <title>问题求解III-HW11 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-11/</link>
+      <pubDate>Mon, 25 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-11/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 字符串匹配&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个字符串池，有 $q$ 查询，每次查询提供一个字符串，问该字符串是否在字符串池中。&lt;/li&gt;
+&lt;li&gt;字符串池中字符串数目和 $q$ 同阶，$q\leq 10^5$，所有字符串长度不超过 16。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;h4 id=&#34;解法1-内置数据结构&#34;&gt;&lt;strong&gt;解法1: 内置数据结构&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;对于 C++ 而言，使用红黑树实现的 &lt;code&gt;set&amp;lt;string&amp;gt;&lt;/code&gt; 或哈希实现的 &lt;code&gt;unordered_set&amp;lt;string&amp;gt;&lt;/code&gt; 都可以轻松完成本题。&lt;/p&gt;
+&lt;h4 id=&#34;解法2-哈希&#34;&gt;&lt;strong&gt;解法2: 哈希&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;参考
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving22/algorithms/string-hash&#34;&gt;讲义&lt;/a&gt; 中的讲解。注意本题可能需要使用讲义最后提到的双哈希才能通过。&lt;/p&gt;
+&lt;h4 id=&#34;解法3-字典树&#34;&gt;&lt;strong&gt;解法3: 字典树&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;这是一道字典树的模板题，参考
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie&#34;&gt;讲义&lt;/a&gt; 中的讲解。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 顶点覆盖&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一张图 $G(V, E)$，求图的一个尽可能小的顶点覆盖 (即所有边都至少有一个端点在选中的点集中)，你的答案只要不超过最优解的 2 倍即可。&lt;/li&gt;
+&lt;li&gt;$|V|\leq 2000, |E|\leq 20000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;近似比为 2 的顶点覆盖近似算法非常简单：只需要在原图中任取一个极大匹配，然后将匹配边的端点全部选中即可。具体细节和证明见教材。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解III-HW12 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-12/</link>
+      <pubDate>Mon, 25 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-12/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 探索遗迹 II&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一棵 $n$ 个节点的带权有根树，求树上的一个最大权独立集。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;本题和 3-7 的第二题“万圣节舞会”重复。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 探索遗迹 III&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一张 $n$ 个点 $m$ 条边的有向图，求每个顶点可以支配的点的个数。这里点 $i$ 支配点 $j$ 指从图的1号点出发，任意一条到 $j$ 的路径都会经过 $i$。&lt;/li&gt;
+&lt;li&gt;$n\leq 5000, m\leq 10000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;本题数据范围不大，因此可以采用暴力搜索的方式通过本题——先计算从1号点出发能到达的点的数目，再计算从1号点出发不经过 $i$ 能到达的点的数目，两者的差值即为 $i$ 支配的点的数目。对每个点进行搜搜的复杂度为 $O(n+m)$，因此该做法总时间复杂度为 $O(n^2 + nm)$。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;更快的做法？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果你感兴趣，可以阅读这篇介绍支配树和使用 Lengauer-Tarjan 算法求解支配树的 &lt;a href=&#34;https://oi-wiki.org/graph/dominator-tree/&#34;&gt;文章&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;支配问题在编译优化领域有着重要的应用。简单来说，在控制流图中编译器可以通过支配关系分析识别出“循环”结构，而针对循环，编译器可以采取循环不变式外提等手段进行优化。感兴趣的同学可以在编译课程中深入学习。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Trie树</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie/</link>
+      <pubDate>Mon, 25 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie/</guid>
+      <description>&lt;p&gt;字典树 (又称 Trie 树) 是一个可以 $O(length)$ 地插入，$O(length)$ 地查询的 &lt;code&gt;unordered_set&amp;lt;string&amp;gt;&lt;/code&gt;，下面的图例展示了它的基本工作原理，这个 Trie 树存储的字符串有 to, tea, ted, ten, A, i, in, inn。&lt;/p&gt;
+&lt;figure&gt;
+    &lt;img src=&#34;https://kristoff-starling.github.io/img/problemsolving/trie.svg&#34; style=&#34;zoom: 70%;&#34; &gt;
+    &lt;figcaption&gt;
+    &lt;font color=&#34;grey&#34;&gt;该例子中每个字符串还存储了一个对应的数值，用这种方法，Trie也可以实现 unordered_map&amp;lt;string, Any&amp;gt;&lt;/font&gt;
+    &lt;/figcaption&gt;
+&lt;/figure&gt;
+&lt;p&gt;从根节点出发向下走，每一条路径上的字母连接起来代表一个字符串，拥有相同前缀的字符串可以共享前缀节点 (这也是它能够高效查找的核心)。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;插入字符串时，只需要根据每一位字符选择对应的边向下走 (如果不存在对应符号的边则新建边和顶点)，在最后停留的节点上打一个“存在标记”，时间复杂度为 $O(length)$。&lt;/li&gt;
+&lt;li&gt;查询字符串时，仍然根据每一位字符选择对应的边向下走，字符串存在当且仅当能完整走完且最后停留的节点上确实有“存在标记”，时间复杂度为 $O(length)$。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
       <title>问题求解III-HW13 题解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-13/</link>
       <pubDate>Thu, 21 Dec 2023 00:00:00 +0000</pubDate>

@@ -29,12 +29,12 @@
   
     
   
-  <meta name="description" content="Problem A: 优化
- 给定包含 $n$ 个整数的集合 $S$，要求恰好移除 $k$ 个数，使得剩下的数中 $\min_{x,y\in S，x\neq y}x-y$ 最大。 $1\leq k, n\leq 10^5, n-k\geq 2$。    当遇到“最大化最小值”或者“最小化最大值”的问题时，二分答案 通常是将优化问题转化为判定问题的好思路。在这里我们检查二分答案适用的两个条件：
- 答案的离散有限性：该问题的答案必然为整数，且落在 $[1, \max(S)-\min(S)]$ 之间。 问题的单调性：如果我们找到一个方案满足答案 $d$，那么该方案也可以满足所以比 $d$ 更小的答案。  因此，我们可以在 $[1, \max(S)-\min(S)]$ 中二分答案 $mid$，每轮判断是否可以找到一个删除方案，使得最小的差值大于 $mid$。这一步可以通过贪心线性地判定：">
+  <meta name="description" content="字典树 (又称 Trie 树) 是一个可以 $O(length)$ 地插入，$O(length)$ 地查询的 unordered_set&lt;string&gt;，下面的图例展示了它的基本工作原理，这个 Trie 树存储的字符串有 to, tea, ted, ten, A, i, in, inn。
+  该例子中每个字符串还存储了一个对应的数值，用这种方法，Trie也可以实现 unordered_map&lt;string, Any&gt;   从根节点出发向下走，每一条路径上的字母连接起来代表一个字符串，拥有相同前缀的字符串可以共享前缀节点 (这也是它能够高效查找的核心)。
+ 插入字符串时，只需要根据每一位字符选择对应的边向下走 (如果不存在对应符号的边则新建边和顶点)，在最后停留的节点上打一个“存在标记”，时间复杂度为 $O(length)$。 查询字符串时，仍然根据每一位字符选择对应的边向下走，字符串存在当且仅当能完整走完且最后停留的节点上确实有“存在标记”，时间复杂度为 $O(length)$。  ">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-7/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie/">
 
   
 
@@ -221,7 +221,7 @@
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-7/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie/">
 
   
   
@@ -235,17 +235,17 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-7/">
-  <meta property="og:title" content="问题求解III-HW07 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 优化
- 给定包含 $n$ 个整数的集合 $S$，要求恰好移除 $k$ 个数，使得剩下的数中 $\min_{x,y\in S，x\neq y}x-y$ 最大。 $1\leq k, n\leq 10^5, n-k\geq 2$。    当遇到“最大化最小值”或者“最小化最大值”的问题时，二分答案 通常是将优化问题转化为判定问题的好思路。在这里我们检查二分答案适用的两个条件：
- 答案的离散有限性：该问题的答案必然为整数，且落在 $[1, \max(S)-\min(S)]$ 之间。 问题的单调性：如果我们找到一个方案满足答案 $d$，那么该方案也可以满足所以比 $d$ 更小的答案。  因此，我们可以在 $[1, \max(S)-\min(S)]$ 中二分答案 $mid$，每轮判断是否可以找到一个删除方案，使得最小的差值大于 $mid$。这一步可以通过贪心线性地判定："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie/">
+  <meta property="og:title" content="Trie树 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="字典树 (又称 Trie 树) 是一个可以 $O(length)$ 地插入，$O(length)$ 地查询的 unordered_set&lt;string&gt;，下面的图例展示了它的基本工作原理，这个 Trie 树存储的字符串有 to, tea, ted, ten, A, i, in, inn。
+  该例子中每个字符串还存储了一个对应的数值，用这种方法，Trie也可以实现 unordered_map&lt;string, Any&gt;   从根节点出发向下走，每一条路径上的字母连接起来代表一个字符串，拥有相同前缀的字符串可以共享前缀节点 (这也是它能够高效查找的核心)。
+ 插入字符串时，只需要根据每一位字符选择对应的边向下走 (如果不存在对应符号的边则新建边和顶点)，在最后停留的节点上打一个“存在标记”，时间复杂度为 $O(length)$。 查询字符串时，仍然根据每一位字符选择对应的边向下走，字符串存在当且仅当能完整走完且最后停留的节点上确实有“存在标记”，时间复杂度为 $O(length)$。  "><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-11-06T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2023-12-25T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-11-06T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2023-12-25T00:00:00&#43;00:00">
   
 
   
@@ -264,7 +264,7 @@
 
 
 
-  <title>问题求解III-HW07 题解 | Yuyao Wang&#39;s Homepage</title>
+  <title>Trie树 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -469,124 +469,48 @@
   
   
   <div class="docs-toc-item">
-    <a class="docs-toc-link" href="/courses/problemsolving22/solutions/">Overview</a>
+    <a class="docs-toc-link" href="/courses/problemsolving22/algorithms/">Overview</a>
 
   </div>
   
   <div class="docs-toc-item">
-    <a class="docs-toc-link" href="/courses/problemsolving22/solutions/1-4-c/">Contents</a>
+    <a class="docs-toc-link" href="/courses/problemsolving22/algorithms/repeatedsquare/">Contents</a>
     <ul class="nav docs-sidenav">
       
       <li >
-        <a href="/courses/problemsolving22/solutions/1-4-c/">I-HW04-C</a>
+        <a href="/courses/problemsolving22/algorithms/repeatedsquare/">快速幂</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/solutions/1-6-c/">I-HW06-C</a>
+        <a href="/courses/problemsolving22/algorithms/matmul/">矩阵快速幂</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/solutions/1-final/">I-Final</a>
+        <a href="/courses/problemsolving22/algorithms/chunking/">分块</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/solutions/2-1-c/">II-HW01-C</a>
+        <a href="/courses/problemsolving22/algorithms/lca/">LCA-倍增</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/solutions/2-2-a/">II-HW02-A</a>
+        <a href="/courses/problemsolving22/algorithms/st/">ST表</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/solutions/2-3-a/">II-HW03-A</a>
+        <a href="/courses/problemsolving22/algorithms/cdq/">cdq分治</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/solutions/2-3-b/">II-HW03-B</a>
+        <a href="/courses/problemsolving22/algorithms/answer-binary-search/">二分答案</a>
       </li>
       
       <li >
-        <a href="/courses/problemsolving22/solutions/2-3-c/">II-HW03-C</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/2-4-c/">II-HW04-C</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/2-5-a/">II-HW05-A</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/2-5-b/">II-HW05-B</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/2-5-c/">II-HW05-C</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/2-6-b/">II-HW06-B</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/2-6-c/">II-HW06-C</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/2-final/">II-Final</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-1/">III-HW01</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-2/">III-HW02</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-3/">III-HW03</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-4/">III-HW04</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-5/">III-HW05</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-6/">III-HW06</a>
+        <a href="/courses/problemsolving22/algorithms/string-hash/">字符串哈希</a>
       </li>
       
       <li class="active">
-        <a href="/courses/problemsolving22/solutions/3-7/">III-HW07</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-8/">III-HW08</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-9/">III-HW09</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-10/">III-HW10</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-11/">III-HW11</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-12/">III-HW12</a>
-      </li>
-      
-      <li >
-        <a href="/courses/problemsolving22/solutions/3-13/">III-HW13</a>
+        <a href="/courses/problemsolving22/algorithms/trie/">Trie树</a>
       </li>
       
     </ul>
@@ -606,55 +530,21 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>问题求解III-HW07 题解</h1>
+          <h1>Trie树</h1>
 
           <div class="article-style">
-            <div class="alert alert-note">
-  <div>
-    <p><strong>Problem A: 优化</strong></p>
+            <p>字典树 (又称 Trie 树) 是一个可以 $O(length)$ 地插入，$O(length)$ 地查询的 <code>unordered_set&lt;string&gt;</code>，下面的图例展示了它的基本工作原理，这个 Trie 树存储的字符串有 to, tea, ted, ten, A, i, in, inn。</p>
+<figure>
+    <img src="/img/problemsolving/trie.svg" style="zoom: 70%;" >
+    <figcaption>
+    <font color="grey">该例子中每个字符串还存储了一个对应的数值，用这种方法，Trie也可以实现 unordered_map&lt;string, Any&gt;</font>
+    </figcaption>
+</figure>
+<p>从根节点出发向下走，每一条路径上的字母连接起来代表一个字符串，拥有相同前缀的字符串可以共享前缀节点 (这也是它能够高效查找的核心)。</p>
 <ul>
-<li>给定包含 $n$ 个整数的集合 $S$，要求恰好移除 $k$ 个数，使得剩下的数中 $\min_{x,y\in S，x\neq y}x-y$ 最大。</li>
-<li>$1\leq k, n\leq 10^5, n-k\geq 2$。</li>
+<li>插入字符串时，只需要根据每一位字符选择对应的边向下走 (如果不存在对应符号的边则新建边和顶点)，在最后停留的节点上打一个“存在标记”，时间复杂度为 $O(length)$。</li>
+<li>查询字符串时，仍然根据每一位字符选择对应的边向下走，字符串存在当且仅当能完整走完且最后停留的节点上确实有“存在标记”，时间复杂度为 $O(length)$。</li>
 </ul>
-  </div>
-</div>
-<p>当遇到“最大化最小值”或者“最小化最大值”的问题时，<a href=/courses/problemsolving22/algorithms/answer-binary-search target="_blank">二分答案</a> 通常是将优化问题转化为判定问题的好思路。在这里我们检查二分答案适用的两个条件：</p>
-<ul>
-<li>答案的离散有限性：该问题的答案必然为整数，且落在 $[1, \max(S)-\min(S)]$ 之间。</li>
-<li>问题的单调性：如果我们找到一个方案满足答案 $d$，那么该方案也可以满足所以比 $d$ 更小的答案。</li>
-</ul>
-<p>因此，我们可以在 $[1, \max(S)-\min(S)]$ 中二分答案 $mid$，每轮判断是否可以找到一个删除方案，使得最小的差值大于 $mid$。这一步可以通过贪心线性地判定：</p>
-<ul>
-<li>如果存在一个最小差值大于 $mid$ 且不包含 $S$ 中最小数的方案，那么我们总可以将这个方案中的最小数换成 $\min(S)$，这个新方案只会比原方案更好。因此我们总是可以将 $\min(S)$ 作为构造方案中的最小数。</li>
-<li>将 $S$ 中的数排序后，贪心地将数加入到方案中，用伪代码可以表示为
-<pre><code class="language-python">current_max, count = S[0], 1
-for i in range(1, n):
-  if S[i] - current_max &gt;= mid:
-      count += 1
-      current_max = S[i]
-</code></pre>
-</li>
-<li>最后检查贪心选中的数的个数是否大于等于 $n-k$ 即可。</li>
-</ul>
-<p>每轮检查的复杂度为 $O(n)$，加上外层二分答案的复杂度，总时间复杂度为 $O(n\log \max(S))$。</p>
-<div class="alert alert-note">
-  <div>
-    <p><strong>Problem B: 万圣节舞会</strong></p>
-<ul>
-<li>给定一棵 $n$ 个节点的带权有根树，求树上的一个最大权独立集。</li>
-<li>$n\leq 10^5$。</li>
-</ul>
-  </div>
-</div>
-<p>本题旨在向大家展示树型动态规划基本的状态设计思想。令 $dp(u, 0/1)$ 表示考虑以 $u$ 为根的子树，$u$ 这个节点不选(0)/选(1)的情况下该子树内的最大权独立集权值，转移时考虑 $u$ 的所有孩子，确保不选中相邻的节点即可：</p>
-<p>$$
-\begin{align}
-dp(u, 1) &amp;= \sum_{v\in son(u)}dp(v, 0) \\
-dp(u, 0) &amp;= \sum_{v\in son(u)}\max\{dp(v, 0), dp(v, 1)\}
-\end{align}
-$$</p>
-<p>最终 $\max\{dp(Root, 0), dp(Root, 1)\}$ 即为答案。</p>
-<p>状态的数目为 $O(n)$，所有状态转移的代价之和和树的边数的规模相同，也是 $O(n)$，因此该动态规划的总时间复杂度为 $O(n)$。</p>
 
           </div>
 
@@ -670,15 +560,8 @@ $$</p>
   
   
   <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving22/solutions/3-8/" rel="next">问题求解III-HW08 题解</a>
-  </div>
-  
-  
-  
-  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving22/solutions/3-6/" rel="prev">问题求解III-HW06 题解</a>
+    <a href="/courses/problemsolving22/algorithms/string-hash/" rel="prev">字符串哈希</a>
   </div>
   
 </div>
@@ -688,7 +571,7 @@ $$</p>
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Nov 6, 2023</p>
+          <p>Last updated on Dec 25, 2023</p>
 
           
 
