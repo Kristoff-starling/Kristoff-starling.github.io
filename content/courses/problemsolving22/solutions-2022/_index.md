@@ -1,14 +1,14 @@
 ---
-linktitle: "OJ习题讲解"
+linktitle: "[2022级]OJ习题讲解"
 
-title: "OJ习题讲解"
+title: "[2022级]OJ习题讲解"
 summary: " "
 type: docs
 math: true
 diagram: true
 
 menu:
-    ps-oj-solutions:
+    ps-oj-solutions-2022:
         name: Overview
         weight: 1
 

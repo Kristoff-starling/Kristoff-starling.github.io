@@ -7,7 +7,7 @@ diagram: true
 date: 2023-06-24
 
 menu:
-    ps-oj-solutions:
+    ps-oj-solutions-2022:
         parent: Contents
         weight: 2100
 ---
