@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C/C&#43;&#43;基础入门 | Yuyao Wang&#39;s Homepage</title>
+    <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/</link>
+      <atom:link href="https://kristoff-starling.github.io/courses/problemsolving/c++0/index.xml" rel="self" type="application/rss+xml" />
+    <description>C/C&#43;&#43;基础入门</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 01 Nov 2022 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>C/C&#43;&#43;基础入门</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/</link>
+    </image>
+    
+    <item>
+      <title>C&#43;&#43;标准模板库——容器</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/stl-container/</link>
+      <pubDate>Tue, 01 Nov 2022 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/stl-container/</guid>
+      <description>&lt;p&gt;之前章节介绍的分支、循环、函数、递归……等概念都是命令式编程语言通用的思想方法。时常有同学问：我们到底学的是 C 还是 C++？可以说之前大家写的程序基本都是 C 风格的 (除了 &lt;code&gt;cin&lt;/code&gt; &lt;code&gt;cout&lt;/code&gt; &lt;code&gt;string&lt;/code&gt; 等少数内容）。这一章介绍的标准模板库 (Standard Template Library, STL)，是 C++ 区别于 C 的重要内容之一。STL 提供的内容将程序员从复杂的底层算法和数据结构中解放出来，使得程序员写程序更加得心应手。&lt;/p&gt;
+&lt;p&gt;标准模板库由四个部分构成：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;算法 (Algorithm)&lt;/li&gt;
+&lt;li&gt;容器 (Container)&lt;/li&gt;
+&lt;li&gt;函数 (Function)&lt;/li&gt;
+&lt;li&gt;迭代器 (Iterator)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这一章主要讲解容器。&lt;/p&gt;
+&lt;p&gt;大家最近学习了“抽象数据结构“，STL的容器可以理解为C++库为大家实现好了一批数据结构，你只要读懂这些容器对外暴露的接口的功能说明，合理地使用这些接口，就可以在不知道底层实现的情况下享受这些数据结构的福利。我们在这里介绍几个最常用的STL容器和相关操作。&lt;/p&gt;
+&lt;p&gt;注：STL容器的用法极其丰富，这里只是浮光掠影简单介绍，大家可以在 
+&lt;a href=&#34;https://en.cppreference.com&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;cppreference&lt;/a&gt; 上查询详细的方法列表。&lt;/p&gt;
+&lt;h2 id=&#34;vector&#34;&gt;&lt;code&gt;vector&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;vector&lt;/code&gt; 的中文名是向量，但这个容器和数学中的向量几乎毫无关系，vector 其实更像一个可以自由变换长度，完成一系列操作的“动态数组”。当你不能确定数组长度，或者需要在任意位置插入/删除元素时，vector 将会成为你的一大助力。下面我们通过例子展示 vector 的常见使用方法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;初始化&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;// 通用格式： vector&amp;lt;类型&amp;gt; 名字(最大容量，初始值)
+#include &amp;lt;vector&amp;gt;  // 大家常用的 &amp;lt;bits/stdc++.h&amp;gt; 已经包括了该头文件
+
+int main ()
+{
+    vector&amp;lt;double&amp;gt; v_double(0);  // 一个空的，存储的变量为 double 类型的 vector
+    vector&amp;lt;int&amp;gt; v_int(10, 0);    // 一个长度为 10 的 vector，初始所有元素为 0
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;元素访问&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;// vector 和数组一样支持用下标访问，下标从 0 开始
+vector&amp;lt;int&amp;gt; v_int(10, 1);
+cout &amp;lt;&amp;lt; v_int[2];  // 输出： 0
+cout &amp;lt;&amp;lt; v_int[10]; // 下标越界，未定义行为！
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;迭代器&lt;/p&gt;
+&lt;p&gt;虽然迭代器的概念有点复杂，但为了更好地使用容器，我们还是简单地介绍一下。迭代器可以理解为指向容器中某个元素的“指针”，如果你不知道什么是指针，你可以把它想象成一个“小箭头”。&lt;/p&gt;
+&lt;p&gt;vector 中最常用的几个和迭代器相关的函数有：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;begin()&lt;/code&gt;：返回一个指向第一个元素的迭代器。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;end()&lt;/code&gt;：返回一个指向最后一个元素的“下一个位置”的迭代器。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rbegin()&lt;/code&gt;：返回指向最后一个元素的迭代器。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;br/&gt;
+&lt;p&gt;迭代器可以通过简单的 “+1/-1” 操作向右/左移动。我们通过迭代器可以顺序访问数组中的所有元素：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;// 假设当前 vector&amp;lt;int&amp;gt; v 中有 5 个元素，分别是 1, 2，3, 4, 5
+for (vector&amp;lt;int&amp;gt;::iterator iter = v.begin(); iter != v.end(); iter++)
+    cout &amp;lt;&amp;lt; *iter &amp;lt;&amp;lt; &#39; &#39;;   // 通过 *iterator 的方式来获取”小箭头“指向的元素的值
+// 输出结果： 1 2 3 4 5
+for (vector&amp;lt;int&amp;gt;::iterator iter = v.rbegin(); iter != v.begin(); iter--)
+    cout &amp;lt;&amp;lt; *iter ** &#39; &#39;;
+// 输出结果： 5 4 3 2，请体会 end() 与 begin() 的不同之处！
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;元素的添加和删除&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;vector&amp;lt;int&amp;gt; v_int(3, 1);        // vector 内容：[1, 1, 1]
+// push_back(x) 方法用于在末尾添加元素 x
+v_int.push_back(2)              // vector 内容：[1, 1, 1, 2]
+v_int.push_back(3)              // vector 内容：[1, 1, 1, 2, 3]
+// insert(iter, x) 方法用于在迭代器 iter 指向的位置前插入元素 x
+v_int.insert(v_int.begin(), 3)  // vector 内容：[3, 1, 1, 1, 2, 3]
+// pop_back() 方法用于删除最后一个元素
+v_int.pop_back()                // vector 内容：[3, 1, 1, 1, 2]
+// erase(iter) 方法用于删除迭代器 iter 指向的元素
+v_int.erase(v_int.begin() + 1)  // vector 内容：[3, 1, 1, 2]
+                                // 注：删除了第二个元素
+// clear() 函数用于清空 vector
+v_int.clear()                   // vector 内容：[]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;相关参数&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;// 假设当前 vector&amp;lt;int&amp;gt; v 中有 5 个元素，分别是 1, 2，3, 4, 5
+cout &amp;lt;&amp;lt; int(v.size());     // 输出：5
+bool isEmpty = v.empty()   // isEmpty = false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;stack&#34;&gt;&lt;code&gt;stack&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;stack (栈) 是一个先进后出的容器，你可以把它想象成一个电梯：第一个进入电梯的人总是最后一个出来。下面是一些简单的用法：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;stack&amp;lt;int&amp;gt; s;                   // 初始为空
+// push(x) 方法向栈顶放入元素 x
+s.push(1);
+s.push(2);
+s.push(3);                      // s的内容:  (底) [1, 2, 3] (顶)
+// top() 方法用于获取栈顶元素
+int currentTop = s.top();       // currentTop = 3, s: [1, 2, 3]
+// pop() 方法用于弹出栈顶元素
+s.pop();                        // s: [1, 2]
+currentTop = s.top();           // currentTop = 2
+// size() 方法用于获取 s 中元素个数
+cout &amp;lt;&amp;lt; int(s.size());     // 输出：2
+// empty() 方法用于判断 s 是否为空
+bool isEmpty = s.empty();       // isEmpty = false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;queue&#34;&gt;&lt;code&gt;queue&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;queue (队列) 是一个先进先出的容器，你可以把它想象成一个双开门电梯：第一个进入电梯的人第一个出来。下面是一些简单的用法：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;queue&amp;lt;int&amp;gt; q;                     // 初始为空
+// push(x) 方法向队列的尾部加入元素 x
+q.push(1);
+q.push(2);
+q.push(3);                        // q的内容: (队首) [1, 2, 3] (队尾)
+// front() 方法用于获取队首元素
+int currentFront = q.front();     // currentFront = 1
+// q.pop() 方法用于弹出队首元素
+q.pop();                          // q: [2, 3]
+currentFront = q.front();         // currentFront = 2
+// size() 方法用于获取 q 中元素个数
+int currentSize = int(q.size());  // currentSize = 2
+// empty() 方法用于判断 q 是否为空
+bool isEmpty = q.empty();         // isEmpty = false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;set&#34;&gt;&lt;code&gt;set&lt;/code&gt;&lt;/h2&gt;
+&lt;p&gt;set (集合) 顾名思义实现了一个集合应有的功能：插入、去重、判断一个元素是否存在。特别的是 set 中的元素还是按照顺序排列的 (这其实和集合定义中的无序性稍有不符)。下面是一些简单的用法：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;set&amp;lt;int&amp;gt; s;                            // s: {}
+// insert(x) 方法向集合插入元素 x
+s.insert(2);                           // s: {2}
+s.insert(1);                           // s: {1, 2}
+s.insert(1);                           // s: {1, 2}，重复元素不会被反复插入
+s.insert(3);                           // s: {1, 2, 3}
+// find(x) 方法查询 x 是否在集合中，如果在则返回指向该元素的迭代器，否则返回 s.end()
+set&amp;lt;int&amp;gt;::iterator iter_1 = s.find(1);
+cout &amp;lt;&amp;lt; *iter;                    // 输出：1
+set&amp;lt;int&amp;gt;::iterator iter_0 = s.find(0);
+bool isEnd = (iter_0 == s.end());      // isEnd = true
+// erase(x) 方法用于删除元素 x
+s.erase(2);                            // s: {1, 3}
+// 使用迭代器按顺序访问 s,会发现元素是按顺序排列的
+for (set&amp;lt;int&amp;gt;::iterator iter = s.begin(); iter != s.end(); iter++)
+    cout &amp;lt;&amp;lt; *iter &amp;lt;&amp;lt; &#39; &#39;;         // 输出：1 3
+// clear() 方法用于清空集合
+s.clear();                             // s: {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;映射&#34;&gt;映射&lt;/h2&gt;
+&lt;p&gt;&lt;del&gt;在标题中使用 map 这个单词会被自动渲染成地图。。。因此使用了“映射”作为标题&lt;/del&gt;&lt;/p&gt;
+&lt;p&gt;map (映射) 和数学中的映射一样，维护了一个 key-value pair 的集合。下面是一些简单的用法：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;map&amp;lt;string, int&amp;gt; m;                          // 这是一个从 string 到 int 的映射
+// 映射的插入非常简单：直接使用数组赋值的语法格式即可
+m[&amp;quot;apple&amp;quot;] = 1;
+m[&amp;quot;banana&amp;quot;] = 2;
+// 访问一个 key 对应的 value：直接使用数组访问的语法格式
+cout &amp;lt;&amp;lt; m[&amp;quot;apple&amp;quot;];                          // 输出：1
+cout &amp;lt;&amp;lt; m[&amp;quot;orange&amp;quot;];                         // 对于不存在的 key，通常会输出默认值 0
+m[&amp;quot;apple&amp;quot;] = 3;
+cout &amp;lt;&amp;lt; m[&amp;quot;apple&amp;quot;];                          // 输出：3
+// find(x) 方法用于查询映射中是否有 x 这个 key，如果有则返回指向该 pair 的迭代器，否则返回 m.end()
+map&amp;lt;string, int&amp;gt;::iterator iter_pear = m.find(&amp;quot;pear&amp;quot;);
+bool isEnd = (iter_pear == m.end())          // isEnd = true
+map&amp;lt;string, int&amp;gt;::iterator iter_banana = m.find(&amp;quot;banana&amp;quot;);
+// 使用 .first 获取 key，.second 获取 value
+cout &amp;lt;&amp;lt; *iter_banana.first &amp;lt;&amp;lt; &#39; &#39; &amp;lt;&amp;lt; *iter_banana.second;  // 输出： banana 2
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>函数</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/functions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/functions/</guid>
+      <description>&lt;p&gt;随着程序规模的扩大，你的 &lt;code&gt;main()&lt;/code&gt; 函数可能变得越来越臃肿了。这时候使用函数将不同的模块分开书写，可以让程序变得条理清晰、简明易懂。例如下面是 OJ 习题 &amp;ldquo;环形矩阵&amp;rdquo; 的一段代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int n;
+int a[100][100];
+
+int main ()
+{
+    scanf(&amp;quot;%d&amp;quot;, &amp;amp;n);
+    for (int k = 1; k &amp;lt;= (n + 1) / 2; k++)
+        for (int i = k; i &amp;lt;= n + 1 - k; i++)
+            for (int j = k; j &amp;lt;= n + 1 - k; j++)
+                a[i][j] = k;
+    for (int i = 1; i &amp;lt;= n; i++)
+    {
+        for (int j = 1; j &amp;lt;= n; j++)
+            printf(&amp;quot;%4d&amp;quot;, a[i][j]);
+        puts(&amp;quot;&amp;quot;);
+    }
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;读入、矩阵制作、输出三个步骤全部放在 &lt;code&gt;main()&lt;/code&gt; 函数中显得有些冗长。我们可以根据功能将上述代码分成三个模块，每个模块写在一个单独的子函数里：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int n;
+int a[100][100];
+
+void input()
+{
+    scanf(&amp;quot;%d&amp;quot;, &amp;amp;n);
+}
+
+void matrix_generation()
+{
+    for (int k = 1; k &amp;lt;= (n + 1) / 2; k++)
+        for (int i = k; i &amp;lt;= n + 1 - k; i++)
+            for (int j = k; j &amp;lt;= n + 1 - k; j++)
+                a[i][j] = k;
+}
+
+void print()
+{
+    for (int i = 1; i &amp;lt;= n; i++)
+    {
+        for (int j = 1; j &amp;lt;= n; j++)
+            printf(&amp;quot;%4d&amp;quot;, a[i][j]);
+        puts(&amp;quot;&amp;quot;);
+    }
+}
+
+int main ()
+{
+    input();
+    matrix_generation();
+    print();
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;由于这个程序比较简单，你可能会觉得这样写代码非常拖沓。但随着程序结构的进一步复杂化，你一定会发现将程序分功能分模块书写能帮助你理清思路，也方便 debug。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;代码风格&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;对于初学者来说，养成良好的代码风格极其重要。一方面，条理清晰的代码看起来赏心悦目，方便自己 debug；另一方面，如果你将来与别人合作开发项目，良好的代码风格可以让他人快速理解你书写的模块，方便沟通交流。大家或许听说过一些类似于 “老程序员一走，整个项目就玩不转了，因为没人知道他写了什么” 的笑话，撇开工程复杂性的客观原因，这样的现象也说明很大一部分程序员的代码书写习惯极其糟糕。&lt;/p&gt;
+&lt;p&gt;所以无论你是否有编程基础，请一定重视自己的代码风格。我们建议你至少在以下几个方面注意：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;合理的变量命名：不要使用无意义的 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;c&lt;/code&gt; &lt;code&gt;_&lt;/code&gt; &lt;code&gt;__&lt;/code&gt;，而应该使用 &lt;code&gt;arrayLength&lt;/code&gt; &lt;code&gt;stuCount&lt;/code&gt; 等。有意义的变量名可以让你/他人立刻理解这个变量的用途。至于变量的命名格式，我们建议你搜索驼峰命名法。&lt;/li&gt;
+&lt;li&gt;合理的函数使用：不要将一大堆代码塞在一起。&lt;/li&gt;
+&lt;li&gt;合理书写注释，对程序的功能做一点解释。&lt;/li&gt;
+&lt;li&gt;合理的符号使用 (括号，换行符 etc.)&lt;/li&gt;
+&lt;li&gt;合理的缩进&lt;/li&gt;
+&lt;li&gt;……&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果你感兴趣，你可以上网搜索 Google 的代码风格规范。&lt;/p&gt;
+&lt;p&gt;最后是一个小笑话：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;世界上有两件最讨厌的事情，一个是写注释，一个是别人的代码不写注释。&lt;/p&gt;
+&lt;/blockquote&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id=&#34;定义&#34;&gt;定义&lt;/h2&gt;
+&lt;p&gt;函数的基本语法如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int func(int a, float b, char c, ...)
+{
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;其中&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第一个 &lt;code&gt;int&lt;/code&gt; 指明了函数的返回值类型为 &lt;code&gt;int&lt;/code&gt;。你当然可以选择别的类型，如果你的函数不需要返回值，可以用 &lt;code&gt;void&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;func&lt;/code&gt; 是函数的名称。这是你可以自由指定的部分。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;(int a, float b, ...)&lt;/code&gt; 是函数的参数。你可以指定任意个数的参数，但每个参数都要有类型。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;下面是一个简明的例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int abs(int x) {
+    int res = x &amp;gt;= 0 ? x : -x;
+    return res;
+}
+
+int main ()
+{
+    int x = -1;
+    x_abs = abs(x); // x_abs = 1
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意所有的子函数要写在 main 函数的上方 (这是 C/C++ 的要求)。如果你想要将子函数写在 main 函数的下方，需要在 main 函数之前先&lt;strong&gt;声明&lt;/strong&gt;该子函数。声明简单来说就是将函数的定义抄一遍：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int abs(int x);
+
+int main ()
+{
+    int x = -1;
+    x_abs = abs(x);
+    return 0;
+}
+
+int abs(int x) {
+    int res = x &amp;gt;= 0 ? x : -x;
+    return res;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;变量的作用域&#34;&gt;变量的作用域&lt;/h2&gt;
+&lt;p&gt;有了函数的概念后我们就必须要区分“全局变量“和“局部变量”。顾名思义在函数内部定义的变量是局部变量，该变量只能在当前函数内使用。在所有函数外定义的变量是全局变量，该变量可以在任何函数中使用 (注：一个函数的参数也是该函数的局部变量)。下面是一个例子：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;
+int n = 0;
+
+void func()
+{
+    printf(&amp;quot;%d\n&amp;quot;, n); // 输出结果为 0。
+    printf(&amp;quot;%d\n&amp;quot;, m); // 编译错误：m 是 main() 的局部变量，在 func() 中不可用。
+}
+
+int main ()
+{
+    int n = 1, m = 2;
+    printf(&amp;quot;%d\n&amp;quot;, n); // 输出结果为 1，全局变量和局部变量重名优先使用局部变量。
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;按值传递和按引用传递&#34;&gt;按值传递和按引用传递&lt;/h2&gt;
+&lt;p&gt;按值传递和按引用传递是函数中必须提及的另一个重要概念。很多初学者会疑惑：如果我在子函数中对参数的值做了改动，主函数里相应的变量会变吗？你可以做一个小实验探索这一点：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;void func(int x) { x = 2; }
+int main ()
+{
+    int x = 1;
+    func(x);
+    printf(&amp;quot;%d\n&amp;quot;, x); // 输出结果为 1
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;事实证明子函数的改动不会影响主函数。这是因为 C/C++ 中函数变量参数的传递默认使用&lt;strong&gt;按值传递&lt;/strong&gt;，即子函数的参数变量 &lt;code&gt;x&lt;/code&gt; 和主函数的变量 &lt;code&gt;x&lt;/code&gt; 是两个独立的主体，在函数调用时主函数的 &lt;code&gt;x&lt;/code&gt; 的值会被复制到子函数的 &lt;code&gt;x&lt;/code&gt; 中，在子函数中对 &lt;code&gt;x&lt;/code&gt; 的所有改动都是针对这个“复印件”的，对原件没有影响。&lt;/p&gt;
+&lt;p&gt;那么有没有办法可以让子函数直接修改主函数中的变量的值呢？ C++ 提供了引用变量的机制，一个例子如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;void func(int x, int &amp;amp;y) { x++; y++; }
+int main ()
+{
+    int x = 1, y = 1;
+    func(x, y);
+    printf(&amp;quot;%d %d\n&amp;quot;, x, y); // 输出结果为 1 2
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在这个例子中，&lt;code&gt;x&lt;/code&gt; 是按值传递的，&lt;code&gt;y&lt;/code&gt; 是&lt;strong&gt;按引用传递&lt;/strong&gt;的 (注意函数参数前的 &lt;code&gt;&amp;amp;&lt;/code&gt; 符号)。按引用传递可以理解为直接将原件交给了子函数，子函数的改动会影响主函数的值。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>分支</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/branch/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/branch/</guid>
+      <description>&lt;p&gt;很多时候我们需要根据某个条件决定去做事情1还是事情2,这就是分支。一个分支框架的格式如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;if (condition)
+{
+    // your code
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;它的意思是：如果 &lt;code&gt;if ()&lt;/code&gt; 括号中的条件成立，那么就执行大括号中的那些语句，否则跳过这些语句。此外，我们还可以添加 else 分支：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;if (condition)
+{
+    // your code
+}
+else
+{
+    // your code
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这时如果条件成立就执行紧接着的大括号中的语句，并跳过 else 下的语句；如果条件不成立就跳过紧接着的语句，直接执行 else 下的语句。一个额外的规则是：如果 &amp;ldquo;your code&amp;rdquo; 的地方你只需要写一条语句，你可以省略大括号对 (这样代码看上去更紧凑简洁)，不过如果你没有把握，加上大括号永远是最稳妥最正确的选择。&lt;/p&gt;
+&lt;p&gt;我们来看一个简单的例子：输入两个数，如果它们的和是奇数就输出 &amp;ldquo;odd&amp;rdquo;，否则输出 &amp;ldquo;even&amp;rdquo;：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int a, b, sum;
+    std::cin &amp;gt;&amp;gt; a &amp;gt;&amp;gt; b;
+    sum = a + b;
+    if (sum % 2 == 1)
+        std::cout &amp;lt;&amp;lt; &amp;quot;odd&amp;quot; &amp;lt;&amp;lt; &#39;\n&#39;;
+    else
+        std::cout &amp;lt;&amp;lt; &amp;quot;even&amp;quot; &amp;lt;&amp;lt; &#39;\n&#39;;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里需要对 if 的条件语句做一点说明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;%&lt;/code&gt; 是取模符号，&lt;code&gt;sum % 2&lt;/code&gt; 即计算变量 &lt;code&gt;sum&lt;/code&gt; 除以 2 后的余数。&lt;/li&gt;
+&lt;li&gt;在 C++ 中我们要格外小心 &lt;code&gt;==&lt;/code&gt; 和 &lt;code&gt;=&lt;/code&gt; 的区别:
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;==&lt;/code&gt; 是一个比较运算符，用来比较式子的左边和右边是否相等。其他的一些常用的比较运算符列举如下&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;符号&lt;/th&gt;
+&lt;th style=&#34;text-align:center&#34;&gt;意义&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;lt;=&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;小于等于&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;lt;&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;小于&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;gt;=&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;大于等于&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;gt;&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;大于&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;!=&lt;/code&gt;&lt;/td&gt;
+&lt;td style=&#34;text-align:center&#34;&gt;不等于&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;=&lt;/code&gt; 是赋值符号，比如在 &lt;code&gt;sum = a + b;&lt;/code&gt; 中，将 &lt;code&gt;a + b&lt;/code&gt; 的值赋给 &lt;code&gt;sum&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>基本框架</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/framework/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/framework/</guid>
+      <description>&lt;p&gt;一个最简单的 C++ 程序长成这样：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    // your code
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们对这个程序的几个组成部分做一点说明：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;include&amp;quot;一行使程序包含了一系列&lt;strong&gt;头文件 (header file)&lt;/strong&gt;, 头文件中定义了许多有用的函数，我们只有使用 include 包含这些头文件才能使用这些函数（头文件在安装环境时就有了，你暂时不需要关心它们在哪里以及是如何实现的，你只需要知道 include 这行几乎是必须要写的）。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;int main () {}&lt;/code&gt; 称为 main 函数。每个程序都必须有 main 函数，当程序开始运行时，第一条执行的指令就是 main 函数的第一条指令。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;return 0;&lt;/code&gt; 是一条语句，无论 main 函数中写了什么内容，最后一样都应当是 &lt;code&gt;return 0;&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;C++ 语法&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;你的每条语句都&lt;strong&gt;必须&lt;/strong&gt;以 &lt;code&gt;;&lt;/code&gt; 结尾。一行可以有多条语句，但每个语句后都要有 &lt;code&gt;;&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用 &lt;code&gt;//&lt;/code&gt; 可以在 C++ 代码中书写&lt;strong&gt;注释 (comment)&lt;/strong&gt;，注释类似于批注，其目的是让阅读代码的人更好地理解代码的意思，注释中的内容不会被执行。此外，如果你想书写一段多行的注释，可以使用如下方法：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;/*
+  write your comments here
+  write your comments here
+*/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>嵌套循环</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/nestedloop/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/nestedloop/</guid>
+      <description>&lt;p&gt;上一节的所有示例代码中我们定义的都是一维数组，一维数组顾名思义就是将所有的”小盒子“排成一排，用一个下标去索引它们。C/C++ 中可以定义各种维度的数组，比如你可以定义一个二维数组来存储方阵：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int a[100][100];
+
+int main ()
+{
+    a[0][0] = 1; // 二维数组的每个维度都是从0开始编号的！
+    a[2][3] = 5;
+    std::cout &amp;lt;&amp;lt; a[0][0] &amp;lt;&amp;lt; &#39;\n&#39;; //输出结果为1
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;有了多维数组后，你会发现我们手里原有的线性的循环工具有点不够用了。但事实上我们可以用嵌套循环来轻松地对多维数组进行访问。下面的示例程序接受一个 $n$ 行 $m$ 列的包含整数的方阵作为输入，它会将其原封不动地打印出来 (假设 $n,m\leq 100$)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int a[100][100];
+
+int main ()
+{
+    int row, col;
+    std::cin &amp;gt;&amp;gt; row &amp;gt;&amp;gt; col;
+
+    // input
+    for (int i = 0; i &amp;lt; row; i++)
+    {
+        for (int j = 0; j &amp;lt; col; j++)
+        {
+            std::cin &amp;gt;&amp;gt; a[i][j];
+        }
+    }
+
+    // output
+    for (int i = 0; i &amp;lt; row; i++)
+        for (int j = 0; j &amp;lt; col; j++)
+        {
+            char suffix_char = ((j == col - 1) ? &#39;\n&#39; : &#39; &#39;);
+            std::cout &amp;lt;&amp;lt; a[i][j] &amp;lt;&amp;lt; suffix_char;
+        }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;从逻辑上来看嵌套循环也没什么“了不起”：以输出部分为例，对于每一个 $i=0,1,\cdots,row-1$，循环变量 $j$ 都会从 $0$ 循环到 $col-1$，这样在内层循环的里面我们就可以按照 $(0,0)$, $(0,1)$,$\cdots$, $(0, col-1)$, $(1, 0)$, $(1, 1)$, $\cdots$ ,$(1, col-1)$, $(2, 0)$,$\cdots$, $(row-1, 0)$, $\cdots$, $(row-1, col-1)$ 的顺序去访问二维数组中的每个元素。&lt;/p&gt;
+&lt;p&gt;这个代码中有一些细节值得讲解：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在书写嵌套循环时，内层循环和外层循环应当使用不同的循环变量。如果你在内层循环中使用了和外层循环一样的变量，那么执行完内层循环后回到外层循环时，变量的值就乱了。不要小瞧这条看上去显而易见的结论，你们所有人大抵都会在过去、现在或将来犯一些类似下面的错误：
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 0; i &amp;lt; n; i++)
+    for (int j = 0; j &amp;lt; m; i++)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;我们在给出两段双重循环的代码时特地使用了不同的括号风格，你可以借此机会对到底什么时候需要打大括号有更深入的理解：我们之前提到如果当前结构内部只有一条语句，for循环/if语句可以不打大括号；但更准确地说应该是如果只有“一块”一句，比如第二段双重循环的外层循环内部只有一个for循环这“一块”语句，所以可以省略大括号。还是那句话，如果你拿捏不准，把大括号写全永远是最稳妥的。&lt;/li&gt;
+&lt;li&gt;示例代码中出现了一个比较奇怪的语句：&lt;code&gt;suffix_char = ((j == col - 1) ? &#39;\n&#39; : &#39; &#39;)&lt;/code&gt;。&lt;code&gt;? :&lt;/code&gt; 被称为三目运算符，是 C/C++ 提供的一个语法机制。&lt;code&gt;(a ? b : c)&lt;/code&gt; 的意思是如果 &lt;code&gt;a&lt;/code&gt; 的值为真则返回 &lt;code&gt;b&lt;/code&gt;，否则返回 &lt;code&gt;c&lt;/code&gt;。上面的这一行代码等价于一个if语句：
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;if (j == col - 1)
+    suffix_char = &#39;\n&#39;;
+else
+    suffix_char = &#39; &#39;;
+&lt;/code&gt;&lt;/pre&gt;
+可以看到合理使用三目运算符有助于使代码更加简洁。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;运算符优先级&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;你可能会疑惑：三目运算符的代码写成&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;suffix_char = (j == col - 1 ? &#39;\n&#39; : &#39; &#39;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;甚至是&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;suffix_char = j == col - 1 ? &#39;\n&#39; : &#39; &#39;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可不可以呢？
+在坐等答案之前，你应该做的事情是把括号去掉并尝试运行程序，这是你自己通过试验寻求问题答案的途径。当然在这里我们会告诉你：上面两段代码是没有问题的，因为 C/C++ 中不同的符号存在优先级差异。正如算术中乘除法比加减法优先级高，C/C++内部也有一套严格的优先级金字塔。优先级相同的运算符优先计算左侧的；优先级不同的运算符优先计算等级高的。这个&lt;a href=&#34;https://en.cppreference.com/w/cpp/language/operator_precedence&#34;&gt;链接&lt;/a&gt; 详细讲述了优先级的划分。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;下面展示一个更精巧的例子，它的作用是打印出一个字符三角形：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int n;
+    std::cin &amp;gt;&amp;gt; n;
+    for (int i = 1; i &amp;lt;= n; i++)
+    {
+        for (int j = 0; j &amp;lt; i; j++)
+            std:: cout &amp;lt;&amp;lt; &#39;*&#39;;
+        std::cout &amp;lt;&amp;lt; &#39;\n&#39;;
+    }
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到外层的循环变量是可以在内层循环体和循环条件中使用的。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>循环</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/loop/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/loop/</guid>
+      <description>&lt;p&gt;假设我们现在要计算 $1+2+3+4+5$，相信你已经有能力写出一段代码完成这个任务：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int sum;
+sum = 1;
+sum = sum + 2; // 你也可以写 sum += 2; 它们的功能是一样的
+sum = sum + 3;
+sum = sum + 4;
+sum = sum + 5;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;但是这样的代码看起来未免有些笨拙，如果我们要计算 $1+2+\cdots+100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;while (condition)
+{
+    // your code here
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在进入循环体之前，程序会先检查括号中的条件是否成立，如果成立就执行大括号中的内容，执行完内容后程序会再次判断括号中的条件是否成立……直到某次执行完循环体后条件不成立了，while 循环才会退出，下面的流程图很好地诠释了 while 循环的执行过程：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph TD
+
+s0[start]
+s1{while yes?}
+s2(body)
+s3(break)
+s0 --&amp;gt; s1
+s1 --&amp;gt; |yes| s2
+s2 --&amp;gt; s1
+s1 --&amp;gt; |no| s3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;有了 while 循环后，我们可以容易地解决下面的这个问题：输入一个整数 $n$，输出 $1+2+\cdots+n$：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int n, sum;
+    std::cin &amp;gt;&amp;gt; n;
+    sum = 0;
+    while (n != 0)
+    {
+        sum += n;
+        n--; // &amp;quot;n--&amp;quot; is equal to &amp;quot;n = n - 1&amp;quot;
+    }
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; &#39;\n&#39;;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;上述 while 循环将判断条件放在开头，另有一种 do-while 循环框架将判断条件放在末尾：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;do
+{
+    // your code
+}
+while (condition); // 这里要加分号！
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;do-while 循环一定会先执行循环体再检查条件，其他的部分和 while 循环没有区别。&lt;/p&gt;
+&lt;p&gt;除了 while 循环，for 循环也是一种常用的循环框架，不过 for 循环的格式相对复杂：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (/* statement 1 */; /* statement 2 */; /* statement 3 */)
+{
+    // your code
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;C++ 语言的 for 循环中有 3 条语句，其执行顺序非常微妙 (这是 C/C++ 经常被吐槽的一个点)。用流程图可以比较清楚地解释执行的顺序：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph LR
+
+s0[start]
+s1(statement 1)
+s2{statement 2 yes?}
+s3(body)
+s4(statement 3)
+s5(break)
+s0 --&amp;gt; s1
+s1 --&amp;gt; s2
+s2 --&amp;gt; |yes| s3
+s3 --&amp;gt; s4
+s4 --&amp;gt; s2
+s2 --&amp;gt; |no| s5
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你觉得这个流程比较复杂，也可以暂时不那么仔细地理解它，毕竟 while 循环可以做到 for 循环能做到的所有事情。不过你可以记住的是：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int i;
+for (i = 1; i &amp;lt;= n; i++) {}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样一个 for 循环可以让变量 &lt;code&gt;i&lt;/code&gt; 分别取 $1, 2, \cdots, n$，然后退出循环。如果你把三条语句代入刚才的流程图，你会发现它确实是正确的。这样一个从 $1$ 枚举到 $n$ 的写法比 while 循环看上去简洁一些。&lt;/p&gt;
+&lt;p&gt;我们给出两个使用 for 循环实现计算 $1+2+\cdots n$ 的示例代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int n, sum;
+    std::cin &amp;gt;&amp;gt; n;
+    for (int i = 1; i &amp;lt;= n; i++) // 如果你想在循环体内部临时使用一个变量，你可以选择像这样的定义方式
+        sum += i; // 别忘了单条语句可以不用{}包裹起来
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; &#39;\n&#39;;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如你所见，你可以在 for 循环中临时定义变量 &lt;code&gt;i&lt;/code&gt;，这个变量 &lt;code&gt;i&lt;/code&gt; 只可以在循环体中使用，在循环体以外你不能使用 &lt;code&gt;i&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;这个 for 循环的写法是之前介绍的比较规整的写法，下面是一个长相比较特别的 for 循环：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int main ()
+{
+    int n, sum;
+    std::cin &amp;gt;&amp;gt; n;
+    for ( ;n != 0; n--)
+        sum = sum + n;
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; &#39;\n&#39;;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果你代入之前的流程图理解 for 循环执行的过程，你会发现这个写法比较像 while 循环的逻辑。事实上，之所以说 for 循环完全可以用 while 循环代替，是因为&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (s1; s2; s3)
+{
+    // your code
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;等价于&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;s1;
+while (s2)
+{
+    // your code
+    s3;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>数组</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/array/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/array/</guid>
+      <description>&lt;div class=&#34;alert alert-warning&#34;&gt;
+  &lt;div&gt;
+    为了解释清楚一些现象背后的原因，本文涉及一些超纲的计算机底层知识。这部分内容都在绿色的框内，如果你无法看懂可以直接跳过。等到大家学完了计算机系统基础 (ICS) 后自然就能理解这些话的含义。
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;有了循环之后，你很快就会发现简单地定义一个一个的变量有点“不够用”了，比如考虑如下问题：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;输入整数 $N$，然后输入 $N$ 个数的一个数列，将这个数列倒序输出。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我们想要倒序输出，就说明我们在读取完数列的最后一个整数时，还要“记住”前面的 $N-1$ 个整数，所以我们每读取到一个整数都得将其保存在变量里，但我们在预先不知道数列长度的情况下怎么知道该定义多少个变量呢？这似乎陷入了死局。&lt;/p&gt;
+&lt;p&gt;(在这里我们不考虑递归等技巧) 我们希望有一种语法，可以批量开一堆变量，而且最好能用下标去索引它们。在 C/C++ 中我们可以通过定义数组来实现这一点。我们先给出上面问题的一段示例代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int n;
+    std::cin &amp;gt;&amp;gt; n;
+    int a[n];
+    for (int i = 0; i &amp;lt; n; i++)
+        std::cin &amp;gt;&amp;gt; a[i];
+    for (int i = n - 1; i &amp;gt;= 0; i--)
+        std::cout &amp;lt;&amp;lt; a[i] &amp;lt;&amp;lt; &#39;\n&#39;;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里出现的新语法是 &lt;code&gt;int a[n]&lt;/code&gt;。如果说 int 类型的变量是一个可以存放一个整数的小盒子，那么 &lt;code&gt;int a[n]&lt;/code&gt; 就定义了 $n$ 个小盒子，每个小盒子都可以存放一个整数。值得注意的是，这里的“小盒子”是按照 $0,1,\cdots, n-1$ 编号的。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Variable-Length Array (VLA)&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;在上面的例子中，我们定义的数组的长度依赖于我们输入的变量 $n$ 的值，也就是说，在程序开始运行之前，我们无法知道数组的具体长度。这种以变量作为长度的数组称为 variable-length array (VLA)。&lt;/p&gt;
+&lt;p&gt;VLA 的微妙之处在于，编译器在不知道数组具体长度的情况下可能会在内存分配上犯难。C99 标准首次允许 VLA 的使用，但对其作出了诸多限制，比如不能使用 $\mathbf{extern}$, $\mathbf{static}$ 等关键字修饰。不同的编译器支持的标准也略有差异，例如 Visual Studio 使用的 msvc 编译器很可能会对上面的示例代码报错。&lt;/p&gt;
+&lt;p&gt;如果你对这些内容感兴趣，可以上网查询更多的资料。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;如果上面关于 VLA 的内容你没有看懂，没有关系，一句话概括就是使用变量作为数组的长度“不太好”。我们的 OJ 题会对输入数据的范围作出严格的限制，你可以根据数据范围将数组开到足够大的一个固定长度。假设题目规定了 $N\leq 1000$，那么一个不使用 VLA 的程序应该这样写：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int a[1000];
+
+int main ()
+{
+    int n;
+    std::cin &amp;gt;&amp;gt; n;
+    for (int i = 0; i &amp;lt; n; i++)
+        std::cin &amp;gt;&amp;gt; a[i];
+    for (int i = n - 1; i &amp;gt;= 0; i--)
+        std::cout &amp;lt;&amp;lt; a[i] &amp;lt;&amp;lt; &#39;\n&#39;;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里我们希望不加解释地做出一个规定：如果你要定义一个定长的数组，请将它定义在 &lt;code&gt;main()&lt;/code&gt; 函数的外面。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;不行，我就是想知道为什么要这么规定&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;C/C++ 的编译器需要负责将高级语言程序映射到具体的硬件上。对于数组这样的存储设施，编译器会将其映射到内存中的某块区域。如果你将数组定义在函数内部，编译器会将其安排在栈上；如果你将数组定义在全局 (函数外部)，编译器会将其安排在静态数据区。除非特别配置，一个程序的栈空间通常不是很大，如果在函数内部定义了过长的数组可能会导致栈溢出，栈溢出会导致不可预知的严重后果。&lt;/p&gt;
+&lt;p&gt;如果你想亲手体验一下“栈溢出”，你可以尝试运行以下代码 (不要加任何编译优化)：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+&lt;p&gt;int main () { char s[1 &amp;lt;&amp;lt; 25]; }
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
+&lt;p&gt;直接运行这段代码可能会获得段错误 (Segmentation Fault)。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;如果你没有看懂这段话，那就老老实实地遵守我们的规定吧。&lt;/p&gt;
+&lt;p&gt;总有一些“完美主义者”觉得这样写代码十分令人不爽——如果 $N$ 远小于 1000，我们的代码岂不是无谓的多使用了很多资源？这里我们再介绍一种定义数组的方式，它在功能上和前面的几种是完全相同的：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int n;
+    std::cin &amp;gt;&amp;gt; n;
+    int *a = new int [n];
+    for (int i = 0; i &amp;lt; n; i++)
+        std::cin &amp;gt;&amp;gt; a[i];
+    for (int i = n - 1; i &amp;gt;= 0; i--)
+        std::cout &amp;lt;&amp;lt; a[i] &amp;lt;&amp;lt; &#39;\n&#39;;
+    delete [] a;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;int *a = new int [n]&lt;/code&gt; 的功能是定义一个长度为 $n$ 的数组，每个数组元素都是 int 类型，这个数组的名字叫做 &lt;code&gt;a&lt;/code&gt;。我们在这里希望强调一点：&lt;strong&gt;如果你使用了new语法定义数组，请一定在你确定不会再使用该数组的时刻 (例如 &lt;code&gt;return 0&lt;/code&gt; 之前) 使用delete释放它&lt;/strong&gt;。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;我不写delete这一行好像也没报错啊？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;如果你是一个曾经学过算法竞赛的同学，你很可能已经养成了“随手new，从不delete”的习惯。我们在这里必须严肃地警告：这是一个非常危险的习惯！你之前写过的忘记 delete 的 OJ 程序之所以可以正常退出，是因为当 OJ 程序所在的进程被销毁时，操作系统会将进程申请的资源自动释放——换言之，操作系统帮你默默地做了 delete。没有及时释放申请的内存会导致内存泄漏 (memory leak)，如果将来你维护一个大型的项目，内存泄漏的累积很可能导致程序崩溃。&lt;/p&gt;
+&lt;p&gt;如果你是一个计算机小白，恭喜你拥有了一个小小的优势：你没有经历过算法竞赛中各种糟糕的代码书写习惯的熏陶。从初学阶段开始严格遵守各种规范，你将自然而然地将书写安全、高质量、可读性强的代码作为一种本能。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>输入输出</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/io/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/io/</guid>
+      <description>&lt;p&gt;如果你使用的是 Dev-cpp，将基本框架中的程序拷贝到代码区并按下 F11，你会发现程序已经可以成功地运行了！不过跳出的黑色窗口中没有任何内容——因为我们的 main 函数中什么都没写。我们现在来尝试输出一行 &amp;ldquo;hello world!&amp;quot;：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    std::cout &amp;lt;&amp;lt; &amp;quot;Hello World&amp;quot; &amp;lt;&amp;lt; &#39;\n&#39;; // don&#39;t forget to add &#39;;&#39; at the end!
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;cout&lt;/code&gt; 是一个&lt;strong&gt;对象 (object)&lt;/strong&gt;，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &amp;ldquo;cout&amp;rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 &lt;code&gt;&amp;lt;&amp;lt;&lt;/code&gt; 就像箭头一样指明了数据的流向，“Hello World&amp;rdquo; 和代表换行符的 &amp;ldquo;\n&amp;rdquo; 依次流入 &amp;ldquo;cout&amp;rdquo; 并被显示出来，这就是 &lt;code&gt;cout&lt;/code&gt; 的用法，颇有象形文字的智慧。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;std::&lt;/code&gt; 这个前缀是什么意思？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;std&lt;/code&gt; 是一个&lt;strong&gt;命名空间 (namespace)&lt;/strong&gt;。对于初学者来说命名空间的概念太过复杂了，你可以把它当作“头文件”来理解：&lt;code&gt;std&lt;/code&gt; 中有很多函数/对象/&amp;hellip;可以供我们使用。在使用它们时，为了让计算机知道这个函数/对象/&amp;hellip;来自于 &lt;code&gt;std&lt;/code&gt;，我们要前面加上 &lt;code&gt;std::&lt;/code&gt; 这个前缀。&lt;/p&gt;
+&lt;p&gt;一个自然的问题是：我们既然有一个 include 语句包含头文件，那么我们可不可以也用一条语句来“包含” &lt;code&gt;std&lt;/code&gt; 从而避免每次使用 &lt;code&gt;std&lt;/code&gt; 中的东西都要写 &lt;code&gt;std::&lt;/code&gt; 呢？答案是肯定的，我们可以这样写：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+using namespace std;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;第二行的意思是：在整个程序中我都可以任意地使用 &lt;code&gt;std&lt;/code&gt; 这个 namespace 的所有内容，不再需要 &lt;code&gt;std::&lt;/code&gt; 这个前缀。这样写固然方便，但我们仍然推荐新手养成不滥用 &lt;code&gt;using namespace std;&lt;/code&gt; 的习惯，因为这样你能够更好地知道哪些函数是头文件中的，哪些函数是 &lt;code&gt;std&lt;/code&gt; 中的，这对将来的编程学习很有好处。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;一个只能输出的程序没有意思，我们希望程序可以与人类交互，因此我们接下来考虑一个更复杂的例子：输入两个数，输出它们的和。我们直接给出示例代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
+
+int main ()
+{
+    int a, b, sum;
+    std::cin &amp;gt;&amp;gt; a &amp;gt;&amp;gt; b; // don&#39;t forget the &amp;quot;std::&amp;quot; prefix!
+    sum = a + b;
+    std::cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; &#39;\n&#39;;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个程序颇为复杂，出现了很多新东西，我们来一一看：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;程序中的 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;sum&lt;/code&gt; 被称为&lt;strong&gt;变量 (variable)&lt;/strong&gt;。变量可以被理解为一个“小盒子“，里面可以存放一个值。在使用变量前我们需要定义变量，定义的格式是 &lt;code&gt;类型 变量名;&lt;/code&gt;，这里我们定义了 &lt;code&gt;int&lt;/code&gt; 类型的变量，表示 &lt;code&gt;a&lt;/code&gt; &lt;code&gt;b&lt;/code&gt; &lt;code&gt;sum&lt;/code&gt; 这三个“盒子”里只能存放&lt;strong&gt;整数&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cin&lt;/code&gt; 是用于输入的对象。有了 &lt;code&gt;cout&lt;/code&gt; 的经验，&lt;code&gt;cin&lt;/code&gt; 一行很好理解：我们还是将 &amp;ldquo;cin&amp;rdquo; 想象成黑色窗口，当我们输入了两个数字的时候，&amp;ldquo;cin&amp;rdquo; 需要将数据喂给变量，因此流符号的方向是 &lt;code&gt;&amp;gt;&amp;gt;&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;sum = a + b;&lt;/code&gt; 是一个赋值语句，它的含义是将 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 中的值加起来，存放到 &lt;code&gt;sum&lt;/code&gt; 中，注意该操作不会影响 &lt;code&gt;a&lt;/code&gt; 和 &lt;code&gt;b&lt;/code&gt; 中的内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;变量&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;上述示例代码中定义的是 &lt;code&gt;int&lt;/code&gt; 型的变量 (&amp;ldquo;int&amp;quot;是整数 integer 的缩写）。C++ 为我们提供了很多的变量类型，比如存储小数(浮点数）的 &lt;code&gt;float&lt;/code&gt; 类型和 &lt;code&gt;double&lt;/code&gt; 类型，存储更大的整数的 &lt;code&gt;long long&lt;/code&gt; 类型，存储字符的 &lt;code&gt;char&lt;/code&gt; 类型等等，你可以上网搜索这些类型的含义。&lt;/p&gt;
+&lt;p&gt;除此之外，变量的命名看似自由，其实也有一定的约束条件，比如变量名的第一个字符不能是数字。如果你感兴趣，你也可以上网搜索相关的资料。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>递归</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/recursion/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/recursion/</guid>
+      <description>&lt;p&gt;递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。&lt;/p&gt;
+&lt;p&gt;这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1+2+\cdots+100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;让丞相去计算 $1+2+\cdots +99$，等他把结果返回给我了，我只要计算这个结果+100，答案就出来了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;找一个手下大臣去计算 $1+2+\cdots +98$，等他把结果返回给我了，我只要计算这个结果+99，就能向国王交差了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1+2+3$ 时，把 $1+2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3+3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950+100=5050$，并很高兴地宣称该任务圆满结束。&lt;/p&gt;
+&lt;p&gt;这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1+2+\cdots +n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术：
+$$
+F(n)=F(n-1)+n
+$$
+只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为
+$$
+F(n)=
+\begin{cases}
+3&amp;amp;,n=2\\
+F(n-1)+n&amp;amp;,n\geq 3
+\end{cases}
+$$
+这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $+n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int query_sum(int n)
+{
+    if (n == 2)
+        return 3;
+    else
+        return query_sum(n - 1) + n;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;该函数的执行过程和王国里任务下放再回收的过程完全相同：&lt;code&gt;query_sum(100)&lt;/code&gt; 调用 &lt;code&gt;query_sum(99)&lt;/code&gt; 等待其返回值，&lt;code&gt;query_sum(99)&lt;/code&gt; 又调用了 &lt;code&gt;query_sum(98)&lt;/code&gt;……从而形成了一个长长的调用链。&lt;code&gt;query_sum(3)&lt;/code&gt; 调用 &lt;code&gt;query_sum(2)&lt;/code&gt; 时，&lt;code&gt;query_sum(2)&lt;/code&gt; 不需要再调用子函数，直接返回了结果，从而 &lt;code&gt;query_sum(3)&lt;/code&gt; 执行完加法后也返回了结果，一层层返回结果，直到 &lt;code&gt;query_sum(100)&lt;/code&gt; 返回。&lt;/p&gt;
+&lt;p&gt;大家更加喜闻乐见的可能是小学/中学接触过的斐波那契数列：
+$$
+fib_n=
+\begin{cases}
+0&amp;amp;, n=0\\
+1&amp;amp;, n=1\\
+fib_{n-1}+fib_{n-2}&amp;amp;, n\geq 2
+\end{cases}
+$$&lt;/p&gt;
+&lt;p&gt;能够写出这种递推式的数列一定可以非常简明地用递归实现计算：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int query_fib(int n)
+{
+    if (n == 0)
+        return 0;
+    else if (n == 1)
+        return 1;
+    else
+        return query_fib(n - 1) + query_fib(n - 2);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这个例子比上一个例子稍稍复杂一些，因为它把一个大任务分解成了两个小任务，可以想象递归的调用会形成一个树状结构而不是链状结构。你可以自己用纸笔画一画 &lt;code&gt;query_fib(5)&lt;/code&gt; 的递归调用过程，画完之后参考 
+&lt;a href=&#34;https://inst.eecs.berkeley.edu/~cs61a/fa21/assets/slides/09-Tree_Recursion.html#/11&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这个链接&lt;/a&gt; 的动画进行比对。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>[2023级]OJ习题讲解 | Yuyao Wang&#39;s Homepage</title>
+    <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/</link>
+      <atom:link href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/index.xml" rel="self" type="application/rss+xml" />
+    <description>[2023级]OJ习题讲解</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 18 Apr 2024 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <title>[2023级]OJ习题讲解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/</link>
+    </image>
+    
+    <item>
+      <title>问题求解II-HW01 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/</link>
+      <pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 排序&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个整数，输出排序后的结果。&lt;/li&gt;
+&lt;li&gt;$n\leq 1000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 
+&lt;a href=&#34;https://www.luogu.com.cn/problem/P1177&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这道题目&lt;/a&gt; 检测自己的快速排序写法是否合格。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 逆序对&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 个数的序列，求逆序对个数。&lt;/li&gt;
+&lt;li&gt;$n\leq 2\times 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l+r)/2$，：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;递归计算 $solve(l, mid)$ 和 $solve(mid+1, r)$。&lt;/li&gt;
+&lt;li&gt;考虑 $[l, mid]$ 里的数对 $[mid+1, r]$ 里的数的贡献。在两个子区间都排好序的情况下，我们只需要对左子区间的每个数计算右边有多少个数比它小即可，这可以通过 $O(n)$ 的一边扫描做到。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;由主定理可知，该做法的时间复杂度为 $O(n\log n)$。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;CDQ分治&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;CDQ分治是一类特别的分治技巧，它的框架是：在解决 $[l, r]$ 上的问题时，先递归解决 $[l, mid]$ 和 $[mid+1, r]$，再考虑左侧区间对右侧区间的影响。求逆序对背后的二维偏序是CDQ分治最典型的应用之一，如果你感兴趣，可以参考&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/algorithms/cdq&#34;&gt;这篇文章&lt;/a&gt;。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解II-HW02 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-2/</link>
+      <pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-2/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: Twelvefold Way I&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将 $n$ 个完全相同的球放入 $m$ 个不同的篮子，问有多少种不同的放法。&lt;/li&gt;
+&lt;li&gt;$1\leq n, m\leq 1000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;经典的组合数学问题。由于盒子可空，考虑对 $n+m$ 个球使用插板法，最后再从每个盒子里扣掉一个求，因此总方案数为 $\binom{n+m-1}{m-1}$。&lt;/p&gt;
+&lt;p&gt;因为本题数据范围较小，所以可以利用 $\binom{n}{m}=\binom{n-1}{m-1}+\binom{n-1}{m}$ 的组合数递推公式来计算答案取模后的值。但我们仍然建议大家学习快速计算阶乘逆元的方法，以应对可能出现的更大的数据范围。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: Twelvefold Way II&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将 $n$ 个各不相同的球放入 $m$ 个完全相同的篮子，且每个篮子里至少有一个球，问有多少种不同的放法。&lt;/li&gt;
+&lt;li&gt;$1\leq n, m\leq 500$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;令 $s(n, m)$ 表示将 $n$ 个不同的球放入 $m$ 个相同的篮子的方案数，考虑最后一个球的放法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该球独占一个篮子，则剩下的 $n-1$ 个球放在 $m-1$ 个篮子里，方案数为 $s(n-1, m-1)$。&lt;/li&gt;
+&lt;li&gt;该球不独占一个篮子，则先将剩下的 $n-1$ 个球放入 $m$ 个篮子里，再挑选一个篮子放入最后一个球，方案数为 $n\cdot s(n-1, m)$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因此 $s(n, m)=s(n-1, m-1) + n\cdot s(n-1, m)$。这里的 $s(n, m)$ 称为第二类斯特林数，有兴趣的同学可以上网搜索与之相关的其他性质。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

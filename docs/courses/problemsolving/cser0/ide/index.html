@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="正所谓“工欲善其事，必先利其器”，想要拥有良好的代码书写体验就应当配置好一套舒适的代码编写环境。打开 Windows 的“记事本”编写代码可不是什么好的选择——一方面记事本无法提供代码高亮、自动补全、智能缩进等功能，盯着白纸黑字写代码颇为心累；另一方面即使你写完了代码，记事本也没有集成好配套的编译、调试工具帮助你确定代码的正确性。
+很多优秀的程序员都会选择 IDE (Integrated Development Environment，中文翻译为集成开发环境）来书写代码。所谓集成开发环境，就是将写代码所需要的一系列工具都集成在了一个软件里，从书写代码所需的编辑器，到编译运行代码所需的编译器、链接器，到调试代码所需的调试器……IDE里应有尽有，且很多功能都可以“一键运行”，极好地将程序员的精力解放了出来。
+由于本课程主要希望培养大家掌握 C/C&#43;&#43; 这门语言，所以我们着重介绍了几个和 C/C&#43;&#43; 配合体验良好的 IDE，包括 Dev-C&#43;&#43; (极其推荐新手入门使用，入门门槛低)，Visual Studio (工业级的重型IDE，功能强大但身材略显臃肿), Visual Studio Code (宇宙最强编辑器) 等，大家可以参考杜星宇助教撰写的 这篇文档 来学习。
+如果你已经是比较有经验的代码书写者，你可能并不需要 IDE。你也许会习惯使用 Vim/Emacs 等老牌编辑器，自己写脚本编译和运行代码，使用 GDB 进行调试……如果你能驾驭这些，我们当然也鼓励你充分地使用这些命令行工具。不过我们还是极力地推荐你尝试一下 VS Code (这不是为微软打广告)，其丰富的第三方插件库，强大的远程连接功能，自由的代码跳转、补全、纠错使其成为编辑器界的 killer application。毕竟写代码怎么舒服怎么来，能拥有一个 这样 炫酷的界面何乐而不为呢？">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/cser0/ide/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+        
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/nju.svg">
+  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/cser0/ide/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/cser0/ide/">
+  <meta property="og:title" content="Coding Environment | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="正所谓“工欲善其事，必先利其器”，想要拥有良好的代码书写体验就应当配置好一套舒适的代码编写环境。打开 Windows 的“记事本”编写代码可不是什么好的选择——一方面记事本无法提供代码高亮、自动补全、智能缩进等功能，盯着白纸黑字写代码颇为心累；另一方面即使你写完了代码，记事本也没有集成好配套的编译、调试工具帮助你确定代码的正确性。
+很多优秀的程序员都会选择 IDE (Integrated Development Environment，中文翻译为集成开发环境）来书写代码。所谓集成开发环境，就是将写代码所需要的一系列工具都集成在了一个软件里，从书写代码所需的编辑器，到编译运行代码所需的编译器、链接器，到调试代码所需的调试器……IDE里应有尽有，且很多功能都可以“一键运行”，极好地将程序员的精力解放了出来。
+由于本课程主要希望培养大家掌握 C/C&#43;&#43; 这门语言，所以我们着重介绍了几个和 C/C&#43;&#43; 配合体验良好的 IDE，包括 Dev-C&#43;&#43; (极其推荐新手入门使用，入门门槛低)，Visual Studio (工业级的重型IDE，功能强大但身材略显臃肿), Visual Studio Code (宇宙最强编辑器) 等，大家可以参考杜星宇助教撰写的 这篇文档 来学习。
+如果你已经是比较有经验的代码书写者，你可能并不需要 IDE。你也许会习惯使用 Vim/Emacs 等老牌编辑器，自己写脚本编译和运行代码，使用 GDB 进行调试……如果你能驾驭这些，我们当然也鼓励你充分地使用这些命令行工具。不过我们还是极力地推荐你尝试一下 VS Code (这不是为微软打广告)，其丰富的第三方插件库，强大的远程连接功能，自由的代码跳转、补全、纠错使其成为编辑器界的 killer application。毕竟写代码怎么舒服怎么来，能拥有一个 这样 炫酷的界面何乐而不为呢？"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Coding Environment | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/publication"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/cser0/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/cser0/english/">Miscellaneous</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/courses/problemsolving/cser0/english/">English</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/cser0/typing/">Typing</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/cser0/self-learning/">Self Learning</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/cser0/ide/">Tools</a>
+    <ul class="nav docs-sidenav">
+      
+      <li class="active">
+        <a href="/courses/problemsolving/cser0/ide/">Environment</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/cser0/typesetting/">Typesetting</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>Coding Environment</h1>
+
+          <div class="article-style">
+            <p>正所谓“工欲善其事，必先利其器”，想要拥有良好的代码书写体验就应当配置好一套舒适的代码编写环境。打开 Windows 的“记事本”编写代码可不是什么好的选择——一方面记事本无法提供代码高亮、自动补全、智能缩进等功能，盯着白纸黑字写代码颇为心累；另一方面即使你写完了代码，记事本也没有集成好配套的编译、调试工具帮助你确定代码的正确性。</p>
+<p>很多优秀的程序员都会选择 IDE (Integrated Development Environment，中文翻译为集成开发环境）来书写代码。所谓集成开发环境，就是将写代码所需要的一系列工具都集成在了一个软件里，从书写代码所需的编辑器，到编译运行代码所需的编译器、链接器，到调试代码所需的调试器……IDE里应有尽有，且很多功能都可以“一键运行”，极好地将程序员的精力解放了出来。</p>
+<p>由于本课程主要希望培养大家掌握 C/C++ 这门语言，所以我们着重介绍了几个和 C/C++ 配合体验良好的 IDE，包括 Dev-C++ (极其推荐新手入门使用，入门门槛低)，Visual Studio (工业级的重型IDE，功能强大但身材略显臃肿), Visual Studio Code (宇宙最强编辑器) 等，大家可以参考杜星宇助教撰写的
+<a href="/docs/C-env.pdf">这篇文档</a> 来学习。</p>
+<p>如果你已经是比较有经验的代码书写者，你可能并不需要 IDE。你也许会习惯使用 Vim/Emacs 等老牌编辑器，自己写脚本编译和运行代码，使用 GDB 进行调试……如果你能驾驭这些，我们当然也鼓励你充分地使用这些命令行工具。不过我们还是极力地推荐你尝试一下 VS Code (这不是为微软打广告)，其丰富的第三方插件库，强大的远程连接功能，自由的代码跳转、补全、纠错使其成为编辑器界的 killer application。毕竟写代码怎么舒服怎么来，能拥有一个
+<a href="https://code.visualstudio.com/" target="_blank" rel="noopener">这样</a> 炫酷的界面何乐而不为呢？</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving/cser0/english/" rel="next">English</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving/cser0/self-learning/" rel="prev">Self Learning</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

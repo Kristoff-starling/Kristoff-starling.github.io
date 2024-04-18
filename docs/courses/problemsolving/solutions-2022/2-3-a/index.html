@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="题意概述
+  给定数列 $a_1, \cdots, a_n$，求区间 $(l, r)$，使得
+$$ \left(\min_{i=l}^r a_i\right)\cdot \left(\max_{i=l}^r a_i\right)\cdot \left(\text{OR}_{i=l}^r a_i\right) \cdot (r - l &#43; 1) $$
+最大。
+  $n\leq 10^6$。
+    遇到复杂的表达式不要慌，应当仔细观察它的性质。我们很容易发现该表达式的一个特点：除了 $\min$ 这个操作，其他的三项都是随着区间的扩大而增加的。换句话说，如果没有 $\min$ 这一项，这题的答案就是整个数列。">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-3-a/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/nju.svg">
+  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-3-a/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-3-a/">
+  <meta property="og:title" content="【问题求解II-HW3.A】签到题 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="题意概述
+  给定数列 $a_1, \cdots, a_n$，求区间 $(l, r)$，使得
+$$ \left(\min_{i=l}^r a_i\right)\cdot \left(\max_{i=l}^r a_i\right)\cdot \left(\text{OR}_{i=l}^r a_i\right) \cdot (r - l &#43; 1) $$
+最大。
+  $n\leq 10^6$。
+    遇到复杂的表达式不要慌，应当仔细观察它的性质。我们很容易发现该表达式的一个特点：除了 $\min$ 这个操作，其他的三项都是随着区间的扩大而增加的。换句话说，如果没有 $\min$ 这一项，这题的答案就是整个数列。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2023-04-29T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-04-29T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>【问题求解II-HW3.A】签到题 | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/publication"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/solutions-2022/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/solutions-2022/1-4-c/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/1-4-c/">I-HW04-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/1-6-c/">I-HW06-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/1-final/">I-Final</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-1-c/">II-HW01-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-2-a/">II-HW02-A</a>
+      </li>
+      
+      <li class="active">
+        <a href="/courses/problemsolving/solutions-2022/2-3-a/">II-HW03-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-3-b/">II-HW03-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-3-c/">II-HW03-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-4-c/">II-HW04-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-5-a/">II-HW05-A</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-5-b/">II-HW05-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-5-c/">II-HW05-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-6-b/">II-HW06-B</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-6-c/">II-HW06-C</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/2-final/">II-Final</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-1/">III-HW01</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-2/">III-HW02</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-3/">III-HW03</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-4/">III-HW04</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-5/">III-HW05</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-6/">III-HW06</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-7/">III-HW07</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-8/">III-HW08</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-9/">III-HW09</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-10/">III-HW10</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-11/">III-HW11</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-12/">III-HW12</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/solutions-2022/3-13/">III-HW13</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>【问题求解II-HW3.A】签到题</h1>
+
+          <div class="article-style">
+            <div class="alert alert-note">
+  <div>
+    <p><strong>题意概述</strong></p>
+<ul>
+<li>
+<p>给定数列 $a_1, \cdots, a_n$，求区间 $(l, r)$，使得</p>
+<p>$$
+\left(\min_{i=l}^r a_i\right)\cdot \left(\max_{i=l}^r a_i\right)\cdot \left(\text{OR}_{i=l}^r a_i\right) \cdot (r - l + 1)
+$$</p>
+<p>最大。</p>
+</li>
+<li>
+<p>$n\leq 10^6$。</p>
+</li>
+</ul>
+  </div>
+</div>
+<p>遇到复杂的表达式不要慌，应当仔细观察它的性质。我们很容易发现该表达式的一个特点：除了 $\min$ 这个操作，其他的三项都是随着区间的扩大而增加的。换句话说，如果没有 $\min$ 这一项，这题的答案就是整个数列。</p>
+<p>接下来我们考虑如何对付这个棘手的 $\min$。$\min$ 的一大特点在于它是有限的——任何一个区间的 $\min$ 一定是原数列中的一个数，因此所有可能的 $\min$ 最多只有 $n$ 种。如果我们把所有的区间按照 $\min$ 的位置归类，那么根据之前的结论，享有同一个 $\min$ 的区间集合中，只有最长的那个才可能是答案的候选区间。</p>
+<p>到这里，我们的问题转化成了：枚举数列中的每个数 $a_i$ 作为最小值的情况，我们希望找到以此为最小值的最长区间，即从 $a_i$ 出发向左向右扩展，把所有 $\geq a_i$ 的数纳入到区间中，直到碰到边界/比 $a_i$ 小的数。但这件事仍然不容易，如果暴力地向左向右查看，复杂度仍然会达到 $O(n^2)$。</p>
+<p>考虑这样一种精巧的做法：我们不按照下标的顺序依次枚举 $a_i$，而是按照 $a_i$ 值从小到大的顺序枚举 $a_i$。这样在枚举到任意 $a_i$ 的时刻整个数列的格局如下：</p>
+<img src="/img/ps-sol-2031.png" style="zoom: 50%;" />
+<p>其中蓝色的格子代表已经被枚举过的数，红色的是当前枚举的数。我们发现所有蓝色的数一定比当前数小(小于等于)，所有白色的数一定比当前的数大。因此要寻找“最长区间”，我们只要在“蓝色数”的下标数列中寻找比当前下标小的最大数和比当前下标大的最小数即可。你可以借助 C++ STL 的 set 容器以及 <code>lower_bound</code> 方法来轻松完成这件事，时间复杂度降低到 $O(n\log n)$。</p>
+<blockquote>
+<p><strong>遇到大小相同的数怎么办？</strong></p>
+<p>其实不用担心这个问题。你可以按照任意顺序处理大小相同的数，因为先处理的数对应的区间可以包括后处理的数，所以后处理的数被先处理的数“卡住”区间边界也无关紧要了。</p>
+</blockquote>
+<p>或者你也可以采取类似分治的做法，每次找完当前区间的最小值后将区间拆分成左右两个区间分别处理 (因为后续的区间不应该跨越这个最小值)。至于如何寻找一个区间最小值的位置，你可以在维护 ST 表时同时维护最小值位置，具体细节留给大家自己思考。</p>
+<p>剩下的最后一件事情是：对于每个最小值，我们找到了它对应的最长区间后，如何求该区间的最大值/同或和/长度。长度是容易的，剩下的两样恰好是 ST 表擅长的内容。你只需要预处理 ST 表即可 $O(1)$ 地查询。整个算法的时间复杂度为 $O(n\log n)$。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving/solutions-2022/2-4-c/" rel="next">【问题求解II-HW4.C】烧烤</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving/solutions-2022/2-3-b/" rel="prev">【问题求解II-HW3.B】砍树</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Apr 29, 2023</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

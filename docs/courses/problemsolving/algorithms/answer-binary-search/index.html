@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="二分答案是一种充分利用答案的离散特性和问题的单调特性，用 $O(\log n)$ 倍的时间复杂度的代价将最优化问题转化为判定问题的思想。这句话有些抽象，我们通过一道例题来展示二分答案思想的运用。
+ 例题
+给定一个长度为 $n(1\leq n\leq 10^5)$ 的正整数数列和一个整数 $k$，要求将数列划分成连续的 $k$ 份 (形象地来说，将其切成 $k$ 段)，对每一段中的数求和，要求最大的和最小，并输出这个和。
+ 这题困难的地方在于你很难确定第一刀切在哪里——如果切的太靠后，这一段的和本身可能就太大了；如果切的太靠前，后面的段可能包含的数过多，会导致后面的段的和太大。该题最优化的要求使得我们每一步既要瞻前也要顾后，从而难以下手。
+我们利用这个问题来解释二分答案思想的合适使用场景：
+ 答案的离散性：最终答案一定是一个 $[1, \sum a_i]$ 之间的整数，可选的答案是有限个。 问题的单调性：如果 $s$ 满足题目的要求，即存在一个划分方案满足最大和小于等于 $s$，那么所有大于 $s$ 的值都满足条件。在单调性的基础上，你可以看出 $[1, \sum a_i]$ 中的整数存在一个“分界线”，小于分界线的数都给不出划分方案 (无法成为答案)，大于等于该分界线的都可以给出划分方案。我们要找的就是这个“分界线”。  二分答案 (以原问题为最小化问题为例，最大化问题相反) 的框架如下">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/algorithms/answer-binary-search/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/nju.svg">
+  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/algorithms/answer-binary-search/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/algorithms/answer-binary-search/">
+  <meta property="og:title" content="二分答案 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="二分答案是一种充分利用答案的离散特性和问题的单调特性，用 $O(\log n)$ 倍的时间复杂度的代价将最优化问题转化为判定问题的思想。这句话有些抽象，我们通过一道例题来展示二分答案思想的运用。
+ 例题
+给定一个长度为 $n(1\leq n\leq 10^5)$ 的正整数数列和一个整数 $k$，要求将数列划分成连续的 $k$ 份 (形象地来说，将其切成 $k$ 段)，对每一段中的数求和，要求最大的和最小，并输出这个和。
+ 这题困难的地方在于你很难确定第一刀切在哪里——如果切的太靠后，这一段的和本身可能就太大了；如果切的太靠前，后面的段可能包含的数过多，会导致后面的段的和太大。该题最优化的要求使得我们每一步既要瞻前也要顾后，从而难以下手。
+我们利用这个问题来解释二分答案思想的合适使用场景：
+ 答案的离散性：最终答案一定是一个 $[1, \sum a_i]$ 之间的整数，可选的答案是有限个。 问题的单调性：如果 $s$ 满足题目的要求，即存在一个划分方案满足最大和小于等于 $s$，那么所有大于 $s$ 的值都满足条件。在单调性的基础上，你可以看出 $[1, \sum a_i]$ 中的整数存在一个“分界线”，小于分界线的数都给不出划分方案 (无法成为答案)，大于等于该分界线的都可以给出划分方案。我们要找的就是这个“分界线”。  二分答案 (以原问题为最小化问题为例，最大化问题相反) 的框架如下"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2023-06-07T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-06-07T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>二分答案 | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/publication"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/algorithms/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/algorithms/repeatedsquare/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/repeatedsquare/">快速幂</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/matmul/">矩阵快速幂</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/chunking/">分块</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/lca/">LCA-倍增</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/st/">ST表</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/cdq/">cdq分治</a>
+      </li>
+      
+      <li class="active">
+        <a href="/courses/problemsolving/algorithms/answer-binary-search/">二分答案</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/string-hash/">字符串哈希</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/trie/">Trie树</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>二分答案</h1>
+
+          <div class="article-style">
+            <p>二分答案是一种<strong>充分利用答案的离散特性和问题的单调特性，用 $O(\log n)$ 倍的时间复杂度的代价将最优化问题转化为判定问题的思想</strong>。这句话有些抽象，我们通过一道例题来展示二分答案思想的运用。</p>
+<blockquote>
+<p><strong>例题</strong></p>
+<p>给定一个长度为 $n(1\leq n\leq 10^5)$ 的正整数数列和一个整数 $k$，要求将数列划分成连续的 $k$ 份 (形象地来说，将其切成 $k$ 段)，对每一段中的数求和，要求最大的和最小，并输出这个和。</p>
+</blockquote>
+<p>这题困难的地方在于你很难确定第一刀切在哪里——如果切的太靠后，这一段的和本身可能就太大了；如果切的太靠前，后面的段可能包含的数过多，会导致后面的段的和太大。该题最优化的要求使得我们每一步既要瞻前也要顾后，从而难以下手。</p>
+<p>我们利用这个问题来解释二分答案思想的合适使用场景：</p>
+<ul>
+<li>答案的离散性：最终答案一定是一个 $[1, \sum a_i]$ 之间的整数，可选的答案是有限个。</li>
+<li>问题的单调性：如果 $s$ 满足题目的要求，即存在一个划分方案满足最大和小于等于 $s$，那么所有大于 $s$ 的值都满足条件。在单调性的基础上，你可以看出 $[1, \sum a_i]$ 中的整数存在一个“分界线”，小于分界线的数都给不出划分方案 (无法成为答案)，大于等于该分界线的都可以给出划分方案。我们要找的就是这个“分界线”。</li>
+</ul>
+<p>二分答案 (以原问题为最小化问题为例，最大化问题相反) 的框架如下</p>
+<pre><code class="language-python">l, r, ans = 答案的下限, 答案的上限, 0
+while l &lt;= r:
+    mid = (l + r) &gt;&gt; 1
+    if check(mid): # mid 是合法的 
+        ans = mid  # 作为备选答案
+        r = mid - 1 # 尝试往左寻找更小的答案
+    else:
+        l = mid + 1 # “分界线”在右侧
+</code></pre>
+<p>在本问题中，通过二分答案，我们可以将每轮的问题转化为：是否存在一个划分方案，使得每段的和都不超过 $mid$？这个问题存在简单的贪心解法，我们尽可能让当前段容纳更多的数，直到再加入一个数就超过限制了的时候，我们划一刀开启新的一段。最终是否合法取决于能否用不超过 $k$ 段把所有的数容纳进来。</p>
+<p>二分答案的外层框架提供了 $O(\log \sum a_i)$ 的代价，里面每一轮检查都是 $O(n)$ 的，因此总时间复杂度为 $O(n\log \sum a_i)$。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>套路</strong></p>
+<p>虽然硬背套路是高考生才做的事，但我们在这里仍然给出可使用二分答案思想解决的问题通常具有的典型特征，供大家作为参考：</p>
+<ul>
+<li>答案的离散性、问题的单调性。</li>
+<li>问题最后求的是“最小值的最大值”或“最大值的最小值”。</li>
+</ul>
+  </div>
+</div>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving/algorithms/string-hash/" rel="next">字符串哈希</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving/algorithms/cdq/" rel="prev">cdq分治</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jun 7, 2023</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

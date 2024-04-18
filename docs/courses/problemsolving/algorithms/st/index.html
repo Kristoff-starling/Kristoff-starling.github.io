@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="已知一个数列 $a_1, \cdots, a_n$。给定 $l, r$，问区间 $a_l, \cdots a_r$ 的某种值。
+ ST表是一种处理上述格式的区间查询问题的利器。这类问题通常被称为 RMQ (range minimum query)，但实际上 ST 表可以应对的问题远不止最小值这一种。
+大家已经或多或少地接触过一些区间查询问题，例如求区间的和。以 $&#43;$, $xor$ (异或操作) 这类算符为代表的操作的特点在于可以简明地写出逆运算。例如
+ a &#43; x - x = a a ^ x ^ x = a  满足这种特性的算符使用前缀技术可以高效地求解区间查询： $$ \begin{align} &amp;pre(n)\triangleq op_{k=1}^n a_k \\ &amp;op(l, r) = pre(r)\space op^{-1}\space pre(l-1) \end{align} $$">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/algorithms/st/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/nju.svg">
+  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/algorithms/st/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/algorithms/st/">
+  <meta property="og:title" content="ST表 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="已知一个数列 $a_1, \cdots, a_n$。给定 $l, r$，问区间 $a_l, \cdots a_r$ 的某种值。
+ ST表是一种处理上述格式的区间查询问题的利器。这类问题通常被称为 RMQ (range minimum query)，但实际上 ST 表可以应对的问题远不止最小值这一种。
+大家已经或多或少地接触过一些区间查询问题，例如求区间的和。以 $&#43;$, $xor$ (异或操作) 这类算符为代表的操作的特点在于可以简明地写出逆运算。例如
+ a &#43; x - x = a a ^ x ^ x = a  满足这种特性的算符使用前缀技术可以高效地求解区间查询： $$ \begin{align} &amp;pre(n)\triangleq op_{k=1}^n a_k \\ &amp;op(l, r) = pre(r)\space op^{-1}\space pre(l-1) \end{align} $$"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2023-04-21T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-04-21T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>ST表 | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/publication"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/algorithms/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/algorithms/repeatedsquare/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/repeatedsquare/">快速幂</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/matmul/">矩阵快速幂</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/chunking/">分块</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/lca/">LCA-倍增</a>
+      </li>
+      
+      <li class="active">
+        <a href="/courses/problemsolving/algorithms/st/">ST表</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/cdq/">cdq分治</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/answer-binary-search/">二分答案</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/string-hash/">字符串哈希</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/algorithms/trie/">Trie树</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>ST表</h1>
+
+          <div class="article-style">
+            <blockquote>
+<p>已知一个数列 $a_1, \cdots, a_n$。给定 $l, r$，问区间 $a_l, \cdots a_r$ 的某种值。</p>
+</blockquote>
+<p>ST表是一种处理上述格式的区间查询问题的利器。这类问题通常被称为 RMQ (range minimum query)，但实际上 ST 表可以应对的问题远不止最小值这一种。</p>
+<p>大家已经或多或少地接触过一些区间查询问题，例如求区间的和。以 $+$, $xor$ (异或操作) 这类算符为代表的操作的特点在于可以简明地写出逆运算。例如</p>
+<ul>
+<li>a + x - x = a</li>
+<li>a ^ x ^ x = a</li>
+</ul>
+<p>满足这种特性的算符使用前缀技术可以高效地求解区间查询：
+$$
+\begin{align}
+&amp;pre(n)\triangleq op_{k=1}^n a_k \\
+&amp;op(l, r) = pre(r)\space op^{-1}\space pre(l-1)
+\end{align}
+$$</p>
+<p>但有些算符，例如 $\max, \min, or$ (同或操作)，它们不存在简明的逆运算符，从而无法用前缀技术解决区间问题 (例如，知道 $\max_{i\in [1, r]}a_i$ 和 $\max_{i\in [1, l-1]}a_i$ 对求解 $[l, r]$ 内的最大值没什么帮助)。但这些算符又具有加法、异或所不具备的特性——重复操作不会对结果带来影响：</p>
+<ul>
+<li>$\max(a, b) = \max(\max(\max(a, b), b), b)$</li>
+<li>$a | b = a | b | b | b$</li>
+</ul>
+<p>ST表正适合用于解决这类算符的区间查询问题。ST表的本质是倍增思想 (由此可见倍增思想运用之广)。下面的讲解以最小值为例，但可以容易地扩展到其他算符上：</p>
+<p>令 $ST(i, j)$ 表示区间 $[i, i + 2^j)$ 的最小值。容易发现对于一个数列来说，按照 $j$ 的顺序从小到大计算 ST 可以递推地高效求解：</p>
+<p>$$
+ST(i, j)=
+\begin{cases}
+a_i&amp;, j = 0\\
+\min(ST(i, j-1), ST(i + 2^{j-1}, j-1))&amp;, j \geq 1
+\end{cases}
+$$</p>
+<p>简单来说，长度为 $2^j$ 的区间的最小值可以用已经求好的两个长度为 $2^{j-1}$ 的区间的最小值求 $\min$ 得到。如果 $i + 2^{j-1}$ 超出了 $n$，那么可以不考虑后一半的贡献。</p>
+<p>预处理好所有长度为2的次幂的区间的最小值，对于任意区间 $[l, r]$ 的最小值，我们可以用如下方式 $O(1)$ 地求解：令 $k$ 为最大的满足 $2^k\leq r-l+1$ 的整数，那么
+$$
+\min_{i=l}^r a_i = \min(ST(l, k), ST(r - 2^k + 1, k))
+$$
+它的思想是：$[l, l + 2^k)$ 和 $[r - 2^k + 1, r + 1)$ 这两个部分重叠的区间完整地覆盖了 $l[l, r]$，因此拿着它们的最小值求 min 即可得到全区间的最小值。在这里你可以看出 $\min$ 算符的“重复操作不影响结果”的特性对该做法的正确性保证至关重要。</p>
+<p>最后一个简单的小问题是：如何求 $k$。从数学的角度，你可以使用数学库中的 $\log$ 函数，但更常见的做法是线性预处理所有可能长度对应的 $k$ 值：</p>
+<pre><code class="language-c++">K[1] = 0;
+for (int i = 2; i &lt;= n; i++) K[i] = K[i &gt;&gt; 1] + 1;
+</code></pre>
+<p>你可以用数学归纳法来证明该做法的正确性。</p>
+<hr>
+<p>总结：</p>
+<ul>
+<li>ST 表可以在 $O(n\log n)$ 的预处理复杂度下，$O(1)$ 地求解任意区间的值。</li>
+<li>算符需要保证具有“重复操作不影响结果”的特性。</li>
+<li>ST 表无法处理带修改的情况。</li>
+</ul>
+<div class="alert alert-tip">
+  <div>
+    <p><strong>真的要具有“可重复贡献”性吗?</strong></p>
+<p>如果你仔细学习了LCA章节的讲义，可能会想：如果把区间 $[l, r]$ 通过二进制拆分的方式拆成若干互不相交的，长度为2的次幂的区间的并，不就可以在 $O(\log n)$ 的时间内完成任意算符的区间查询了么？</p>
+<p>非常好的想法！而且确实是正确的。只不过一般没有人会这么做——ST表不支持修改的特性是硬伤，它的“卖点”主要是 $O(1)$ 的效率。因此如果要花费 $O(\log n)$ 的代价才能完成区间求值，它的价值就十分有限了。我们会在合适的时机向大家展示支持修改的 $O(\log n)$ 地完成各种区间操作的技术。</p>
+  </div>
+</div>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving/algorithms/lca/" rel="next">最近公共祖先-倍增</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving/algorithms/chunking/" rel="prev">分块——优雅的暴力</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Apr 21, 2023</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

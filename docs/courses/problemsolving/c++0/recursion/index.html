@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。
+这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1&#43;2&#43;\cdots&#43;100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：
+ 让丞相去计算 $1&#43;2&#43;\cdots &#43;99$，等他把结果返回给我了，我只要计算这个结果&#43;100，答案就出来了。
+ 丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：
+ 找一个手下大臣去计算 $1&#43;2&#43;\cdots &#43;98$，等他把结果返回给我了，我只要计算这个结果&#43;99，就能向国王交差了。
+ 这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1&#43;2&#43;3$ 时，把 $1&#43;2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3&#43;3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950&#43;100=5050$，并很高兴地宣称该任务圆满结束。
+这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1&#43;2&#43;\cdots &#43;n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术： $$ F(n)=F(n-1)&#43;n $$ 只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为 $$ F(n)= \begin{cases} 3&amp;,n=2\\ F(n-1)&#43;n&amp;,n\geq 3 \end{cases} $$ 这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $&#43;n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序：">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/recursion/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/nju.svg">
+  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/recursion/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/recursion/">
+  <meta property="og:title" content="递归 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。
+这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1&#43;2&#43;\cdots&#43;100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：
+ 让丞相去计算 $1&#43;2&#43;\cdots &#43;99$，等他把结果返回给我了，我只要计算这个结果&#43;100，答案就出来了。
+ 丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：
+ 找一个手下大臣去计算 $1&#43;2&#43;\cdots &#43;98$，等他把结果返回给我了，我只要计算这个结果&#43;99，就能向国王交差了。
+ 这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1&#43;2&#43;3$ 时，把 $1&#43;2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3&#43;3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950&#43;100=5050$，并很高兴地宣称该任务圆满结束。
+这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1&#43;2&#43;\cdots &#43;n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术： $$ F(n)=F(n-1)&#43;n $$ 只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为 $$ F(n)= \begin{cases} 3&amp;,n=2\\ F(n-1)&#43;n&amp;,n\geq 3 \end{cases} $$ 这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $&#43;n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+    
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>递归 | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/publication"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/c&#43;&#43;0/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/c&#43;&#43;0/framework/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/courses/problemsolving/c&#43;&#43;0/framework/">基本框架</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/c&#43;&#43;0/io/">输入输出</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/c&#43;&#43;0/branch/">分支</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/c&#43;&#43;0/loop/">循环</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/c&#43;&#43;0/array/">数组</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/c&#43;&#43;0/nestedloop/">嵌套循环</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/c&#43;&#43;0/functions/">函数</a>
+      </li>
+      
+      <li class="active">
+        <a href="/courses/problemsolving/c&#43;&#43;0/recursion/">递归</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/c&#43;&#43;0/stl-container/">STL-容器</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>递归</h1>
+
+          <div class="article-style">
+            <p>递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。</p>
+<p>这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1+2+\cdots+100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：</p>
+<blockquote>
+<p>让丞相去计算 $1+2+\cdots +99$，等他把结果返回给我了，我只要计算这个结果+100，答案就出来了。</p>
+</blockquote>
+<p>丞相同样忙碌且数学天分不高，但幸运的是他也有一批手下可以召唤，于是他设计了一个同样的策略：</p>
+<blockquote>
+<p>找一个手下大臣去计算 $1+2+\cdots +98$，等他把结果返回给我了，我只要计算这个结果+99，就能向国王交差了。</p>
+</blockquote>
+<p>这个王国的所有人都深谙资本主义压榨下属的套路 (bushi)，于是这个任务被一级一级传递下去，直到村长拿到 $1+2+3$ 时，把 $1+2$ 这个任务分配给了一个普通的村民。村民没有手下可以使用了，但幸运的是这个问题足够简单，他想都没想就机智地得到了答案 $3$ 并将结果返回给了村长。村长收到 $3$ 后计算出 $3+3=6$，又将结果返回给了镇长……一路下放的任务在收结果的过程中又被一路上传回去，最后国王收到了丞相的回复：$4950$，于是他完成了最后一步加法，$4950+100=5050$，并很高兴地宣称该任务圆满结束。</p>
+<p>这样的写法可能还不足以唤醒你在课堂上学习的递归“套路”。我们不妨写的更形式化一点：令 $F(n)$ 表示计算 $1+2+\cdots +n$ 这个任务，那么国王的任务是计算 $F(100)$，丞相的任务是计算 $F(99)$……镇长的任务是计算 $F(4)$，村长的任务是计算 $F(3)$。不论这个参数是大是小，他们都采取了相同的战术：
+$$
+F(n)=F(n-1)+n
+$$
+只有村民不一样，他的任务就是一个简单的加法。所以整个王国的策略可以被归纳为
+$$
+F(n)=
+\begin{cases}
+3&amp;,n=2\\
+F(n-1)+n&amp;,n\geq 3
+\end{cases}
+$$
+这就是递归的基本思想：如果一个大任务 (例如 $F(n)$) 可以被分解成一个性质相同但规模更小的任务 (例如 $F(n-1)$) 以及一些简单的额外运算 (例如 $+n$)，那么这个问题就非常适合用递归解决。我们可以为上面的递归加法写一个程序：</p>
+<pre><code class="language-c++">int query_sum(int n)
+{
+    if (n == 2)
+        return 3;
+    else
+        return query_sum(n - 1) + n;
+}
+</code></pre>
+<p>该函数的执行过程和王国里任务下放再回收的过程完全相同：<code>query_sum(100)</code> 调用 <code>query_sum(99)</code> 等待其返回值，<code>query_sum(99)</code> 又调用了 <code>query_sum(98)</code>……从而形成了一个长长的调用链。<code>query_sum(3)</code> 调用 <code>query_sum(2)</code> 时，<code>query_sum(2)</code> 不需要再调用子函数，直接返回了结果，从而 <code>query_sum(3)</code> 执行完加法后也返回了结果，一层层返回结果，直到 <code>query_sum(100)</code> 返回。</p>
+<p>大家更加喜闻乐见的可能是小学/中学接触过的斐波那契数列：
+$$
+fib_n=
+\begin{cases}
+0&amp;, n=0\\
+1&amp;, n=1\\
+fib_{n-1}+fib_{n-2}&amp;, n\geq 2
+\end{cases}
+$$</p>
+<p>能够写出这种递推式的数列一定可以非常简明地用递归实现计算：</p>
+<pre><code class="language-c++">int query_fib(int n)
+{
+    if (n == 0)
+        return 0;
+    else if (n == 1)
+        return 1;
+    else
+        return query_fib(n - 1) + query_fib(n - 2);
+}
+</code></pre>
+<p>这个例子比上一个例子稍稍复杂一些，因为它把一个大任务分解成了两个小任务，可以想象递归的调用会形成一个树状结构而不是链状结构。你可以自己用纸笔画一画 <code>query_fib(5)</code> 的递归调用过程，画完之后参考 
+<a href="https://inst.eecs.berkeley.edu/~cs61a/fa21/assets/slides/09-Tree_Recursion.html#/11" target="_blank" rel="noopener">这个链接</a> 的动画进行比对。</p>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving/c&#43;&#43;0/io/" rel="next">输入输出</a>
+  </div>
+  
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Jan 1, 0001</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

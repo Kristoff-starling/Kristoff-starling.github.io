@@ -14,9 +14,9 @@
     
     <item>
       <title>有限状态机简介</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/dfa/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/dfa/</link>
       <pubDate>Tue, 01 Nov 2022 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/dfa/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/dfa/</guid>
       <description>&lt;h2 id=&#34;一有限状态机的介绍&#34;&gt;一.有限状态机的介绍&lt;/h2&gt;
 &lt;p&gt;首先说说自动机是干什么的。用简单的话来说，有限状态机是一个黑箱，输入是一个合法的字符串(随着你们逐渐深入的学习，这里的“字符串”的概念将会被&amp;quot;Language&amp;quot;替换)，输出&amp;quot;Accept&amp;quot;或者&amp;quot;Reject&amp;quot;，是不是很像你们的OJ（OJ也是状态机！甚至放开了说，一切程序都是状态机！）而要知道哪些字符串会被&amp;quot;Accept&amp;quot;，哪些字符串会被&amp;quot;Reject&amp;quot;，我们就需要继续了解状态机的概念。&lt;/p&gt;
 &lt;p&gt;自动机的工作原理和地图很类似。假设你在你仙林校区，然后你从仙林校区到鼓楼校区，按顺序经过了很多地铁站。每个地铁站都可能有多条换乘路线，而你在所有这些地铁站的选择就构成了一个序列。&lt;/p&gt;

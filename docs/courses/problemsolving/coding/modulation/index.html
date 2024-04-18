@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
+  <meta name="msvalidate.01" content="2370EBA239781ABCE950FABB5C4177B1" />
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Yuyao Wang">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="不少同学被OJ的取模问题折磨得心力憔悴——不论多么仔细地检查每一处四则运算，总会有一处漏网之鱼让程序输出错误的结果。这里我们展示一种比较优雅的代码书写方式：
+const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) x -= MOD; return x;} int sub(int x, int y) { x -= y; if (x &lt; 0) x &#43;= MOD; return x; } int mul(int x, int y) { return 1ll * x * y % MOD; } void Add(int &amp;x, int y) { x = add(x, y); } void Sub(int &amp;x, int y) { x = sub(x, y); } void Mul(int &amp;x, int y) { x = mul(x, y); }  这里我们定义了 MOD 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现：">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/coding/modulation/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.min.css" integrity="sha256-4w9DunooKSr3MFXHXWyFER38WmPdm361bQS/2KUWZbU=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
+    
+
+    
+
+    
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+  
+
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/images/nju.svg">
+  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/coding/modulation/">
+
+  
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/coding/modulation/">
+  <meta property="og:title" content="优雅地取模 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="不少同学被OJ的取模问题折磨得心力憔悴——不论多么仔细地检查每一处四则运算，总会有一处漏网之鱼让程序输出错误的结果。这里我们展示一种比较优雅的代码书写方式：
+const int MOD = 998244353; int add(int x, int y) { x &#43;= y; if (x &gt;= MOD) x -= MOD; return x;} int sub(int x, int y) { x -= y; if (x &lt; 0) x &#43;= MOD; return x; } int mul(int x, int y) { return 1ll * x * y % MOD; } void Add(int &amp;x, int y) { x = add(x, y); } void Sub(int &amp;x, int y) { x = sub(x, y); } void Mul(int &amp;x, int y) { x = mul(x, y); }  这里我们定义了 MOD 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2023-03-22T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2023-03-22T00:00:00&#43;00:00">
+  
+
+  
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>优雅地取模 | Yuyao Wang&#39;s Homepage</title>
+
+  <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1019ZJ28CP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1019ZJ28CP');
+  </script>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Yuyao Wang&#39;s Homepage</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/publication"><span>Publications</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link  active" href="/courses"><span>Teaching</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+
+      
+
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  
+
+<div class="container-fluid docs">
+  <div class="row flex-xl-nowrap">
+    <div class="col-12 col-md-3 col-xl-2 docs-sidebar">
+      
+
+
+
+
+
+  
+    
+  
+
+
+
+
+<form class="docs-search d-flex align-items-center">
+  <button class="btn docs-toggle d-md-none p-0 mr-3" type="button" data-toggle="collapse" data-target="#docs-nav" aria-controls="docs-nav" aria-expanded="false" aria-label="Toggle section navigation">
+    <span><i class="fas fa-bars"></i></span>
+  </button>
+
+  
+</form>
+
+<nav class="collapse docs-links" id="docs-nav">
+  
+
+  
+  
+  
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/coding/">Overview</a>
+
+  </div>
+  
+  <div class="docs-toc-item">
+    <a class="docs-toc-link" href="/courses/problemsolving/coding/matmul/">Contents</a>
+    <ul class="nav docs-sidenav">
+      
+      <li >
+        <a href="/courses/problemsolving/coding/matmul/">矩阵快速幂</a>
+      </li>
+      
+      <li class="active">
+        <a href="/courses/problemsolving/coding/modulation/">优雅地取模</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/coding/difftest/">DiffTest</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/coding/fastio/">快速输入输出</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/coding/mulinv/">逆元</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/coding/profiling/">性能优化</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/coding/defense/">调试艺术</a>
+      </li>
+      
+      <li >
+        <a href="/courses/problemsolving/coding/dsu/">并查集</a>
+      </li>
+      
+    </ul>
+    
+
+  </div>
+  
+  
+</nav>
+
+    </div>
+
+    
+
+    <main class="col-12 col-md-9 col-xl-9 py-md-3 pl-md-5 docs-content" role="main">
+
+      <article class="article">
+
+        <div class="docs-article-container">
+          <h1>优雅地取模</h1>
+
+          <div class="article-style">
+            <p>不少同学被OJ的取模问题折磨得心力憔悴——不论多么仔细地检查每一处四则运算，总会有一处漏网之鱼让程序输出错误的结果。这里我们展示一种比较优雅的代码书写方式：</p>
+<pre><code class="language-c++">const int MOD = 998244353;
+
+int add(int x, int y) { x += y; if (x &gt;= MOD) x -= MOD; return x;}
+int sub(int x, int y) { x -= y; if (x &lt; 0) x += MOD; return x; }
+int mul(int x, int y) { return 1ll * x * y % MOD; }
+void Add(int &amp;x, int y) { x = add(x, y); }
+void Sub(int &amp;x, int y) { x = sub(x, y); }
+void Mul(int &amp;x, int y) { x = mul(x, y); }
+</code></pre>
+<p>这里我们定义了 <code>MOD</code> 这个变量以及 6 个函数统一完成加法、减法和乘法的取模操作。这样后续程序中的任何运算都可以调用这几个函数来实现：</p>
+<pre><code class="language-c++">c = sub(a, b);  // instead of c = (a - b) % MOD;
+Add(c, d);      // instead of c += d %= MOD;
+Mul(a_very_very_long_variable_name, c); 
+  // instead of a_very_very_long_variable_name = 1ll * a_very_very_long_variable_name * c % MOD;
+</code></pre>
+<p>使用统一的取模函数和 <code>MOD</code> 变量有包括但不限于以下好处：</p>
+<ul>
+<li>正确性: 你只需要仔细地书写这几个取模函数，后面的程序中你只要保证不出现 <code>+</code> <code>-</code> <code>*</code>，就不会发生“漏了取模”的悲剧。</li>
+<li>简洁性: 在上述的的第三个例子中可以看出使用取模函数可以避免重复书写长变量名，使代码更加简洁。</li>
+<li>可维护性: 假设某一天我们通知需要将模数紧急换成 <code>1000000007</code>，相比较将程序中散落在各处的 <code>998244353</code> 修改掉，如果你定义了 <code>MOD</code> 变量，你只需要修改一处。</li>
+<li>性能: 你也许注意到了我们在加法和减法中使用了 “if 判断 + 加减”的方式代替了取模，你可以证明只要传入的参数在 <code>[0, MOD)</code> 范围内，该写法的正确性的可以保证的。在计算机底层实现中，进行一次取模操作的代价显著高于简单判断和加减，这样的写法有助于提升效率 (有时候这种提升是惊人的！)。</li>
+</ul>
+<p>我们承认取模这件事情在工程开发中可能并不常见，但这样的程序设计却体现了软件工程的通用思想：</p>
+<ul>
+<li><strong>将需要频繁使用的常量定义成宏/constexpr</strong>。</li>
+<li><strong>将容易出错的功能单独封装成函数，之后调用接口解决问题</strong>。</li>
+</ul>
+<div class="alert alert-tip">
+  <div>
+    <p>程序设计优化是一件<b>“绝知此事要躬行”</b>的事情。阅读一遍这篇文章大抵不会对你的思想产生重大的影响：你也许会认为这些是多此一举，或者你对自己写代码时的仔细程度非常自信。你只有经历了现实的捶打，经历了熬夜通宵的折磨，才会深刻地意识到人类永远无法克服基因决定的共同弱点，才会理解这些文字背后是前人的智慧和血的教训。</p>
+<p>笔者在高中时曾参加一项极其重要的编程比赛。他针对一道难题推导出了一个极其复杂的数学公式并编码实现了它，但在比赛结束前的 5 分钟他发现自己的程序处处漏了取模——他永远不会忘记在手指被汗水浸湿以至于键盘打滑的情况下狂按 ctrl+F, ctrl+C, ctrl+V 是怎样的紧张和绝望，也不会忘记最终也没有把取模问题解决完，因为这样一个小细节与自己想要的结果失之交臂的痛苦。从那之后，他再也没有犯过低级的漏取模错误。</p>
+<p>我不期望你看完这段话就真的能听进去 (因为这也是人类刻在基因里的弱点之一)，但我衷心希望你为之付出的代价能比我小一些。</p>
+  </div>
+</div>
+
+          </div>
+
+          
+
+
+
+          
+          <div class="article-widget">
+            
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving/coding/difftest/" rel="next">Differential Testing</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving/coding/matmul/" rel="prev">矩阵快速幂</a>
+  </div>
+  
+</div>
+
+          </div>
+          
+        </div>
+
+        <div class="body-footer">
+          <p>Last updated on Mar 22, 2023</p>
+
+          
+
+
+
+
+          
+
+        </div>
+
+      </article>
+
+    </main>
+  </div>
+</div>
+
+
+      
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js" integrity="sha256-eOgo0OtLL4cdq7RdwRUiGKLX9XsIJ7nGhWEKbohmVAQ=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/languages/r.min.js"></script>
+        
+      
+
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>const code_highlighting = true;</script>
+    
+
+    
+    
+    <script>const isSiteThemeDark = false;</script>
+    
+
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/4.1.1/anchor.min.js" integrity="sha256-pB/deHc9CGfFpJRjC43imB29Rse8tak+5eXqntO94ck=" crossorigin="anonymous"></script>
+    <script>
+      anchors.add();
+    </script>
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+
+    
+
+
+
+
+
+
+  
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

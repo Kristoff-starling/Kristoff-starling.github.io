@@ -35,10 +35,84 @@
     </item>
     
     <item>
+      <title>问题求解II-HW01 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/</link>
+      <pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 排序&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个整数，输出排序后的结果。&lt;/li&gt;
+&lt;li&gt;$n\leq 1000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 
+&lt;a href=&#34;https://www.luogu.com.cn/problem/P1177&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这道题目&lt;/a&gt; 检测自己的快速排序写法是否合格。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 逆序对&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n$ 个数的序列，求逆序对个数。&lt;/li&gt;
+&lt;li&gt;$n\leq 2\times 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l+r)/2$，：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;递归计算 $solve(l, mid)$ 和 $solve(mid+1, r)$。&lt;/li&gt;
+&lt;li&gt;考虑 $[l, mid]$ 里的数对 $[mid+1, r]$ 里的数的贡献。在两个子区间都排好序的情况下，我们只需要对左子区间的每个数计算右边有多少个数比它小即可，这可以通过 $O(n)$ 的一边扫描做到。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;由主定理可知，该做法的时间复杂度为 $O(n\log n)$。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;CDQ分治&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;CDQ分治是一类特别的分治技巧，它的框架是：在解决 $[l, r]$ 上的问题时，先递归解决 $[l, mid]$ 和 $[mid+1, r]$，再考虑左侧区间对右侧区间的影响。求逆序对背后的二维偏序是CDQ分治最典型的应用之一，如果你感兴趣，可以参考&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/algorithms/cdq&#34;&gt;这篇文章&lt;/a&gt;。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解II-HW02 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-2/</link>
+      <pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-2/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: Twelvefold Way I&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将 $n$ 个完全相同的球放入 $m$ 个不同的篮子，问有多少种不同的放法。&lt;/li&gt;
+&lt;li&gt;$1\leq n, m\leq 1000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;经典的组合数学问题。由于盒子可空，考虑对 $n+m$ 个球使用插板法，最后再从每个盒子里扣掉一个求，因此总方案数为 $\binom{n+m-1}{m-1}$。&lt;/p&gt;
+&lt;p&gt;因为本题数据范围较小，所以可以利用 $\binom{n}{m}=\binom{n-1}{m-1}+\binom{n-1}{m}$ 的组合数递推公式来计算答案取模后的值。但我们仍然建议大家学习快速计算阶乘逆元的方法，以应对可能出现的更大的数据范围。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: Twelvefold Way II&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将 $n$ 个各不相同的球放入 $m$ 个完全相同的篮子，且每个篮子里至少有一个球，问有多少种不同的放法。&lt;/li&gt;
+&lt;li&gt;$1\leq n, m\leq 500$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;令 $s(n, m)$ 表示将 $n$ 个不同的球放入 $m$ 个相同的篮子的方案数，考虑最后一个球的放法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;该球独占一个篮子，则剩下的 $n-1$ 个球放在 $m-1$ 个篮子里，方案数为 $s(n-1, m-1)$。&lt;/li&gt;
+&lt;li&gt;该球不独占一个篮子，则先将剩下的 $n-1$ 个球放入 $m$ 个篮子里，再挑选一个篮子放入最后一个球，方案数为 $n\cdot s(n-1, m)$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因此 $s(n, m)=s(n-1, m-1) + n\cdot s(n-1, m)$。这里的 $s(n, m)$ 称为第二类斯特林数，有兴趣的同学可以上网搜索与之相关的其他性质。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>问题求解III-HW11 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-11/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-11/</link>
       <pubDate>Mon, 25 Dec 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-11/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-11/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 字符串匹配&lt;/strong&gt;&lt;/p&gt;
@@ -52,10 +126,10 @@
 &lt;p&gt;对于 C++ 而言，使用红黑树实现的 &lt;code&gt;set&amp;lt;string&amp;gt;&lt;/code&gt; 或哈希实现的 &lt;code&gt;unordered_set&amp;lt;string&amp;gt;&lt;/code&gt; 都可以轻松完成本题。&lt;/p&gt;
 &lt;h4 id=&#34;解法2-哈希&#34;&gt;&lt;strong&gt;解法2: 哈希&lt;/strong&gt;&lt;/h4&gt;
 &lt;p&gt;参考
-&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving22/algorithms/string-hash&#34;&gt;讲义&lt;/a&gt; 中的讲解。注意本题可能需要使用讲义最后提到的双哈希才能通过。&lt;/p&gt;
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/algorithms/string-hash&#34;&gt;讲义&lt;/a&gt; 中的讲解。注意本题可能需要使用讲义最后提到的双哈希才能通过。&lt;/p&gt;
 &lt;h4 id=&#34;解法3-字典树&#34;&gt;&lt;strong&gt;解法3: 字典树&lt;/strong&gt;&lt;/h4&gt;
 &lt;p&gt;这是一道字典树的模板题，参考
-&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie&#34;&gt;讲义&lt;/a&gt; 中的讲解。&lt;/p&gt;
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/algorithms/trie&#34;&gt;讲义&lt;/a&gt; 中的讲解。&lt;/p&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem B: 顶点覆盖&lt;/strong&gt;&lt;/p&gt;
@@ -71,9 +145,9 @@
     
     <item>
       <title>问题求解III-HW12 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-12/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-12/</link>
       <pubDate>Mon, 25 Dec 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-12/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-12/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 探索遗迹 II&lt;/strong&gt;&lt;/p&gt;
@@ -106,9 +180,9 @@
     
     <item>
       <title>Trie树</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/algorithms/trie/</link>
       <pubDate>Mon, 25 Dec 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/trie/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/algorithms/trie/</guid>
       <description>&lt;p&gt;字典树 (又称 Trie 树) 是一个可以 $O(length)$ 地插入，$O(length)$ 地查询的 &lt;code&gt;unordered_set&amp;lt;string&amp;gt;&lt;/code&gt;，下面的图例展示了它的基本工作原理，这个 Trie 树存储的字符串有 to, tea, ted, ten, A, i, in, inn。&lt;/p&gt;
 &lt;figure&gt;
     &lt;img src=&#34;https://kristoff-starling.github.io/img/problemsolving/trie.svg&#34; style=&#34;zoom: 70%;&#34; &gt;
@@ -126,9 +200,9 @@
     
     <item>
       <title>问题求解III-HW13 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-13/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-13/</link>
       <pubDate>Thu, 21 Dec 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-13/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-13/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 最长回文子串&lt;/strong&gt;&lt;/p&gt;
@@ -139,7 +213,7 @@
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;我们希望大家掌握
-&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving22/algorithms/string-hash&#34;&gt;字符串的滚动哈希技术&lt;/a&gt;。简单来说，字符串滚动哈希可以在线性预处理后，$O(1)$ 地回答任意子串的哈希值。在拥有这项技术的前提下，我们只需要对输入串正着和倒着分别进行滚动哈希预处理，然后枚举字符串的每个位置作为“中间点”，二分最长的可以向左右延伸的回文长度，用哈希值验证即可。总时间复杂度 $O(n\log n)$。&lt;/p&gt;
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/algorithms/string-hash&#34;&gt;字符串的滚动哈希技术&lt;/a&gt;。简单来说，字符串滚动哈希可以在线性预处理后，$O(1)$ 地回答任意子串的哈希值。在拥有这项技术的前提下，我们只需要对输入串正着和倒着分别进行滚动哈希预处理，然后枚举字符串的每个位置作为“中间点”，二分最长的可以向左右延伸的回文长度，用哈希值验证即可。总时间复杂度 $O(n\log n)$。&lt;/p&gt;
 &lt;div class=&#34;alert alert-tip&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;更高效的回文串算法与数据结构&lt;/strong&gt;&lt;/p&gt;
@@ -178,9 +252,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>字符串哈希</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/string-hash/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/algorithms/string-hash/</link>
       <pubDate>Thu, 21 Dec 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/string-hash/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/algorithms/string-hash/</guid>
       <description>&lt;p&gt;字符串哈希的本质是将一个字符串集合映射到一个数的集合，从而将比较两个字符串是否相等转化为比较他们的哈希值是否相等，将复杂度降低到 $O(1)$。&lt;/p&gt;
 &lt;p&gt;字符串哈希的经典哈希函数是类似于进制转换的按位权相加，即对于字符串 $s=s_1\cdots s_n$，&lt;/p&gt;
 &lt;p&gt;$$
@@ -265,9 +339,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>问题求解III-HW10 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-10/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-10/</link>
       <pubDate>Mon, 04 Dec 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-10/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-10/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 字符串匹配&lt;/strong&gt;&lt;/p&gt;
@@ -316,9 +390,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>问题求解III-HW09 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-9/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-9/</link>
       <pubDate>Sat, 18 Nov 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-9/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-9/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 电路交换&lt;/strong&gt;&lt;/p&gt;
@@ -367,9 +441,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>问题求解III-HW08 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-8/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-8/</link>
       <pubDate>Mon, 13 Nov 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-8/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-8/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 加油&lt;/strong&gt;&lt;/p&gt;
@@ -441,9 +515,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>问题求解III-HW07 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-7/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-7/</link>
       <pubDate>Mon, 06 Nov 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-7/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-7/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 优化&lt;/strong&gt;&lt;/p&gt;
@@ -453,7 +527,7 @@ $$&lt;/p&gt;
 &lt;/ul&gt;
   &lt;/div&gt;
 &lt;/div&gt;
-&lt;p&gt;当遇到“最大化最小值”或者“最小化最大值”的问题时，&lt;a href=https://kristoff-starling.github.io/courses/problemsolving22/algorithms/answer-binary-search target=&#34;_blank&#34;&gt;二分答案&lt;/a&gt; 通常是将优化问题转化为判定问题的好思路。在这里我们检查二分答案适用的两个条件：&lt;/p&gt;
+&lt;p&gt;当遇到“最大化最小值”或者“最小化最大值”的问题时，&lt;a href=https://kristoff-starling.github.io/courses/problemsolving/algorithms/answer-binary-search target=&#34;_blank&#34;&gt;二分答案&lt;/a&gt; 通常是将优化问题转化为判定问题的好思路。在这里我们检查二分答案适用的两个条件：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;答案的离散有限性：该问题的答案必然为整数，且落在 $[1, \max(S)-\min(S)]$ 之间。&lt;/li&gt;
 &lt;li&gt;问题的单调性：如果我们找到一个方案满足答案 $d$，那么该方案也可以满足所以比 $d$ 更小的答案。&lt;/li&gt;
@@ -495,9 +569,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>问题求解III-HW06 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-6/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-6/</link>
       <pubDate>Mon, 30 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-6/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-6/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 路由规划&lt;/strong&gt;&lt;/p&gt;
@@ -523,9 +597,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>问题求解III-HW05 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-5/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-5/</link>
       <pubDate>Mon, 23 Oct 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-5/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-5/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 最小环&lt;/strong&gt;&lt;/p&gt;
@@ -594,9 +668,9 @@ $$
     
     <item>
       <title>问题求解III-HW04 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-4/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-4/</link>
       <pubDate>Thu, 28 Sep 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-4/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-4/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 飘雪圣域&lt;/strong&gt;&lt;/p&gt;
@@ -624,9 +698,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>问题求解III-HW03 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-3/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-3/</link>
       <pubDate>Thu, 21 Sep 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-3/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-3/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 一笔画&lt;/strong&gt;&lt;/p&gt;
@@ -693,9 +767,9 @@ $$
     
     <item>
       <title>问题求解III-HW02 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-2/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-2/</link>
       <pubDate>Sun, 17 Sep 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-2/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-2/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 补图最短路&lt;/strong&gt;&lt;/p&gt;
@@ -723,9 +797,9 @@ $$
     
     <item>
       <title>问题求解III-HW01 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-1/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-1/</link>
       <pubDate>Sat, 09 Sep 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/3-1/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-1/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: 控制流图&lt;/strong&gt;&lt;/p&gt;
@@ -745,9 +819,9 @@ $$
     
     <item>
       <title>问题求解II-Final 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-final/</link>
       <pubDate>Sat, 24 Jun 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-final/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-final/</guid>
       <description>&lt;div align=&#34;center&#34;&gt;
 &lt;p&gt;&lt;embed src=&#34;https://kristoff-starling.github.io/files/II-Final-AB.pdf&#34; width=&#34;820&#34; height=&#34;1000&#34; 
 type=&#34;application/pdf&#34;&gt;&lt;/p&gt;
@@ -819,9 +893,9 @@ $$
     
     <item>
       <title>【问题求解II-HW6.C】关押罪犯</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-6-c/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-6-c/</link>
       <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-6-c/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-6-c/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -844,9 +918,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>二分答案</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/answer-binary-search/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/algorithms/answer-binary-search/</link>
       <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/answer-binary-search/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/algorithms/answer-binary-search/</guid>
       <description>&lt;p&gt;二分答案是一种&lt;strong&gt;充分利用答案的离散特性和问题的单调特性，用 $O(\log n)$ 倍的时间复杂度的代价将最优化问题转化为判定问题的思想&lt;/strong&gt;。这句话有些抽象，我们通过一道例题来展示二分答案思想的运用。&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;例题&lt;/strong&gt;&lt;/p&gt;
@@ -885,9 +959,9 @@ while l &amp;lt;= r:
     
     <item>
       <title>并查集</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/dsu/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/coding/dsu/</link>
       <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/dsu/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/coding/dsu/</guid>
       <description>&lt;p&gt;《算法导论》中提到基于路径压缩和按秩合并的并查集更新和查询的均摊时间复杂度为 $O(\alpha(n))$，其中 $\alpha$ 为反阿克曼函数。实践中大家通常写只带有路径压缩的并查集，因为按秩合并写起来更加麻烦 (虽然只需要几行)。我们承认只带有路径压缩的并查集时间复杂度会退化为 $O(\log n)$&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;，但这样的数据不太容易构造，且 $\log n$ 其实也相当好了。然而，对于新手来说，路径压缩可能也相当难实现，因此本讲义向大家展示并查集的实现技巧。&lt;/p&gt;
 &lt;p&gt;并查集和树状数组是许多程序员心爱的数据结构，因为它们思维巧妙，功能强大，且优秀的实现极其简洁。这里我们给出一份完整的带有路径压缩和按秩合并的并查集模板：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;namespace DSU
@@ -932,9 +1006,9 @@ while l &amp;lt;= r:
     
     <item>
       <title>【问题求解II-HW6.B】Cache调度</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-6-b/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-6-b/</link>
       <pubDate>Tue, 06 Jun 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-6-b/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-6-b/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -985,9 +1059,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>【问题求解II-HW5.A】高楼抛鸡蛋</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-5-a/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-5-a/</link>
       <pubDate>Sun, 28 May 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-5-a/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-5-a/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -1082,9 +1156,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>【问题求解II-HW5.B】最长公共子序列</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-5-b/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-5-b/</link>
       <pubDate>Fri, 26 May 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-5-b/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-5-b/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -1116,9 +1190,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>【问题求解II-HW5.C】背包问题</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-5-c/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-5-c/</link>
       <pubDate>Fri, 26 May 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-5-c/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-5-c/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -1161,9 +1235,9 @@ for (int i = 1; i &amp;lt;= n; i++)
     
     <item>
       <title>调试艺术</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/defense/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/coding/defense/</link>
       <pubDate>Thu, 18 May 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/defense/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/coding/defense/</guid>
       <description>&lt;h3 id=&#34;调试理论&#34;&gt;调试理论&lt;/h3&gt;
 &lt;p&gt;为什么 debug 如此困难？因为 bug 的传播链总是非常长。我们给出如下三个概念：&lt;/p&gt;
 &lt;ul&gt;
@@ -1328,9 +1402,9 @@ Shadow byte legend (one shadow byte represents 8 application bytes):
     
     <item>
       <title>性能优化</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/profiling/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/coding/profiling/</link>
       <pubDate>Mon, 15 May 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/profiling/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/coding/profiling/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;Premature optimization is the root of all evil. &amp;ndash; Donald Knuth&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1404,9 +1478,9 @@ int main ()
     
     <item>
       <title>cdq分治</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/algorithms/cdq/</link>
       <pubDate>Sat, 13 May 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/cdq/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/algorithms/cdq/</guid>
       <description>&lt;p&gt;cdq分治是一种常用的分治思想，最早由 
 &lt;a href=&#34;https://www.cs.princeton.edu/~danqic/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;陈丹琦&lt;/a&gt; 整理和总结 (
 &lt;a href=&#34;https://www.cs.princeton.edu/~danqic/papers/divide-and-conquer.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;原文地址&lt;/a&gt;)。这种思想从 high-level 层面来说十分简单和抽象：当我们希望解决某个问题 &lt;code&gt;solve(l, r)&lt;/code&gt; 时，我们可以考虑如下的分治步骤：&lt;/p&gt;
@@ -1511,9 +1585,9 @@ int main ()
     
     <item>
       <title>逆元</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/mulinv/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/coding/mulinv/</link>
       <pubDate>Sat, 13 May 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/mulinv/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/coding/mulinv/</guid>
       <description>&lt;p&gt;对于整数 $a, b&amp;lt;p$，计算 $(a/b)\text{ mod }p$ 可以转化为计算 $a\cdot b^{-1}\text{ mod }p$，这里 $b^{-1}$ 称为 $b$ 在模 $p$ 下的&lt;strong&gt;逆元&lt;/strong&gt;，可以证明当 $p$ 为质数时，$b^{-1}$ 在 $[0, p)$ 范围内是唯一的。逆元的数学推导会在后续的理论课程中给出，这里不做赘述 (如果你不懂也暂时不必深究)。本文主要阐述人们通常是如何书写计算逆元的代码。&lt;/p&gt;
 &lt;p&gt;当 $p$ 为质数时，计算逆元最简单的方法之一是使用费尔马小定理。由于&lt;/p&gt;
 &lt;p&gt;$$a^{p-1}\equiv 1(\text{mod }p)$$&lt;/p&gt;
@@ -1549,9 +1623,9 @@ void init_inv()
     
     <item>
       <title>【问题求解II-HW4.C】烧烤</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-4-c/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-4-c/</link>
       <pubDate>Mon, 08 May 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-4-c/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-4-c/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题面描述&lt;/strong&gt;&lt;/p&gt;
@@ -1603,9 +1677,9 @@ $$
     
     <item>
       <title>【问题求解II-HW3.A】签到题</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-a/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-3-a/</link>
       <pubDate>Sat, 29 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-a/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-3-a/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -1640,9 +1714,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>【问题求解II-HW3.B】砍树</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-b/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-3-b/</link>
       <pubDate>Sat, 29 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-b/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-3-b/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意描述&lt;/strong&gt;&lt;/p&gt;
@@ -1696,9 +1770,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>【问题求解II-HW3.C】单词接龙</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-c/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-3-c/</link>
       <pubDate>Sat, 29 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-3-c/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-3-c/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -1789,9 +1863,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>最近公共祖先-倍增</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/lca/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/algorithms/lca/</link>
       <pubDate>Fri, 21 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/lca/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/algorithms/lca/</guid>
       <description>&lt;p&gt;在计算机世界中，所有与2的次幂相关的事情总是充满魔力的——即便是很大的数，对2取对数后也会落入我们容易处理的范围。之前介绍过的快速幂算法其实就是倍增思想的一种运用。这里我们以计算树上最近公共祖先 (lowest common ancestor, LCA) 为例再次展示倍增思想的强大。&lt;/p&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
@@ -1916,9 +1990,9 @@ int query_lca(int x, int y)
     
     <item>
       <title>ST表</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/st/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/algorithms/st/</link>
       <pubDate>Fri, 21 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/st/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/algorithms/st/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;已知一个数列 $a_1, \cdots, a_n$。给定 $l, r$，问区间 $a_l, \cdots a_r$ 的某种值。&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -1979,9 +2053,9 @@ for (int i = 2; i &amp;lt;= n; i++) K[i] = K[i &amp;gt;&amp;gt; 1] + 1;
     
     <item>
       <title>快速输入输出</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/fastio/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/coding/fastio/</link>
       <pubDate>Wed, 19 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/fastio/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/coding/fastio/</guid>
       <description>&lt;p&gt;大家比较熟悉的输入输出有两种：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int x;
 
@@ -2119,9 +2193,9 @@ int main ()
     
     <item>
       <title>分块——优雅的暴力</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/chunking/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/algorithms/chunking/</link>
       <pubDate>Sat, 08 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/chunking/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/algorithms/chunking/</guid>
       <description>&lt;p&gt;分块的思想被应用在生活的方方面面：举一个最简单的例子，大家上小学的时候通常班级里的座位被分成若干个“组”。每组有一个小组长 (传说中的“一道杠”)，班里有班干部 (传说中的“二道杠&amp;quot;)。班长在统计人数的时候，最便捷的方法就是让各个小组长统计自己组内的人数，汇总到班长手中再做一次简单加法。&lt;/p&gt;
 &lt;p&gt;在算法设计中，分块的思想也常常被使用。空说无益，我们通过一个比 OJ 练习题更复杂的问题来解释分块思想的运用：&lt;/p&gt;
 &lt;blockquote&gt;
@@ -2208,9 +2282,9 @@ $$
     
     <item>
       <title>【问题求解II-HW2.A】取数游戏</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-2-a/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-2-a/</link>
       <pubDate>Fri, 07 Apr 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-2-a/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-2-a/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -2253,9 +2327,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>【问题求解II-HW1.C】新马走日</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-1-c/</link>
       <pubDate>Thu, 30 Mar 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/2-1-c/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-1-c/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -2286,9 +2360,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Differential Testing</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/difftest/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/coding/difftest/</link>
       <pubDate>Tue, 28 Mar 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/difftest/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/coding/difftest/</guid>
       <description>&lt;p&gt;如何论证你写的程序是正确的？这是一个历史悠久且难以回答的问题。通常来说有两种思路：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Verification: 形式化验证简单来说是通过数学手段证明你的程序的行为符合预期。这是对程序正确性的强而有力的证明，但通常非常困难、局限性很大、scalability 较差，因此更多用于对于安全/可靠性要求非常严苛的场景，如自动驾驶，火星车等。问题求解一中提到的“通过 loop invariant 证明循环正确性”可以认为是 verification 的一种非常简单的形式。由于 verificaton 需要大量的程序语言(PL)/形式化方法(FM)的背景知识，且对于简单算法问题来说颇有大材小用之嫌，故在这里不作赘述。&lt;/li&gt;
@@ -2423,9 +2497,9 @@ if __name__ == &amp;quot;__main__&amp;quot;:
     
     <item>
       <title>优雅地取模</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/modulation/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/coding/modulation/</link>
       <pubDate>Wed, 22 Mar 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/modulation/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/coding/modulation/</guid>
       <description>&lt;p&gt;不少同学被OJ的取模问题折磨得心力憔悴——不论多么仔细地检查每一处四则运算，总会有一处漏网之鱼让程序输出错误的结果。这里我们展示一种比较优雅的代码书写方式：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;const int MOD = 998244353;
 
@@ -2466,9 +2540,9 @@ Mul(a_very_very_long_variable_name, c);
     
     <item>
       <title>矩阵快速幂</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/coding/matmul/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/coding/matmul/</link>
       <pubDate>Wed, 22 Mar 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/coding/matmul/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/coding/matmul/</guid>
       <description>&lt;p&gt;按照线性代数中的矩阵乘法规则，常见的矩阵乘法写法如下：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 1; i &amp;lt;= n; i++)
     for (int j = 1; j &amp;lt;= n; j++)
@@ -2753,9 +2827,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>快速幂</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/repeatedsquare/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/algorithms/repeatedsquare/</link>
       <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/repeatedsquare/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/algorithms/repeatedsquare/</guid>
       <description>&lt;p&gt;给定 $a,n$，考虑如何计算 $a^n$ 。如果使用如下循环计算结果&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int res = 1;
 for (int i = 1; i &amp;lt;= n; i++)
@@ -2802,9 +2876,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>矩阵快速幂</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/matmul/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/algorithms/matmul/</link>
       <pubDate>Sat, 18 Mar 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/algorithms/matmul/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/algorithms/matmul/</guid>
       <description>&lt;p&gt;关于基础理论，参见
 &lt;a href=&#34;https://kristoff-starling.github.io/posts/recurrences/&#34;&gt;这篇博文&lt;/a&gt;。如果你之前从未了解过线性递推相关的知识/目前以完成OJ为主要目标，只需看懂该文章的 Getting Started 章节。本文主要对矩阵乘法和矩阵快速幂的实现给出一点建议。&lt;/p&gt;
 &lt;div class=&#34;alert alert-warning&#34;&gt;
@@ -2814,15 +2888,15 @@ $$&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;你可以参考
-&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving22/coding/matmul&#34;&gt;这篇博文&lt;/a&gt; 来学习矩阵快速幂实现的代码细节。&lt;/p&gt;
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/coding/matmul&#34;&gt;这篇博文&lt;/a&gt; 来学习矩阵快速幂实现的代码细节。&lt;/p&gt;
 </description>
     </item>
     
     <item>
       <title>问题求解 I-Final 题解</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-final/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/1-final/</link>
       <pubDate>Sun, 05 Mar 2023 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-final/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/1-final/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem A: BrainF**k Syntax Checker&lt;/strong&gt;&lt;/p&gt;
@@ -3042,9 +3116,9 @@ int main ()
     
     <item>
       <title>【问题求解I-HW6.C】万圣节的新娘</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-6-c/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/1-6-c/</link>
       <pubDate>Wed, 14 Dec 2022 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-6-c/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/1-6-c/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -3176,9 +3250,9 @@ an a1
     
     <item>
       <title>C&#43;&#43;标准模板库——容器</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/stl-container/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/stl-container/</link>
       <pubDate>Tue, 01 Nov 2022 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/stl-container/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/stl-container/</guid>
       <description>&lt;p&gt;之前章节介绍的分支、循环、函数、递归……等概念都是命令式编程语言通用的思想方法。时常有同学问：我们到底学的是 C 还是 C++？可以说之前大家写的程序基本都是 C 风格的 (除了 &lt;code&gt;cin&lt;/code&gt; &lt;code&gt;cout&lt;/code&gt; &lt;code&gt;string&lt;/code&gt; 等少数内容）。这一章介绍的标准模板库 (Standard Template Library, STL)，是 C++ 区别于 C 的重要内容之一。STL 提供的内容将程序员从复杂的底层算法和数据结构中解放出来，使得程序员写程序更加得心应手。&lt;/p&gt;
 &lt;p&gt;标准模板库由四个部分构成：&lt;/p&gt;
 &lt;ul&gt;
@@ -3338,9 +3412,9 @@ cout &amp;lt;&amp;lt; *iter_banana.first &amp;lt;&amp;lt; &#39; &#39; &amp;lt;&a
     
     <item>
       <title>有限状态机简介</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/dfa/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/dfa/</link>
       <pubDate>Tue, 01 Nov 2022 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/dfa/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/dfa/</guid>
       <description>&lt;h2 id=&#34;一有限状态机的介绍&#34;&gt;一.有限状态机的介绍&lt;/h2&gt;
 &lt;p&gt;首先说说自动机是干什么的。用简单的话来说，有限状态机是一个黑箱，输入是一个合法的字符串(随着你们逐渐深入的学习，这里的“字符串”的概念将会被&amp;quot;Language&amp;quot;替换)，输出&amp;quot;Accept&amp;quot;或者&amp;quot;Reject&amp;quot;，是不是很像你们的OJ（OJ也是状态机！甚至放开了说，一切程序都是状态机！）而要知道哪些字符串会被&amp;quot;Accept&amp;quot;，哪些字符串会被&amp;quot;Reject&amp;quot;，我们就需要继续了解状态机的概念。&lt;/p&gt;
 &lt;p&gt;自动机的工作原理和地图很类似。假设你在你仙林校区，然后你从仙林校区到鼓楼校区，按顺序经过了很多地铁站。每个地铁站都可能有多条换乘路线，而你在所有这些地铁站的选择就构成了一个序列。&lt;/p&gt;
@@ -3839,9 +3913,9 @@ bool solve(){
     
     <item>
       <title>Python 快速入门教程</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/python-intro/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/python-intro/</link>
       <pubDate>Mon, 31 Oct 2022 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/python-intro/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/python-intro/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;声明&lt;/strong&gt;&lt;/p&gt;
@@ -3916,9 +3990,9 @@ print(fibonacci(9)) # 输出：34
     
     <item>
       <title>【问题求解I-HW4.C】jyy为什么是神</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-4-c/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/1-4-c/</link>
       <pubDate>Thu, 27 Oct 2022 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/solutions/1-4-c/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/1-4-c/</guid>
       <description>&lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;题意概述&lt;/strong&gt;&lt;/p&gt;
@@ -24582,9 +24656,9 @@ a_child.g()
     
     <item>
       <title>English</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/english/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/cser0/english/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/cser0/english/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/cser0/english/</guid>
       <description>&lt;p&gt;随着科学技术的发展, 在国际学术交流中使用英语已经成为常态: 顶尖的论文无一不使用英文来书写, 在国际上公认的计算机领域经典书籍也是使用英文编著。顶尖的论文没有中文翻译版; 如果需要获取信息, 也应该主动去阅读英文材料, 而不是等翻译版出版。&amp;ldquo;我是中国人, 我只看中文&amp;quot;这类观点已经不符合时代发展的潮流, 要站在时代的最前沿, 阅读英文材料的能力是不可或缺的。&lt;/p&gt;
 &lt;p&gt;想要学好计算机，大家一定要趁早“逼迫”自己熟悉英语环境，尤其强化自己的英语阅读能力 (将来快速略读大段的英文手册很可能是你的工作/学习常态)。我们强烈建议你注意以下几个方面：&lt;/p&gt;
 &lt;ul&gt;
@@ -24598,9 +24672,9 @@ a_child.g()
     
     <item>
       <title>Coding Environment</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/ide/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/cser0/ide/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/cser0/ide/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/cser0/ide/</guid>
       <description>&lt;p&gt;正所谓“工欲善其事，必先利其器”，想要拥有良好的代码书写体验就应当配置好一套舒适的代码编写环境。打开 Windows 的“记事本”编写代码可不是什么好的选择——一方面记事本无法提供代码高亮、自动补全、智能缩进等功能，盯着白纸黑字写代码颇为心累；另一方面即使你写完了代码，记事本也没有集成好配套的编译、调试工具帮助你确定代码的正确性。&lt;/p&gt;
 &lt;p&gt;很多优秀的程序员都会选择 IDE (Integrated Development Environment，中文翻译为集成开发环境）来书写代码。所谓集成开发环境，就是将写代码所需要的一系列工具都集成在了一个软件里，从书写代码所需的编辑器，到编译运行代码所需的编译器、链接器，到调试代码所需的调试器……IDE里应有尽有，且很多功能都可以“一键运行”，极好地将程序员的精力解放了出来。&lt;/p&gt;
 &lt;p&gt;由于本课程主要希望培养大家掌握 C/C++ 这门语言，所以我们着重介绍了几个和 C/C++ 配合体验良好的 IDE，包括 Dev-C++ (极其推荐新手入门使用，入门门槛低)，Visual Studio (工业级的重型IDE，功能强大但身材略显臃肿), Visual Studio Code (宇宙最强编辑器) 等，大家可以参考杜星宇助教撰写的
@@ -28426,9 +28500,9 @@ continue:
     
     <item>
       <title>Self Learning</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/self-learning/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/cser0/self-learning/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/cser0/self-learning/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/cser0/self-learning/</guid>
       <description>&lt;p&gt;高中的时候，每天老师会给你布置一堆试卷，你什么也不用管只需要跟着老师的节奏走；但大学里，你很可能在课下根本找不到老师的踪影，大学课程的作业量通常不大，每天会有大量的空余时间不知道该做什么……因此进入大学后，大家一定要扭转自己的学习模式，做一个 self-motivated 的人。你应当学会为自己规划：应该看一些什么样的书，应当上一些什么样的网课，如果打算出国我是不是应当着手准备英语测试……学会 self-learning，你才能在大学中存活下来。&lt;/p&gt;
 &lt;p&gt;上面的话是各个学科通用的，着眼于计算机这个学科，self-learning 有其独特的方法。计算机学科的一大特点在于技术更新极快——你学习的某项技术很可能是去年刚刚产生的，很多工具的使用也不会在教科书中写出。因此不同于学习数学物理时四处寻找好的教材，学习计算机一定要学会利用好强大的&lt;strong&gt;互联网&lt;/strong&gt;。学习工具时，多找一找官方的文档 (Almost all official manuals are written in English, which again demonstrates the significance of proficiency in English.)，遇到疑难杂症时，多看一看有没有类似的问题解答可以参照……当你遇到问题第一反应是自己动手寻求解决方案而不是打开和“大腿”的QQ聊天框求救时，你便已经进步了很多。&lt;/p&gt;
 &lt;p&gt;下面的话来自大家未来操作系统课程的老师：&lt;/p&gt;
@@ -28442,9 +28516,9 @@ continue:
     
     <item>
       <title>Typesetting</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/typesetting/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/cser0/typesetting/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/cser0/typesetting/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/cser0/typesetting/</guid>
       <description>&lt;p&gt;从某种角度来说，计算机领域的大牛多少有一点偏执——毕竟写代码的时候漏打一个符号便可能酿成大祸，所以学计算机的人总有点“强迫症”。退一步来说，即使你没有强迫症，写作文的时候歪七扭八、行间距不一、每个字都不一样大，开头时不时地忘记空两格……总不是件好事。&lt;/p&gt;
 &lt;p&gt;你也许在书面助教的作业要求中注意到了 LaTeX 这个东西。$\LaTeX$ 是一个高质量的排版系统，你可以通过编写代码生成文档的方式来精确地控制文档里的每一处细节，比如分隔线的粗细、图片的大小，页边距的宽窄等等，精度可以达到毫米。我们不强制要求大家使用 LaTeX 书写作业 (因为对于新手来说这可能会耗费很多的时间)，但我们仍然推荐你学习这项工具 (不出意外，你撰写毕业论文的时候是肯定会用到它的)。&lt;/p&gt;
 &lt;p&gt;如果你认为 $\LaTeX$ 太过麻烦，不妨尝试一下 Markdown。从原理上来说 Markdown 和 LaTeX 很不一样，但你可以简单地认为它们都是通过一些特殊的符号来生成具有格式，编排美观的文档 (助教博客中的大部分页面都是用 Markdown 书写的)。Markdown 比 LaTeX 简明很多，比如你可以通过 &lt;code&gt;#&lt;/code&gt; 来生成各个级别的标题：&lt;/p&gt;
@@ -28471,9 +28545,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>Typing</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/cser0/typing/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/cser0/typing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/cser0/typing/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/cser0/typing/</guid>
       <description>&lt;p&gt;对于零基础的同学来说，键盘可能是十分陌生的。但大家既然选择了CS，计算机之于大家就应当相当于宝剑之于骑士，打字就应当像拿筷子吃饭一样熟练。如果你连&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;应当如何通过键盘敲出下划线 _ ？&lt;/p&gt;
@@ -28485,9 +28559,9 @@ $$&lt;/p&gt;
     
     <item>
       <title>函数</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/functions/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/functions/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/functions/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/functions/</guid>
       <description>&lt;p&gt;随着程序规模的扩大，你的 &lt;code&gt;main()&lt;/code&gt; 函数可能变得越来越臃肿了。这时候使用函数将不同的模块分开书写，可以让程序变得条理清晰、简明易懂。例如下面是 OJ 习题 &amp;ldquo;环形矩阵&amp;rdquo; 的一段代码：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int n;
 int a[100][100];
@@ -28647,9 +28721,9 @@ int main ()
     
     <item>
       <title>分支</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/branch/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/branch/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/branch/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/branch/</guid>
       <description>&lt;p&gt;很多时候我们需要根据某个条件决定去做事情1还是事情2,这就是分支。一个分支框架的格式如下：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;if (condition)
 {
@@ -28731,9 +28805,9 @@ int main ()
     
     <item>
       <title>基本框架</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/framework/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/framework/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/framework/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/framework/</guid>
       <description>&lt;p&gt;一个最简单的 C++ 程序长成这样：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
 
@@ -28770,9 +28844,9 @@ int main ()
     
     <item>
       <title>嵌套循环</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/nestedloop/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/nestedloop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/nestedloop/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/nestedloop/</guid>
       <description>&lt;p&gt;上一节的所有示例代码中我们定义的都是一维数组，一维数组顾名思义就是将所有的”小盒子“排成一排，用一个下标去索引它们。C/C++ 中可以定义各种维度的数组，比如你可以定义一个二维数组来存储方阵：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
 
@@ -28866,9 +28940,9 @@ int main ()
     
     <item>
       <title>循环</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/loop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/loop/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/loop/</guid>
       <description>&lt;p&gt;假设我们现在要计算 $1+2+3+4+5$，相信你已经有能力写出一段代码完成这个任务：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;int sum;
 sum = 1;
@@ -28991,9 +29065,9 @@ while (s2)
     
     <item>
       <title>数组</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/array/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/array/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/array/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/array/</guid>
       <description>&lt;div class=&#34;alert alert-warning&#34;&gt;
   &lt;div&gt;
     为了解释清楚一些现象背后的原因，本文涉及一些超纲的计算机底层知识。这部分内容都在绿色的框内，如果你无法看懂可以直接跳过。等到大家学完了计算机系统基础 (ICS) 后自然就能理解这些话的含义。
@@ -29086,9 +29160,9 @@ int main ()
     
     <item>
       <title>输入输出</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/io/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/io/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/io/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/io/</guid>
       <description>&lt;p&gt;如果你使用的是 Dev-cpp，将基本框架中的程序拷贝到代码区并按下 F11，你会发现程序已经可以成功地运行了！不过跳出的黑色窗口中没有任何内容——因为我们的 main 函数中什么都没写。我们现在来尝试输出一行 &amp;ldquo;hello world!&amp;quot;：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;#include &amp;lt;bits/stdc++.h&amp;gt;
 
@@ -29138,9 +29212,9 @@ int main ()
     
     <item>
       <title>递归</title>
-      <link>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/recursion/</link>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/recursion/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/courses/problemsolving22/c&#43;&#43;0/recursion/</guid>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/recursion/</guid>
       <description>&lt;p&gt;递归对于初学者来说是一个非常头疼的概念。如果你觉得暂时无法理解，请不要灰心，因为正常的人类倾向于使用递推思考问题，即从一个 base case 出发从小往大推，而不是把一个大的问题逐渐拆解。但你必须逐渐习惯计算机世界中的这种将大任务拆成小任务解决的思想，大家后面会接触到的分治思想更是将这一点发挥到了极致。&lt;/p&gt;
 &lt;p&gt;这篇讲义希望用一个故事把递归的思想讲明白。假设一个国家的国王有一个任务：计算 $1+2+\cdots+100$。日理万机的国王肯定不会一个一个累加浪费时间，但他也没有聪明到能够发现高斯公式。幸运的是他有一批听话的大臣可以使用，于是他设计了一个这样的策略：&lt;/p&gt;
 &lt;blockquote&gt;
