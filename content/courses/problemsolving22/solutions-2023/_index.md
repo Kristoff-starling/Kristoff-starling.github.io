@@ -6,6 +6,7 @@ summary: " "
 type: docs
 math: true
 diagram: true
+date: 2024-04-18
 
 menu:
     ps-oj-solutions-2023:
