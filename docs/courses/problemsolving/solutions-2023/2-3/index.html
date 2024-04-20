@@ -29,13 +29,12 @@
   
     
   
-  <meta name="description" content="Problem A: 排序
- 给定 $n$ 个整数，输出排序后的结果。 $n\leq 1000$。    关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 这道题目 检测自己的快速排序写法是否合格。
- Problem B: 逆序对
- 给定一个 $n$ 个数的序列，求逆序对个数。 $n\leq 2\times 10^5$。    求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l&#43;r)/2$，：">
+  <meta name="description" content="Problem A: 最大连续子数组和
+ 给定长度为 $n$ 的数组，求和最大的一个连续子数组。 $n\leq 10^5$。    我们直接给出如下的贪心做法，并尝试说明其正确性：
+for (int i = 1; i &lt;= n; i&#43;&#43;) { sum &#43;= a[i]; ans = max(ans, sum); if (sum &lt; 0) sum = 0; }  我们只要说明每轮循环中，$sum$ 记录的都是以 $a_i$ 结尾的最大和子数组即可。为了说明这点，我们需要想清楚 $sum$ 求的是哪一段的和，即 if 语句丢弃的段有什么性质。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-3/">
 
   
 
@@ -222,7 +221,7 @@
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-3/">
 
   
   
@@ -236,12 +235,11 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
-  <meta property="og:title" content="问题求解II-HW01 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 排序
- 给定 $n$ 个整数，输出排序后的结果。 $n\leq 1000$。    关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 这道题目 检测自己的快速排序写法是否合格。
- Problem B: 逆序对
- 给定一个 $n$ 个数的序列，求逆序对个数。 $n\leq 2\times 10^5$。    求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l&#43;r)/2$，："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-3/">
+  <meta property="og:title" content="问题求解II-HW03 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Problem A: 最大连续子数组和
+ 给定长度为 $n$ 的数组，求和最大的一个连续子数组。 $n\leq 10^5$。    我们直接给出如下的贪心做法，并尝试说明其正确性：
+for (int i = 1; i &lt;= n; i&#43;&#43;) { sum &#43;= a[i]; ans = max(ans, sum); if (sum &lt; 0) sum = 0; }  我们只要说明每轮循环中，$sum$ 记录的都是以 $a_i$ 结尾的最大和子数组即可。为了说明这点，我们需要想清楚 $sum$ 求的是哪一段的和，即 if 语句丢弃的段有什么性质。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -266,7 +264,7 @@
 
 
 
-  <title>问题求解II-HW01 题解 | Yuyao Wang&#39;s Homepage</title>
+  <title>问题求解II-HW03 题解 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -479,7 +477,7 @@
     <a class="docs-toc-link" href="/courses/problemsolving/solutions-2023/2-1/">Contents</a>
     <ul class="nav docs-sidenav">
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving/solutions-2023/2-1/">II-HW01</a>
       </li>
       
@@ -487,7 +485,7 @@
         <a href="/courses/problemsolving/solutions-2023/2-2/">II-HW02</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving/solutions-2023/2-3/">II-HW03</a>
       </li>
       
@@ -524,41 +522,46 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>问题求解II-HW01 题解</h1>
+          <h1>问题求解II-HW03 题解</h1>
 
           <div class="article-style">
             <div class="alert alert-note">
   <div>
-    <p><strong>Problem A: 排序</strong></p>
+    <p><strong>Problem A: 最大连续子数组和</strong></p>
 <ul>
-<li>给定 $n$ 个整数，输出排序后的结果。</li>
-<li>$n\leq 1000$。</li>
+<li>给定长度为 $n$ 的数组，求和最大的一个连续子数组。</li>
+<li>$n\leq 10^5$。</li>
 </ul>
   </div>
 </div>
-<p>关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 
-<a href="https://www.luogu.com.cn/problem/P1177" target="_blank" rel="noopener">这道题目</a> 检测自己的快速排序写法是否合格。</p>
+<p>我们直接给出如下的贪心做法，并尝试说明其正确性：</p>
+<pre><code class="language-c++">for (int i = 1; i &lt;= n; i++) {
+    sum += a[i]; ans = max(ans, sum);
+    if (sum &lt; 0) sum = 0;
+}
+</code></pre>
+<p>我们只要说明每轮循环中，$sum$ 记录的都是以 $a_i$ 结尾的最大和子数组即可。为了说明这点，我们需要想清楚 $sum$ 求的是哪一段的和，即 if 语句丢弃的段有什么性质。</p>
+<p>令 $sum$ 上次被置零和本次被置零丢弃的区间为 $[l, r]$，那么我们可以知道：</p>
+<ul>
+<li>$\sum_{k=l}^r a_i &lt; 0$。</li>
+<li>对于任意 $l\leq t&lt;r$，$\sum_{k=l}^t a_i&gt;0$ (因为一直没有被丢弃)。</li>
+</ul>
+<p>由这两条，我们可以推出：对于任意 $l\leq t\leq r$，都有 $\sum_{k=t}^ra_i&lt;0$，从而这一段无论如何都只会对后面产生负数的贡献，因此完全丢弃它是合理且正确的。</p>
 <div class="alert alert-note">
   <div>
-    <p><strong>Problem B: 逆序对</strong></p>
+    <p><strong>Problem B: 芯片测试</strong></p>
 <ul>
-<li>给定一个 $n$ 个数的序列，求逆序对个数。</li>
-<li>$n\leq 2\times 10^5$。</li>
+<li>有 $n$ 个芯片，其中好芯片个数多于坏芯片个数。每次可以挑选两个芯片进行一轮测试，根据测试结果可以得到一定的芯片状态信息。请找出至少一个好的芯片。</li>
+<li>$n\leq 10^5$，交互题。</li>
 </ul>
   </div>
 </div>
-<p>求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l+r)/2$，：</p>
+<p>我们采取如下的策略：随机抽取一个芯片，并拿着它和其他所有芯片各做一次测试。考虑如下两种情况：</p>
 <ul>
-<li>递归计算 $solve(l, mid)$ 和 $solve(mid+1, r)$。</li>
-<li>考虑 $[l, mid]$ 里的数对 $[mid+1, r]$ 里的数的贡献。在两个子区间都排好序的情况下，我们只需要对左子区间的每个数计算右边有多少个数比它小即可，这可以通过 $O(n)$ 的一边扫描做到。</li>
+<li>如果这个芯片是好的，由于初始好芯片数目大于坏芯片数目，所以剩下的芯片中好芯片数目仍不少于坏芯片数目，从而至少有一半的测试实际上是 <code>(好，好)</code>，从而至少有一半的测试结果是 <code>(好，好)</code>。</li>
+<li>如果这个芯片是坏的，那么剩下芯片中好芯片数目仍然大于坏芯片数目，从而少于一半的测试实际上是 <code>(坏，坏)</code>，从而少于一半的测试结果是 <code>(好，好)</code>。</li>
 </ul>
-<p>由主定理可知，该做法的时间复杂度为 $O(n\log n)$。</p>
-<div class="alert alert-tip">
-  <div>
-    <p><strong>CDQ分治</strong></p>
-<p>CDQ分治是一类特别的分治技巧，它的框架是：在解决 $[l, r]$ 上的问题时，先递归解决 $[l, mid]$ 和 $[mid+1, r]$，再考虑左侧区间对右侧区间的影响。求逆序对背后的二维偏序是CDQ分治最典型的应用之一，如果你感兴趣，可以参考<a href="/courses/problemsolving/algorithms/cdq">这篇文章</a>。</p>
-  </div>
-</div>
+<p>综上，一波测试之后我们可以完全确定当前抽取的芯片是好是坏。因为好芯片多于一半，所以多抽几次总能抽到好芯片，可以在时间限制内完成任务。</p>
 
           </div>
 
@@ -574,8 +577,15 @@
   
   
   <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving/solutions-2023/2-2/" rel="next">问题求解II-HW02 题解</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving/solutions-2023/2-2/" rel="prev">问题求解II-HW02 题解</a>
+    <a href="/courses/problemsolving/solutions-2023/2-4/" rel="prev">问题求解II-HW04 题解</a>
   </div>
   
 </div>

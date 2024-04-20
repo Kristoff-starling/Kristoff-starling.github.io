@@ -29,13 +29,12 @@
   
     
   
-  <meta name="description" content="Problem A: 排序
- 给定 $n$ 个整数，输出排序后的结果。 $n\leq 1000$。    关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 这道题目 检测自己的快速排序写法是否合格。
- Problem B: 逆序对
- 给定一个 $n$ 个数的序列，求逆序对个数。 $n\leq 2\times 10^5$。    求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l&#43;r)/2$，：">
+  <meta name="description" content="Problem A: Hanoi Tower
+ 输出 $n$ 个盘子的汉诺塔的移动序列。 $n\leq 15$。    令 $seq(n, a, b, c)$ 表示将 $n$ 个盘子从 $a$ 柱借助 $b$ 柱移到 $c$ 柱的序列，那么
+$$ seq(n, a, b, c)=seq(n-1, a, c, b) &#43; move(n, a, c) &#43; seq(n-1, b, a, c) $$">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-4/">
 
   
 
@@ -222,7 +221,7 @@
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-4/">
 
   
   
@@ -236,12 +235,11 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
-  <meta property="og:title" content="问题求解II-HW01 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 排序
- 给定 $n$ 个整数，输出排序后的结果。 $n\leq 1000$。    关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 这道题目 检测自己的快速排序写法是否合格。
- Problem B: 逆序对
- 给定一个 $n$ 个数的序列，求逆序对个数。 $n\leq 2\times 10^5$。    求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l&#43;r)/2$，："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-4/">
+  <meta property="og:title" content="问题求解II-HW04 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Problem A: Hanoi Tower
+ 输出 $n$ 个盘子的汉诺塔的移动序列。 $n\leq 15$。    令 $seq(n, a, b, c)$ 表示将 $n$ 个盘子从 $a$ 柱借助 $b$ 柱移到 $c$ 柱的序列，那么
+$$ seq(n, a, b, c)=seq(n-1, a, c, b) &#43; move(n, a, c) &#43; seq(n-1, b, a, c) $$"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -266,7 +264,7 @@
 
 
 
-  <title>问题求解II-HW01 题解 | Yuyao Wang&#39;s Homepage</title>
+  <title>问题求解II-HW04 题解 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -479,7 +477,7 @@
     <a class="docs-toc-link" href="/courses/problemsolving/solutions-2023/2-1/">Contents</a>
     <ul class="nav docs-sidenav">
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving/solutions-2023/2-1/">II-HW01</a>
       </li>
       
@@ -491,7 +489,7 @@
         <a href="/courses/problemsolving/solutions-2023/2-3/">II-HW03</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving/solutions-2023/2-4/">II-HW04</a>
       </li>
       
@@ -524,41 +522,33 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>问题求解II-HW01 题解</h1>
+          <h1>问题求解II-HW04 题解</h1>
 
           <div class="article-style">
             <div class="alert alert-note">
   <div>
-    <p><strong>Problem A: 排序</strong></p>
+    <p><strong>Problem A: Hanoi Tower</strong></p>
 <ul>
-<li>给定 $n$ 个整数，输出排序后的结果。</li>
-<li>$n\leq 1000$。</li>
+<li>输出 $n$ 个盘子的汉诺塔的移动序列。</li>
+<li>$n\leq 15$。</li>
 </ul>
   </div>
 </div>
-<p>关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 
-<a href="https://www.luogu.com.cn/problem/P1177" target="_blank" rel="noopener">这道题目</a> 检测自己的快速排序写法是否合格。</p>
+<p>令 $seq(n, a, b, c)$ 表示将 $n$ 个盘子从 $a$ 柱借助 $b$ 柱移到 $c$ 柱的序列，那么</p>
+<p>$$
+seq(n, a, b, c)=seq(n-1, a, c, b) + move(n, a, c) + seq(n-1, b, a, c)
+$$</p>
 <div class="alert alert-note">
   <div>
-    <p><strong>Problem B: 逆序对</strong></p>
+    <p><strong>Problem B: 数列</strong></p>
 <ul>
-<li>给定一个 $n$ 个数的序列，求逆序对个数。</li>
-<li>$n\leq 2\times 10^5$。</li>
+<li>求 Fibonacci 数列的第 $n$ 项。</li>
+<li>$n\leq 10^9$。</li>
 </ul>
   </div>
 </div>
-<p>求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l+r)/2$，：</p>
-<ul>
-<li>递归计算 $solve(l, mid)$ 和 $solve(mid+1, r)$。</li>
-<li>考虑 $[l, mid]$ 里的数对 $[mid+1, r]$ 里的数的贡献。在两个子区间都排好序的情况下，我们只需要对左子区间的每个数计算右边有多少个数比它小即可，这可以通过 $O(n)$ 的一边扫描做到。</li>
-</ul>
-<p>由主定理可知，该做法的时间复杂度为 $O(n\log n)$。</p>
-<div class="alert alert-tip">
-  <div>
-    <p><strong>CDQ分治</strong></p>
-<p>CDQ分治是一类特别的分治技巧，它的框架是：在解决 $[l, r]$ 上的问题时，先递归解决 $[l, mid]$ 和 $[mid+1, r]$，再考虑左侧区间对右侧区间的影响。求逆序对背后的二维偏序是CDQ分治最典型的应用之一，如果你感兴趣，可以参考<a href="/courses/problemsolving/algorithms/cdq">这篇文章</a>。</p>
-  </div>
-</div>
+<p>求 Fibonacci 数列有经典的利用矩阵快速幂加速的手法，可以参考
+<a href="/posts/recurrences">这篇文章</a>。</p>
 
           </div>
 
@@ -574,8 +564,15 @@
   
   
   <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving/solutions-2023/2-3/" rel="next">问题求解II-HW03 题解</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving/solutions-2023/2-2/" rel="prev">问题求解II-HW02 题解</a>
+    <a href="/courses/problemsolving/solutions-2023/2-5/" rel="prev">问题求解II-HW05 题解</a>
   </div>
   
 </div>

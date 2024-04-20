@@ -109,6 +109,221 @@
     </item>
     
     <item>
+      <title>问题求解II-HW03 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-3/</link>
+      <pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-3/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 最大连续子数组和&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定长度为 $n$ 的数组，求和最大的一个连续子数组。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;我们直接给出如下的贪心做法，并尝试说明其正确性：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;for (int i = 1; i &amp;lt;= n; i++) {
+    sum += a[i]; ans = max(ans, sum);
+    if (sum &amp;lt; 0) sum = 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们只要说明每轮循环中，$sum$ 记录的都是以 $a_i$ 结尾的最大和子数组即可。为了说明这点，我们需要想清楚 $sum$ 求的是哪一段的和，即 if 语句丢弃的段有什么性质。&lt;/p&gt;
+&lt;p&gt;令 $sum$ 上次被置零和本次被置零丢弃的区间为 $[l, r]$，那么我们可以知道：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$\sum_{k=l}^r a_i &amp;lt; 0$。&lt;/li&gt;
+&lt;li&gt;对于任意 $l\leq t&amp;lt;r$，$\sum_{k=l}^t a_i&amp;gt;0$ (因为一直没有被丢弃)。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;由这两条，我们可以推出：对于任意 $l\leq t\leq r$，都有 $\sum_{k=t}^ra_i&amp;lt;0$，从而这一段无论如何都只会对后面产生负数的贡献，因此完全丢弃它是合理且正确的。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 芯片测试&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;有 $n$ 个芯片，其中好芯片个数多于坏芯片个数。每次可以挑选两个芯片进行一轮测试，根据测试结果可以得到一定的芯片状态信息。请找出至少一个好的芯片。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^5$，交互题。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;我们采取如下的策略：随机抽取一个芯片，并拿着它和其他所有芯片各做一次测试。考虑如下两种情况：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;如果这个芯片是好的，由于初始好芯片数目大于坏芯片数目，所以剩下的芯片中好芯片数目仍不少于坏芯片数目，从而至少有一半的测试实际上是 &lt;code&gt;(好，好)&lt;/code&gt;，从而至少有一半的测试结果是 &lt;code&gt;(好，好)&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;如果这个芯片是坏的，那么剩下芯片中好芯片数目仍然大于坏芯片数目，从而少于一半的测试实际上是 &lt;code&gt;(坏，坏)&lt;/code&gt;，从而少于一半的测试结果是 &lt;code&gt;(好，好)&lt;/code&gt;。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;综上，一波测试之后我们可以完全确定当前抽取的芯片是好是坏。因为好芯片多于一半，所以多抽几次总能抽到好芯片，可以在时间限制内完成任务。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解II-HW04 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-4/</link>
+      <pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-4/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: Hanoi Tower&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;输出 $n$ 个盘子的汉诺塔的移动序列。&lt;/li&gt;
+&lt;li&gt;$n\leq 15$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;令 $seq(n, a, b, c)$ 表示将 $n$ 个盘子从 $a$ 柱借助 $b$ 柱移到 $c$ 柱的序列，那么&lt;/p&gt;
+&lt;p&gt;$$
+seq(n, a, b, c)=seq(n-1, a, c, b) + move(n, a, c) + seq(n-1, b, a, c)
+$$&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 数列&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;求 Fibonacci 数列的第 $n$ 项。&lt;/li&gt;
+&lt;li&gt;$n\leq 10^9$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;求 Fibonacci 数列有经典的利用矩阵快速幂加速的手法，可以参考
+&lt;a href=&#34;https://kristoff-starling.github.io/posts/recurrences&#34;&gt;这篇文章&lt;/a&gt;。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解II-HW05 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-5/</link>
+      <pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-5/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 被打乱的邮件&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;求长度为 $n$ 的序列的错排数。&lt;/li&gt;
+&lt;li&gt;$n\leq 5000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;方法一：容斥&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;考虑对有多少个数被“确定”地放在了正确的位置上进行容斥，最终方案数为&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+ans &amp;amp;= \sum_{k=0}^n(-1)^k\binom{n}{k}(n-k)! \\
+&amp;amp;= n!\sum_{k=0}^n\frac{(-1)^k}{k!}
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方法二：递推&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;令 $f(n)$ 表示长度为 $n$ 的序列的错排数。考虑数字 $1$ 的位置，因为需要错排，所以有 $n-1$ 种放法。不妨设 $1$ 被放在了 第 $k$ 个位置，接下来考虑 $k$ 的位置：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$k$ 被放在了第一个位置，那么剩下的 $n-2$ 个数构成错排，共有 $f(n-2)$ 种放法。&lt;/li&gt;
+&lt;li&gt;$k$ 不被放在第一个位置，那么 $k$ 此时有了一个我们新安排的“禁忌位置”，从而这 $n-1$ 个数构成错排，共有 $f(n-1)$ 种放法。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因此，$f(n)=(n-1)(f(n-1)+f(n-2))$，递推即可，时间复杂度为 $O(n)$。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 检测 GPU&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定三个 $n\times n$ 的矩阵 $A, B, C$，判断 $AB=C$ 是否成立。&lt;/li&gt;
+&lt;li&gt;$n\leq 5000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;在这样的数据规模下，我们无法接受将 $AB$ 的结果算出后再判断是否正确。这里我们为大家介绍 Freivalds 算法：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;令 $\vec{r}$ 为长度为 $n$ 的随机01向量。&lt;/li&gt;
+&lt;li&gt;计算 $C\vec{r}$ 和 $A(B\vec{r})$，比较两个结果是否相同。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果 $AB=C$，那么结果必定相同；下面证明如果 $AB\neq C$，结果相同的概率小于 $\frac{1}{2}$：&lt;/p&gt;
+&lt;p&gt;令 $D=(AB-C)$，则 $D$ 是非零矩阵，不妨设 $d_{ij}\neq 0$。令 $D\vec{r}=\vec{p}$，因为 $A(B\vec{r})=C\vec{r}$，所以 $\vec{p}=\vec{0}$，那么关注第 $i$ 行的结果，有&lt;/p&gt;
+&lt;p&gt;$$
+\sum_{k=0}^nd_{ik}r_k=d_{ij}r_k+\sum_{k\neq j}d_{ik}r_k=0
+$$&lt;/p&gt;
+&lt;p&gt;令后一项为 $y$，即 $d_{ij}r_k+y=p_i=0$，我们有&lt;/p&gt;
+&lt;p&gt;$$
+Pr(p_i=0) = Pr(p_i=0|y=0)Pr(y=0)+Pr(p_i=0|y\neq 0)Pr(y\neq 0)
+$$&lt;/p&gt;
+&lt;p&gt;又&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+Pr(p_i=0|y=0) &amp;amp;= Pr(r_k=0)=\frac{1}{2} \\
+Pr(p_i=0|y\neq 0) &amp;amp;= Pr(r_k=1\wedge d_{ij}=-y)\leq Pr(r_k=1)=\frac{1}{2}
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;所以&lt;/p&gt;
+&lt;p&gt;$$
+\begin{align}
+Pr(p_i=0) &amp;amp;= Pr(p_i=0|y=0)Pr(y=0)+Pr(p_i=0|y\neq 0)Pr(y\neq 0) \\
+&amp;amp;\leq \frac{1}{2}Pr(y=0)+\frac{1}{2}Pr(y\neq 0) \\
+&amp;amp;= \frac{1}{2}Pr(y=0) + \frac{1}{2}(1-Pr(y=0)) \\
+&amp;amp;= \frac{1}{2}
+\end{align}
+$$&lt;/p&gt;
+&lt;p&gt;从而&lt;/p&gt;
+&lt;p&gt;$$
+Pr(D\vec{r}=0) = Pr\left(\bigwedge_{k=1}^n p_k=0\right)\leq Pr(p_i=0)\leq \frac{1}{2}
+$$&lt;/p&gt;
+&lt;p&gt;综上，这是一个符合单边蒙特卡洛的测试，我们只要重复多次就可以将错误的概率降到很低。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解II-HW06 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-6/</link>
+      <pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-6/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 购物&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;令第 $i$ 个人买东西为事件 $E_i$，令恰好有 $r$ 个人买了东西为事件 $E$，已知 $P(E_1),\cdots, P(E_n)$，求 $P(E_1|E),\cdots, P(E_n|E)$。&lt;/li&gt;
+&lt;li&gt;$1\leq r\leq n\leq 20$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;方法一：枚举&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;因为本题数据范围足够小，所以我们可以枚举所有人买或不买的情况，计算出 $P(E)$ 和针对每个人的 $P(E_iE)$，从而根据公式 $P(E_i|E)=P(E_iE)/P(E)$ 得到答案。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;方法二：动态规划&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;考虑如何高效计算 $P(E)$，令 $f(i, j)$ 表示前 $i$ 个人有 $j$ 个购买了东西的概率，那么考虑第 $i$ 个人买不买，有状态转移方程：&lt;/p&gt;
+&lt;p&gt;$$
+f(i, j) = f(i-1, j)\cdot (1-P(E_i)) + f(i-1, j-1)\cdot P(E_i)
+$$&lt;/p&gt;
+&lt;p&gt;最后 $f(n, r)$ 即为所求。对于任意一个 $P(E_iE)$，我们只要提前将第 $i$ 个人拎出去，对剩下的 $n-1$ 个人做动态规划，最后 $P(E_i)\cdot f_i(n-1, r-1)$ 即为所求。总时间复杂度 $O(n^3)$。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 取数游戏&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;给定一个长度为 $2n$ 的数列，保证所有数的和是奇数。两个人轮流取数，每次只能取数列的第一个或最后一个数。问双方都采取最优策略的情况下谁能获得胜利。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;见
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-2-a/&#34;&gt;这份题解&lt;/a&gt;。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>问题求解II-HW07 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-7/</link>
+      <pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-7/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 数字接龙&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定 $n$ 个数的序列，求将其首尾相接能组成的最大的数。&lt;/li&gt;
+&lt;li&gt;$n\leq 50000$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;令 $w(x)=10^{x的位数}$。首先，在最优解中，相邻的两个数 $A,B$ 一定满足 $\overline{AB}\geq \overline{BA}$。又 $\overline{AB}\geq \overline{BA}$ 意味着 $Aw(B)+B\geq Bw(A)+A$，移项化简可得 $\frac{A}{w(A)-1}\geq \frac{B}{w(B)-1}$，所以我们只需要将所有数按照 $\frac{x}{w(x)-1}$ 的值从大到小排序再拼接即可获得最优解 (该属性值相同的若干个连续数无论如何换序不会影响答案)。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 优化&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定包含 $n$ 个整数的集合 $S$，要求恰好移除 $k$ 个数，使得剩下的数中 $\min_{x,y\in S，x\neq y}x-y$ 最大。&lt;/li&gt;
+&lt;li&gt;$1\leq k, n\leq 10^5, n-k\geq 2$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;见
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-7/&#34;&gt;这份题解&lt;/a&gt; 的第一题。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>问题求解III-HW11 题解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-11/</link>
       <pubDate>Mon, 25 Dec 2023 00:00:00 +0000</pubDate>

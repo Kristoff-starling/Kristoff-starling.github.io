@@ -29,13 +29,15 @@
   
     
   
-  <meta name="description" content="Problem A: 排序
- 给定 $n$ 个整数，输出排序后的结果。 $n\leq 1000$。    关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 这道题目 检测自己的快速排序写法是否合格。
- Problem B: 逆序对
- 给定一个 $n$ 个数的序列，求逆序对个数。 $n\leq 2\times 10^5$。    求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l&#43;r)/2$，：">
+  <meta name="description" content="Problem A: 被打乱的邮件
+ 求长度为 $n$ 的序列的错排数。 $n\leq 5000$。    方法一：容斥
+考虑对有多少个数被“确定”地放在了正确的位置上进行容斥，最终方案数为
+$$ \begin{align} ans &amp;= \sum_{k=0}^n(-1)^k\binom{n}{k}(n-k)! \\ &amp;= n!\sum_{k=0}^n\frac{(-1)^k}{k!} \end{align} $$
+方法二：递推
+令 $f(n)$ 表示长度为 $n$ 的序列的错排数。考虑数字 $1$ 的位置，因为需要错排，所以有 $n-1$ 种放法。不妨设 $1$ 被放在了 第 $k$ 个位置，接下来考虑 $k$ 的位置：">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-5/">
 
   
 
@@ -222,7 +224,7 @@
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-5/">
 
   
   
@@ -236,12 +238,14 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
-  <meta property="og:title" content="问题求解II-HW01 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 排序
- 给定 $n$ 个整数，输出排序后的结果。 $n\leq 1000$。    关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 这道题目 检测自己的快速排序写法是否合格。
- Problem B: 逆序对
- 给定一个 $n$ 个数的序列，求逆序对个数。 $n\leq 2\times 10^5$。    求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l&#43;r)/2$，："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-5/">
+  <meta property="og:title" content="问题求解II-HW05 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Problem A: 被打乱的邮件
+ 求长度为 $n$ 的序列的错排数。 $n\leq 5000$。    方法一：容斥
+考虑对有多少个数被“确定”地放在了正确的位置上进行容斥，最终方案数为
+$$ \begin{align} ans &amp;= \sum_{k=0}^n(-1)^k\binom{n}{k}(n-k)! \\ &amp;= n!\sum_{k=0}^n\frac{(-1)^k}{k!} \end{align} $$
+方法二：递推
+令 $f(n)$ 表示长度为 $n$ 的序列的错排数。考虑数字 $1$ 的位置，因为需要错排，所以有 $n-1$ 种放法。不妨设 $1$ 被放在了 第 $k$ 个位置，接下来考虑 $k$ 的位置："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -266,7 +270,7 @@
 
 
 
-  <title>问题求解II-HW01 题解 | Yuyao Wang&#39;s Homepage</title>
+  <title>问题求解II-HW05 题解 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -479,7 +483,7 @@
     <a class="docs-toc-link" href="/courses/problemsolving/solutions-2023/2-1/">Contents</a>
     <ul class="nav docs-sidenav">
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving/solutions-2023/2-1/">II-HW01</a>
       </li>
       
@@ -495,7 +499,7 @@
         <a href="/courses/problemsolving/solutions-2023/2-4/">II-HW04</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving/solutions-2023/2-5/">II-HW05</a>
       </li>
       
@@ -524,41 +528,77 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>问题求解II-HW01 题解</h1>
+          <h1>问题求解II-HW05 题解</h1>
 
           <div class="article-style">
             <div class="alert alert-note">
   <div>
-    <p><strong>Problem A: 排序</strong></p>
+    <p><strong>Problem A: 被打乱的邮件</strong></p>
 <ul>
-<li>给定 $n$ 个整数，输出排序后的结果。</li>
-<li>$n\leq 1000$。</li>
+<li>求长度为 $n$ 的序列的错排数。</li>
+<li>$n\leq 5000$。</li>
 </ul>
   </div>
 </div>
-<p>关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 
-<a href="https://www.luogu.com.cn/problem/P1177" target="_blank" rel="noopener">这道题目</a> 检测自己的快速排序写法是否合格。</p>
+<p><strong>方法一：容斥</strong></p>
+<p>考虑对有多少个数被“确定”地放在了正确的位置上进行容斥，最终方案数为</p>
+<p>$$
+\begin{align}
+ans &amp;= \sum_{k=0}^n(-1)^k\binom{n}{k}(n-k)! \\
+&amp;= n!\sum_{k=0}^n\frac{(-1)^k}{k!}
+\end{align}
+$$</p>
+<p><strong>方法二：递推</strong></p>
+<p>令 $f(n)$ 表示长度为 $n$ 的序列的错排数。考虑数字 $1$ 的位置，因为需要错排，所以有 $n-1$ 种放法。不妨设 $1$ 被放在了 第 $k$ 个位置，接下来考虑 $k$ 的位置：</p>
+<ul>
+<li>$k$ 被放在了第一个位置，那么剩下的 $n-2$ 个数构成错排，共有 $f(n-2)$ 种放法。</li>
+<li>$k$ 不被放在第一个位置，那么 $k$ 此时有了一个我们新安排的“禁忌位置”，从而这 $n-1$ 个数构成错排，共有 $f(n-1)$ 种放法。</li>
+</ul>
+<p>因此，$f(n)=(n-1)(f(n-1)+f(n-2))$，递推即可，时间复杂度为 $O(n)$。</p>
 <div class="alert alert-note">
   <div>
-    <p><strong>Problem B: 逆序对</strong></p>
+    <p><strong>Problem B: 检测 GPU</strong></p>
 <ul>
-<li>给定一个 $n$ 个数的序列，求逆序对个数。</li>
-<li>$n\leq 2\times 10^5$。</li>
+<li>给定三个 $n\times n$ 的矩阵 $A, B, C$，判断 $AB=C$ 是否成立。</li>
+<li>$n\leq 5000$。</li>
 </ul>
   </div>
 </div>
-<p>求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l+r)/2$，：</p>
+<p>在这样的数据规模下，我们无法接受将 $AB$ 的结果算出后再判断是否正确。这里我们为大家介绍 Freivalds 算法：</p>
 <ul>
-<li>递归计算 $solve(l, mid)$ 和 $solve(mid+1, r)$。</li>
-<li>考虑 $[l, mid]$ 里的数对 $[mid+1, r]$ 里的数的贡献。在两个子区间都排好序的情况下，我们只需要对左子区间的每个数计算右边有多少个数比它小即可，这可以通过 $O(n)$ 的一边扫描做到。</li>
+<li>令 $\vec{r}$ 为长度为 $n$ 的随机01向量。</li>
+<li>计算 $C\vec{r}$ 和 $A(B\vec{r})$，比较两个结果是否相同。</li>
 </ul>
-<p>由主定理可知，该做法的时间复杂度为 $O(n\log n)$。</p>
-<div class="alert alert-tip">
-  <div>
-    <p><strong>CDQ分治</strong></p>
-<p>CDQ分治是一类特别的分治技巧，它的框架是：在解决 $[l, r]$ 上的问题时，先递归解决 $[l, mid]$ 和 $[mid+1, r]$，再考虑左侧区间对右侧区间的影响。求逆序对背后的二维偏序是CDQ分治最典型的应用之一，如果你感兴趣，可以参考<a href="/courses/problemsolving/algorithms/cdq">这篇文章</a>。</p>
-  </div>
-</div>
+<p>如果 $AB=C$，那么结果必定相同；下面证明如果 $AB\neq C$，结果相同的概率小于 $\frac{1}{2}$：</p>
+<p>令 $D=(AB-C)$，则 $D$ 是非零矩阵，不妨设 $d_{ij}\neq 0$。令 $D\vec{r}=\vec{p}$，因为 $A(B\vec{r})=C\vec{r}$，所以 $\vec{p}=\vec{0}$，那么关注第 $i$ 行的结果，有</p>
+<p>$$
+\sum_{k=0}^nd_{ik}r_k=d_{ij}r_k+\sum_{k\neq j}d_{ik}r_k=0
+$$</p>
+<p>令后一项为 $y$，即 $d_{ij}r_k+y=p_i=0$，我们有</p>
+<p>$$
+Pr(p_i=0) = Pr(p_i=0|y=0)Pr(y=0)+Pr(p_i=0|y\neq 0)Pr(y\neq 0)
+$$</p>
+<p>又</p>
+<p>$$
+\begin{align}
+Pr(p_i=0|y=0) &amp;= Pr(r_k=0)=\frac{1}{2} \\
+Pr(p_i=0|y\neq 0) &amp;= Pr(r_k=1\wedge d_{ij}=-y)\leq Pr(r_k=1)=\frac{1}{2}
+\end{align}
+$$</p>
+<p>所以</p>
+<p>$$
+\begin{align}
+Pr(p_i=0) &amp;= Pr(p_i=0|y=0)Pr(y=0)+Pr(p_i=0|y\neq 0)Pr(y\neq 0) \\
+&amp;\leq \frac{1}{2}Pr(y=0)+\frac{1}{2}Pr(y\neq 0) \\
+&amp;= \frac{1}{2}Pr(y=0) + \frac{1}{2}(1-Pr(y=0)) \\
+&amp;= \frac{1}{2}
+\end{align}
+$$</p>
+<p>从而</p>
+<p>$$
+Pr(D\vec{r}=0) = Pr\left(\bigwedge_{k=1}^n p_k=0\right)\leq Pr(p_i=0)\leq \frac{1}{2}
+$$</p>
+<p>综上，这是一个符合单边蒙特卡洛的测试，我们只要重复多次就可以将错误的概率降到很低。</p>
 
           </div>
 
@@ -574,8 +614,15 @@
   
   
   <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving/solutions-2023/2-4/" rel="next">问题求解II-HW04 题解</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving/solutions-2023/2-2/" rel="prev">问题求解II-HW02 题解</a>
+    <a href="/courses/problemsolving/solutions-2023/2-6/" rel="prev">问题求解II-HW06 题解</a>
   </div>
   
 </div>
