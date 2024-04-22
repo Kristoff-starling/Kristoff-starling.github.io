@@ -35,6 +35,52 @@
     </item>
     
     <item>
+      <title>问题求解II-HW08 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-8/</link>
+      <pubDate>Mon, 22 Apr 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-8/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 棋盘&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$R\times C$ 的棋盘上有 $n$ 个棋子，一个格子是好的当且仅当他所在行列的棋子数目恰好为 $k$，求好格子的数目。&lt;/li&gt;
+&lt;li&gt;$1\leq n, R, C, k\leq 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;读入所有棋子的位置后，我们很容易统计出每行、每列也多少个棋子，也很容易对每个 $i=1,\cdots, n$ 统计出有 $i$ 个棋子的行列有多少个。对于一个有 $p$ 个棋子的行，所有有 $k-p$ 个棋子的列都可以与之搭配在交叉点产生一个好位置。因此只需要枚举所有的行，按照数目进行统计即可。&lt;/p&gt;
+&lt;p&gt;一个重要的细节是，如果某行某列的交叉点处正好有棋子，那么我们之前所说的将行列棋子数相加的统计方法就会多算一个。因此我们要对每个棋子特判一次。具体地，对于每个棋子，它所在的行列棋子数相加如果是 $k$ 个，那么实际上就是 $k-1$ 个，需要从答案中扣除；如果是 $k+1$ 个，那么实际上就是 $k$ 个，需要加到答案中。&lt;/p&gt;
+&lt;div class=&#34;alert alert-tip&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;调试和测试&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;本题有一些细节容易遗漏处理 (例如对于每个棋子所在行列的特判)，一旦没有考虑到就容易陷入“样例全过，交到 OJ 上 WA，我也一筹莫展”的窘境。将来大家走向工作岗位是要为自己写出的代码负责的。实际生产环境中没有 OJ，软件开发员也不可能完全依赖用户来给自己报 bug (不然公司早就倒闭了)。在软件工程中有一个概念叫作“软件测试”，主要关注的问题就是在没有“标准答案”的方法，如何用测试来自己给自己纠错。&lt;/p&gt;
+&lt;p&gt;在做 OJ 题这个层面，最好用的纠错能力就是掌握良好的调试技术和采用正确的调试方法。我们在此强烈推荐大家阅读 &lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/coding/defense/&#34;&gt;调试艺术&lt;/a&gt; 和 &lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/coding/difftest/&#34;&gt;差异化测试&lt;/a&gt; 这两篇文章。对于此题而言，写出一个对却慢的标准程序是非常容易的：你甚至可以 $O(n^3)$ 地枚举每一行，每一列，并暴力数这一行列中的棋子个数。然后你可以生成大量规模在 $100$ 左右的小测试数据进行 differential testing。掌握正确的调试和测试方法可以让你写程序事半功倍。&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 发奖金&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;本题改编自 &lt;a href=&#34;https://www.luogu.com.cn/problem/P1080&#34;&gt;[NOIP2012]国王游戏&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;本题只需要输出排在最后的人的两个数字之积。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;下面证明：按照每个人 $AB$ 两数之积从小到大排序的结果是最优的。&lt;/p&gt;
+&lt;p&gt;假设存在另一个非升序的排列更优，那么一定存在一对相邻的人反序。不妨设他们手里的数为 $A_1, B_1$ 和 $A_2, B_2$，他们之前的人的 $A$ 之积为 $P$。现在这两个人的奖金的较大值为&lt;/p&gt;
+&lt;p&gt;$$
+\max\left(\frac{P}{B_1}, \frac{PA_1}{B_2}\right)
+$$&lt;/p&gt;
+&lt;p&gt;考虑将这两个人交换顺序，那么交换后两人奖金的较大值为&lt;/p&gt;
+&lt;p&gt;$$
+\max\left(\frac{P}{B_2}, \frac{PA_2}{B_1}\right)
+$$&lt;/p&gt;
+&lt;p&gt;因为 $A_1B_1&amp;gt;A_2B_2$，即 $\frac{A_1}{B_2}&amp;gt;\frac{A_2}{B_1}$，所以 $\frac{PA_1}{B_2}&amp;gt;\frac{PA_2}{B_1}$，又这里所有数都大于一，所以显然有 $\frac{PA_1}{B_2}&amp;gt;\frac{P}{B_2}$。因此交换之后这两个人的奖金较大值会变小。又因为这两个人之前和之后的人的奖金不会变化，所以交换之后的答案不会变大。一个非升序的排列可以通过不断交换相邻的非升序员工变成升序，且每次交换都不会变劣，所以升序的排列不会比该排列劣，这与假设矛盾。&lt;/p&gt;
+&lt;p&gt;综上，升序排列是一个最优排列，该题的答案即为 $\max_{i=1}^nA_iB_i$。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>问题求解II-HW01 题解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/</link>
       <pubDate>Thu, 18 Apr 2024 00:00:00 +0000</pubDate>
