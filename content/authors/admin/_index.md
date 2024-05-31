@@ -42,7 +42,7 @@ education:
 social:
 - icon: envelope
   icon_pack: fas
-  link: 'mailto:yuyao6@outlook.com'
+  link: 'mailto:yuyao6@cs.washington.edu'
 - icon: github
   icon_pack: fab
   link: https://github.com/kristoff-starling
@@ -51,15 +51,15 @@ social:
   # link: https://space.bilibili.com/631492694?spm_id_from=333.1007.0.0
 # Link to a PDF of your resume/CV from the About widget.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.
-# - icon: google-scholar
-#   icon_pack: ai
-#   link: https://scholar.google.com/citations?user=6OqKUUgAAAAJ&hl=en
-# - icon: twitter
-#   icon_pack: fab
-#   link: https://twitter.com/YuyaoStarling
-# - icon: cv
-#   icon_pack: ai
-#   link: files/yuyao_CV_20231213.pdf
+- icon: google-scholar
+  icon_pack: ai
+  link: https://scholar.google.com/citations?user=6OqKUUgAAAAJ&hl=en
+- icon: twitter
+  icon_pack: fab
+  link: https://twitter.com/YuyaoStarling
+- icon: cv
+  icon_pack: ai
+  link: files/yuyao_CV_20231213.pdf
 
 # Enter email to display Gravatar (if Gravatar enabled in Config)
 email: ""
