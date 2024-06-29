@@ -29,10 +29,11 @@
   
     
   
-  <meta name="description" content=" ">
+  <meta name="description" content="Problem A: 卓尔不群
+ 给定 $n\times m$ 的地图，每个格子上有一个数。问从 $(1, 1)$ 走到 $(n, m)$ 路径上数的和最大是多少，只能向右或向下走。 $n, m\leq 1000$。    一道比较基础的动态规划问题。令 $dp(i, j)$ 表示从 $(1, 1)$ 走到 $(i, j)$ 的最大值，状态转移是容易的：">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-final/">
 
   
 
@@ -214,14 +215,12 @@
 
 
   
-  <link rel="alternate" href="/courses/problemsolving/solutions-2023/index.xml" type="application/rss+xml" title="Yuyao Wang&#39;s Homepage">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-final/">
 
   
   
@@ -235,29 +234,35 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/">
-  <meta property="og:title" content="[2023级]OJ习题讲解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content=" "><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-final/">
+  <meta property="og:title" content="问题求解II-Final 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Problem A: 卓尔不群
+ 给定 $n\times m$ 的地图，每个格子上有一个数。问从 $(1, 1)$ 走到 $(n, m)$ 路径上数的和最大是多少，只能向右或向下走。 $n, m\leq 1000$。    一道比较基础的动态规划问题。令 $dp(i, j)$ 表示从 $(1, 1)$ 走到 $(i, j)$ 的最大值，状态转移是容易的："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
-    <meta property="og:updated_time" content="2024-04-18T00:00:00&#43;00:00">
+    
+      <meta property="article:published_time" content="2024-06-28T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2024-06-28T00:00:00&#43;00:00">
   
 
   
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>[2023级]OJ习题讲解 | Yuyao Wang&#39;s Homepage</title>
+
+
+  <title>问题求解II-Final 题解 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -461,7 +466,7 @@
   
   
   
-  <div class="docs-toc-item active">
+  <div class="docs-toc-item">
     <a class="docs-toc-link" href="/courses/problemsolving/solutions-2023/">Overview</a>
 
   </div>
@@ -522,7 +527,7 @@
         <a href="/courses/problemsolving/solutions-2023/2-14/">II-HW14</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving/solutions-2023/2-final/">II-Final</a>
       </li>
       
@@ -543,15 +548,85 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>[2023级]OJ习题讲解</h1>
+          <h1>问题求解II-Final 题解</h1>
 
           <div class="article-style">
-            <p>该系列文章针对 OJ 中较难的习题给出提示和解法。</p>
-<div class="alert alert-warning">
+            <div class="alert alert-note">
   <div>
-    阅读题解前请确保你已经独立思考过这些题目！
+    <p><strong>Problem A: 卓尔不群</strong></p>
+<ul>
+<li>给定 $n\times m$ 的地图，每个格子上有一个数。问从 $(1, 1)$ 走到 $(n, m)$ 路径上数的和最大是多少，只能向右或向下走。</li>
+<li>$n, m\leq 1000$。</li>
+</ul>
   </div>
 </div>
+<p>一道比较基础的动态规划问题。令 $dp(i, j)$ 表示从 $(1, 1)$ 走到 $(i, j)$ 的最大值，状态转移是容易的：</p>
+<p>$$
+dp(i, j) = \max \left\{dp(i-1, j), dp(i, j-1)\right\} + a_{ij}
+$$</p>
+<p>$dp(n, m)$ 即为答案。总时间复杂度为 $O(nm)$。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>Problem B: 双重麻烦</strong></p>
+<ul>
+<li>给定 $n\times m$ 的地图，每个格子上有一个数。小 A 从 $(1, 1)$ 走到 $(n, m)$，只能向右或向下走；小 B 从 $(1, m)$ 走到 $(n, 1)$，只能向左或向下走。求两人路径上数的和的最大值(两人重复经过的格子计算答案时只算一次)。</li>
+<li>$n, m\leq 1000$。</li>
+</ul>
+  </div>
+</div>
+<p>观察两人的行进方向容易发现：<strong>小 A 和 小 B 路径的重合区域必然在同一行或同一列中</strong>。以下分析只叙述重合区域在同一行的情况，同一列的情况同理。</p>
+<p>令 $LU/LD/RU/RD_{ij}$ 分别表示单人从左上/左下/右上/右下角出发到 $(i, j)$ 的最大值，这部分可以通过和上一题几乎一样的动态规划方法求出。在此基础上，记重合部分为 $(x, y_1)$ 到 $(x, y_2)$，该行的前缀和数组为 $sum$，则两人路径权值和为</p>
+<p>$$
+\begin{align}
+S &amp;= LU_{x, y_1} + LD_{x, y_1} + RU_{x, y_2} + RD_{x, y_2} + sum_{y_2} - sum_{y_1 - 1}\\
+&amp;= (LU_{x, y_1} + LD_{x, y_1} - sum_{y_1 - 1}) + (RU_{x, y_2} + RD_{x, y_2} + sum_{y_2}) \\
+&amp;\overset{def}{=} f(x, y_1) + g(x, y_2)
+\end{align}
+$$</p>
+<p>严谨来说上面的表达式不太正确——如果重合区域恰好从 $(x, y_1)$ 开始，那么我们要保证小 A 和小 B 不同时从 $(x, y_1 - 1)$ 走过来，即 $f(x, y_1)$ 实际上应该为</p>
+<p>$$
+f(x, y_1) = \max\left\{ LU_{x - 1, y_1 - 1} + LD_{x, y_1}, LU_{x, y_1} + LD_{x + 1, y_1}\right\}
+$$</p>
+<p>$g(x, y_2)$ 也是同理。但上式的重点是展示出重合路径的左右端点是互不影响的，即右端点的变化不会影响最优左端点的决策。因此我们可以对于每一行枚举重合路径的右端点，并同步更新前缀的左端点 $f$ 最大值用来更新答案。总时间复杂度为 $O(nm)$。</p>
+<p>本题细节较多，对代码能力的要求较高。除了上文提到的 $f$ 和 $g$ 函数的细节处理，还要对重合路径只有一个点的情况进行特殊判断。很多同学在考场上写出的正确代码将近 200 行，这里强烈建议大家看一看我们提供的标准程序，从中学习一些复用代码片段、减少无谓调试的技巧。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>Problem C: 智能数据结构</strong></p>
+<ul>
+<li>实现一个容器并接受 $n$ 次操作，每次操作要么向容器中加入一个数，要么输出容器中第 $I$ 小的数。变量 $I$ 从 1 开始计数，每次询问操作之后值加一。</li>
+<li>$n\leq 2\times 10^5$。</li>
+</ul>
+  </div>
+</div>
+<p>本题的思路和之前作业中的“动态中位数”十分类似。我们可以维护一个小根堆和一个大根堆，大根堆维护前 $I$ 小的数，小根堆维护剩下的数。加入新数字时根据大小关系加入到正确的堆中，并调整两个堆的规模使得大根堆中始终只有 $I$ 个元素；查询时输出大根堆中的最大值即可。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>Problem D: 积木塔</strong></p>
+<ul>
+<li>给定一个 $n$ 个数的数组 $a_1, \cdots, a_n$，每次操作可以挑选一个区间 $[l, r]$，并将该区间内所有的数减一，反复操作直到所有的数变为 0。问最优操作下最短区间的长度最长是多少。</li>
+<li>$n\leq 5\times 10^6$。</li>
+</ul>
+  </div>
+</div>
+<p>本题考场版本的数据比较简单，所有数的大小均不超过100，因此一些复杂度和数的大小相关的做法甚至常数较小的 $O(n\log n)$ 做法也顺利通过了。这里我们介绍一个标准的基于贪心的 $O(n)$ 解法。</p>
+<p>假设当前我们要选择一个区间 $[1, R]$，考虑如何选择 $R$ 对答案最有利。我们让一个变量 $r$ 从第一列开始向右扫描，注意到以下两个性质：</p>
+<ul>
+<li>如果 $a_r\leq a_{r+1}$，那么 $r$ 应当继续向后移。这是因为当前列上的 $a_r$ 个区间每个都能和右边“接上头”，那么在这里断开就没有任何收益。</li>
+<li>如果 $a_r&gt;a_{r+1}$，那么 $r$ 就应当到此为止不再右移。这是因为下一列的数比较小，当前列的 $a_r$ 个区间必然有一些要在这里结束，那么为了让最短的区间尽可能长，我们应当挑选当前最长的区间结束。我们考虑的 $[1, R]$ 这个区间显然是当前最长的 (第一列的数用完后，有一些其他区间会从 $2, 3, 4\cdots$ 开始)，所以应该就此结束。</li>
+</ul>
+<p>根据这两条观察，最优的 $R$ 应当满足：</p>
+<p>$$
+(a_R &gt; a_{R+1}) \wedge(\forall 1\leq r&lt;R. a_r\leq a_{r+1})
+$$</p>
+<p>根据这个条件，我们其实已经有了一个正确的做法：我们可以不断地从当前第一个非0的列 $L$ 开始，根据条件寻找最优的 $R$ 并操作 $[L, R]$ 这个区间，重复该过程直到所有数全部为0。接下来的问题是如何快速地寻找 $R$ 以及如何应对过大的数字。</p>
+<p>关于如何寻找 $R$，我们可以发现其实并不需要每次从 $L$ 开始从头开始检查，这是因为 $R$ 的选择存在单调性：每次 $[L, R]$ 区间内的数同时减一，所以之前满足 $a_r\leq a_{r+1}$ 的那些位置被操作之后仍然满足该性质。因此我们每次只需从上一次的 $R$ 开始往右检查即可。</p>
+<p>关于如何应对过大的数，我们会发现当数很大的时候，每次操作一个区间效率其实很低，因为这会导致很多次选出相同的区间。会导致选择区间发生变化的事件只有两种：</p>
+<ul>
+<li>当前的 $a_L$ 被减到了0。此时我们需要寻找新的第一个非零列。</li>
+<li>当前的 $R$ 不再满足 $a_R&gt;a_{R+1}$，换句话说 $a_R=a_{R+1}$。此时我们要向后寻找新的 $R$。</li>
+</ul>
+<p>因此，每次我们固定好当前的 $L$ 和 $R$ 后，可以判断一下这两个事件哪个先发生，并将发生之前的多个重复区间统一处理，这样做复杂度就能保证是线性的。这是因为每一批操作结束后，要么有一个数变为0，要么有两个数变得一样，可想而知 $O(n)$ 次操作后所有数都会变为 0。</p>
+<p>本题的标程代码非常简短，但除了上文已经提及的实现细节外，然有一些技巧需要大家仔细思考，总体而言是一道思维难度较大，程序也不是非常好写的题目。</p>
 
           </div>
 
@@ -565,6 +640,12 @@
 <div class="post-nav">
   
   
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving/solutions-2023/2-11/" rel="prev">问题求解II-HW11 题解</a>
+  </div>
+  
 </div>
 
           </div>
@@ -572,7 +653,7 @@
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Apr 18, 2024</p>
+          <p>Last updated on Jun 28, 2024</p>
 
           
 
@@ -600,8 +681,6 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 
-      
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
       
 
       

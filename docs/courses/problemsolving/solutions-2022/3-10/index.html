@@ -32,7 +32,7 @@
   <meta name="description" content="Problem A: 字符串匹配
  给定由 $n$ 个字符串构成的字典，有 $m$ 次查询，每次查询给定一个字符串，问是否在字典中。 $n, m\leq 10000$，字符串长度不超过 16。    如果你对 C&#43;&#43; STL 容器比较熟悉，那么你只需要使用
 std::unordered_set&lt;std::string&gt; dictionary;  即可解决此题。
-我们出题的本意是让大家学习字符串哈希 / Trie树。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。">
+我们出题的本意是让大家学习 字符串哈希 / Trie树。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-10/">
@@ -241,7 +241,7 @@ std::unordered_set&lt;std::string&gt; dictionary;  即可解决此题。
   <meta property="og:description" content="Problem A: 字符串匹配
  给定由 $n$ 个字符串构成的字典，有 $m$ 次查询，每次查询给定一个字符串，问是否在字典中。 $n, m\leq 10000$，字符串长度不超过 16。    如果你对 C&#43;&#43; STL 容器比较熟悉，那么你只需要使用
 std::unordered_set&lt;std::string&gt; dictionary;  即可解决此题。
-我们出题的本意是让大家学习字符串哈希 / Trie树。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+我们出题的本意是让大家学习 字符串哈希 / Trie树。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
@@ -624,7 +624,9 @@ std::unordered_set&lt;std::string&gt; dictionary;  即可解决此题。
 <pre><code class="language-c++">std::unordered_set&lt;std::string&gt; dictionary;
 </code></pre>
 <p><del>即可解决此题。</del></p>
-<p>我们出题的本意是让大家学习字符串哈希 / Trie树。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。</p>
+<p>我们出题的本意是让大家学习
+<a href="/courses/problemsolving/algorithms/string-hash">字符串哈希</a> / 
+<a href="/courses/problemsolving/algorithms/trie">Trie树</a>。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。</p>
 <div class="alert alert-note">
   <div>
     <p><strong>Problem B: 观光旅行</strong></p>

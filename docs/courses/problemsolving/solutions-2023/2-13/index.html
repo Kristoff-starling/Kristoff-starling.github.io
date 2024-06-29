@@ -29,10 +29,13 @@
   
     
   
-  <meta name="description" content=" ">
+  <meta name="description" content="Problem A: 高楼抛鸡蛋
+ 有一个 $n$ 层的高楼。存在一个未知的分界楼层 $X$，在 $1&hellip;X$ 层扔鸡蛋落地不会碎；在 $X&#43;1$ 层以及更高的楼层扔鸡蛋落地会碎。问用 $k$ 个鸡蛋最少扔几次可以确定 $X$。 $n\leq 10^4, k\leq 100$。    见 这份题解。
+ Problem B: 背包问题
+ 有一个容积为 $v$ 的背包和 $n$ 个物品，第 $i$ 个物品的体积是 $v_i$，价值是 $w_i$。求用背包最多能装下多少价值的物品。 $n\leq 500, v\leq 10^9, \sum w_i\leq 10^6$。    见 这份题解。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-13/">
 
   
 
@@ -214,14 +217,12 @@
 
 
   
-  <link rel="alternate" href="/courses/problemsolving/solutions-2023/index.xml" type="application/rss+xml" title="Yuyao Wang&#39;s Homepage">
-  
 
   <link rel="manifest" href="/index.webmanifest">
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-13/">
 
   
   
@@ -235,29 +236,37 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/">
-  <meta property="og:title" content="[2023级]OJ习题讲解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content=" "><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-13/">
+  <meta property="og:title" content="问题求解II-HW13 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Problem A: 高楼抛鸡蛋
+ 有一个 $n$ 层的高楼。存在一个未知的分界楼层 $X$，在 $1&hellip;X$ 层扔鸡蛋落地不会碎；在 $X&#43;1$ 层以及更高的楼层扔鸡蛋落地会碎。问用 $k$ 个鸡蛋最少扔几次可以确定 $X$。 $n\leq 10^4, k\leq 100$。    见 这份题解。
+ Problem B: 背包问题
+ 有一个容积为 $v$ 的背包和 $n$ 个物品，第 $i$ 个物品的体积是 $v_i$，价值是 $w_i$。求用背包最多能装下多少价值的物品。 $n\leq 500, v\leq 10^9, \sum w_i\leq 10^6$。    见 这份题解。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
-    <meta property="og:updated_time" content="2024-04-18T00:00:00&#43;00:00">
+    
+      <meta property="article:published_time" content="2024-06-28T00:00:00&#43;00:00">
+    
+    <meta property="article:modified_time" content="2024-06-28T00:00:00&#43;00:00">
   
 
   
 
 
 
-
   
 
 
   
 
 
+  
 
 
 
-  <title>[2023级]OJ习题讲解 | Yuyao Wang&#39;s Homepage</title>
+
+
+  <title>问题求解II-HW13 题解 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -461,7 +470,7 @@
   
   
   
-  <div class="docs-toc-item active">
+  <div class="docs-toc-item">
     <a class="docs-toc-link" href="/courses/problemsolving/solutions-2023/">Overview</a>
 
   </div>
@@ -514,7 +523,7 @@
         <a href="/courses/problemsolving/solutions-2023/2-11/">II-HW11</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving/solutions-2023/2-13/">II-HW13</a>
       </li>
       
@@ -543,15 +552,42 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>[2023级]OJ习题讲解</h1>
+          <h1>问题求解II-HW13 题解</h1>
 
           <div class="article-style">
-            <p>该系列文章针对 OJ 中较难的习题给出提示和解法。</p>
-<div class="alert alert-warning">
+            <div class="alert alert-note">
   <div>
-    阅读题解前请确保你已经独立思考过这些题目！
+    <p><strong>Problem A: 高楼抛鸡蛋</strong></p>
+<ul>
+<li>有一个 $n$ 层的高楼。存在一个未知的分界楼层 $X$，在 $1&hellip;X$ 层扔鸡蛋落地不会碎；在 $X+1$ 层以及更高的楼层扔鸡蛋落地会碎。问用 $k$ 个鸡蛋最少扔几次可以确定 $X$。</li>
+<li>$n\leq 10^4, k\leq 100$。</li>
+</ul>
   </div>
 </div>
+<p>见
+<a href="/courses/problemsolving/solutions-2022/2-5-a">这份题解</a>。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>Problem B: 背包问题</strong></p>
+<ul>
+<li>有一个容积为 $v$ 的背包和 $n$ 个物品，第 $i$ 个物品的体积是 $v_i$，价值是 $w_i$。求用背包最多能装下多少价值的物品。</li>
+<li>$n\leq 500, v\leq 10^9, \sum w_i\leq 10^6$。</li>
+</ul>
+  </div>
+</div>
+<p>见
+<a href="/courses/problemsolving/solutions-2022/2-5-c">这份题解</a>。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>Problem C: Cache调度</strong></p>
+<ul>
+<li>有两块 Cache 和 $n$ 个程序，每个程序有一个类别 (共有 $k$ 种类别)，在同一块 Cache 上连续执行相同种类的程序第二次只需 $hot_i$ 的时间，否则需要 $cold_i$ 的时间。问串行执行所有程序所需的最小时间。</li>
+<li>$n, k\leq 5000$。</li>
+</ul>
+  </div>
+</div>
+<p>见
+<a href="/courses/problemsolving/solutions-2022/2-6-b">这份题解</a>。</p>
 
           </div>
 
@@ -565,6 +601,19 @@
 <div class="post-nav">
   
   
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/courses/problemsolving/solutions-2023/2-11/" rel="next">问题求解II-HW11 题解</a>
+  </div>
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/courses/problemsolving/solutions-2023/2-14/" rel="prev">问题求解II-HW14 题解</a>
+  </div>
+  
 </div>
 
           </div>
@@ -572,7 +621,7 @@
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Apr 18, 2024</p>
+          <p>Last updated on Jun 28, 2024</p>
 
           
 
@@ -600,8 +649,6 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
 
-      
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.4.8/mermaid.min.js" integrity="sha256-lyWCDMnMeZiXRi7Zl54sZGKYmgQs4izcT7+tKc+KUBk=" crossorigin="anonymous" title="mermaid"></script>
       
 
       

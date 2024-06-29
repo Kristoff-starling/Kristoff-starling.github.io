@@ -152,7 +152,9 @@ $$&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;std::unordered_set&amp;lt;std::string&amp;gt; dictionary;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;del&gt;即可解决此题。&lt;/del&gt;&lt;/p&gt;
-&lt;p&gt;我们出题的本意是让大家学习字符串哈希 / Trie树。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。&lt;/p&gt;
+&lt;p&gt;我们出题的本意是让大家学习
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/algorithms/string-hash&#34;&gt;字符串哈希&lt;/a&gt; / 
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/algorithms/trie&#34;&gt;Trie树&lt;/a&gt;。字符串哈希的强处主要体现在滚动哈希上，即线性预处理后可以 $O(1)$ 地求出任意子串的哈希值 (虽然本题用不上)；Trie树的强处主要体现在它的小常数，以及在其基础上衍生出的用于多模式串匹配的 AC 自动机。&lt;/p&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem B: 观光旅行&lt;/strong&gt;&lt;/p&gt;
