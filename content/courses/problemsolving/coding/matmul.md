@@ -52,7 +52,7 @@ class Matrix
 
 Matrix quick_pow(Matrix x, int y)
 {
-    T res; res.init_I();
+    Matrix res; res.init_I();
     while (y)
     {
         if (y & 1) res = res * x;

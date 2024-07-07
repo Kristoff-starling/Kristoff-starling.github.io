@@ -3093,7 +3093,7 @@ Mul(a_very_very_long_variable_name, c);
 
 Matrix quick_pow(Matrix x, int y)
 {
-    T res; res.init_I();
+    Matrix res; res.init_I();
     while (y)
     {
         if (y &amp;amp; 1) res = res * x;
