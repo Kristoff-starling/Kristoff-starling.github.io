@@ -29,14 +29,11 @@
   
     
   
-  <meta name="description" content="Problem A: 补图最短路
-给定一张不带权无向图，求其补图中1号点到其他各个点的最短路。
-  本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。
-事实上，本题存在 $O(n&#43;m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：
- 维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。 每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&#39;=S\cap Neighbor(v)$，则 $S-S&#39;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&#39;$。将 $v$ 标记为已访问。   Problem B: 单词接龙">
+  <meta name="description" content="Problem A: 探险
+ 给定一棵 $n$ 个点的树以及树上的两个点 $x, y$。一个树上的点对 $(u, v)$ 是好的当且仅当从 $u$ 到 $v$ 的路径不会先经过 $x$ 后经过 $y$ (两者不同时经过，或者先经过 $y$ 后经过 $x$)。问有多少个好的点对。 $n\leq 3\times 10^5$。    考虑连接 $x, y$ 的树上的链，这是从 $x$ 走到 $y$ 的唯一道路，因此一条路径是坏的当且仅当它的出发点在 $x$ 的子树里且结束点在 $y$ 的子树里（这里子树是指将x-y链提起来之后下面挂着的子树）。我们只要做一遍搜索，得到 $sz_x$ 和 $sz_y$，最终的答案即为 $n(n-1)-sz_xsz_y$。">
 
   
-  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-2/">
+  <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-final/">
 
   
 
@@ -223,7 +220,7 @@
   <link rel="icon" type="image/png" href="/images/nju.svg">
   <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
 
-  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-2/">
+  <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-final/">
 
   
   
@@ -237,19 +234,16 @@
   <meta property="twitter:card" content="summary">
   
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
-  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-2/">
-  <meta property="og:title" content="问题求解III-HW02 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 补图最短路
-给定一张不带权无向图，求其补图中1号点到其他各个点的最短路。
-  本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。
-事实上，本题存在 $O(n&#43;m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：
- 维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。 每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&#39;=S\cap Neighbor(v)$，则 $S-S&#39;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&#39;$。将 $v$ 标记为已访问。   Problem B: 单词接龙"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
+  <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-final/">
+  <meta property="og:title" content="问题求解III-Final 题解 | Yuyao Wang&#39;s Homepage">
+  <meta property="og:description" content="Problem A: 探险
+ 给定一棵 $n$ 个点的树以及树上的两个点 $x, y$。一个树上的点对 $(u, v)$ 是好的当且仅当从 $u$ 到 $v$ 的路径不会先经过 $x$ 后经过 $y$ (两者不同时经过，或者先经过 $y$ 后经过 $x$)。问有多少个好的点对。 $n\leq 3\times 10^5$。    考虑连接 $x, y$ 的树上的链，这是从 $x$ 走到 $y$ 的唯一道路，因此一条路径是坏的当且仅当它的出发点在 $x$ 的子树里且结束点在 $y$ 的子树里（这里子树是指将x-y链提起来之后下面挂着的子树）。我们只要做一遍搜索，得到 $sz_x$ 和 $sz_y$，最终的答案即为 $n(n-1)-sz_xsz_y$。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
   <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
   
     
-      <meta property="article:published_time" content="2023-09-17T00:00:00&#43;00:00">
+      <meta property="article:published_time" content="2024-01-01T00:00:00&#43;00:00">
     
-    <meta property="article:modified_time" content="2023-09-17T00:00:00&#43;00:00">
+    <meta property="article:modified_time" content="2024-01-01T00:00:00&#43;00:00">
   
 
   
@@ -268,7 +262,7 @@
 
 
 
-  <title>问题求解III-HW02 题解 | Yuyao Wang&#39;s Homepage</title>
+  <title>问题求解III-Final 题解 | Yuyao Wang&#39;s Homepage</title>
 
   <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   
@@ -545,7 +539,7 @@
         <a href="/courses/problemsolving/solutions-2022/3-1/">III-HW01</a>
       </li>
       
-      <li class="active">
+      <li >
         <a href="/courses/problemsolving/solutions-2022/3-2/">III-HW02</a>
       </li>
       
@@ -593,7 +587,7 @@
         <a href="/courses/problemsolving/solutions-2022/3-13/">III-HW13</a>
       </li>
       
-      <li >
+      <li class="active">
         <a href="/courses/problemsolving/solutions-2022/3-final/">III-Final</a>
       </li>
       
@@ -614,31 +608,55 @@
       <article class="article">
 
         <div class="docs-article-container">
-          <h1>问题求解III-HW02 题解</h1>
+          <h1>问题求解III-Final 题解</h1>
 
           <div class="article-style">
             <div class="alert alert-note">
   <div>
-    <p><strong>Problem A: 补图最短路</strong></p>
-<p>给定一张不带权无向图，求其补图中1号点到其他各个点的最短路。</p>
+    <p><strong>Problem A: 探险</strong></p>
+<ul>
+<li>给定一棵 $n$ 个点的树以及树上的两个点 $x, y$。一个树上的点对 $(u, v)$ 是好的当且仅当从 $u$ 到 $v$ 的路径不会先经过 $x$ 后经过 $y$ (两者不同时经过，或者先经过 $y$ 后经过 $x$)。问有多少个好的点对。</li>
+<li>$n\leq 3\times 10^5$。</li>
+</ul>
   </div>
 </div>
-<p>本题由于数据规模较小 ($n,m\leq 500$)，所以大家可以直接求出补图并用 BFS 求出所有的最短路。因为补图的边数是 $O(n^2)$ 级的，所以该做法时间复杂度为 $O(n^2)$。</p>
-<p>事实上，本题存在 $O(n+m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：</p>
-<ul>
-<li>维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。</li>
-<li>每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S'=S\cap Neighbor(v)$，则 $S-S'$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S'$。将 $v$ 标记为已访问。</li>
-</ul>
+<p>考虑连接 $x, y$ 的树上的链，这是从 $x$ 走到 $y$ 的唯一道路，因此一条路径是坏的当且仅当它的出发点在 $x$ 的子树里且结束点在 $y$ 的子树里（这里子树是指将x-y链提起来之后下面挂着的子树）。我们只要做一遍搜索，得到 $sz_x$ 和 $sz_y$，最终的答案即为 $n(n-1)-sz_xsz_y$。</p>
 <div class="alert alert-note">
   <div>
-    <p><strong>Problem B: 单词接龙</strong></p>
-<p>给定 $\text{beginWord}$, $\text{endWord}$ 和一个单词池，求从开始词到结束词最短的接龙序列，接龙序列中相邻的单词只能有一个字母不同。</p>
+    <p><strong>Problem B: 赶车</strong></p>
+<ul>
+<li>有 $n$ 个车站，每个车站有一个换乘所需时间；有 $m$ 班列车，每一班列车会给出它经过的所有车站以及到达每个车站的时间。现在有一个乘车查询，要求给出不晚于 ddl 的最优路线（出发时间晚&gt;到达时间早&gt;路径字典序小）。</li>
+<li>数据规模小。</li>
+</ul>
   </div>
 </div>
-<p>如果将每个单词看作图上的顶点，两个单词之间连边当且仅当他们相差一个字母，那么原问题就转化为了从开始词顶点到结束词顶点的最短路径问题，可以通过 BFS 解决。</p>
-<p>最朴素的想法是枚举所有的单词对并判断是否可以连边。该做法的时间复杂度为 $O(n^2\cdot l)$，其中 $l$ 为单词的长度。<del>虽然有很多人这样水过了</del>需要继续优化。</p>
-<p>朴素做法过慢的一个原因是：有太多不可能连边的单词对被枚举了——一个单词不可能有这么多的“相邻”单词。事实上，一个单词的相邻单词数最多为 $|\Sigma|\cdot l$，其中 $\Sigma$ 为字符集。因此，我们可以将单词池中的单词加入哈希表，对每个单词枚举它所有可能的相邻单词 (枚举位置+替换字母) 并在哈希表中查询是否存在，如果存在则连边。这样算法复杂度降到 $O(n\cdot |\Sigma|\cdot l)$，可以通过。</p>
-<p>本题的 $\Sigma$ 为小写字母集。如果 $\Sigma$ 很大上述做法仍然效率过低。事实上我们有更巧妙的建图方法：以单词 <code>cat</code> 为例，我们建立虚拟节点 <code>*at</code>, <code>c*t</code> 和 <code>ca*</code>，将 <code>cat</code> 连向这三个虚拟节点。这里的 <code>*</code> 可以理解为“百搭”。这样只有一个字母不一样的两个单词就可以通过共同的虚拟节点被连接起来。最后求出的最短距离只要除以2就是我们需要的答案。算法复杂度 $O(n\cdot l)$。</p>
+<p>本题的算法部分难度不大，只需使用一个稍加修改的单源最短路径算法 (e.g., Dijkstra) 即可。但本题的代码书写难度较高，需要仔细处理各种比较的优先级，字符串格式的车站名等等。</p>
+<div class="alert alert-note">
+  <div>
+    <p><strong>Problem C: 填平</strong></p>
+<ul>
+<li>给定一个 $n\times m$ 的棋盘，每个格子上有一个数。现要进行若干次操作，每次操作可以挑选相邻的两个方格，将上面的数加一。问至少多少次操作可以让所有方格里的数相等，如果做不到输出 $-1$。</li>
+<li>$n, m\leq 40$。</li>
+</ul>
+  </div>
+</div>
+<p>将棋盘黑白染色 (第一行的第一个染黑色)后，容易发现每次选择相邻的两个格子 $+1$ 的话，在黑格子和白格子上加的数的总和是一样的。下面根据 $n, m$ 的奇偶性分两种情况讨论：</p>
+<ul>
+<li>$n, m$ 均为奇数：此时黑格子比白格子多。令 $cnt_1=\lceil\frac{nm}{2}\rceil$ 为黑格子数目，$cnt_2=\lfloor\frac{nm}{2}\rfloor$ 为白格子数目，$sum_1, sum_2$ 分别为初始黑格子和白格子上的数的总和，$ans$ 为最少操作次数下所有方格等于的那个数，那么根据之前描述的性质，有
+\begin{align}
+&amp;ans\cdot cnt_1 - sum_1 = ans\cdot cnt_2 - sum2 \\
+&amp;ans = \frac{sum_1-sum_2}{cnt_1-cnt_2}
+\end{align}
+即当 $n, m$ 均为奇数时，可能的答案有且仅有一个，因此我们只需要判断上述的 $ans$ 能否做到即可。</li>
+<li>$n, m$ 至少有一个为偶数时，黑格子和白格子一样多。此时的棋盘有如下性质：如果将所有数变成 $v$ 能够做到，那么将所有数变为 $v+1$ 也能做到，因为整个棋盘可以用 $1\times 2$ 的形状完整地铺一层。因此这种情况下可以用二分答案的方法去找那个从“不行”到“行”的分界线。</li>
+</ul>
+<p>以上两种情况剩余的唯一需要解决的问题是给定一个所有数最后等于的数 $v$，判断将所有数变为 $v$ 能否做到。在黑白染色的基础上，这件事很容易通过网络流建模的方式解决：</p>
+<ul>
+<li>建立一个超级源点向所有的黑色格子连边，容量为该格子初始数值与 $v$ 的差值。</li>
+<li>建立一个超级汇点，所有白色格子向它连边，容量为该格子初始数值与 $v$ 的差值。</li>
+<li>黑色格子向棋盘上相邻的白色格子连边，容量为 $\inf$。</li>
+</ul>
+<p>做一遍最大流检查是否满流即可。</p>
 
           </div>
 
@@ -654,15 +672,8 @@
   
   
   <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="/courses/problemsolving/solutions-2022/3-3/" rel="next">问题求解III-HW03 题解</a>
-  </div>
-  
-  
-  
-  <div class="post-nav-item">
     <div class="meta-nav">Next</div>
-    <a href="/courses/problemsolving/solutions-2022/3-1/" rel="prev">问题求解III-HW01 题解</a>
+    <a href="/courses/problemsolving/solutions-2022/3-11/" rel="prev">问题求解III-HW11 题解</a>
   </div>
   
 </div>
@@ -672,7 +683,7 @@
         </div>
 
         <div class="body-footer">
-          <p>Last updated on Sep 17, 2023</p>
+          <p>Last updated on Jan 1, 2024</p>
 
           
 

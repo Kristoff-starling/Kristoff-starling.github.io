@@ -626,6 +626,60 @@ $$&lt;/p&gt;
     </item>
     
     <item>
+      <title>问题求解III-Final 题解</title>
+      <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-final/</link>
+      <pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-final/</guid>
+      <description>&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem A: 探险&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一棵 $n$ 个点的树以及树上的两个点 $x, y$。一个树上的点对 $(u, v)$ 是好的当且仅当从 $u$ 到 $v$ 的路径不会先经过 $x$ 后经过 $y$ (两者不同时经过，或者先经过 $y$ 后经过 $x$)。问有多少个好的点对。&lt;/li&gt;
+&lt;li&gt;$n\leq 3\times 10^5$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;考虑连接 $x, y$ 的树上的链，这是从 $x$ 走到 $y$ 的唯一道路，因此一条路径是坏的当且仅当它的出发点在 $x$ 的子树里且结束点在 $y$ 的子树里（这里子树是指将x-y链提起来之后下面挂着的子树）。我们只要做一遍搜索，得到 $sz_x$ 和 $sz_y$，最终的答案即为 $n(n-1)-sz_xsz_y$。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem B: 赶车&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;有 $n$ 个车站，每个车站有一个换乘所需时间；有 $m$ 班列车，每一班列车会给出它经过的所有车站以及到达每个车站的时间。现在有一个乘车查询，要求给出不晚于 ddl 的最优路线（出发时间晚&amp;gt;到达时间早&amp;gt;路径字典序小）。&lt;/li&gt;
+&lt;li&gt;数据规模小。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;本题的算法部分难度不大，只需使用一个稍加修改的单源最短路径算法 (e.g., Dijkstra) 即可。但本题的代码书写难度较高，需要仔细处理各种比较的优先级，字符串格式的车站名等等。&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    &lt;p&gt;&lt;strong&gt;Problem C: 填平&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;给定一个 $n\times m$ 的棋盘，每个格子上有一个数。现要进行若干次操作，每次操作可以挑选相邻的两个方格，将上面的数加一。问至少多少次操作可以让所有方格里的数相等，如果做不到输出 $-1$。&lt;/li&gt;
+&lt;li&gt;$n, m\leq 40$。&lt;/li&gt;
+&lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;将棋盘黑白染色 (第一行的第一个染黑色)后，容易发现每次选择相邻的两个格子 $+1$ 的话，在黑格子和白格子上加的数的总和是一样的。下面根据 $n, m$ 的奇偶性分两种情况讨论：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$n, m$ 均为奇数：此时黑格子比白格子多。令 $cnt_1=\lceil\frac{nm}{2}\rceil$ 为黑格子数目，$cnt_2=\lfloor\frac{nm}{2}\rfloor$ 为白格子数目，$sum_1, sum_2$ 分别为初始黑格子和白格子上的数的总和，$ans$ 为最少操作次数下所有方格等于的那个数，那么根据之前描述的性质，有
+\begin{align}
+&amp;amp;ans\cdot cnt_1 - sum_1 = ans\cdot cnt_2 - sum2 \\
+&amp;amp;ans = \frac{sum_1-sum_2}{cnt_1-cnt_2}
+\end{align}
+即当 $n, m$ 均为奇数时，可能的答案有且仅有一个，因此我们只需要判断上述的 $ans$ 能否做到即可。&lt;/li&gt;
+&lt;li&gt;$n, m$ 至少有一个为偶数时，黑格子和白格子一样多。此时的棋盘有如下性质：如果将所有数变成 $v$ 能够做到，那么将所有数变为 $v+1$ 也能做到，因为整个棋盘可以用 $1\times 2$ 的形状完整地铺一层。因此这种情况下可以用二分答案的方法去找那个从“不行”到“行”的分界线。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;以上两种情况剩余的唯一需要解决的问题是给定一个所有数最后等于的数 $v$，判断将所有数变为 $v$ 能否做到。在黑白染色的基础上，这件事很容易通过网络流建模的方式解决：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;建立一个超级源点向所有的黑色格子连边，容量为该格子初始数值与 $v$ 的差值。&lt;/li&gt;
+&lt;li&gt;建立一个超级汇点，所有白色格子向它连边，容量为该格子初始数值与 $v$ 的差值。&lt;/li&gt;
+&lt;li&gt;黑色格子向棋盘上相邻的白色格子连边，容量为 $\inf$。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;做一遍最大流检查是否满流即可。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>问题求解III-HW11 题解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-11/</link>
       <pubDate>Mon, 25 Dec 2023 00:00:00 +0000</pubDate>
