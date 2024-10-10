@@ -210,14 +210,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/talk/example/">
 
@@ -289,7 +327,7 @@
   
   "performer": {
     "@type": "Person",
-    "name": "Yuyao Wang"
+    "name": "Yuyao Wang's Homepage"
   },
   
   "description": "An example talk using Academic's Markdown slides feature."
@@ -620,8 +658,9 @@
 
 <div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 514px;">
   <div style="position: relative">
-    <img src="/talk/example/featured_hu3d03a01dcc18bc5be0e67db3d8d209a6_620088_720x0_resize_q90_lanczos.jpg" alt="" class="featured-image">
-    <span class="article-header-caption">Image credit: <a href="https://unsplash.com/photos/bzdhc5b3Bxs"><strong>Unsplash</strong></a></span>
+    <img src="/talk/example/featured_hu4950906379282043806.jpg" alt="" class="featured-image">
+    <span class="article-header-caption">Image credit: 
+<a href="https://unsplash.com/photos/bzdhc5b3Bxs" target="_blank" rel="noopener"><strong>Unsplash</strong></a></span>
   </div>
 </div>
 
@@ -640,7 +679,7 @@
         <div class="row">
           <div class="col-12 col-md-3 pub-row-heading">Date</div>
           <div class="col-12 col-md-9">
-            Jun 1, 2030 1:00 PM &mdash; 3:00 PM
+            Jun 1, 2030 1:00 PM &amp;mdash; 3:00 PM
           </div>
         </div>
       </div>
@@ -814,109 +853,6 @@
 
 
 
-  
-  
-  
-    
-  
-  
-  
-  <div class="media author-card content-widget-hr">
-    
-      
-      <img class="avatar mr-3 avatar-circle" src="/authors/admin/avatar_hu7af2e5c91046b4f4d94dae0bcede891c_685876_270x270_fill_q90_lanczos_center.jpg" alt="Avatar">
-    
-
-    <div class="media-body">
-      <h5 class="card-title"><a href="https://kristoff-starling.github.io/">Yuyao Wang</a></h5>
-      <h6 class="card-subtitle">Undergraduate (Senior)</h6>
-      
-      <ul class="network-icon" aria-hidden="true">
-  
-    
-    
-    
-      
-    
-    
-    
-    
-    
-    <li>
-      <a href="mailto:yuyao6@cs.washington.edu" >
-        <i class="fas fa-envelope"></i>
-      </a>
-    </li>
-  
-    
-    
-    
-      
-    
-    
-    
-    
-    
-      
-    
-    <li>
-      <a href="https://github.com/kristoff-starling" target="_blank" rel="noopener">
-        <i class="fab fa-github"></i>
-      </a>
-    </li>
-  
-    
-    
-    
-    
-    
-    
-    
-      
-    
-    <li>
-      <a href="https://scholar.google.com/citations?user=6OqKUUgAAAAJ&amp;hl=en" target="_blank" rel="noopener">
-        <i class="ai ai-google-scholar"></i>
-      </a>
-    </li>
-  
-    
-    
-    
-      
-    
-    
-    
-    
-    
-      
-    
-    <li>
-      <a href="https://twitter.com/YuyaoStarling" target="_blank" rel="noopener">
-        <i class="fab fa-twitter"></i>
-      </a>
-    </li>
-  
-    
-    
-    
-    
-    
-    
-    
-      
-    
-    <li>
-      <a href="/files/yuyao_CV_20231213.pdf" >
-        <i class="ai ai-cv"></i>
-      </a>
-    </li>
-  
-</ul>
-
-    </div>
-  </div>
-
 
 
 
@@ -1001,7 +937,7 @@
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

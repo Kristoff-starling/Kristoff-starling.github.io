@@ -30,7 +30,12 @@
     
   
   <meta name="description" content="如何论证你写的程序是正确的？这是一个历史悠久且难以回答的问题。通常来说有两种思路：
- Verification: 形式化验证简单来说是通过数学手段证明你的程序的行为符合预期。这是对程序正确性的强而有力的证明，但通常非常困难、局限性很大、scalability 较差，因此更多用于对于安全/可靠性要求非常严苛的场景，如自动驾驶，火星车等。问题求解一中提到的“通过 loop invariant 证明循环正确性”可以认为是 verification 的一种非常简单的形式。由于 verificaton 需要大量的程序语言(PL)/形式化方法(FM)的背景知识，且对于简单算法问题来说颇有大材小用之嫌，故在这里不作赘述。 Testing: 测试是更加常用的检查程序是否有漏洞的方法，其核心思想是构造大量的输入并检查目标程序在这些输入上的输出是否符合预期。测试有着天然的局限性：它只能证明你的程序有 bug，但无法证明你的程序没有 bug (OJ 的本质也是测试，因此在 OJ 上通过的程序并不一定是对的 而且由于助教太懒数据太水很可能确实是错的)。不过我们总可以认为，如果我们构造的输入足够多且足够丰富，那么通过了所有测试的程序的可靠性相对会很高。  这里我们介绍一种简单易行的测试技术：differential testing (如果你曾经参加过算法竞赛，“对拍”的本质就是 DiffTest)。DiffTest 的核心思想是针对同一个问题完成两份不同的实现，然后构造大量的输入喂给两份实现观察它们的输出是否相同 (就像你每天早晨和同桌对作业答案，虽然你们都不能保证自己做的是对的，但做错且错得一样的概率毕竟很小，如果你们的解题思路不一样就更小了)。为了避免过于空洞，我们以“计算Fibonacci第n项”这个问题为例说明如何在 OJ 算法题上进行 DiffTest。">
+
+Verification: 形式化验证简单来说是通过数学手段证明你的程序的行为符合预期。这是对程序正确性的强而有力的证明，但通常非常困难、局限性很大、scalability 较差，因此更多用于对于安全/可靠性要求非常严苛的场景，如自动驾驶，火星车等。问题求解一中提到的“通过 loop invariant 证明循环正确性”可以认为是 verification 的一种非常简单的形式。由于 verificaton 需要大量的程序语言(PL)/形式化方法(FM)的背景知识，且对于简单算法问题来说颇有大材小用之嫌，故在这里不作赘述。
+Testing: 测试是更加常用的检查程序是否有漏洞的方法，其核心思想是构造大量的输入并检查目标程序在这些输入上的输出是否符合预期。测试有着天然的局限性：它只能证明你的程序有 bug，但无法证明你的程序没有 bug (OJ 的本质也是测试，因此在 OJ 上通过的程序并不一定是对的 而且由于助教太懒数据太水很可能确实是错的)。不过我们总可以认为，如果我们构造的输入足够多且足够丰富，那么通过了所有测试的程序的可靠性相对会很高。
+
+这里我们介绍一种简单易行的测试技术：differential testing (如果你曾经参加过算法竞赛，“对拍”的本质就是 DiffTest)。DiffTest 的核心思想是针对同一个问题完成两份不同的实现，然后构造大量的输入喂给两份实现观察它们的输出是否相同 (就像你每天早晨和同桌对作业答案，虽然你们都不能保证自己做的是对的，但做错且错得一样的概率毕竟很小，如果你们的解题思路不一样就更小了)。为了避免过于空洞，我们以“计算Fibonacci第n项”这个问题为例说明如何在 OJ 算法题上进行 DiffTest。
+假设你已经写好了一个使用矩阵快速幂优化 Fibonacci 计算的程序 fib.cpp，现在希望对其进行测试。我们很容易写一个朴素版的 fib_bruteforce.cpp 来实现同样的功能 (虽然它能处理的 $n$ 规模较小)：">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/coding/difftest/">
@@ -211,14 +216,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/coding/difftest/">
 
@@ -237,8 +280,13 @@
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/coding/difftest/">
   <meta property="og:title" content="Differential Testing | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="如何论证你写的程序是正确的？这是一个历史悠久且难以回答的问题。通常来说有两种思路：
- Verification: 形式化验证简单来说是通过数学手段证明你的程序的行为符合预期。这是对程序正确性的强而有力的证明，但通常非常困难、局限性很大、scalability 较差，因此更多用于对于安全/可靠性要求非常严苛的场景，如自动驾驶，火星车等。问题求解一中提到的“通过 loop invariant 证明循环正确性”可以认为是 verification 的一种非常简单的形式。由于 verificaton 需要大量的程序语言(PL)/形式化方法(FM)的背景知识，且对于简单算法问题来说颇有大材小用之嫌，故在这里不作赘述。 Testing: 测试是更加常用的检查程序是否有漏洞的方法，其核心思想是构造大量的输入并检查目标程序在这些输入上的输出是否符合预期。测试有着天然的局限性：它只能证明你的程序有 bug，但无法证明你的程序没有 bug (OJ 的本质也是测试，因此在 OJ 上通过的程序并不一定是对的 而且由于助教太懒数据太水很可能确实是错的)。不过我们总可以认为，如果我们构造的输入足够多且足够丰富，那么通过了所有测试的程序的可靠性相对会很高。  这里我们介绍一种简单易行的测试技术：differential testing (如果你曾经参加过算法竞赛，“对拍”的本质就是 DiffTest)。DiffTest 的核心思想是针对同一个问题完成两份不同的实现，然后构造大量的输入喂给两份实现观察它们的输出是否相同 (就像你每天早晨和同桌对作业答案，虽然你们都不能保证自己做的是对的，但做错且错得一样的概率毕竟很小，如果你们的解题思路不一样就更小了)。为了避免过于空洞，我们以“计算Fibonacci第n项”这个问题为例说明如何在 OJ 算法题上进行 DiffTest。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+
+Verification: 形式化验证简单来说是通过数学手段证明你的程序的行为符合预期。这是对程序正确性的强而有力的证明，但通常非常困难、局限性很大、scalability 较差，因此更多用于对于安全/可靠性要求非常严苛的场景，如自动驾驶，火星车等。问题求解一中提到的“通过 loop invariant 证明循环正确性”可以认为是 verification 的一种非常简单的形式。由于 verificaton 需要大量的程序语言(PL)/形式化方法(FM)的背景知识，且对于简单算法问题来说颇有大材小用之嫌，故在这里不作赘述。
+Testing: 测试是更加常用的检查程序是否有漏洞的方法，其核心思想是构造大量的输入并检查目标程序在这些输入上的输出是否符合预期。测试有着天然的局限性：它只能证明你的程序有 bug，但无法证明你的程序没有 bug (OJ 的本质也是测试，因此在 OJ 上通过的程序并不一定是对的 而且由于助教太懒数据太水很可能确实是错的)。不过我们总可以认为，如果我们构造的输入足够多且足够丰富，那么通过了所有测试的程序的可靠性相对会很高。
+
+这里我们介绍一种简单易行的测试技术：differential testing (如果你曾经参加过算法竞赛，“对拍”的本质就是 DiffTest)。DiffTest 的核心思想是针对同一个问题完成两份不同的实现，然后构造大量的输入喂给两份实现观察它们的输出是否相同 (就像你每天早晨和同桌对作业答案，虽然你们都不能保证自己做的是对的，但做错且错得一样的概率毕竟很小，如果你们的解题思路不一样就更小了)。为了避免过于空洞，我们以“计算Fibonacci第n项”这个问题为例说明如何在 OJ 算法题上进行 DiffTest。
+假设你已经写好了一个使用矩阵快速幂优化 Fibonacci 计算的程序 fib.cpp，现在希望对其进行测试。我们很容易写一个朴素版的 fib_bruteforce.cpp 来实现同样的功能 (虽然它能处理的 $n$ 规模较小)："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2023-03-28T00:00:00&#43;00:00">
@@ -777,7 +825,7 @@ if __name__ == &quot;__main__&quot;:
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

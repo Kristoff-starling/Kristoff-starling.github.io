@@ -210,14 +210,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/dfa/">
 
@@ -235,8 +273,8 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/dfa/">
   <meta property="og:title" content="有限状态机简介 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="鸣谢dxy助教的贡献！"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  <meta property="og:description" content="鸣谢dxy助教的贡献！"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2022-11-01T00:00:00&#43;00:00">
@@ -540,7 +578,7 @@
 <p>既然自动机是一个数学模型，那么显然不可能是一张地图。对地图进行抽象之后，可以简化为一个有向图。因此，自动机的结构就是一张有向图。</p>
 <p>而自动机的工作方式和流程图类似，不同的是：自动机的每一个结点都是一个判定结点；自动机的结点只是一个单纯的状态而非任务；自动机的边可以接受多种字符（不局限于 T 或 F）。</p>
 <p>例如，完成“判断一个二进制数是不是偶数”的自动机如下：</p>
-<p><img src="https://oi-wiki.org/string/images/automaton2.png" alt="奇偶DFA"></p>
+<p><img alt="奇偶DFA" src="https://oi-wiki.org/string/images/automaton2.png"></p>
 <p>从起始结点开始，从高到低接受这个数的二进制序列，然后看最终停在哪里。如果最终停在红圈结点，则是偶数，否则不是。</p>
 <p>如果需要判定一个有限的信号序列和另外一个信号序列的关系（例如另一个信号序列是不是某个信号序列的子序列），那么常用的方法是针对那个有限的信号序列构建一个自动机。这个在学习 KMP 的时候会讲到。（早着呢）</p>
 <p>需要注意的是，自动机只是一个 <strong>数学模型</strong>，而 <strong>不是算法</strong>，也 <strong>不是数据结构</strong>。实现同一个自动机的方法有很多种，可能会有不一样的时空复杂度。</p>
@@ -559,7 +597,7 @@
 <p>（注:上一段表示一旦不存在当前状态的某个转移，那么状态机一定会<strong>不接受</strong>这个字符串)</p>
 <p>我们扩展定义转移函数 $\delta$，令其第二个参数可以接收一个字符串：$\delta(v,s)=\delta(\delta(v,s[1]),s[2..|s|])$，扩展后的转移函数就可以表示从一个状态起接收一个字符串后转移到的状态。那么，$A(s)=[\delta(start,s)\in F]$。<strong>这里难以理解抽象函数的话，可以当成在字符串中一个个读取字符，然后一步步转移当前状态，最后在最终状态判断是否为接受状态</strong></p>
 <p>如，一个接受且仅接受字符串 &ldquo;a&rdquo;, &ldquo;ab&rdquo;, &ldquo;aac&rdquo; 的 DFA：</p>
-<p><img src="https://oi-wiki.org/string/images/automaton1.png" alt="DFA"></p>
+<p><img alt="DFA" src="https://oi-wiki.org/string/images/automaton1.png"></p>
 <p>NFA是在DFA的基础上存在某些状态$v$，满足$\delta(v,\epsilon)\neq null$，这里的$\epsilon$表示空字符串，这就导致NFA可能处于多种状态的叠加态中（<strong>这是后面将NFA转化成DFA的关键，将当前的多种状态当成一个新状态！这样记原状态数为k种，此时总状态数就会有$2^k$种，但每一次状态转移都是唯一的！</strong>)，一个NFA的例子如下，我们判断一个字符串是否以&quot;01&quot;结尾，正则表达式表示为&quot;$.*01$&ldquo;的NFA如下 (S3为接收节点)：</p>
 <pre><code class="language-mermaid">graph TD
 
@@ -695,7 +733,7 @@ domain::=\&lt;string '.' string&gt;
 <ol>
 <li>初始状态</li>
 <li>位于第一个string的状态</li>
-<li>位于'@&lsquo;的状态</li>
+<li>位于&rsquo;@&lsquo;的状态</li>
 <li>位于第二个string的状态</li>
 <li>位于&rsquo;.&lsquo;的状态</li>
 <li>位于第三个string的状态</li>
@@ -1099,7 +1137,7 @@ bool solve(){
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

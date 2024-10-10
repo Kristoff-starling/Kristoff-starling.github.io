@@ -7,7 +7,7 @@
     <description>算法&amp;数据结构</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Mon, 25 Dec 2023 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>算法&amp;数据结构</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving/algorithms/</link>
     </image>
@@ -107,15 +107,15 @@ $$&lt;/p&gt;
 &lt;p&gt;然后令 $s$ 的哈希值为 $(h_1(s), h_2(s))$ 这样一个 pair，其中 $p_1,p_2$ 通常取质数，$M_1, M_2$ 通常取 $10^9$ 附近的大质数。值域 $[1, M_1]\times [1, M_2]$ 的宽广性保证了哈希冲突的概率极低，且目前不存在已知的可以针对任意模数的双哈希反例构造方法。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
-&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;div class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
 &lt;hr&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
+&lt;li id=&#34;fn:1&#34;&gt;
 &lt;p&gt;&lt;del&gt;搬运&lt;/del&gt;参考了许昊然的
 &lt;a href=&#34;https://sillycross.github.io/cnblog/2012/05/18/2012-05-18/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;博客&lt;/a&gt;。&amp;#160;&lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/section&gt;
+&lt;/div&gt;
 </description>
     </item>
     
@@ -186,7 +186,8 @@ while l &amp;lt;= r:
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;致歉&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;本讲义写的相当糟糕——cdq分治难度较大，思想比较微妙，笔者功力有限，用语言难以描述清楚。我们提供两份额外的参考资料，一是 &lt;a href=&#34;https://oi-wiki.org/misc/cdq-divide/&#34;&gt;OIWiki&lt;/a&gt; 上对于 cdq 分治的讲解，二是一份 cdq 套 cdq 的三维偏序的参考实现，希望尽可能帮助感兴趣的同学理解。&lt;/p&gt;
+&lt;p&gt;本讲义写的相当糟糕——cdq分治难度较大，思想比较微妙，笔者功力有限，用语言难以描述清楚。我们提供两份额外的参考资料，一是 
+&lt;a href=&#34;https://oi-wiki.org/misc/cdq-divide/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;OIWiki&lt;/a&gt; 上对于 cdq 分治的讲解，二是一份 cdq 套 cdq 的三维偏序的参考实现，希望尽可能帮助感兴趣的同学理解。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;details&gt;&lt;summary&gt;&lt;b&gt;Code&lt;/b&gt; :: &lt;i&gt;Click to expand&lt;/i&gt;&lt;/summary&gt;
@@ -276,7 +277,8 @@ int main ()
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;树&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;如果你对“树”一无所知，你可以参考 &lt;a href=&#34;https://en.wikipedia.org/wiki/Tree_(data_structure)&#34;&gt;维基百科&lt;/a&gt; 中的解释。这里强调一些简明的入门概念。&lt;/p&gt;
+&lt;p&gt;如果你对“树”一无所知，你可以参考 
+&lt;a href=&#34;https://en.wikipedia.org/wiki/Tree_%28data_structure%29&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;维基百科&lt;/a&gt; 中的解释。这里强调一些简明的入门概念。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。&lt;/li&gt;
 &lt;li&gt;如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。&lt;/li&gt;

@@ -10,23 +10,25 @@ authors:
 superuser: true
 
 # Role/position
-role: Undergraduate (Senior)
+role: CS Ph.D. Student
 
 # Organizations/Affiliations
 organizations:
-- name: Nanjing University
+- name: University of Washington
   url: ""
 
 interests:
 - Computer Systems
 - Programming Languages
-- Algorithms
 
 education:
   courses:
+  - course: Ph.D. in Computer Science
+    institution: University of Washington
+    year: 2024~now
   - course: B.S. in Computer Science
     institution: Nanjing University
-    year: 2020~2024(expected)
+    year: 2020~2024
 
 # publications:
 #   conf_papers:
@@ -69,8 +71,13 @@ email: ""
 user_groups:
 - Researchers
 - Visitors
+math: true
 ---
 
-I am Yuyao Wang (王宇峣), a senior student in Computer Science (Elite Class) at [Nanjing University](https://www.nju.edu.cn/en). My research interest lies in topics related to the *correctness*, *programmability* and *performance* of computer systems. 
+I am Yuyao Wang (王宇峣), a $\left\lceil\frac{(now() - 2024/09/16).to\text{_}day()}{year.day}\right\rceil$ year Ph.D. student at the [Computer Systems Lab](https://syslab.cs.washington.edu/) of [Paul G. Allen School of Computer Science & Engineering](https://www.cs.washington.edu/), University of Washington, advised by Prof. [Ratul Mahajan](https://ratul.org) and [Arvind Krishnamurthy](https://www.cs.washington.edu/people/faculty/arvind). My research interest broadly lies in topics related to the *correctness*, *programmability* and *performance* of computer systems. 
 
-I have been attached to programming and algorithm design since middle school and aspire to bring elegant solutions for tackling *real-world* problems.
+Previously, I obtained my bachelor's degree from [Nanjing University](https://www.nju.edu.cn/en). I was also fortunate to work with Prof. [Lingming Zhang](https://lingming.cs.illinois.edu/) at UIUC.
+
+<!-- I am Yuyao Wang (王宇峣), a senior student in Computer Science (Elite Class) at [Nanjing University](https://www.nju.edu.cn/en). 
+
+I have been attached to programming and algorithm design since middle school and aspire to bring elegant solutions for tackling *real-world* problems. -->

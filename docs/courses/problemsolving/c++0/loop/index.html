@@ -30,7 +30,14 @@
     
   
   <meta name="description" content="假设我们现在要计算 $1&#43;2&#43;3&#43;4&#43;5$，相信你已经有能力写出一段代码完成这个任务：
-int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的功能是一样的 sum = sum &#43; 3; sum = sum &#43; 4; sum = sum &#43; 5;  但是这样的代码看起来未免有些笨拙，如果我们要计算 $1&#43;2&#43;\cdots&#43;100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为：">
+int sum;
+sum = 1;
+sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的功能是一样的
+sum = sum &#43; 3;
+sum = sum &#43; 4;
+sum = sum &#43; 5;
+
+但是这样的代码看起来未免有些笨拙，如果我们要计算 $1&#43;2&#43;\cdots&#43;100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为：">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/loop/">
@@ -211,14 +218,52 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/loop/">
 
@@ -237,8 +282,15 @@ int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的�
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/loop/">
   <meta property="og:title" content="循环 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="假设我们现在要计算 $1&#43;2&#43;3&#43;4&#43;5$，相信你已经有能力写出一段代码完成这个任务：
-int sum; sum = 1; sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的功能是一样的 sum = sum &#43; 3; sum = sum &#43; 4; sum = sum &#43; 5;  但是这样的代码看起来未免有些笨拙，如果我们要计算 $1&#43;2&#43;\cdots&#43;100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+int sum;
+sum = 1;
+sum = sum &#43; 2; // 你也可以写 sum &#43;= 2; 它们的功能是一样的
+sum = sum &#43; 3;
+sum = sum &#43; 4;
+sum = sum &#43; 5;
+
+但是这样的代码看起来未免有些笨拙，如果我们要计算 $1&#43;2&#43;\cdots&#43;100$，岂不是要写 100 行？当遇到这种需要大量重复做相同/相似操作的情况时，循环便能派上用场。while 循环的基本架构为："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
     
@@ -769,7 +821,7 @@ while (s2)
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

@@ -29,10 +29,23 @@
   
     
   
-  <meta name="description" content="Problem A: 被打乱的邮件
- 求长度为 $n$ 的序列的错排数。 $n\leq 5000$。    方法一：容斥
+  <meta name="description" content="
+  
+    Problem A: 被打乱的邮件
+
+求长度为 $n$ 的序列的错排数。
+$n\leq 5000$。
+
+  
+
+方法一：容斥
 考虑对有多少个数被“确定”地放在了正确的位置上进行容斥，最终方案数为
-$$ \begin{align} ans &amp;= \sum_{k=0}^n(-1)^k\binom{n}{k}(n-k)! \\ &amp;= n!\sum_{k=0}^n\frac{(-1)^k}{k!} \end{align} $$
+$$
+\begin{align}
+ans &amp;= \sum_{k=0}^n(-1)^k\binom{n}{k}(n-k)! \\
+&amp;= n!\sum_{k=0}^n\frac{(-1)^k}{k!}
+\end{align}
+$$
 方法二：递推
 令 $f(n)$ 表示长度为 $n$ 的序列的错排数。考虑数字 $1$ 的位置，因为需要错排，所以有 $n-1$ 种放法。不妨设 $1$ 被放在了 第 $k$ 个位置，接下来考虑 $k$ 的位置：">
 
@@ -215,14 +228,52 @@ $$ \begin{align} ans &amp;= \sum_{k=0}^n(-1)^k\binom{n}{k}(n-k)! \\ &amp;= n!\su
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-5/">
 
@@ -240,13 +291,26 @@ $$ \begin{align} ans &amp;= \sum_{k=0}^n(-1)^k\binom{n}{k}(n-k)! \\ &amp;= n!\su
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-5/">
   <meta property="og:title" content="问题求解II-HW05 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 被打乱的邮件
- 求长度为 $n$ 的序列的错排数。 $n\leq 5000$。    方法一：容斥
+  <meta property="og:description" content="
+  
+    Problem A: 被打乱的邮件
+
+求长度为 $n$ 的序列的错排数。
+$n\leq 5000$。
+
+  
+
+方法一：容斥
 考虑对有多少个数被“确定”地放在了正确的位置上进行容斥，最终方案数为
-$$ \begin{align} ans &amp;= \sum_{k=0}^n(-1)^k\binom{n}{k}(n-k)! \\ &amp;= n!\sum_{k=0}^n\frac{(-1)^k}{k!} \end{align} $$
+$$
+\begin{align}
+ans &amp;= \sum_{k=0}^n(-1)^k\binom{n}{k}(n-k)! \\
+&amp;= n!\sum_{k=0}^n\frac{(-1)^k}{k!}
+\end{align}
+$$
 方法二：递推
-令 $f(n)$ 表示长度为 $n$ 的序列的错排数。考虑数字 $1$ 的位置，因为需要错排，所以有 $n-1$ 种放法。不妨设 $1$ 被放在了 第 $k$ 个位置，接下来考虑 $k$ 的位置："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+令 $f(n)$ 表示长度为 $n$ 的序列的错排数。考虑数字 $1$ 的位置，因为需要错排，所以有 $n-1$ 种放法。不妨设 $1$ 被放在了 第 $k$ 个位置，接下来考虑 $k$ 的位置："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2024-04-18T00:00:00&#43;00:00">
@@ -748,7 +812,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

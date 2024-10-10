@@ -7,7 +7,7 @@
     <description>[2022级]OJ习题讲解</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Mon, 01 Jan 2024 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>[2022级]OJ习题讲解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/</link>
     </image>
@@ -129,7 +129,8 @@
 &lt;div class=&#34;alert alert-tip&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;更快的做法？&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;如果你感兴趣，可以阅读这篇介绍支配树和使用 Lengauer-Tarjan 算法求解支配树的 &lt;a href=&#34;https://oi-wiki.org/graph/dominator-tree/&#34;&gt;文章&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;如果你感兴趣，可以阅读这篇介绍支配树和使用 Lengauer-Tarjan 算法求解支配树的 
+&lt;a href=&#34;https://oi-wiki.org/graph/dominator-tree/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;文章&lt;/a&gt;。&lt;/p&gt;
 &lt;p&gt;支配问题在编译优化领域有着重要的应用。简单来说，在控制流图中编译器可以通过支配关系分析识别出“循环”结构，而针对循环，编译器可以采取循环不变式外提等手段进行优化。感兴趣的同学可以在编译课程中深入学习。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
@@ -155,7 +156,9 @@
 &lt;div class=&#34;alert alert-tip&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;更高效的回文串算法与数据结构&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;求解最长回文子串存在线性做法。如果你感兴趣，可以上网搜索 &lt;a href=&#34;https://oi-wiki.org/string/manacher/&#34;&gt;Manacher 算法&lt;/a&gt; 或者 &lt;a href=&#34;https://oi-wiki.org/string/pam/&#34;&gt;回文自动机&lt;/a&gt;。但它们精巧程度过高且可解决的问题比较专门，所以我们仍然建议你掌握字符串滚动哈希这一“万金油”。&lt;/p&gt;
+&lt;p&gt;求解最长回文子串存在线性做法。如果你感兴趣，可以上网搜索 
+&lt;a href=&#34;https://oi-wiki.org/string/manacher/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Manacher 算法&lt;/a&gt; 或者 
+&lt;a href=&#34;https://oi-wiki.org/string/pam/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;回文自动机&lt;/a&gt;。但它们精巧程度过高且可解决的问题比较专门，所以我们仍然建议你掌握字符串滚动哈希这一“万金油”。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;hr&gt;
@@ -501,15 +504,15 @@ $$&lt;/p&gt;
 &lt;p&gt;多源最短路有著名的 Johnson 算法求解，其主要步骤为：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;建立一个超级起点向图中所有节点连边，使用 Bellman-Ford 算法求出超级起点到所有节点的最短路，记为 $h$。该过程同时可以判断图中是否有负圈。&lt;/li&gt;
-&lt;li&gt;对于原图中的边 $(u, v)$，将其边权改为 $w&#39;(u, v) = w(u, v) + h(u) - h(v)$，枚举起点使用 Dijkstra 算法求最短路。&lt;/li&gt;
+&lt;li&gt;对于原图中的边 $(u, v)$，将其边权改为 $w&amp;rsquo;(u, v) = w(u, v) + h(u) - h(v)$，枚举起点使用 Dijkstra 算法求最短路。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;该算法的正确性主要体现在：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;由于 $h$ 是最短路，所以有三角不等式：对于任意 $u, v$，有 $h(u) + w(u, v) \geq h(v)$，因此修改过后的边权 $w&#39;(u, v)$ 必为非负数，满足 Dijkstra 算法的使用条件。&lt;/li&gt;
+&lt;li&gt;由于 $h$ 是最短路，所以有三角不等式：对于任意 $u, v$，有 $h(u) + w(u, v) \geq h(v)$，因此修改过后的边权 $w&amp;rsquo;(u, v)$ 必为非负数，满足 Dijkstra 算法的使用条件。&lt;/li&gt;
 &lt;li&gt;$h$ 的存在很像物理中的“势能”，这是因为在修改过边权的图中，从 $u$ 到 $v$ 的任意一条路径 $p: u=x_1\to x_2\to \cdots \to x_n=v$ 的长度为
 $$
 \begin{align}
-len(p) &amp;amp;= \sum_{i=1}^{n-1} w&#39;(x_i, x_{i+1}) \\
+len(p) &amp;amp;= \sum_{i=1}^{n-1} w&amp;rsquo;(x_i, x_{i+1}) \\
 &amp;amp;= \sum_{i=1}^{n-1} w(x_i, x_{i+1}) + h(x_i) - h(x_{i+1}) \\
 &amp;amp;= \sum_{i=1}^{n-1} + w(x_i, x_{i+1}) + h(u) - h(v)
 \end{align}
@@ -633,7 +636,7 @@ $$
 &lt;p&gt;事实上，本题存在 $O(n+m)$ 的做法：与BFS用图中的边去更新可达关系相反，我们可以直接用当前图中的边去更新补图中的不可达关系。下面直接给出算法流程：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;维护一个集合 $S$ 表示当前 1 号点不可达的顶点集合，初始 $S=V-\{1\}$。&lt;/li&gt;
-&lt;li&gt;每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&#39;=S\cap Neighbor(v)$，则 $S-S&#39;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&#39;$。将 $v$ 标记为已访问。&lt;/li&gt;
+&lt;li&gt;每次选择一个尚未访问且到1号点距离最短的顶点 $v$，令 $S&amp;rsquo;=S\cap Neighbor(v)$，则 $S-S&amp;rsquo;$ 中的顶点在原图中可以通过 $v$ 到达，更新距离；同时更新 $S=S&amp;rsquo;$。将 $v$ 标记为已访问。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
@@ -738,7 +741,8 @@ $$
 &lt;div class=&#34;alert alert-tip&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;本题其实相当有难度，这是因为人很难克服惯性思维：题目中要对各个子串的最小代价求和，所以我们很自然地想对每个子串单独求代价，最后相加。将视角转化为对每个元素计算可以不在多少个区间中被覆盖，打破了原题中对总代价的划分方式，这步转化需要相当的功力。&lt;/p&gt;
-&lt;p&gt;这道题目的原型是 &lt;a href=&#34;https://codeforces.com/contest/1827/problem/B1&#34;&gt;Codeforces-1827B&lt;/a&gt;，区别在于原题中排序一个区间的代价不是 $r-l+1$，而是 $r-l$。这一点小小的差异对题目难度的影响其实是巨大的——因为排序一个区间的代价不等于区间的长度，所以“省下”一个元素不被覆盖的收益难以定义，从而原题更加复杂。感兴趣的同学可以去挑战一下。&lt;/p&gt;
+&lt;p&gt;这道题目的原型是 
+&lt;a href=&#34;https://codeforces.com/contest/1827/problem/B1&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Codeforces-1827B&lt;/a&gt;，区别在于原题中排序一个区间的代价不是 $r-l+1$，而是 $r-l$。这一点小小的差异对题目难度的影响其实是巨大的——因为排序一个区间的代价不等于区间的长度，所以“省下”一个元素不被覆盖的收益难以定义，从而原题更加复杂。感兴趣的同学可以去挑战一下。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -763,7 +767,7 @@ $$&lt;/p&gt;
 &lt;p&gt;这是一道经典的并查集练习题，我们出题的本意是希望大家使用并查集解决。考虑如下最自然的思路：按边权从大到小排序，然后按顺序将边一条一条插入到图中，直到图无法被二染色。你可能会思考为何不能在加边的时候顺便给节点染上色，每次判断新边连接的两个节点是否同色。该做法在连接不同的连通块时会出现问题，例如&lt;/p&gt;
 &lt;img src=&#34;https://kristoff-starling.github.io/img/problemsolving/ps-sol-2063.png&#34; style=&#34;zoom: 50%;&#34; /&gt;
 &lt;p&gt;新加入的红色边其实并没有导致问题，我们只要将下面连通块的染色方案换一下就行。但我们每次加边创建出新连通块时无法确定怎么给它染色，因此这条路行不通。我们应该转而去维护点之间的同类关系而不是强行染色，而维护同类关系正是并查集所擅长的。&lt;/p&gt;
-&lt;p&gt;本题的难点在于：每条边描述的都是“两个点不能属于同一阵营”，如何将其转化为对同类关系的描述？这里有一个非常精妙的技巧。我们创建 $2n$ 个节点，1~n 是原本的节点，n+1~2n 这些节点，$n+i$ 是 $i$ 的“假想敌”。这样如果 $i$ 和 $j$ 之间有边，我们要做的就是在并查集中将 $i$ 和 $n+j$ 合并，$j$ 和 $n+i$ 合并。容易发现“假想敌”的设计非常好地实现了“敌人的敌人是朋友”：如果 $i$ 和 $j$，$k$ 和 $j$ 有边，那么 $i$ 和 $k$ 都会与 $n+j$ 在并查集中合并，从而 $i$ 和 $k$ 属于同一阵营。在每条边 $(i, j)$ 加入之前，我们只需在并查集中查询 $i$ 和 $j$ 的关系，然后按照上面的方法更新关系即可。假设 $n$ 和 $m$ 同阶，理论时间复杂度为 $O(n\alpha(n))$。&lt;/p&gt;
+&lt;p&gt;本题的难点在于：每条边描述的都是“两个点不能属于同一阵营”，如何将其转化为对同类关系的描述？这里有一个非常精妙的技巧。我们创建 $2n$ 个节点，1&lt;del&gt;n 是原本的节点，n+1&lt;/del&gt;2n 这些节点，$n+i$ 是 $i$ 的“假想敌”。这样如果 $i$ 和 $j$ 之间有边，我们要做的就是在并查集中将 $i$ 和 $n+j$ 合并，$j$ 和 $n+i$ 合并。容易发现“假想敌”的设计非常好地实现了“敌人的敌人是朋友”：如果 $i$ 和 $j$，$k$ 和 $j$ 有边，那么 $i$ 和 $k$ 都会与 $n+j$ 在并查集中合并，从而 $i$ 和 $k$ 属于同一阵营。在每条边 $(i, j)$ 加入之前，我们只需在并查集中查询 $i$ 和 $j$ 的关系，然后按照上面的方法更新关系即可。假设 $n$ 和 $m$ 同阶，理论时间复杂度为 $O(n\alpha(n))$。&lt;/p&gt;
 &lt;h3 id=&#34;基于二分答案的思路&#34;&gt;基于二分答案的思路&lt;/h3&gt;
 &lt;p&gt;如果你仔细阅读了二分答案章节的讲义，你会发现该问题满足二分答案问题的所有“套路”，尤其是最关键的一点：这是一个最小化最大值的问题。因此我们只需二分答案 $mid$，然后关注由原图中边权大于 $mid$ 的边构成的子图。我们要保证这些边不会落到同一个颜色中，所以要判断该图是否可以二染色。你可以参考 I-Final-C，用一遍搜索完成可二染色判断。假设 $n$ 和 $m$ 同阶，则时间复杂度为 $O(n\log n)$。&lt;/p&gt;
 </description>
@@ -904,18 +908,18 @@ $$&lt;/p&gt;
 $$&lt;/p&gt;
 &lt;p&gt;鸡蛋落地的结果序列必须可以和楼层建立一一映射，否则一定存在无法分辨的两个楼层 (可以参考使用决策树证明基于比较的排序算法的复杂度下界的过程来理解这句话)，所以答案的上界是 $\sum_{i=1}^k\binom{m}{i}$。又因为每次鸡蛋碎与不碎会将我们引导到两个不相交的区域 ($[1, x-1]$ 和 $[x, n]$) 进行下一步操作，所以这个上界是可以做到的。因此 $f(k, m)=\sum_{i=1}^k\binom{m}{i}$。进一步地，你可以发现我们在此处定义 0 为碎的巧妙之处：将所有状态串按照字典序从小到大排序，排在第 $i$ 位的字符串恰好就是确定第 $i$ 层的扔法。&lt;/p&gt;
 &lt;p&gt;有了这个结果，我们可以直接二分 $m$，然后计算 $f(k, m)$ 并与 $n$ 比较。时间复杂度 $O(k\log n)$。&lt;/p&gt;
-&lt;section class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;div class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
 &lt;hr&gt;
 &lt;ol&gt;
-&lt;li id=&#34;fn:1&#34; role=&#34;doc-endnote&#34;&gt;
+&lt;li id=&#34;fn:1&#34;&gt;
 &lt;p&gt;LeetCode的 
 &lt;a href=&#34;https://leetcode.cn/problems/super-egg-drop/solution/ji-dan-diao-luo-by-leetcode-solution-2/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;官方题解&lt;/a&gt; 不加证明地给出了 $O(k\sqrt[k]{n})$ 的复杂度。&amp;#160;&lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
-&lt;li id=&#34;fn:2&#34; role=&#34;doc-endnote&#34;&gt;
+&lt;li id=&#34;fn:2&#34;&gt;
 &lt;p&gt;事实上，第二种解法里的动态规划状态转移方程本身长的就很像二项式系数的递推式。如果你对这个转移方程进行差分等数学处理，也可以得到如下的结果。&amp;#160;&lt;a href=&#34;#fnref:2&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;/section&gt;
+&lt;/div&gt;
 </description>
     </item>
     
@@ -1162,7 +1166,7 @@ $$
 &lt;p&gt;优化状态设计的动机是：我们最关心的其实是单词的开头/结尾字母，而小写字母一共只有 26 个。因此我们应该在这方面作文章，把每次遍历前面所有单词的过程节省掉。考虑如下状态：令 $dp(i, ch)$ 表示在前 $i$ 个单词中，以字符 $ch$ 结尾的最长可接龙子序列的长度 &lt;strong&gt;(注意！不再要求一定以 $word_i$ 结尾！)&lt;/strong&gt;。转移考虑对以下两种情况取 max：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;最长子序列不包括第 $i$ 个单词: $dp(i-1, ch)$。&lt;/li&gt;
-&lt;li&gt;最长子序列包括第 $i$ 个单词，且第 $i$ 个单词确实以 $ch$ 结尾: 设第 $i$ 个单词的开头字符为 $ch&#39;$，则这种情况的最长序列长度为 $dp(i-1, ch&#39;) + 1$。&lt;/li&gt;
+&lt;li&gt;最长子序列包括第 $i$ 个单词，且第 $i$ 个单词确实以 $ch$ 结尾: 设第 $i$ 个单词的开头字符为 $ch&amp;rsquo;$，则这种情况的最长序列长度为 $dp(i-1, ch&amp;rsquo;) + 1$。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;因此状态转移方程可以写为&lt;/p&gt;
 &lt;p&gt;$$

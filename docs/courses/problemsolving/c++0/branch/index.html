@@ -30,8 +30,22 @@
     
   
   <meta name="description" content="很多时候我们需要根据某个条件决定去做事情1还是事情2,这就是分支。一个分支框架的格式如下：
-if (condition) { // your code }  它的意思是：如果 if () 括号中的条件成立，那么就执行大括号中的那些语句，否则跳过这些语句。此外，我们还可以添加 else 分支：
-if (condition) { // your code } else { // your code }  这时如果条件成立就执行紧接着的大括号中的语句，并跳过 else 下的语句；如果条件不成立就跳过紧接着的语句，直接执行 else 下的语句。一个额外的规则是：如果 &ldquo;your code&rdquo; 的地方你只需要写一条语句，你可以省略大括号对 (这样代码看上去更紧凑简洁)，不过如果你没有把握，加上大括号永远是最稳妥最正确的选择。">
+if (condition)
+{
+    // your code
+}
+
+它的意思是：如果 if () 括号中的条件成立，那么就执行大括号中的那些语句，否则跳过这些语句。此外，我们还可以添加 else 分支：
+if (condition)
+{
+    // your code
+}
+else
+{
+    // your code
+}
+
+这时如果条件成立就执行紧接着的大括号中的语句，并跳过 else 下的语句；如果条件不成立就跳过紧接着的语句，直接执行 else 下的语句。一个额外的规则是：如果 &ldquo;your code&rdquo; 的地方你只需要写一条语句，你可以省略大括号对 (这样代码看上去更紧凑简洁)，不过如果你没有把握，加上大括号永远是最稳妥最正确的选择。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/branch/">
@@ -212,14 +226,52 @@ if (condition) { // your code } else { // your code }  这时如果条件成立�
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/branch/">
 
@@ -238,9 +290,23 @@ if (condition) { // your code } else { // your code }  这时如果条件成立�
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/branch/">
   <meta property="og:title" content="分支 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="很多时候我们需要根据某个条件决定去做事情1还是事情2,这就是分支。一个分支框架的格式如下：
-if (condition) { // your code }  它的意思是：如果 if () 括号中的条件成立，那么就执行大括号中的那些语句，否则跳过这些语句。此外，我们还可以添加 else 分支：
-if (condition) { // your code } else { // your code }  这时如果条件成立就执行紧接着的大括号中的语句，并跳过 else 下的语句；如果条件不成立就跳过紧接着的语句，直接执行 else 下的语句。一个额外的规则是：如果 &ldquo;your code&rdquo; 的地方你只需要写一条语句，你可以省略大括号对 (这样代码看上去更紧凑简洁)，不过如果你没有把握，加上大括号永远是最稳妥最正确的选择。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+if (condition)
+{
+    // your code
+}
+
+它的意思是：如果 if () 括号中的条件成立，那么就执行大括号中的那些语句，否则跳过这些语句。此外，我们还可以添加 else 分支：
+if (condition)
+{
+    // your code
+}
+else
+{
+    // your code
+}
+
+这时如果条件成立就执行紧接着的大括号中的语句，并跳过 else 下的语句；如果条件不成立就跳过紧接着的语句，直接执行 else 下的语句。一个额外的规则是：如果 &ldquo;your code&rdquo; 的地方你只需要写一条语句，你可以省略大括号对 (这样代码看上去更紧凑简洁)，不过如果你没有把握，加上大括号永远是最稳妥最正确的选择。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
     
@@ -571,34 +637,34 @@ int main ()
 <li>
 <p><code>==</code> 是一个比较运算符，用来比较式子的左边和右边是否相等。其他的一些常用的比较运算符列举如下</p>
 <table>
-<thead>
-<tr>
-<th style="text-align:center">符号</th>
-<th style="text-align:center">意义</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"><code>&lt;=</code></td>
-<td style="text-align:center">小于等于</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>&lt;</code></td>
-<td style="text-align:center">小于</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>&gt;=</code></td>
-<td style="text-align:center">大于等于</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>&gt;</code></td>
-<td style="text-align:center">大于</td>
-</tr>
-<tr>
-<td style="text-align:center"><code>!=</code></td>
-<td style="text-align:center">不等于</td>
-</tr>
-</tbody>
+  <thead>
+      <tr>
+          <th style="text-align: center">符号</th>
+          <th style="text-align: center">意义</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><code>&lt;=</code></td>
+          <td style="text-align: center">小于等于</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>&lt;</code></td>
+          <td style="text-align: center">小于</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>&gt;=</code></td>
+          <td style="text-align: center">大于等于</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>&gt;</code></td>
+          <td style="text-align: center">大于</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><code>!=</code></td>
+          <td style="text-align: center">不等于</td>
+      </tr>
+  </tbody>
 </table>
 </li>
 <li>
@@ -730,7 +796,7 @@ int main ()
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

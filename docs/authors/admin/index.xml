@@ -7,10 +7,29 @@
     <description>Yuyao Wang&#39;s Homepage</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
-      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>Yuyao Wang&#39;s Homepage</title>
       <link>https://kristoff-starling.github.io/authors/admin/</link>
     </image>
+    
+    <item>
+      <title></title>
+      <link>https://kristoff-starling.github.io/authors/admin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/authors/admin/</guid>
+      <description>&lt;p&gt;I am Yuyao Wang (王宇峣), a $\left\lceil\frac{(now() - 2024/09/16).to\text{_}day()}{year.day}\right\rceil$ year Ph.D. student at the 
+&lt;a href=&#34;https://syslab.cs.washington.edu/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Computer Systems Lab&lt;/a&gt; of 
+&lt;a href=&#34;https://www.cs.washington.edu/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Paul G. Allen School of Computer Science &amp;amp; Engineering&lt;/a&gt;, University of Washington, advised by Prof. 
+&lt;a href=&#34;https://ratul.org&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Ratul Mahajan&lt;/a&gt; and 
+&lt;a href=&#34;https://www.cs.washington.edu/people/faculty/arvind&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Arvind Krishnamurthy&lt;/a&gt;. My research interest broadly lies in topics related to the &lt;em&gt;correctness&lt;/em&gt;, &lt;em&gt;programmability&lt;/em&gt; and &lt;em&gt;performance&lt;/em&gt; of computer systems.&lt;/p&gt;
+&lt;p&gt;Previously, I obtained my bachelor&amp;rsquo;s degree from 
+&lt;a href=&#34;https://www.nju.edu.cn/en&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Nanjing University&lt;/a&gt;. I was also fortunate to work with Prof. 
+&lt;a href=&#34;https://lingming.cs.illinois.edu/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Lingming Zhang&lt;/a&gt; at UIUC.&lt;/p&gt;
+&lt;!-- I am Yuyao Wang (王宇峣), a senior student in Computer Science (Elite Class) at [Nanjing University](https://www.nju.edu.cn/en). 
+
+I have been attached to programming and algorithm design since middle school and aspire to bring elegant solutions for tackling *real-world* problems. --&gt;
+</description>
+    </item>
     
   </channel>
 </rss>

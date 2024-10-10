@@ -29,11 +29,32 @@
   
     
   
-  <meta name="description" content="为了解释清楚一些现象背后的原因，本文涉及一些超纲的计算机底层知识。这部分内容都在绿色的框内，如果你无法看懂可以直接跳过。等到大家学完了计算机系统基础 (ICS) 后自然就能理解这些话的含义。   有了循环之后，你很快就会发现简单地定义一个一个的变量有点“不够用”了，比如考虑如下问题：
- 输入整数 $N$，然后输入 $N$ 个数的一个数列，将这个数列倒序输出。
- 我们想要倒序输出，就说明我们在读取完数列的最后一个整数时，还要“记住”前面的 $N-1$ 个整数，所以我们每读取到一个整数都得将其保存在变量里，但我们在预先不知道数列长度的情况下怎么知道该定义多少个变量呢？这似乎陷入了死局。
+  <meta name="description" content="
+  
+    为了解释清楚一些现象背后的原因，本文涉及一些超纲的计算机底层知识。这部分内容都在绿色的框内，如果你无法看懂可以直接跳过。等到大家学完了计算机系统基础 (ICS) 后自然就能理解这些话的含义。
+  
+
+有了循环之后，你很快就会发现简单地定义一个一个的变量有点“不够用”了，比如考虑如下问题：
+
+输入整数 $N$，然后输入 $N$ 个数的一个数列，将这个数列倒序输出。
+
+我们想要倒序输出，就说明我们在读取完数列的最后一个整数时，还要“记住”前面的 $N-1$ 个整数，所以我们每读取到一个整数都得将其保存在变量里，但我们在预先不知道数列长度的情况下怎么知道该定义多少个变量呢？这似乎陷入了死局。
 (在这里我们不考虑递归等技巧) 我们希望有一种语法，可以批量开一堆变量，而且最好能用下标去索引它们。在 C/C&#43;&#43; 中我们可以通过定义数组来实现这一点。我们先给出上面问题的一段示例代码：
-#include &lt;bits/stdc&#43;&#43;.h&gt; int main () { int n; std::cin &gt;&gt; n; int a[n]; for (int i = 0; i &lt; n; i&#43;&#43;) std::cin &gt;&gt; a[i]; for (int i = n - 1; i &gt;= 0; i--) std::cout &lt;&lt; a[i] &lt;&lt; &#39;\n&#39;; return 0; }  这里出现的新语法是 int a[n]。如果说 int 类型的变量是一个可以存放一个整数的小盒子，那么 int a[n] 就定义了 $n$ 个小盒子，每个小盒子都可以存放一个整数。值得注意的是，这里的“小盒子”是按照 $0,1,\cdots, n-1$ 编号的。">
+#include &lt;bits/stdc&#43;&#43;.h&gt;
+
+int main ()
+{
+    int n;
+    std::cin &gt;&gt; n;
+    int a[n];
+    for (int i = 0; i &lt; n; i&#43;&#43;)
+        std::cin &gt;&gt; a[i];
+    for (int i = n - 1; i &gt;= 0; i--)
+        std::cout &lt;&lt; a[i] &lt;&lt; &#39;\n&#39;;
+    return 0;
+}
+
+这里出现的新语法是 int a[n]。如果说 int 类型的变量是一个可以存放一个整数的小盒子，那么 int a[n] 就定义了 $n$ 个小盒子，每个小盒子都可以存放一个整数。值得注意的是，这里的“小盒子”是按照 $0,1,\cdots, n-1$ 编号的。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/array/">
@@ -214,14 +235,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/array/">
 
@@ -239,12 +298,33 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/array/">
   <meta property="og:title" content="数组 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="为了解释清楚一些现象背后的原因，本文涉及一些超纲的计算机底层知识。这部分内容都在绿色的框内，如果你无法看懂可以直接跳过。等到大家学完了计算机系统基础 (ICS) 后自然就能理解这些话的含义。   有了循环之后，你很快就会发现简单地定义一个一个的变量有点“不够用”了，比如考虑如下问题：
- 输入整数 $N$，然后输入 $N$ 个数的一个数列，将这个数列倒序输出。
- 我们想要倒序输出，就说明我们在读取完数列的最后一个整数时，还要“记住”前面的 $N-1$ 个整数，所以我们每读取到一个整数都得将其保存在变量里，但我们在预先不知道数列长度的情况下怎么知道该定义多少个变量呢？这似乎陷入了死局。
+  <meta property="og:description" content="
+  
+    为了解释清楚一些现象背后的原因，本文涉及一些超纲的计算机底层知识。这部分内容都在绿色的框内，如果你无法看懂可以直接跳过。等到大家学完了计算机系统基础 (ICS) 后自然就能理解这些话的含义。
+  
+
+有了循环之后，你很快就会发现简单地定义一个一个的变量有点“不够用”了，比如考虑如下问题：
+
+输入整数 $N$，然后输入 $N$ 个数的一个数列，将这个数列倒序输出。
+
+我们想要倒序输出，就说明我们在读取完数列的最后一个整数时，还要“记住”前面的 $N-1$ 个整数，所以我们每读取到一个整数都得将其保存在变量里，但我们在预先不知道数列长度的情况下怎么知道该定义多少个变量呢？这似乎陷入了死局。
 (在这里我们不考虑递归等技巧) 我们希望有一种语法，可以批量开一堆变量，而且最好能用下标去索引它们。在 C/C&#43;&#43; 中我们可以通过定义数组来实现这一点。我们先给出上面问题的一段示例代码：
-#include &lt;bits/stdc&#43;&#43;.h&gt; int main () { int n; std::cin &gt;&gt; n; int a[n]; for (int i = 0; i &lt; n; i&#43;&#43;) std::cin &gt;&gt; a[i]; for (int i = n - 1; i &gt;= 0; i--) std::cout &lt;&lt; a[i] &lt;&lt; &#39;\n&#39;; return 0; }  这里出现的新语法是 int a[n]。如果说 int 类型的变量是一个可以存放一个整数的小盒子，那么 int a[n] 就定义了 $n$ 个小盒子，每个小盒子都可以存放一个整数。值得注意的是，这里的“小盒子”是按照 $0,1,\cdots, n-1$ 编号的。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+#include &lt;bits/stdc&#43;&#43;.h&gt;
+
+int main ()
+{
+    int n;
+    std::cin &gt;&gt; n;
+    int a[n];
+    for (int i = 0; i &lt; n; i&#43;&#43;)
+        std::cin &gt;&gt; a[i];
+    for (int i = n - 1; i &gt;= 0; i--)
+        std::cout &lt;&lt; a[i] &lt;&lt; &#39;\n&#39;;
+    return 0;
+}
+
+这里出现的新语法是 int a[n]。如果说 int 类型的变量是一个可以存放一个整数的小盒子，那么 int a[n] 就定义了 $n$ 个小盒子，每个小盒子都可以存放一个整数。值得注意的是，这里的“小盒子”是按照 $0,1,\cdots, n-1$ 编号的。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
     
@@ -745,7 +825,7 @@ int main ()
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

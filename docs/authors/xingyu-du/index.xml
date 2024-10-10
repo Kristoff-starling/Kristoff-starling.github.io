@@ -7,7 +7,7 @@
     <description>Xingyu Du</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 01 Nov 2022 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>Xingyu Du</title>
       <link>https://kristoff-starling.github.io/authors/xingyu-du/</link>
     </image>
@@ -26,7 +26,7 @@
 &lt;p&gt;既然自动机是一个数学模型，那么显然不可能是一张地图。对地图进行抽象之后，可以简化为一个有向图。因此，自动机的结构就是一张有向图。&lt;/p&gt;
 &lt;p&gt;而自动机的工作方式和流程图类似，不同的是：自动机的每一个结点都是一个判定结点；自动机的结点只是一个单纯的状态而非任务；自动机的边可以接受多种字符（不局限于 T 或 F）。&lt;/p&gt;
 &lt;p&gt;例如，完成“判断一个二进制数是不是偶数”的自动机如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://oi-wiki.org/string/images/automaton2.png&#34; alt=&#34;奇偶DFA&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;奇偶DFA&#34; src=&#34;https://oi-wiki.org/string/images/automaton2.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;从起始结点开始，从高到低接受这个数的二进制序列，然后看最终停在哪里。如果最终停在红圈结点，则是偶数，否则不是。&lt;/p&gt;
 &lt;p&gt;如果需要判定一个有限的信号序列和另外一个信号序列的关系（例如另一个信号序列是不是某个信号序列的子序列），那么常用的方法是针对那个有限的信号序列构建一个自动机。这个在学习 KMP 的时候会讲到。（早着呢）&lt;/p&gt;
 &lt;p&gt;需要注意的是，自动机只是一个 &lt;strong&gt;数学模型&lt;/strong&gt;，而 &lt;strong&gt;不是算法&lt;/strong&gt;，也 &lt;strong&gt;不是数据结构&lt;/strong&gt;。实现同一个自动机的方法有很多种，可能会有不一样的时空复杂度。&lt;/p&gt;
@@ -45,7 +45,7 @@
 &lt;p&gt;（注:上一段表示一旦不存在当前状态的某个转移，那么状态机一定会&lt;strong&gt;不接受&lt;/strong&gt;这个字符串)&lt;/p&gt;
 &lt;p&gt;我们扩展定义转移函数 $\delta$，令其第二个参数可以接收一个字符串：$\delta(v,s)=\delta(\delta(v,s[1]),s[2..|s|])$，扩展后的转移函数就可以表示从一个状态起接收一个字符串后转移到的状态。那么，$A(s)=[\delta(start,s)\in F]$。&lt;strong&gt;这里难以理解抽象函数的话，可以当成在字符串中一个个读取字符，然后一步步转移当前状态，最后在最终状态判断是否为接受状态&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;如，一个接受且仅接受字符串 &amp;ldquo;a&amp;rdquo;, &amp;ldquo;ab&amp;rdquo;, &amp;ldquo;aac&amp;rdquo; 的 DFA：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;https://oi-wiki.org/string/images/automaton1.png&#34; alt=&#34;DFA&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;DFA&#34; src=&#34;https://oi-wiki.org/string/images/automaton1.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;NFA是在DFA的基础上存在某些状态$v$，满足$\delta(v,\epsilon)\neq null$，这里的$\epsilon$表示空字符串，这就导致NFA可能处于多种状态的叠加态中（&lt;strong&gt;这是后面将NFA转化成DFA的关键，将当前的多种状态当成一个新状态！这样记原状态数为k种，此时总状态数就会有$2^k$种，但每一次状态转移都是唯一的！&lt;/strong&gt;)，一个NFA的例子如下，我们判断一个字符串是否以&amp;quot;01&amp;quot;结尾，正则表达式表示为&amp;quot;$.*01$&amp;ldquo;的NFA如下 (S3为接收节点)：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-mermaid&#34;&gt;graph TD
 
@@ -181,7 +181,7 @@ domain::=\&amp;lt;string &#39;.&#39; string&amp;gt;
 &lt;ol&gt;
 &lt;li&gt;初始状态&lt;/li&gt;
 &lt;li&gt;位于第一个string的状态&lt;/li&gt;
-&lt;li&gt;位于&#39;@&amp;lsquo;的状态&lt;/li&gt;
+&lt;li&gt;位于&amp;rsquo;@&amp;lsquo;的状态&lt;/li&gt;
 &lt;li&gt;位于第二个string的状态&lt;/li&gt;
 &lt;li&gt;位于&amp;rsquo;.&amp;lsquo;的状态&lt;/li&gt;
 &lt;li&gt;位于第三个string的状态&lt;/li&gt;
@@ -511,6 +511,14 @@ bool solve(){
 (
 &lt;a href=&#34;https://leetcode.cn/problems/regular-expression-matching/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://leetcode.cn/problems/regular-expression-matching/&lt;/a&gt;)&lt;/p&gt;
 </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://kristoff-starling.github.io/authors/xingyudu/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/authors/xingyudu/</guid>
+      <description></description>
     </item>
     
   </channel>

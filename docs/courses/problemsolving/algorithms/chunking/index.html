@@ -31,8 +31,15 @@
   
   <meta name="description" content="分块的思想被应用在生活的方方面面：举一个最简单的例子，大家上小学的时候通常班级里的座位被分成若干个“组”。每组有一个小组长 (传说中的“一道杠”)，班里有班干部 (传说中的“二道杠&quot;)。班长在统计人数的时候，最便捷的方法就是让各个小组长统计自己组内的人数，汇总到班长手中再做一次简单加法。
 在算法设计中，分块的思想也常常被使用。空说无益，我们通过一个比 OJ 练习题更复杂的问题来解释分块思想的运用：
- 给定数列 $a_1, \cdots, a_n$，高效实现 $q$ 次以下两种操作：
- 1 l r x：给区间 $[l, r]$ 中的数统一加上 $x$。 2 l r：查询 $\sum_{k=l}^r a_k$ 的值。   暴力修改和统计有着相同的问题：如果给定的区间很长，那么操作执行就相当缓慢。总时间复杂度可以达到 $O(qn)$。">
+
+给定数列 $a_1, \cdots, a_n$，高效实现 $q$ 次以下两种操作：
+
+1 l r x：给区间 $[l, r]$ 中的数统一加上 $x$。
+2 l r：查询 $\sum_{k=l}^r a_k$ 的值。
+
+
+暴力修改和统计有着相同的问题：如果给定的区间很长，那么操作执行就相当缓慢。总时间复杂度可以达到 $O(qn)$。
+我们来考虑如下的一种分块策略：将数列分成若干个长度为 $m$ 的小段 (第一段是 $[0,m)$，第二段是 $[m, 2m)$，依次类推，我们假设 $n$ 可以被 $m$ 整除)，命名为 $B_1, B_2, \cdots, B_b$。我们为每个块分配一个累加标记 $t_i$，表示这个块上的数被整体加了多少，再维护一个和标记 $s_i$，表示在不考虑累加标记的情况下块内的数的和。那么">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/algorithms/chunking/">
@@ -213,14 +220,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/algorithms/chunking/">
 
@@ -240,9 +285,16 @@
   <meta property="og:title" content="分块——优雅的暴力 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="分块的思想被应用在生活的方方面面：举一个最简单的例子，大家上小学的时候通常班级里的座位被分成若干个“组”。每组有一个小组长 (传说中的“一道杠”)，班里有班干部 (传说中的“二道杠&quot;)。班长在统计人数的时候，最便捷的方法就是让各个小组长统计自己组内的人数，汇总到班长手中再做一次简单加法。
 在算法设计中，分块的思想也常常被使用。空说无益，我们通过一个比 OJ 练习题更复杂的问题来解释分块思想的运用：
- 给定数列 $a_1, \cdots, a_n$，高效实现 $q$ 次以下两种操作：
- 1 l r x：给区间 $[l, r]$ 中的数统一加上 $x$。 2 l r：查询 $\sum_{k=l}^r a_k$ 的值。   暴力修改和统计有着相同的问题：如果给定的区间很长，那么操作执行就相当缓慢。总时间复杂度可以达到 $O(qn)$。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+
+给定数列 $a_1, \cdots, a_n$，高效实现 $q$ 次以下两种操作：
+
+1 l r x：给区间 $[l, r]$ 中的数统一加上 $x$。
+2 l r：查询 $\sum_{k=l}^r a_k$ 的值。
+
+
+暴力修改和统计有着相同的问题：如果给定的区间很长，那么操作执行就相当缓慢。总时间复杂度可以达到 $O(qn)$。
+我们来考虑如下的一种分块策略：将数列分成若干个长度为 $m$ 的小段 (第一段是 $[0,m)$，第二段是 $[m, 2m)$，依次类推，我们假设 $n$ 可以被 $m$ 整除)，命名为 $B_1, B_2, \cdots, B_b$。我们为每个块分配一个累加标记 $t_i$，表示这个块上的数被整体加了多少，再维护一个和标记 $s_i$，表示在不考虑累加标记的情况下块内的数的和。那么"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2023-04-08T00:00:00&#43;00:00">
@@ -737,7 +789,7 @@ $$
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

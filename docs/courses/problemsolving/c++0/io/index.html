@@ -30,7 +30,15 @@
     
   
   <meta name="description" content="如果你使用的是 Dev-cpp，将基本框架中的程序拷贝到代码区并按下 F11，你会发现程序已经可以成功地运行了！不过跳出的黑色窗口中没有任何内容——因为我们的 main 函数中什么都没写。我们现在来尝试输出一行 &ldquo;hello world!&quot;：
-#include &lt;bits/stdc&#43;&#43;.h&gt; int main () { std::cout &lt;&lt; &quot;Hello World&quot; &lt;&lt; &#39;\n&#39;; // don&#39;t forget to add &#39;;&#39; at the end! return 0; }  cout 是一个对象 (object)，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &ldquo;cout&rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 &lt;&lt; 就像箭头一样指明了数据的流向，“Hello World&rdquo; 和代表换行符的 &ldquo;\n&rdquo; 依次流入 &ldquo;cout&rdquo; 并被显示出来，这就是 cout 的用法，颇有象形文字的智慧。">
+#include &lt;bits/stdc&#43;&#43;.h&gt;
+
+int main ()
+{
+    std::cout &lt;&lt; &quot;Hello World&quot; &lt;&lt; &#39;\n&#39;; // don&#39;t forget to add &#39;;&#39; at the end!
+    return 0;
+}
+
+cout 是一个对象 (object)，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &ldquo;cout&rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 &lt;&lt; 就像箭头一样指明了数据的流向，“Hello World&rdquo; 和代表换行符的 &ldquo;\n&rdquo; 依次流入 &ldquo;cout&rdquo; 并被显示出来，这就是 cout 的用法，颇有象形文字的智慧。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/io/">
@@ -211,14 +219,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/io/">
 
@@ -237,8 +283,16 @@
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/io/">
   <meta property="og:title" content="输入输出 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="如果你使用的是 Dev-cpp，将基本框架中的程序拷贝到代码区并按下 F11，你会发现程序已经可以成功地运行了！不过跳出的黑色窗口中没有任何内容——因为我们的 main 函数中什么都没写。我们现在来尝试输出一行 &ldquo;hello world!&quot;：
-#include &lt;bits/stdc&#43;&#43;.h&gt; int main () { std::cout &lt;&lt; &quot;Hello World&quot; &lt;&lt; &#39;\n&#39;; // don&#39;t forget to add &#39;;&#39; at the end! return 0; }  cout 是一个对象 (object)，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &ldquo;cout&rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 &lt;&lt; 就像箭头一样指明了数据的流向，“Hello World&rdquo; 和代表换行符的 &ldquo;\n&rdquo; 依次流入 &ldquo;cout&rdquo; 并被显示出来，这就是 cout 的用法，颇有象形文字的智慧。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+#include &lt;bits/stdc&#43;&#43;.h&gt;
+
+int main ()
+{
+    std::cout &lt;&lt; &quot;Hello World&quot; &lt;&lt; &#39;\n&#39;; // don&#39;t forget to add &#39;;&#39; at the end!
+    return 0;
+}
+
+cout 是一个对象 (object)，作为初学者我们不需要知道对象是什么意思，一个好的理解方式是：你可以把 &ldquo;cout&rdquo; 想象成运行时蹦出的窗口，现在我们的任务是将要输出的内容喂给窗口，这里的 &lt;&lt; 就像箭头一样指明了数据的流向，“Hello World&rdquo; 和代表换行符的 &ldquo;\n&rdquo; 依次流入 &ldquo;cout&rdquo; 并被显示出来，这就是 cout 的用法，颇有象形文字的智慧。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
     
@@ -696,7 +750,7 @@ int main ()
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

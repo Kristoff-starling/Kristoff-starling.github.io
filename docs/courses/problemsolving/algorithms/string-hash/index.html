@@ -31,9 +31,15 @@
   
   <meta name="description" content="字符串哈希的本质是将一个字符串集合映射到一个数的集合，从而将比较两个字符串是否相等转化为比较他们的哈希值是否相等，将复杂度降低到 $O(1)$。
 字符串哈希的经典哈希函数是类似于进制转换的按位权相加，即对于字符串 $s=s_1\cdots s_n$，
-$$ hash(s)=\left(\sum_{i=1}^np^{n-i}s_i\right)\ \text{mod}\ M $$
+$$
+hash(s)=\left(\sum_{i=1}^np^{n-i}s_i\right)\ \text{mod}\ M
+$$
 其中 $p$ 和 $M$ 是预先选好的参数。$p$ 被称为种子，通常取大质数，$M$ 的选择有两种类型：
- 一个大质数； $2^{64}$；该模数的好处是可以直接利用 unsigned long long 类型的自然溢出取模，速度更快写起来也更简洁。  在普通的哈希中我们通常用拉链法/线性探查法来解决哈希冲突，但在字符串哈希中，我们通常不处理冲突，而是选择“相信”不会遇到两个不同的字符串有相同哈希值。这份“自信”来源于巨大的值空间：当 $M$ 取得足够大时 (比如 $10^{18}$ 级别)，将远小于值空间数目的字符串映射进去，冲突的概率极小 (如果你对这个问题感兴趣，请参考本文最后绿色框内的补充内容1)。">
+
+一个大质数；
+$2^{64}$；该模数的好处是可以直接利用 unsigned long long 类型的自然溢出取模，速度更快写起来也更简洁。
+
+在普通的哈希中我们通常用拉链法/线性探查法来解决哈希冲突，但在字符串哈希中，我们通常不处理冲突，而是选择“相信”不会遇到两个不同的字符串有相同哈希值。这份“自信”来源于巨大的值空间：当 $M$ 取得足够大时 (比如 $10^{18}$ 级别)，将远小于值空间数目的字符串映射进去，冲突的概率极小 (如果你对这个问题感兴趣，请参考本文最后绿色框内的补充内容1)。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/algorithms/string-hash/">
@@ -214,14 +220,52 @@ $$ hash(s)=\left(\sum_{i=1}^np^{n-i}s_i\right)\ \text{mod}\ M $$
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/algorithms/string-hash/">
 
@@ -241,10 +285,16 @@ $$ hash(s)=\left(\sum_{i=1}^np^{n-i}s_i\right)\ \text{mod}\ M $$
   <meta property="og:title" content="字符串哈希 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="字符串哈希的本质是将一个字符串集合映射到一个数的集合，从而将比较两个字符串是否相等转化为比较他们的哈希值是否相等，将复杂度降低到 $O(1)$。
 字符串哈希的经典哈希函数是类似于进制转换的按位权相加，即对于字符串 $s=s_1\cdots s_n$，
-$$ hash(s)=\left(\sum_{i=1}^np^{n-i}s_i\right)\ \text{mod}\ M $$
+$$
+hash(s)=\left(\sum_{i=1}^np^{n-i}s_i\right)\ \text{mod}\ M
+$$
 其中 $p$ 和 $M$ 是预先选好的参数。$p$ 被称为种子，通常取大质数，$M$ 的选择有两种类型：
- 一个大质数； $2^{64}$；该模数的好处是可以直接利用 unsigned long long 类型的自然溢出取模，速度更快写起来也更简洁。  在普通的哈希中我们通常用拉链法/线性探查法来解决哈希冲突，但在字符串哈希中，我们通常不处理冲突，而是选择“相信”不会遇到两个不同的字符串有相同哈希值。这份“自信”来源于巨大的值空间：当 $M$ 取得足够大时 (比如 $10^{18}$ 级别)，将远小于值空间数目的字符串映射进去，冲突的概率极小 (如果你对这个问题感兴趣，请参考本文最后绿色框内的补充内容1)。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+
+一个大质数；
+$2^{64}$；该模数的好处是可以直接利用 unsigned long long 类型的自然溢出取模，速度更快写起来也更简洁。
+
+在普通的哈希中我们通常用拉链法/线性探查法来解决哈希冲突，但在字符串哈希中，我们通常不处理冲突，而是选择“相信”不会遇到两个不同的字符串有相同哈希值。这份“自信”来源于巨大的值空间：当 $M$ 取得足够大时 (比如 $10^{18}$ 级别)，将远小于值空间数目的字符串映射进去，冲突的概率极小 (如果你对这个问题感兴趣，请参考本文最后绿色框内的补充内容1)。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2023-12-21T00:00:00&#43;00:00">
@@ -607,15 +657,15 @@ $$</p>
 <p>然后令 $s$ 的哈希值为 $(h_1(s), h_2(s))$ 这样一个 pair，其中 $p_1,p_2$ 通常取质数，$M_1, M_2$ 通常取 $10^9$ 附近的大质数。值域 $[1, M_1]\times [1, M_2]$ 的宽广性保证了哈希冲突的概率极低，且目前不存在已知的可以针对任意模数的双哈希反例构造方法。</p>
   </div>
 </div>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p><del>搬运</del>参考了许昊然的
 <a href="https://sillycross.github.io/cnblog/2012/05/18/2012-05-18/" target="_blank" rel="noopener">博客</a>。&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
           </div>
 
@@ -737,7 +787,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

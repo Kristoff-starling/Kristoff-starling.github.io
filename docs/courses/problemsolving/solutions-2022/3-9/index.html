@@ -29,12 +29,24 @@
   
     
   
-  <meta name="description" content="Problem A: 电路交换
+  <meta name="description" content="
+  
+    Problem A: 电路交换
 给定一个流网络，求最大流。
-  这是一道纯正的模板题，不过我们希望大家可以尽可能学会一个高效的最大流算法实现，你可以选择学习
- 增广路流派: Dinic/SAP。 预流推进流派: HLPP。  其中 Dinic 算法较为简单。
- Problem B: 探索遗迹
-  给定一个 $n\times n$ 的网格，第 $i$ 行第 $j$ 列格子的权值为 $w(i, j)$。现希望选出一个集合 $S\subseteq \{1,\cdots, n\}\times \{1,\cdots, n\}$，满足">
+  
+
+这是一道纯正的模板题，不过我们希望大家可以尽可能学会一个高效的最大流算法实现，你可以选择学习
+
+增广路流派: Dinic/SAP。
+预流推进流派: HLPP。
+
+其中 Dinic 算法较为简单。
+
+  
+    Problem B: 探索遗迹
+
+
+给定一个 $n\times n$ 的网格，第 $i$ 行第 $j$ 列格子的权值为 $w(i, j)$。现希望选出一个集合 $S\subseteq \{1,\cdots, n\}\times \{1,\cdots, n\}$，满足">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-9/">
@@ -215,14 +227,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-9/">
 
@@ -240,13 +290,25 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-9/">
   <meta property="og:title" content="问题求解III-HW09 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 电路交换
+  <meta property="og:description" content="
+  
+    Problem A: 电路交换
 给定一个流网络，求最大流。
-  这是一道纯正的模板题，不过我们希望大家可以尽可能学会一个高效的最大流算法实现，你可以选择学习
- 增广路流派: Dinic/SAP。 预流推进流派: HLPP。  其中 Dinic 算法较为简单。
- Problem B: 探索遗迹
-  给定一个 $n\times n$ 的网格，第 $i$ 行第 $j$ 列格子的权值为 $w(i, j)$。现希望选出一个集合 $S\subseteq \{1,\cdots, n\}\times \{1,\cdots, n\}$，满足"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+
+这是一道纯正的模板题，不过我们希望大家可以尽可能学会一个高效的最大流算法实现，你可以选择学习
+
+增广路流派: Dinic/SAP。
+预流推进流派: HLPP。
+
+其中 Dinic 算法较为简单。
+
+  
+    Problem B: 探索遗迹
+
+
+给定一个 $n\times n$ 的网格，第 $i$ 行第 $j$ 列格子的权值为 $w(i, j)$。现希望选出一个集合 $S\subseteq \{1,\cdots, n\}\times \{1,\cdots, n\}$，满足"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2023-11-18T00:00:00&#43;00:00">
@@ -783,7 +845,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

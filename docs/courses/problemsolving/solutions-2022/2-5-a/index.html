@@ -29,9 +29,29 @@
   
     
   
-  <meta name="description" content="题意概述
- 有一个 $n$ 层的高楼。存在一个未知的分界楼层 $X$，在 $1&hellip;X$ 层扔鸡蛋落地不会碎；在 $X&#43;1$ 层以及更高的楼层扔鸡蛋落地会碎。问用 $k$ 个鸡蛋最少扔几次可以确定 $X$。 $n\leq 10^4, k\leq 100$。    引子 这是一个十分有趣的问题。我们首先思考扔鸡蛋到底意味着什么：
- 一个鸡蛋如果在 $x$ 层扔下去没碎，说明 $X\geq x$，否则 $X&lt;x$。 鸡蛋碎与不碎是有区别的：如果所有鸡蛋都碎了但我们仍没有找出 $X$，那就寄了。  基于这些观察，我们先进行一些简单情况的思考：">
+  <meta name="description" content="
+  
+    题意概述
+
+有一个 $n$ 层的高楼。存在一个未知的分界楼层 $X$，在 $1&hellip;X$ 层扔鸡蛋落地不会碎；在 $X&#43;1$ 层以及更高的楼层扔鸡蛋落地会碎。问用 $k$ 个鸡蛋最少扔几次可以确定 $X$。
+$n\leq 10^4, k\leq 100$。
+
+  
+
+引子
+这是一个十分有趣的问题。我们首先思考扔鸡蛋到底意味着什么：
+
+一个鸡蛋如果在 $x$ 层扔下去没碎，说明 $X\geq x$，否则 $X&lt;x$。
+鸡蛋碎与不碎是有区别的：如果所有鸡蛋都碎了但我们仍没有找出 $X$，那就寄了。
+
+基于这些观察，我们先进行一些简单情况的思考：
+
+如果我们手里只有一个鸡蛋，那么我们没有犯错空间，只能从一楼开始一层一层往上扔，次数为 $O(n)$。
+如果我们手里有两个鸡蛋，那我们的策略应该是这样的：用第一个鸡蛋把一个大致的范围框出来——例如选择在 $l_1=1, l_2, \cdots, l_m=n$ 这些点扔鸡蛋，把范围缩小到某个 $[l_i, l_{i&#43;1})$ 后，再用第二个鸡蛋一层层试过去。这个策略很像之前提过的“分块”。如果我们选取那些 $\sqrt n$ 的倍数位置作为第一轮的节点，则抛鸡蛋次数为 $O(\sqrt n)$。
+……
+
+动态规划 (I)
+我们可以看到“用前面的鸡蛋的牺牲为后面的鸡蛋缩小范围”是一个核心思路。对于更多数量的鸡蛋，硬想已经很难想得清楚。考虑使用动态规划。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-5-a/">
@@ -212,14 +232,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-5-a/">
 
@@ -237,10 +295,30 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/2-5-a/">
   <meta property="og:title" content="【问题求解II-HW5.A】高楼抛鸡蛋 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="题意概述
- 有一个 $n$ 层的高楼。存在一个未知的分界楼层 $X$，在 $1&hellip;X$ 层扔鸡蛋落地不会碎；在 $X&#43;1$ 层以及更高的楼层扔鸡蛋落地会碎。问用 $k$ 个鸡蛋最少扔几次可以确定 $X$。 $n\leq 10^4, k\leq 100$。    引子 这是一个十分有趣的问题。我们首先思考扔鸡蛋到底意味着什么：
- 一个鸡蛋如果在 $x$ 层扔下去没碎，说明 $X\geq x$，否则 $X&lt;x$。 鸡蛋碎与不碎是有区别的：如果所有鸡蛋都碎了但我们仍没有找出 $X$，那就寄了。  基于这些观察，我们先进行一些简单情况的思考："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  <meta property="og:description" content="
+  
+    题意概述
+
+有一个 $n$ 层的高楼。存在一个未知的分界楼层 $X$，在 $1&hellip;X$ 层扔鸡蛋落地不会碎；在 $X&#43;1$ 层以及更高的楼层扔鸡蛋落地会碎。问用 $k$ 个鸡蛋最少扔几次可以确定 $X$。
+$n\leq 10^4, k\leq 100$。
+
+  
+
+引子
+这是一个十分有趣的问题。我们首先思考扔鸡蛋到底意味着什么：
+
+一个鸡蛋如果在 $x$ 层扔下去没碎，说明 $X\geq x$，否则 $X&lt;x$。
+鸡蛋碎与不碎是有区别的：如果所有鸡蛋都碎了但我们仍没有找出 $X$，那就寄了。
+
+基于这些观察，我们先进行一些简单情况的思考：
+
+如果我们手里只有一个鸡蛋，那么我们没有犯错空间，只能从一楼开始一层一层往上扔，次数为 $O(n)$。
+如果我们手里有两个鸡蛋，那我们的策略应该是这样的：用第一个鸡蛋把一个大致的范围框出来——例如选择在 $l_1=1, l_2, \cdots, l_m=n$ 这些点扔鸡蛋，把范围缩小到某个 $[l_i, l_{i&#43;1})$ 后，再用第二个鸡蛋一层层试过去。这个策略很像之前提过的“分块”。如果我们选取那些 $\sqrt n$ 的倍数位置作为第一轮的节点，则抛鸡蛋次数为 $O(\sqrt n)$。
+……
+
+动态规划 (I)
+我们可以看到“用前面的鸡蛋的牺牲为后面的鸡蛋缩小范围”是一个核心思路。对于更多数量的鸡蛋，硬想已经很难想得清楚。考虑使用动态规划。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2023-05-28T00:00:00&#43;00:00">
@@ -690,18 +768,18 @@ $$</p>
 $$</p>
 <p>鸡蛋落地的结果序列必须可以和楼层建立一一映射，否则一定存在无法分辨的两个楼层 (可以参考使用决策树证明基于比较的排序算法的复杂度下界的过程来理解这句话)，所以答案的上界是 $\sum_{i=1}^k\binom{m}{i}$。又因为每次鸡蛋碎与不碎会将我们引导到两个不相交的区域 ($[1, x-1]$ 和 $[x, n]$) 进行下一步操作，所以这个上界是可以做到的。因此 $f(k, m)=\sum_{i=1}^k\binom{m}{i}$。进一步地，你可以发现我们在此处定义 0 为碎的巧妙之处：将所有状态串按照字典序从小到大排序，排在第 $i$ 位的字符串恰好就是确定第 $i$ 层的扔法。</p>
 <p>有了这个结果，我们可以直接二分 $m$，然后计算 $f(k, m)$ 并与 $n$ 比较。时间复杂度 $O(k\log n)$。</p>
-<section class="footnotes" role="doc-endnotes">
+<div class="footnotes" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn:1" role="doc-endnote">
+<li id="fn:1">
 <p>LeetCode的 
 <a href="https://leetcode.cn/problems/super-egg-drop/solution/ji-dan-diao-luo-by-leetcode-solution-2/" target="_blank" rel="noopener">官方题解</a> 不加证明地给出了 $O(k\sqrt[k]{n})$ 的复杂度。&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
-<li id="fn:2" role="doc-endnote">
+<li id="fn:2">
 <p>事实上，第二种解法里的动态规划状态转移方程本身长的就很像二项式系数的递推式。如果你对这个转移方程进行差分等数学处理，也可以得到如下的结果。&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
 </li>
 </ol>
-</section>
+</div>
 
           </div>
 
@@ -823,7 +901,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

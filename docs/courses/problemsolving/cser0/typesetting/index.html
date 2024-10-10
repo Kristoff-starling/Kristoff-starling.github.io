@@ -32,7 +32,9 @@
   <meta name="description" content="从某种角度来说，计算机领域的大牛多少有一点偏执——毕竟写代码的时候漏打一个符号便可能酿成大祸，所以学计算机的人总有点“强迫症”。退一步来说，即使你没有强迫症，写作文的时候歪七扭八、行间距不一、每个字都不一样大，开头时不时地忘记空两格……总不是件好事。
 你也许在书面助教的作业要求中注意到了 LaTeX 这个东西。$\LaTeX$ 是一个高质量的排版系统，你可以通过编写代码生成文档的方式来精确地控制文档里的每一处细节，比如分隔线的粗细、图片的大小，页边距的宽窄等等，精度可以达到毫米。我们不强制要求大家使用 LaTeX 书写作业 (因为对于新手来说这可能会耗费很多的时间)，但我们仍然推荐你学习这项工具 (不出意外，你撰写毕业论文的时候是肯定会用到它的)。
 如果你认为 $\LaTeX$ 太过麻烦，不妨尝试一下 Markdown。从原理上来说 Markdown 和 LaTeX 很不一样，但你可以简单地认为它们都是通过一些特殊的符号来生成具有格式，编排美观的文档 (助教博客中的大部分页面都是用 Markdown 书写的)。Markdown 比 LaTeX 简明很多，比如你可以通过 # 来生成各个级别的标题：
-这是二级标题 这是三级标题 可以通过 * 来生成列表：">
+这是二级标题
+这是三级标题
+可以通过 * 来生成列表：">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/cser0/typesetting/">
@@ -213,14 +215,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/cser0/typesetting/">
 
@@ -241,8 +281,10 @@
   <meta property="og:description" content="从某种角度来说，计算机领域的大牛多少有一点偏执——毕竟写代码的时候漏打一个符号便可能酿成大祸，所以学计算机的人总有点“强迫症”。退一步来说，即使你没有强迫症，写作文的时候歪七扭八、行间距不一、每个字都不一样大，开头时不时地忘记空两格……总不是件好事。
 你也许在书面助教的作业要求中注意到了 LaTeX 这个东西。$\LaTeX$ 是一个高质量的排版系统，你可以通过编写代码生成文档的方式来精确地控制文档里的每一处细节，比如分隔线的粗细、图片的大小，页边距的宽窄等等，精度可以达到毫米。我们不强制要求大家使用 LaTeX 书写作业 (因为对于新手来说这可能会耗费很多的时间)，但我们仍然推荐你学习这项工具 (不出意外，你撰写毕业论文的时候是肯定会用到它的)。
 如果你认为 $\LaTeX$ 太过麻烦，不妨尝试一下 Markdown。从原理上来说 Markdown 和 LaTeX 很不一样，但你可以简单地认为它们都是通过一些特殊的符号来生成具有格式，编排美观的文档 (助教博客中的大部分页面都是用 Markdown 书写的)。Markdown 比 LaTeX 简明很多，比如你可以通过 # 来生成各个级别的标题：
-这是二级标题 这是三级标题 可以通过 * 来生成列表："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+这是二级标题
+这是三级标题
+可以通过 * 来生成列表："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
     
@@ -668,7 +710,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

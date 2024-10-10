@@ -30,9 +30,19 @@
     
   
   <meta name="description" content="在计算机世界中，所有与2的次幂相关的事情总是充满魔力的——即便是很大的数，对2取对数后也会落入我们容易处理的范围。之前介绍过的快速幂算法其实就是倍增思想的一种运用。这里我们以计算树上最近公共祖先 (lowest common ancestor, LCA) 为例再次展示倍增思想的强大。
- 树
-如果你对“树”一无所知，你可以参考 维基百科 中的解释。这里强调一些简明的入门概念。
- 树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。 如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。 在有根树中，每个节点“上面”相邻的只有一个节点，称为该节点的父亲。每个节点“下面”相邻的有一堆节点 (也可能没有)，称为该节点的孩子。一个节点A的父亲，父亲的父亲，…… 一直向上到根这条链上所有的节点都是A的祖先。    对于树中的两个节点 $u, v$，$LCA(u, v)$ 指的是 $u$ 和 $v$ 的所有公共祖先中最深的那个 (也可以说是离 $u, v$ 最近的那个)。下面是一个例子:">
+
+  
+    树
+如果你对“树”一无所知，你可以参考 
+维基百科 中的解释。这里强调一些简明的入门概念。
+
+树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。
+如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。
+在有根树中，每个节点“上面”相邻的只有一个节点，称为该节点的父亲。每个节点“下面”相邻的有一堆节点 (也可能没有)，称为该节点的孩子。一个节点A的父亲，父亲的父亲，…… 一直向上到根这条链上所有的节点都是A的祖先。
+
+  
+
+对于树中的两个节点 $u, v$，$LCA(u, v)$ 指的是 $u$ 和 $v$ 的所有公共祖先中最深的那个 (也可以说是离 $u, v$ 最近的那个)。下面是一个例子:">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/algorithms/lca/">
@@ -213,14 +223,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/algorithms/lca/">
 
@@ -239,10 +287,20 @@
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/algorithms/lca/">
   <meta property="og:title" content="最近公共祖先-倍增 | Yuyao Wang&#39;s Homepage">
   <meta property="og:description" content="在计算机世界中，所有与2的次幂相关的事情总是充满魔力的——即便是很大的数，对2取对数后也会落入我们容易处理的范围。之前介绍过的快速幂算法其实就是倍增思想的一种运用。这里我们以计算树上最近公共祖先 (lowest common ancestor, LCA) 为例再次展示倍增思想的强大。
- 树
-如果你对“树”一无所知，你可以参考 维基百科 中的解释。这里强调一些简明的入门概念。
- 树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。 如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。 在有根树中，每个节点“上面”相邻的只有一个节点，称为该节点的父亲。每个节点“下面”相邻的有一堆节点 (也可能没有)，称为该节点的孩子。一个节点A的父亲，父亲的父亲，…… 一直向上到根这条链上所有的节点都是A的祖先。    对于树中的两个节点 $u, v$，$LCA(u, v)$ 指的是 $u$ 和 $v$ 的所有公共祖先中最深的那个 (也可以说是离 $u, v$ 最近的那个)。下面是一个例子:"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+
+  
+    树
+如果你对“树”一无所知，你可以参考 
+维基百科 中的解释。这里强调一些简明的入门概念。
+
+树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。
+如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。
+在有根树中，每个节点“上面”相邻的只有一个节点，称为该节点的父亲。每个节点“下面”相邻的有一堆节点 (也可能没有)，称为该节点的孩子。一个节点A的父亲，父亲的父亲，…… 一直向上到根这条链上所有的节点都是A的祖先。
+
+  
+
+对于树中的两个节点 $u, v$，$LCA(u, v)$ 指的是 $u$ 和 $v$ 的所有公共祖先中最深的那个 (也可以说是离 $u, v$ 最近的那个)。下面是一个例子:"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2023-04-21T00:00:00&#43;00:00">
@@ -539,7 +597,8 @@
 <div class="alert alert-note">
   <div>
     <p><strong>树</strong></p>
-<p>如果你对“树”一无所知，你可以参考 <a href="https://en.wikipedia.org/wiki/Tree_(data_structure)">维基百科</a> 中的解释。这里强调一些简明的入门概念。</p>
+<p>如果你对“树”一无所知，你可以参考 
+<a href="https://en.wikipedia.org/wiki/Tree_%28data_structure%29" target="_blank" rel="noopener">维基百科</a> 中的解释。这里强调一些简明的入门概念。</p>
 <ul>
 <li>树是一个有 $n$ 个顶点和 $n-1$ 条边构成的连通图 (连通指整个图只有“一块”，即任意两点之间都存在路径可达)。容易发现，树中是不会有环的。</li>
 <li>如果选择一个节点作为树根 (root)，那么整棵树会形成一个层次结构。树上的每个节点到根有且仅有一条路径，这个路径的长度称为节点的深度。</li>
@@ -777,7 +836,7 @@ int query_lca(int x, int y)
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

@@ -7,7 +7,7 @@
     <description>C/C&#43;&#43;基础入门</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 01 Nov 2022 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>C/C&#43;&#43;基础入门</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving/c&#43;&#43;0/</link>
     </image>
@@ -381,34 +381,34 @@ int main ()
 &lt;li&gt;
 &lt;p&gt;&lt;code&gt;==&lt;/code&gt; 是一个比较运算符，用来比较式子的左边和右边是否相等。其他的一些常用的比较运算符列举如下&lt;/p&gt;
 &lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;符号&lt;/th&gt;
-&lt;th style=&#34;text-align:center&#34;&gt;意义&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;lt;=&lt;/code&gt;&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;小于等于&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;lt;&lt;/code&gt;&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;小于&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;gt;=&lt;/code&gt;&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;大于等于&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;&amp;gt;&lt;/code&gt;&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;大于&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;&lt;code&gt;!=&lt;/code&gt;&lt;/td&gt;
-&lt;td style=&#34;text-align:center&#34;&gt;不等于&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;符号&lt;/th&gt;
+          &lt;th style=&#34;text-align: center&#34;&gt;意义&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;&lt;code&gt;&amp;lt;=&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;小于等于&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;&lt;code&gt;&amp;lt;&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;小于&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;&lt;code&gt;&amp;gt;=&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;大于等于&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;&lt;code&gt;&amp;gt;&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;大于&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;&lt;code&gt;!=&lt;/code&gt;&lt;/td&gt;
+          &lt;td style=&#34;text-align: center&#34;&gt;不等于&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;/li&gt;
 &lt;li&gt;
@@ -532,7 +532,8 @@ else
 &lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;suffix_char = j == col - 1 ? &#39;\n&#39; : &#39; &#39;;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;可不可以呢？
-在坐等答案之前，你应该做的事情是把括号去掉并尝试运行程序，这是你自己通过试验寻求问题答案的途径。当然在这里我们会告诉你：上面两段代码是没有问题的，因为 C/C++ 中不同的符号存在优先级差异。正如算术中乘除法比加减法优先级高，C/C++内部也有一套严格的优先级金字塔。优先级相同的运算符优先计算左侧的；优先级不同的运算符优先计算等级高的。这个&lt;a href=&#34;https://en.cppreference.com/w/cpp/language/operator_precedence&#34;&gt;链接&lt;/a&gt; 详细讲述了优先级的划分。&lt;/p&gt;
+在坐等答案之前，你应该做的事情是把括号去掉并尝试运行程序，这是你自己通过试验寻求问题答案的途径。当然在这里我们会告诉你：上面两段代码是没有问题的，因为 C/C++ 中不同的符号存在优先级差异。正如算术中乘除法比加减法优先级高，C/C++内部也有一套严格的优先级金字塔。优先级相同的运算符优先计算左侧的；优先级不同的运算符优先计算等级高的。这个
+&lt;a href=&#34;https://en.cppreference.com/w/cpp/language/operator_precedence&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;链接&lt;/a&gt; 详细讲述了优先级的划分。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;p&gt;下面展示一个更精巧的例子，它的作用是打印出一个字符三角形：&lt;/p&gt;

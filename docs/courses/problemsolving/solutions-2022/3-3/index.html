@@ -29,9 +29,22 @@
   
     
   
-  <meta name="description" content="Problem A: 一笔画
- 求无向图 $G=(V, E)$ 的欧拉回路。 $|V|\leq 10^5, |E|\leq 10^6$。    本题数据范围较大，使用 fleury 算法无法通过，需要实现线性的 Hierholzer 算法。Hierholzer 算法的思路如下：
- 如果存在奇数度数点 $u, v$，则取任意一条 $uv$ 迹，否则取图中任意一条迹。记当前的路径为 $T$。 取 $T$ 中仍有未访问邻边的非孤立节点 $w$，寻找一条 $ww$ 迹，将这条闭迹插入到 $T$ 中。 重复步骤 2 直到所有的边均被访问。  寻找合法的 $uv$ 迹和 $ww$ 迹看似困难，其实在如下几条性质的加持下非常简单：">
+  <meta name="description" content="
+  
+    Problem A: 一笔画
+
+求无向图 $G=(V, E)$ 的欧拉回路。
+$|V|\leq 10^5, |E|\leq 10^6$。
+
+  
+
+本题数据范围较大，使用 fleury 算法无法通过，需要实现线性的 Hierholzer 算法。Hierholzer 算法的思路如下：
+
+如果存在奇数度数点 $u, v$，则取任意一条 $uv$ 迹，否则取图中任意一条迹。记当前的路径为 $T$。
+取 $T$ 中仍有未访问邻边的非孤立节点 $w$，寻找一条 $ww$ 迹，将这条闭迹插入到 $T$ 中。
+重复步骤 2 直到所有的边均被访问。
+
+寻找合法的 $uv$ 迹和 $ww$ 迹看似困难，其实在如下几条性质的加持下非常简单：">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-3/">
@@ -212,14 +225,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-3/">
 
@@ -237,10 +288,23 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-3/">
   <meta property="og:title" content="问题求解III-HW03 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 一笔画
- 求无向图 $G=(V, E)$ 的欧拉回路。 $|V|\leq 10^5, |E|\leq 10^6$。    本题数据范围较大，使用 fleury 算法无法通过，需要实现线性的 Hierholzer 算法。Hierholzer 算法的思路如下：
- 如果存在奇数度数点 $u, v$，则取任意一条 $uv$ 迹，否则取图中任意一条迹。记当前的路径为 $T$。 取 $T$ 中仍有未访问邻边的非孤立节点 $w$，寻找一条 $ww$ 迹，将这条闭迹插入到 $T$ 中。 重复步骤 2 直到所有的边均被访问。  寻找合法的 $uv$ 迹和 $ww$ 迹看似困难，其实在如下几条性质的加持下非常简单："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  <meta property="og:description" content="
+  
+    Problem A: 一笔画
+
+求无向图 $G=(V, E)$ 的欧拉回路。
+$|V|\leq 10^5, |E|\leq 10^6$。
+
+  
+
+本题数据范围较大，使用 fleury 算法无法通过，需要实现线性的 Hierholzer 算法。Hierholzer 算法的思路如下：
+
+如果存在奇数度数点 $u, v$，则取任意一条 $uv$ 迹，否则取图中任意一条迹。记当前的路径为 $T$。
+取 $T$ 中仍有未访问邻边的非孤立节点 $w$，寻找一条 $ww$ 迹，将这条闭迹插入到 $T$ 中。
+重复步骤 2 直到所有的边均被访问。
+
+寻找合法的 $uv$ 迹和 $ww$ 迹看似困难，其实在如下几条性质的加持下非常简单："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2023-09-21T00:00:00&#43;00:00">
@@ -795,7 +859,7 @@ $$
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

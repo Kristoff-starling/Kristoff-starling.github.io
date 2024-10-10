@@ -29,10 +29,27 @@
   
     
   
-  <meta name="description" content="Problem A: 排序
- 给定 $n$ 个整数，输出排序后的结果。 $n\leq 1000$。    关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 这道题目 检测自己的快速排序写法是否合格。
- Problem B: 逆序对
- 给定一个 $n$ 个数的序列，求逆序对个数。 $n\leq 2\times 10^5$。    求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l&#43;r)/2$，：">
+  <meta name="description" content="
+  
+    Problem A: 排序
+
+给定 $n$ 个整数，输出排序后的结果。
+$n\leq 1000$。
+
+  
+
+关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 
+这道题目 检测自己的快速排序写法是否合格。
+
+  
+    Problem B: 逆序对
+
+给定一个 $n$ 个数的序列，求逆序对个数。
+$n\leq 2\times 10^5$。
+
+  
+
+求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l&#43;r)/2$，：">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
@@ -213,14 +230,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
 
@@ -238,11 +293,28 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-1/">
   <meta property="og:title" content="问题求解II-HW01 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 排序
- 给定 $n$ 个整数，输出排序后的结果。 $n\leq 1000$。    关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 这道题目 检测自己的快速排序写法是否合格。
- Problem B: 逆序对
- 给定一个 $n$ 个数的序列，求逆序对个数。 $n\leq 2\times 10^5$。    求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l&#43;r)/2$，："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  <meta property="og:description" content="
+  
+    Problem A: 排序
+
+给定 $n$ 个整数，输出排序后的结果。
+$n\leq 1000$。
+
+  
+
+关于排序，我们强烈建议大家学会快速排序和归并排序两种做法。关于快速排序，其思想虽然不那么复杂，但要写出一个对于各种输入都足够高效的版本仍十分有挑战性 (尤其当输入中有大量重复数时)，建议大家利用 
+这道题目 检测自己的快速排序写法是否合格。
+
+  
+    Problem B: 逆序对
+
+给定一个 $n$ 个数的序列，求逆序对个数。
+$n\leq 2\times 10^5$。
+
+  
+
+求逆序对有非常经典的基于归并排序的做法。设 $solve(l, r)$ 为 $a_l\cdots a_r$ 中逆序对的个数，计算方法如下：令 $mid=(l&#43;r)/2$，："><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2024-04-18T00:00:00&#43;00:00">
@@ -584,7 +656,8 @@
 <div class="alert alert-tip">
   <div>
     <p><strong>CDQ分治</strong></p>
-<p>CDQ分治是一类特别的分治技巧，它的框架是：在解决 $[l, r]$ 上的问题时，先递归解决 $[l, mid]$ 和 $[mid+1, r]$，再考虑左侧区间对右侧区间的影响。求逆序对背后的二维偏序是CDQ分治最典型的应用之一，如果你感兴趣，可以参考<a href="/courses/problemsolving/algorithms/cdq">这篇文章</a>。</p>
+<p>CDQ分治是一类特别的分治技巧，它的框架是：在解决 $[l, r]$ 上的问题时，先递归解决 $[l, mid]$ 和 $[mid+1, r]$，再考虑左侧区间对右侧区间的影响。求逆序对背后的二维偏序是CDQ分治最典型的应用之一，如果你感兴趣，可以参考
+<a href="/courses/problemsolving/algorithms/cdq">这篇文章</a>。</p>
   </div>
 </div>
 
@@ -708,7 +781,7 @@
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

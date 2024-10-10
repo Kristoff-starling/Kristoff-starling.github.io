@@ -29,8 +29,17 @@
   
     
   
-  <meta name="description" content="Problem A: 棋盘
- $R\times C$ 的棋盘上有 $n$ 个棋子，一个格子是好的当且仅当他所在行列的棋子数目恰好为 $k$，求好格子的数目。 $1\leq n, R, C, k\leq 10^5$。    读入所有棋子的位置后，我们很容易统计出每行、每列也多少个棋子，也很容易对每个 $i=1,\cdots, n$ 统计出有 $i$ 个棋子的行列有多少个。对于一个有 $p$ 个棋子的行，所有有 $k-p$ 个棋子的列都可以与之搭配在交叉点产生一个好位置。因此只需要枚举所有的行，按照数目进行统计即可。">
+  <meta name="description" content="
+  
+    Problem A: 棋盘
+
+$R\times C$ 的棋盘上有 $n$ 个棋子，一个格子是好的当且仅当他所在行列的棋子数目恰好为 $k$，求好格子的数目。
+$1\leq n, R, C, k\leq 10^5$。
+
+  
+
+读入所有棋子的位置后，我们很容易统计出每行、每列也多少个棋子，也很容易对每个 $i=1,\cdots, n$ 统计出有 $i$ 个棋子的行列有多少个。对于一个有 $p$ 个棋子的行，所有有 $k-p$ 个棋子的列都可以与之搭配在交叉点产生一个好位置。因此只需要枚举所有的行，按照数目进行统计即可。
+一个重要的细节是，如果某行某列的交叉点处正好有棋子，那么我们之前所说的将行列棋子数相加的统计方法就会多算一个。因此我们要对每个棋子特判一次。具体地，对于每个棋子，它所在的行列棋子数相加如果是 $k$ 个，那么实际上就是 $k-1$ 个，需要从答案中扣除；如果是 $k&#43;1$ 个，那么实际上就是 $k$ 个，需要加到答案中。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-8/">
@@ -211,14 +220,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-8/">
 
@@ -236,9 +283,18 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/2-8/">
   <meta property="og:title" content="问题求解II-HW08 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 棋盘
- $R\times C$ 的棋盘上有 $n$ 个棋子，一个格子是好的当且仅当他所在行列的棋子数目恰好为 $k$，求好格子的数目。 $1\leq n, R, C, k\leq 10^5$。    读入所有棋子的位置后，我们很容易统计出每行、每列也多少个棋子，也很容易对每个 $i=1,\cdots, n$ 统计出有 $i$ 个棋子的行列有多少个。对于一个有 $p$ 个棋子的行，所有有 $k-p$ 个棋子的列都可以与之搭配在交叉点产生一个好位置。因此只需要枚举所有的行，按照数目进行统计即可。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  <meta property="og:description" content="
+  
+    Problem A: 棋盘
+
+$R\times C$ 的棋盘上有 $n$ 个棋子，一个格子是好的当且仅当他所在行列的棋子数目恰好为 $k$，求好格子的数目。
+$1\leq n, R, C, k\leq 10^5$。
+
+  
+
+读入所有棋子的位置后，我们很容易统计出每行、每列也多少个棋子，也很容易对每个 $i=1,\cdots, n$ 统计出有 $i$ 个棋子的行列有多少个。对于一个有 $p$ 个棋子的行，所有有 $k-p$ 个棋子的列都可以与之搭配在交叉点产生一个好位置。因此只需要枚举所有的行，按照数目进行统计即可。
+一个重要的细节是，如果某行某列的交叉点处正好有棋子，那么我们之前所说的将行列棋子数相加的统计方法就会多算一个。因此我们要对每个棋子特判一次。具体地，对于每个棋子，它所在的行列棋子数相加如果是 $k$ 个，那么实际上就是 $k-1$ 个，需要从答案中扣除；如果是 $k&#43;1$ 个，那么实际上就是 $k$ 个，需要加到答案中。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2024-04-22T00:00:00&#43;00:00">
@@ -566,14 +622,17 @@
   <div>
     <p><strong>调试和测试</strong></p>
 <p>本题有一些细节容易遗漏处理 (例如对于每个棋子所在行列的特判)，一旦没有考虑到就容易陷入“样例全过，交到 OJ 上 WA，我也一筹莫展”的窘境。将来大家走向工作岗位是要为自己写出的代码负责的。实际生产环境中没有 OJ，软件开发员也不可能完全依赖用户来给自己报 bug (不然公司早就倒闭了)。在软件工程中有一个概念叫作“软件测试”，主要关注的问题就是在没有“标准答案”的方法，如何用测试来自己给自己纠错。</p>
-<p>在做 OJ 题这个层面，最好用的纠错能力就是掌握良好的调试技术和采用正确的调试方法。我们在此强烈推荐大家阅读 <a href="/courses/problemsolving/coding/defense/">调试艺术</a> 和 <a href="/courses/problemsolving/coding/difftest/">差异化测试</a> 这两篇文章。对于此题而言，写出一个对却慢的标准程序是非常容易的：你甚至可以 $O(n^3)$ 地枚举每一行，每一列，并暴力数这一行列中的棋子个数。然后你可以生成大量规模在 $100$ 左右的小测试数据进行 differential testing。掌握正确的调试和测试方法可以让你写程序事半功倍。</p>
+<p>在做 OJ 题这个层面，最好用的纠错能力就是掌握良好的调试技术和采用正确的调试方法。我们在此强烈推荐大家阅读 
+<a href="/courses/problemsolving/coding/defense/">调试艺术</a> 和 
+<a href="/courses/problemsolving/coding/difftest/">差异化测试</a> 这两篇文章。对于此题而言，写出一个对却慢的标准程序是非常容易的：你甚至可以 $O(n^3)$ 地枚举每一行，每一列，并暴力数这一行列中的棋子个数。然后你可以生成大量规模在 $100$ 左右的小测试数据进行 differential testing。掌握正确的调试和测试方法可以让你写程序事半功倍。</p>
   </div>
 </div>
 <div class="alert alert-note">
   <div>
     <p><strong>Problem B: 发奖金</strong></p>
 <ul>
-<li>本题改编自 <a href="https://www.luogu.com.cn/problem/P1080">[NOIP2012]国王游戏</a>。</li>
+<li>本题改编自 
+<a href="https://www.luogu.com.cn/problem/P1080" target="_blank" rel="noopener">[NOIP2012]国王游戏</a>。</li>
 <li>本题只需要输出排在最后的人的两个数字之积。</li>
 </ul>
   </div>
@@ -710,7 +769,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

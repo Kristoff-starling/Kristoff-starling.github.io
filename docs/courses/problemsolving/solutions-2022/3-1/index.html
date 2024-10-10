@@ -29,12 +29,20 @@
   
     
   
-  <meta name="description" content="Problem A: 控制流图
+  <meta name="description" content="
+  
+    Problem A: 控制流图
 给定一段伪代码，求出其控制流图中每个节点的入度和出度。
-  伪代码中我们只需关注 GOTO, IF-GOTO，和所有的 label 语句即可。对于 GOTO 和 IF-GOTO 语句，当前基本块会有一条连向 GOTO 目标的边；此外，除非当前基本块的最后一条语句是无条件跳转，每个基本块都会向它的下一个基本块连边。
- Problem B: 躺平
+  
+
+伪代码中我们只需关注 GOTO, IF-GOTO，和所有的 label 语句即可。对于 GOTO 和 IF-GOTO 语句，当前基本块会有一条连向 GOTO 目标的边；此外，除非当前基本块的最后一条语句是无条件跳转，每个基本块都会向它的下一个基本块连边。
+
+  
+    Problem B: 躺平
 在一群人中给定一些两两排名先后的比较关系，问能否求出全场 rank 1。
-  将每个人抽象为图的一个顶点，A 的排名比 B 高则连一条从 A 到 B 的有向边。这样原问题转化为判断是否存在唯一的入度为 0 的节点，非常简单。">
+  
+
+将每个人抽象为图的一个顶点，A 的排名比 B 高则连一条从 A 到 B 的有向边。这样原问题转化为判断是否存在唯一的入度为 0 的节点，非常简单。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-1/">
@@ -215,14 +223,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-1/">
 
@@ -240,13 +286,21 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-1/">
   <meta property="og:title" content="问题求解III-HW01 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 控制流图
+  <meta property="og:description" content="
+  
+    Problem A: 控制流图
 给定一段伪代码，求出其控制流图中每个节点的入度和出度。
-  伪代码中我们只需关注 GOTO, IF-GOTO，和所有的 label 语句即可。对于 GOTO 和 IF-GOTO 语句，当前基本块会有一条连向 GOTO 目标的边；此外，除非当前基本块的最后一条语句是无条件跳转，每个基本块都会向它的下一个基本块连边。
- Problem B: 躺平
+  
+
+伪代码中我们只需关注 GOTO, IF-GOTO，和所有的 label 语句即可。对于 GOTO 和 IF-GOTO 语句，当前基本块会有一条连向 GOTO 目标的边；此外，除非当前基本块的最后一条语句是无条件跳转，每个基本块都会向它的下一个基本块连边。
+
+  
+    Problem B: 躺平
 在一群人中给定一些两两排名先后的比较关系，问能否求出全场 rank 1。
-  将每个人抽象为图的一个顶点，A 的排名比 B 高则连一条从 A 到 B 的有向边。这样原问题转化为判断是否存在唯一的入度为 0 的节点，非常简单。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+
+将每个人抽象为图的一个顶点，A 的排名比 B 高则连一条从 A 到 B 的有向边。这样原问题转化为判断是否存在唯一的入度为 0 的节点，非常简单。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2023-09-09T00:00:00&#43;00:00">
@@ -754,7 +808,7 @@
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

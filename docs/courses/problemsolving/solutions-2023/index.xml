@@ -7,7 +7,7 @@
     <description>[2023级]OJ习题讲解</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Thu, 18 Apr 2024 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>[2023级]OJ习题讲解</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving/solutions-2023/</link>
     </image>
@@ -205,7 +205,9 @@ $$&lt;/p&gt;
 &lt;div class=&#34;alert alert-tip&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;单调队列/单调栈&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;文末提到的根据单调性使用双端队列维护窗口区间内有意义的一系列值的方法叫做单调队列优化。感兴趣的同学可以阅读 &lt;a href=&#34;https://oi-wiki.org/ds/monotonous-queue/&#34;&gt;这篇文章&lt;/a&gt; 和 &lt;a href=&#34;https://oi-wiki.org/dp/opt/monotonous-queue-stack/&#34;&gt;这篇文章&lt;/a&gt; 了解更多。&lt;/p&gt;
+&lt;p&gt;文末提到的根据单调性使用双端队列维护窗口区间内有意义的一系列值的方法叫做单调队列优化。感兴趣的同学可以阅读 
+&lt;a href=&#34;https://oi-wiki.org/ds/monotonous-queue/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这篇文章&lt;/a&gt; 和 
+&lt;a href=&#34;https://oi-wiki.org/dp/opt/monotonous-queue-stack/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;这篇文章&lt;/a&gt; 了解更多。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -287,14 +289,17 @@ $$&lt;/p&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;调试和测试&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;本题有一些细节容易遗漏处理 (例如对于每个棋子所在行列的特判)，一旦没有考虑到就容易陷入“样例全过，交到 OJ 上 WA，我也一筹莫展”的窘境。将来大家走向工作岗位是要为自己写出的代码负责的。实际生产环境中没有 OJ，软件开发员也不可能完全依赖用户来给自己报 bug (不然公司早就倒闭了)。在软件工程中有一个概念叫作“软件测试”，主要关注的问题就是在没有“标准答案”的方法，如何用测试来自己给自己纠错。&lt;/p&gt;
-&lt;p&gt;在做 OJ 题这个层面，最好用的纠错能力就是掌握良好的调试技术和采用正确的调试方法。我们在此强烈推荐大家阅读 &lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/coding/defense/&#34;&gt;调试艺术&lt;/a&gt; 和 &lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/coding/difftest/&#34;&gt;差异化测试&lt;/a&gt; 这两篇文章。对于此题而言，写出一个对却慢的标准程序是非常容易的：你甚至可以 $O(n^3)$ 地枚举每一行，每一列，并暴力数这一行列中的棋子个数。然后你可以生成大量规模在 $100$ 左右的小测试数据进行 differential testing。掌握正确的调试和测试方法可以让你写程序事半功倍。&lt;/p&gt;
+&lt;p&gt;在做 OJ 题这个层面，最好用的纠错能力就是掌握良好的调试技术和采用正确的调试方法。我们在此强烈推荐大家阅读 
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/coding/defense/&#34;&gt;调试艺术&lt;/a&gt; 和 
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/coding/difftest/&#34;&gt;差异化测试&lt;/a&gt; 这两篇文章。对于此题而言，写出一个对却慢的标准程序是非常容易的：你甚至可以 $O(n^3)$ 地枚举每一行，每一列，并暴力数这一行列中的棋子个数。然后你可以生成大量规模在 $100$ 左右的小测试数据进行 differential testing。掌握正确的调试和测试方法可以让你写程序事半功倍。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;Problem B: 发奖金&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;本题改编自 &lt;a href=&#34;https://www.luogu.com.cn/problem/P1080&#34;&gt;[NOIP2012]国王游戏&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;本题改编自 
+&lt;a href=&#34;https://www.luogu.com.cn/problem/P1080&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;[NOIP2012]国王游戏&lt;/a&gt;。&lt;/li&gt;
 &lt;li&gt;本题只需要输出排在最后的人的两个数字之积。&lt;/li&gt;
 &lt;/ul&gt;
   &lt;/div&gt;
@@ -347,7 +352,8 @@ $$&lt;/p&gt;
 &lt;div class=&#34;alert alert-tip&#34;&gt;
   &lt;div&gt;
     &lt;p&gt;&lt;strong&gt;CDQ分治&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;CDQ分治是一类特别的分治技巧，它的框架是：在解决 $[l, r]$ 上的问题时，先递归解决 $[l, mid]$ 和 $[mid+1, r]$，再考虑左侧区间对右侧区间的影响。求逆序对背后的二维偏序是CDQ分治最典型的应用之一，如果你感兴趣，可以参考&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/algorithms/cdq&#34;&gt;这篇文章&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;CDQ分治是一类特别的分治技巧，它的框架是：在解决 $[l, r]$ 上的问题时，先递归解决 $[l, mid]$ 和 $[mid+1, r]$，再考虑左侧区间对右侧区间的影响。求逆序对背后的二维偏序是CDQ分治最典型的应用之一，如果你感兴趣，可以参考
+&lt;a href=&#34;https://kristoff-starling.github.io/courses/problemsolving/algorithms/cdq&#34;&gt;这篇文章&lt;/a&gt;。&lt;/p&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 </description>

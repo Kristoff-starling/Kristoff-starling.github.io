@@ -29,13 +29,23 @@
   
     
   
-  <meta name="description" content="Problem A: 飘雪圣域
+  <meta name="description" content="
+  
+    Problem A: 飘雪圣域
 给定一张 $n$ 个点 $m$ 条边的图，求图的割点。
-  求图的割点有著名的时间复杂度为 $O(n&#43;m)$ 的 Tarjan 算法，此处不做赘述。
-  Problem B: 同色三角形
+  
+
+求图的割点有著名的时间复杂度为 $O(n&#43;m)$ 的 Tarjan 算法，此处不做赘述。
+
+
+  
+    Problem B: 同色三角形
 给定一张 $n$ 个点的完全图，每条边为黑色或白色，问图中有多少个同色三角形。
-  作为中秋&#43;国庆放假的福利，本题设置的数据范围可以允许最简单的 $O(n^3)$ 枚举算法通过
-这里主要讲解非平凡的 $O(n^2)$ 做法应当如何实现；将复杂度优化到平方级需要仔细分析该问题的性质以减少枚举的次数。">
+  
+
+作为中秋&#43;国庆放假的福利，本题设置的数据范围可以允许最简单的 $O(n^3)$ 枚举算法通过
+这里主要讲解非平凡的 $O(n^2)$ 做法应当如何实现；将复杂度优化到平方级需要仔细分析该问题的性质以减少枚举的次数。
+枚举同色三角形似乎很难逃出三方枚举的困境——对于每个顶点 $u$，它的任意两条同色边关联的相邻点 $v_1, v_2$ 都需要再检查边 $(v_1, v_2)$ 的颜色。因此我们换一个角度考虑：该图中三角形的总数为 $\binom{n}{3}$，我们只要转而计算图中非同色三角形的数目，就可以算出同色三角形的数目。">
 
   
   <link rel="alternate" hreflang="en-us" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-4/">
@@ -216,14 +226,52 @@
 
 
 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=%7b%7d"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', '{}', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
   
 
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/images/nju.svg">
-  <link rel="apple-touch-icon" type="image/png" href="/images/nju.svg">
+  <link rel="icon" type="image/png" href="/images/allen_logo.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/allen_logo.png">
 
   <link rel="canonical" href="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-4/">
 
@@ -241,14 +289,24 @@
   <meta property="og:site_name" content="Yuyao Wang&#39;s Homepage">
   <meta property="og:url" content="https://kristoff-starling.github.io/courses/problemsolving/solutions-2022/3-4/">
   <meta property="og:title" content="问题求解III-HW04 题解 | Yuyao Wang&#39;s Homepage">
-  <meta property="og:description" content="Problem A: 飘雪圣域
+  <meta property="og:description" content="
+  
+    Problem A: 飘雪圣域
 给定一张 $n$ 个点 $m$ 条边的图，求图的割点。
-  求图的割点有著名的时间复杂度为 $O(n&#43;m)$ 的 Tarjan 算法，此处不做赘述。
-  Problem B: 同色三角形
+  
+
+求图的割点有著名的时间复杂度为 $O(n&#43;m)$ 的 Tarjan 算法，此处不做赘述。
+
+
+  
+    Problem B: 同色三角形
 给定一张 $n$ 个点的完全图，每条边为黑色或白色，问图中有多少个同色三角形。
-  作为中秋&#43;国庆放假的福利，本题设置的数据范围可以允许最简单的 $O(n^3)$ 枚举算法通过
-这里主要讲解非平凡的 $O(n^2)$ 做法应当如何实现；将复杂度优化到平方级需要仔细分析该问题的性质以减少枚举的次数。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:circle]">
-  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:circle]"><meta property="og:locale" content="en-us">
+  
+
+作为中秋&#43;国庆放假的福利，本题设置的数据范围可以允许最简单的 $O(n^3)$ 枚举算法通过
+这里主要讲解非平凡的 $O(n^2)$ 做法应当如何实现；将复杂度优化到平方级需要仔细分析该问题的性质以减少枚举的次数。
+枚举同色三角形似乎很难逃出三方枚举的困境——对于每个顶点 $u$，它的任意两条同色边关联的相邻点 $v_1, v_2$ 都需要再检查边 $(v_1, v_2)$ 的颜色。因此我们换一个角度考虑：该图中三角形的总数为 $\binom{n}{3}$，我们只要转而计算图中非同色三角形的数目，就可以算出同色三角形的数目。"><meta property="og:image" content="img/map[gravatar:%!s(bool=false) shape:square]">
+  <meta property="twitter:image" content="img/map[gravatar:%!s(bool=false) shape:square]"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2023-09-28T00:00:00&#43;00:00">
@@ -764,7 +822,7 @@ $$</p>
     
     
     
-    <script src="/js/academic.min.566f6fe1e1d77b682cf0e1b4bfd7306c.js"></script>
+    <script src="/js/academic.min.4c3f2f897ce52e279757dd61c941429c.js"></script>
 
     
 

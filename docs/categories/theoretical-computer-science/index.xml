@@ -7,7 +7,7 @@
     <description>Theoretical Computer Science</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sat, 18 Mar 2023 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>Theoretical Computer Science</title>
       <link>https://kristoff-starling.github.io/categories/theoretical-computer-science/</link>
     </image>
@@ -64,7 +64,7 @@
 &lt;p&gt;$$
 f_n=\sum_{k=1}^m c_kf_{n-k}
 $$&lt;/p&gt;
-&lt;p&gt;Since the answer may be too large, we usually focus on $f&#39;_n=f_n\mod M$. We are more interested in cases where $M$ is suitable for FFT, such as $998,244,353$, because polynomial-related techniques can be leveraged to accelerate the computation. In the whole passage, we will use $f_n$ (instead of $f&#39;_n$) to represent the answer under modulation for simplicity.&lt;/p&gt;
+&lt;p&gt;Since the answer may be too large, we usually focus on $f&amp;rsquo;_n=f_n\mod M$. We are more interested in cases where $M$ is suitable for FFT, such as $998,244,353$, because polynomial-related techniques can be leveraged to accelerate the computation. In the whole passage, we will use $f_n$ (instead of $f&amp;rsquo;_n$) to represent the answer under modulation for simplicity.&lt;/p&gt;
 &lt;h2 id=&#34;getting-started-fibonacci&#34;&gt;Getting Started: Fibonacci&lt;/h2&gt;
 &lt;p&gt;Let’s start with one of the simplest (and most famous) sequences: Fibonacci.&lt;/p&gt;
 &lt;p&gt;$$
@@ -205,7 +205,7 @@ $$&lt;/p&gt;
 &lt;p&gt;$$
 F(x)=F(x)G(x)+R(x)
 $$&lt;/p&gt;
-&lt;p&gt;Where $R(x)$ is a polynomial for correcting the first few terms in the sequence and can be obtained by computing $F&#39;(x)-F&#39;(x)G(x)$, where $F&#39;(x)$ is the first $k$ terms of $F(x)$.&lt;/p&gt;
+&lt;p&gt;Where $R(x)$ is a polynomial for correcting the first few terms in the sequence and can be obtained by computing $F&amp;rsquo;(x)-F&amp;rsquo;(x)G(x)$, where $F&amp;rsquo;(x)$ is the first $k$ terms of $F(x)$.&lt;/p&gt;
 &lt;p&gt;Therefore&lt;/p&gt;
 &lt;p&gt;$$
 F(x)=\frac{R(x)}{1-G(x)}

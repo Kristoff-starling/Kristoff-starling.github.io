@@ -7,7 +7,7 @@
     <description>一个CSer应当掌握的基础技能合集</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language>
     <image>
-      <url>img/map[gravatar:%!s(bool=false) shape:circle]</url>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>一个CSer应当掌握的基础技能合集</title>
       <link>https://kristoff-starling.github.io/courses/problemsolving/cser0/</link>
     </image>
