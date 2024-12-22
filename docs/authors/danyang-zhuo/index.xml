@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Danyang Zhuo | Yuyao Wang&#39;s Homepage</title>
+    <link>https://kristoff-starling.github.io/authors/danyang-zhuo/</link>
+      <atom:link href="https://kristoff-starling.github.io/authors/danyang-zhuo/index.xml" rel="self" type="application/rss+xml" />
+    <description>Danyang Zhuo</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 10 Dec 2024 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
+      <title>Danyang Zhuo</title>
+      <link>https://kristoff-starling.github.io/authors/danyang-zhuo/</link>
+    </image>
+    
+    <item>
+      <title>High-level Programming for Application Networks</title>
+      <link>https://kristoff-starling.github.io/publication/appnet/</link>
+      <pubDate>Tue, 10 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/publication/appnet/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
