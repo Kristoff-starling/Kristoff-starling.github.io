@@ -51,6 +51,18 @@
   Bib
 </button>
 {{ end }}
+{{ with $page.Params.url_website }}
+  {{ $resource := $page.Resources.GetMatch . }}
+  {{ if $resource }}
+    {{ $link = $resource.RelPermalink }}
+  {{ else }}
+    {{ $link = . | relURL }}
+  {{ end }}
+<a class="btn btn-outline-primary my-1 mr-1{{ if $is_list }} btn-sm{{end}}" href="{{ $link }}" target="_blank" rel="noopener">
+  <!-- {{ i18n "btn_website" }} -->
+  Website
+</a>
+{{ end }}
 {{ with $page.Params.url_poster }}
   {{ $resource := $page.Resources.GetMatch . }}
   {{ if $resource }}
@@ -104,7 +116,7 @@
   {{ i18n "btn_code" }}
 </a>
 {{ end }}
-{{ with $page.Params.url_website }}
+{{ with $page.Params.url_hf }}
   {{ $resource := $page.Resources.GetMatch . }}
   {{ if $resource }}
     {{ $link = $resource.RelPermalink }}
@@ -112,8 +124,12 @@
     {{ $link = . | relURL }}
   {{ end }}
 <a class="btn btn-outline-primary my-1 mr-1{{ if $is_list }} btn-sm{{end}}" href="{{ $link }}" target="_blank" rel="noopener">
-  <!-- {{ i18n "btn_website" }} -->
-  Website
+  🤗 HF
+</a>
+{{ end }}
+{{ with $page.Params.url_github }}
+<a class="btn my-1 mr-1{{ if $is_list }} btn-sm{{end}}" href="https://github.com/{{ . }}" target="_blank" rel="noopener noreferrer" style="padding: 0; height: 25px;">
+  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/{{ . }}?style=social&logo=github&logoColor=3f51b5" style="height: 100%; width: 100%; object-fit: cover; position: relative; top: -0px;">
 </a>
 {{ end }}
 {{ with $page.Params.url_dataset }}
