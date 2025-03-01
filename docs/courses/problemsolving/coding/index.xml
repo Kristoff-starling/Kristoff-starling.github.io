@@ -97,9 +97,10 @@ $\Longrightarrow$ &lt;b&gt;我们需要生成更多的输入对程序进行全�
 &lt;h3 id=&#34;打印&#34;&gt;打印&lt;/h3&gt;
 &lt;p&gt;打印是最朴素也最有效的 debug 方法之一，它的理论依据是调试理论的第二条困难——打印可以帮助我们查看程序的中间状态。以之前的选择法排序为例，在看到最终排序结果错误时，你最可能采取的 debug 方法就是在循环中添加打印语句，在每轮内层循环结束后查看当前数组的情况，于是你容易发现在某个特定的轮次元素顺序错误，这也就帮你从 failure 追溯到 error 了。&lt;/p&gt;
 &lt;h3 id=&#34;gdb&#34;&gt;GDB&lt;/h3&gt;
-&lt;p&gt;GDB 是程序员人手一个的王牌调试器，它的理论依据也是调试理论的第二条，但它比打印更加灵活和强大——你可以在任何一个你想要的时刻让程序暂停，然后查看任何你想要看的程序状态 (各个变量的值，寄存器的值，内存的值，……)。如果你喜欢 CLI，你可以用命令行打开 gdb，但我们更推荐你使用一些与图形化界面集成在一起的 gdb 工具 (例如 vscode 的 gdb)，它可以给你带来更好的调试体验。&lt;/p&gt;
+&lt;p&gt;GDB 是 C/C++ 程序员人手一个的王牌调试器，它的理论依据也是调试理论的第二条，但它比打印更加灵活和强大——你可以在任何一个你想要的时刻让程序暂停，然后查看任何你想要看的程序状态 (各个变量的值，寄存器的值，内存的值，……)。如果你喜欢 CLI，你可以用命令行打开 gdb，但我们更推荐你使用一些与图形化界面集成在一起的 gdb 工具 (例如 vscode 的 gdb)，它可以给你带来更好的调试体验。&lt;/p&gt;
 &lt;p&gt;GDB 唯一的缺点是上手难度比较高，我们这里给出 
-&lt;a href=&#34;https://sourceware.org/gdb/current/onlinedocs/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;官方手册&lt;/a&gt; ，其中有完整的文档 (将近 1000 页 🤯)，还有 cheatsheet。不过在大语言模型时代，让 LLM 帮助你阅读 1000 多页的手册总是不坏的，如果你有任何使用问题，你可以写一个 prompt 丢给 ChatGPT，它通常能给你非常不错的建议。这里我们总结几条目前对于大家来说比较重要的 GDB feature:&lt;/p&gt;
+&lt;a href=&#34;https://sourceware.org/gdb/current/onlinedocs/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;官方手册&lt;/a&gt; ，其中有完整的文档 (将近 1000 页 🤯)，还有 
+&lt;a href=&#34;https://darkdust.net/files/GDB%20Cheat%20Sheet.pdf&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;cheatsheet&lt;/a&gt;。不过在大语言模型时代，让 LLM 帮助你阅读 1000 多页的手册总是不坏的，如果你有任何使用问题，你可以写一个 prompt 丢给 ChatGPT，它通常能给你非常不错的建议。这里我们总结几条目前对于大家来说比较重要的 GDB feature:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;断点 (breakpoint): 你可以在程序中打断点，程序运行到断点后就会暂停，供你查询各种程序状态。&lt;/li&gt;
 &lt;li&gt;打印：你可以用打印任何你想要的内容，但如果你使用 CLI，你可能要学习各种小技巧让 GDB 输入人类可以理解的内容 (如 &lt;code&gt;p/s&lt;/code&gt; &lt;code&gt;p/i&lt;/code&gt; &lt;code&gt;p/x&lt;/code&gt; 等)，多问问 ChatGPT/多读手册。&lt;/li&gt;
