@@ -16,7 +16,7 @@ badges:
 - available
 - reusable
 
-url_paper: https://dl.acm.org/doi/10.1145/3611643.3616337
+url_paper: pubs/fse2023_neuri.pdf
 url_slides: slides/neuri-fse23.pdf
 url_github: ise-uiuc/neuri-artifact
 

@@ -10,7 +10,7 @@ authors:
 - Yuyao Wang
 - Lingming Zhang
 
-url_paper: https://openreview.net/forum?id=1qvx610Cu7
+url_paper: pubs/neurips2023_evalplus.pdf
 url_slides: slides/evalplus-neurips23.pdf
 url_poster: poster/evalplus-poster.pdf
 url_website: https://evalplus.github.io
