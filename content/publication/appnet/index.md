@@ -19,6 +19,7 @@ authors:
 - Ratul Mahajan
 - Danyang Zhuo
 
+url_paper: pubs/nsdi2025_appnet.pdf
 url_github: appnet-org/appnet
 url_website: https://appnet.wiki
 

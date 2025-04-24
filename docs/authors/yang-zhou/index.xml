@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Sam Kumar | Yuyao Wang&#39;s Homepage</title>
-    <link>https://kristoff-starling.github.io/authors/sam-kumar/</link>
-      <atom:link href="https://kristoff-starling.github.io/authors/sam-kumar/index.xml" rel="self" type="application/rss+xml" />
-    <description>Sam Kumar</description>
+    <title>Yang Zhou | Yuyao Wang&#39;s Homepage</title>
+    <link>https://kristoff-starling.github.io/authors/yang-zhou/</link>
+      <atom:link href="https://kristoff-starling.github.io/authors/yang-zhou/index.xml" rel="self" type="application/rss+xml" />
+    <description>Yang Zhou</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 20 Apr 2025 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
-      <title>Sam Kumar</title>
-      <link>https://kristoff-starling.github.io/authors/sam-kumar/</link>
+      <title>Yang Zhou</title>
+      <link>https://kristoff-starling.github.io/authors/yang-zhou/</link>
     </image>
     
     <item>
@@ -17,14 +17,6 @@
       <link>https://kristoff-starling.github.io/publication/rethinking-rpc/</link>
       <pubDate>Sun, 20 Apr 2025 00:00:00 +0000</pubDate>
       <guid>https://kristoff-starling.github.io/publication/rethinking-rpc/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>High-level Programming for Application Networks</title>
-      <link>https://kristoff-starling.github.io/publication/appnet/</link>
-      <pubDate>Tue, 10 Dec 2024 00:00:00 +0000</pubDate>
-      <guid>https://kristoff-starling.github.io/publication/appnet/</guid>
       <description></description>
     </item>
     
