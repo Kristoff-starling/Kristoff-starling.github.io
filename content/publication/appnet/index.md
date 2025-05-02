@@ -1,7 +1,6 @@
 ---
 title: "High-level Programming for Application Networks"
 abbr: "NSDI '25"
-toappear: true
 periodical: "The 22nd USENIX Symposium on Networked Systems Design and Implementation"
 selected: "yes"
 date: 2024-12-10
@@ -20,6 +19,7 @@ authors:
 - Danyang Zhuo
 
 url_paper: pubs/nsdi2025_appnet.pdf
+url_slides: slides/appnet_nsdi2025.pdf
 url_github: appnet-org/appnet
 url_website: https://appnet.wiki
 

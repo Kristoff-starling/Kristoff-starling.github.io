@@ -11,7 +11,7 @@ authors:
 - Lingming Zhang
 
 url_paper: pubs/neurips2023_evalplus.pdf
-url_slides: slides/evalplus-neurips23.pdf
+url_slides: slides/evalplus_neurips2023.pdf
 url_poster: poster/evalplus-poster.pdf
 url_website: https://evalplus.github.io
 url_hf: https://huggingface.co/evalplus

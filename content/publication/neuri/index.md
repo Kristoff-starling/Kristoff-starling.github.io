@@ -17,7 +17,7 @@ badges:
 - reusable
 
 url_paper: pubs/fse2023_neuri.pdf
-url_slides: slides/neuri-fse23.pdf
+url_slides: slides/neuri_fse2023.pdf
 url_github: ise-uiuc/neuri-artifact
 
 publication_types: ["1"]
