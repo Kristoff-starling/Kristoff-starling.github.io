@@ -1,7 +1,7 @@
 ---
 title: "High-level Programming for Application Networks"
 abbr: "NSDI '25"
-periodical: "The 22nd USENIX Symposium on Networked Systems Design and Implementation"
+periodical: "Proceedings of the 22nd USENIX Symposium on Networked Systems Design and Implementation"
 selected: "yes"
 date: 2024-12-10
 
