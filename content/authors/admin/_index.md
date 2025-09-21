@@ -61,7 +61,7 @@ social:
   link: https://twitter.com/YuyaoStarling
 - icon: cv
   icon_pack: ai
-  link: files/yuyao_CV_20241221.pdf
+  link: files/yuyao_CV_20250920.pdf
 
 # Enter email to display Gravatar (if Gravatar enabled in Config)
 email: ""
@@ -74,7 +74,7 @@ user_groups:
 math: true
 ---
 
-I am Yuyao Wang (王宇峣), a $\left\lceil\frac{(now() - 2024/09/16).to\text{_}day()}{year.day}\right\rceil=1$st year Ph.D. student at the [Computer Systems Lab](https://syslab.cs.washington.edu/) of [Paul G. Allen School of Computer Science & Engineering](https://www.cs.washington.edu/), advised by Prof. [Ratul Mahajan](https://ratul.org) and [Arvind Krishnamurthy](https://www.cs.washington.edu/people/faculty/arvind). My research interest broadly lies in topics related to the *correctness*, *programmability* and *performance* of computer systems. 
+I am Yuyao Wang (王宇峣), a 2nd year Ph.D. student at the [Systems Lab](https://syslab.cs.washington.edu/) and [FOCI Center](https://foci.uw.edu) of [Paul G. Allen School of Computer Science & Engineering](https://www.cs.washington.edu/), advised by Prof. [Ratul Mahajan](https://ratul.org) and [Arvind Krishnamurthy](https://www.cs.washington.edu/people/faculty/arvind). My research interest broadly lies in topics related to the *correctness*, *programmability* and *performance* of computer systems. 
 
 Previously, I obtained my bachelor's degree from [Nanjing University](https://www.nju.edu.cn/en). I was also fortunate to work with Prof. [Lingming Zhang](https://lingming.cs.illinois.edu/) at UIUC.
 

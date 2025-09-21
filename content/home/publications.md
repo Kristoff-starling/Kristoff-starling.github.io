@@ -8,7 +8,7 @@ active = true  # Activate this widget? true/false
 weight = 90  # Order that this section will appear.
 
 title = "Selected Publications"
-subtitle = ""
+subtitle = "See [Publications](/publication) for a full list."
 
 [content]
   # Page type to display. E.g. post, talk, or publication.

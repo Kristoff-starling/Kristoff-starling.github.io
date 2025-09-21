@@ -1,7 +1,6 @@
 ---
 title: "Rethinking RPC Communication for Microservices-based Applications"
 abbr: "HotOS '25"
-toappear: true
 periodical: "Proceedings of the 20th Workshop on Hot Topics in Operating Systems"
 date: 2025-04-20
 
@@ -16,6 +15,7 @@ authors:
 - Danyang Zhuo
 
 url_paper: pubs/hotos2025_rethinking-rpc.pdf
+url_slides: slides/rethinking-rpc_hotos2025.pdf
 
 publication_types: ["9"]
 ---

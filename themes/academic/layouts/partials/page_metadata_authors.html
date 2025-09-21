@@ -1,6 +1,6 @@
 {{/* Display author list. */}}
 
-{{ $websites := dict
+{{ $homepages := dict
   "Arvind Krishnamurthy" "https://www.cs.washington.edu/people/faculty/arvind"
   "Banruo Liu" "https://livingshade.github.io"
   "Chunqiu Steven Xia" "https://steven.cs.illinois.edu/"
@@ -13,6 +13,7 @@
   "Nikola Bojanic" "https://www.linkedin.com/in/nikola-bojanic"
   "Ratul Mahajan" "https://ratul.org"
   "Sam Kumar" "https://www.samkumar.org"
+  "Stephanie Wang" "https://stephanie-wang.github.io"
   "Xiangfeng Zhu" "https://xzhu27.me"
   "Xiangyu Gao" "https://xiangyug.github.io/"
   "Yang Zhou" "https://yangzhou1997.github.io/"
@@ -35,11 +36,11 @@
       {{ if eq $name "Yuyao Wang" }}
         <b><u>{{ $name }}</u></b>
       {{ else }}
-        {{ $website := (index $websites (string $name)) | default "notexist" }}
-        {{ if eq $website "notexist" }}
+        {{ $homepage := (index $homepages (string $name)) | default "notexist" }}
+        {{ if eq $homepage "notexist" }}
           {{ $name }}
         {{ else }}
-          <a href={{ $website }} target="_blank">{{ $name }}</a> 
+          <a href={{ $homepage }} target="_blank">{{ $name }}</a> 
         {{ end }}
       {{ end }}
     </span>

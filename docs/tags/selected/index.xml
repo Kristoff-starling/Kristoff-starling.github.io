@@ -5,12 +5,20 @@
     <link>https://kristoff-starling.github.io/tags/selected/</link>
       <atom:link href="https://kristoff-starling.github.io/tags/selected/index.xml" rel="self" type="application/rss+xml" />
     <description>Selected</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Tue, 10 Dec 2024 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 17 Sep 2025 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>Selected</title>
       <link>https://kristoff-starling.github.io/tags/selected/</link>
     </image>
+    
+    <item>
+      <title>User-defined Scheduling in Distributed Systems</title>
+      <link>https://kristoff-starling.github.io/publication/usched/</link>
+      <pubDate>Wed, 17 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/publication/usched/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>High-level Programming for Application Networks</title>

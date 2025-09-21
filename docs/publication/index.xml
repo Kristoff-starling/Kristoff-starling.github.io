@@ -5,12 +5,20 @@
     <link>https://kristoff-starling.github.io/publication/</link>
       <atom:link href="https://kristoff-starling.github.io/publication/index.xml" rel="self" type="application/rss+xml" />
     <description>Publications</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Sun, 20 Apr 2025 00:00:00 +0000</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 17 Sep 2025 00:00:00 +0000</lastBuildDate>
     <image>
       <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
       <title>Publications</title>
       <link>https://kristoff-starling.github.io/publication/</link>
     </image>
+    
+    <item>
+      <title>User-defined Scheduling in Distributed Systems</title>
+      <link>https://kristoff-starling.github.io/publication/usched/</link>
+      <pubDate>Wed, 17 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/publication/usched/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Rethinking RPC Communication for Microservices-based Applications</title>

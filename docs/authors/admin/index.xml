@@ -17,8 +17,9 @@
       <link>https://kristoff-starling.github.io/authors/admin/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://kristoff-starling.github.io/authors/admin/</guid>
-      <description>&lt;p&gt;I am Yuyao Wang (王宇峣), a $\left\lceil\frac{(now() - 2024/09/16).to\text{_}day()}{year.day}\right\rceil=1$st year Ph.D. student at the 
-&lt;a href=&#34;https://syslab.cs.washington.edu/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Computer Systems Lab&lt;/a&gt; of 
+      <description>&lt;p&gt;I am Yuyao Wang (王宇峣), a 2nd year Ph.D. student at the 
+&lt;a href=&#34;https://syslab.cs.washington.edu/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Systems Lab&lt;/a&gt; and 
+&lt;a href=&#34;https://foci.uw.edu&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;FOCI Center&lt;/a&gt; of 
 &lt;a href=&#34;https://www.cs.washington.edu/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Paul G. Allen School of Computer Science &amp;amp; Engineering&lt;/a&gt;, advised by Prof. 
 &lt;a href=&#34;https://ratul.org&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Ratul Mahajan&lt;/a&gt; and 
 &lt;a href=&#34;https://www.cs.washington.edu/people/faculty/arvind&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Arvind Krishnamurthy&lt;/a&gt;. My research interest broadly lies in topics related to the &lt;em&gt;correctness&lt;/em&gt;, &lt;em&gt;programmability&lt;/em&gt; and &lt;em&gt;performance&lt;/em&gt; of computer systems.&lt;/p&gt;

@@ -9163,3 +9163,6 @@ div.mermaid {
 
 div.table {
   text-align: center; }
+
+#publications .section-heading > p {
+  font-size: 0.8rem; }

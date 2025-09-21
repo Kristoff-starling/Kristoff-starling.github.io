@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Stephanie Wang | Yuyao Wang&#39;s Homepage</title>
+    <link>https://kristoff-starling.github.io/authors/stephanie-wang/</link>
+      <atom:link href="https://kristoff-starling.github.io/authors/stephanie-wang/index.xml" rel="self" type="application/rss+xml" />
+    <description>Stephanie Wang</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><lastBuildDate>Wed, 17 Sep 2025 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>img/map[gravatar:%!s(bool=false) shape:square]</url>
+      <title>Stephanie Wang</title>
+      <link>https://kristoff-starling.github.io/authors/stephanie-wang/</link>
+    </image>
+    
+    <item>
+      <title>User-defined Scheduling in Distributed Systems</title>
+      <link>https://kristoff-starling.github.io/publication/usched/</link>
+      <pubDate>Wed, 17 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>https://kristoff-starling.github.io/publication/usched/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
